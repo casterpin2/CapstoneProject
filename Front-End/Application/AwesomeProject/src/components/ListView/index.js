@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, TextInput, Dimensions, FlatList, TouchableOpacity, Image, } from 'react-native'
+import { View, TextInput, Dimensions, FlatList, TouchableOpacity, Image, ScrollView } from 'react-native'
 import { Container, Content, Icon, Button, Text, List, ListItem, Root, Right } from 'native-base'
 import { connect } from 'react-redux'
 import { Font, AppLoading } from 'expo'
@@ -7,29 +7,43 @@ import { Font, AppLoading } from 'expo'
 const storeData = [
     {
         nameStore  : 'Thinh Cuong',
-        distant : 2,
+        distance : 2,
     },{
         nameStore  : 'Thinh Cuong 2',
-        distant : 4,
+        distance : 4,
     },{
         nameStore  : 'Thinh Cuong 3',
-        distant : 6,
+        distance : 6,
     },{
-        nameStore  : 'Thinh Cuong 3',
-        distant : 6,
+        nameStore  : 'Thinh Cuong 4',
+        distance : 6,
     },{
-        nameStore  : 'Thinh Cuong 3',
-        distant : 6,
+        nameStore  : 'Thinh Cuong 5',
+        distance : 6,
     },{
-        nameStore  : 'Thinh Cuong 3',
-        distant : 6,
+        nameStore  : 'Thinh Cuong 6',
+        distance : 6,
     },{
-        nameStore  : 'Thinh Cuong 3',
-        distant : 6,
-    },{
-        nameStore  : 'Thinh Cuong 3',
-        distant : 6,
+        nameStore  : 'Thinh Cuong 7',
+        distance : 6,
     },
+    {
+        nameStore  : 'Thinh Cuong 7',
+        distance : 6,
+    },
+    {
+        nameStore  : 'Thinh Cuong 7',
+        distance : 6,
+    },
+    {
+        nameStore  : 'Thinh Cuong 7',
+        distance : 6,
+    },
+    {
+        nameStore  : 'Thinh Cuong 7',
+        distance : 6,
+    },
+
 ]
 
 class ListDemo extends Component {
@@ -91,7 +105,7 @@ class ListDemo extends Component {
                 }}
             >
                 <Text style = {{fontWeight : 'bold',}}>{item.nameStore}</Text>
-                <Text>Distant : {item.distant}</Text>
+                <Text>Distance : {item.distance}</Text>
             </View>
             <View 
                 style ={{
@@ -118,15 +132,13 @@ class ListDemo extends Component {
           }
         return (
             <Container>
-                <View style = {{
-                         height : 300,
-                     }}>
+                <View>
                     <FlatList
                         renderItem={this._renderItem}
                         data={storeData}
                         keyExtractor={(storeData, index) => index + ''}
                     />
-                </View>
+                    </View>
             </Container>
         )
     }

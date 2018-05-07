@@ -3,7 +3,7 @@ import {Container, Header, Content, Footer, FooterTab, Right, Body, Left, Button
 import {View, TextInput, Dimensions, TouchableOpacity} from 'react-native'
 import { Font, AppLoading } from 'expo';
 import style  from './style'
-import MapView from '../Maps/index'
+// import MapView from '../Maps/index'
 import ListDemo from '../ListView/index'
 
 class SearchPage extends Component {
@@ -94,28 +94,6 @@ class SearchPage extends Component {
                     {/* <MapView />  */}
                     <ListDemo />
                 </Content>
-                <Footer>
-                    <FooterTab>
-                        <Button badge vertical>
-                        <Badge><Text>2</Text></Badge>
-                        <Icon name="apps" />
-                        <Text>Apps</Text>
-                        </Button>
-                        <Button vertical>
-                        <Icon name="camera" />
-                        <Text>Camera</Text>
-                        </Button>
-                        <Button active badge vertical>
-                        <Badge ><Text>51</Text></Badge>
-                        <Icon active name="navigate" />
-                        <Text>Navigate</Text>
-                        </Button>
-                        <Button vertical>
-                        <Icon name="person" />
-                        <Text>Contact</Text>
-                        </Button>
-                    </FooterTab>
-                </Footer>
             </Container>
         );
     }

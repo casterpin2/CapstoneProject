@@ -1,11 +1,11 @@
 {
-  "name": "awesomeproject",
+  "name": "AwesomeProject",
   "version": "0.1.0",
   "private": true,
   "devDependencies": {
-    "react-native-scripts": "1.13.1",
-    "jest-expo": "26.0.0",
-    "react-test-renderer": "16.3.0-alpha.1"
+    "react-native-scripts": "1.14.0",
+    "jest-expo": "~27.0.0",
+    "react-test-renderer": "16.3.1"
   },
   "main": "./node_modules/react-native-scripts/build/bin/crna-entry.js",
   "scripts": {
@@ -20,19 +20,11 @@
   },
   "dependencies": {
     "eslint": "^4.19.1",
-    "expo": "^26.0.0",
-    "native-base": "^2.4.2",
-    "react": "16.3.0-alpha.1",
-    "react-native": "^0.54.4",
-    "react-native-image-slider": "^2.0.3",
-    "react-native-maps": "^0.21.0",
-    "react-navigation": "^1.5.11",
-    "react-redux": "^5.0.7"
-  },
-  "resolutions": {
-    "react-native/metro": "^0.29.0"
-  },
-  "description": "Final Project",
-  "author": "thangnd16",
-  "license": "ISC"
+    "expo": "^27.0.1",
+    "native-base": "^2.4.3",
+    "react": "16.3.1",
+    "react-native": "~0.55.2",
+    "react-native-slideshow": "^1.0.1",
+    "react-navigation": "^1.5.11"
+  }
 }

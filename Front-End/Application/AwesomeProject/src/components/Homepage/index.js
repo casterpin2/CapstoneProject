@@ -1,8 +1,9 @@
 import React , { Component } from 'react'
-import { View, TextInput, Dimensions, Image, ScrollView, FlatList } from 'react-native'
+import { View, TextInput, Dimensions, Image, ScrollView, FlatList, TouchableOpacity } from 'react-native'
 import { Container, Content, Icon, Button, Text, Root, Header, Right, Left, Body, Thumbnail, Title } from 'native-base'
 import style from './style'
 import { Font, AppLoading } from "expo";
+import ImageSlider from '../ImageSlider/index'
 
 const data = [
     {
@@ -103,12 +104,17 @@ class Homepage extends Component {
                     </Right>
                 </Header>
                 <Content>
-                    <View style= {style.category}>
+                    <View><ImageSlider /></View>
+                    <View style= {[style.category, {marginTop : 0}]}>
                         <View style={style.mainCategory}>
-                            <Text style = {style.categoryTitle}>Danh mục</Text>
+                            <View style = {style.categoryControlBar}>
+                                <Text style = {style.categoryTitle}>Danh mục</Text>
+                                <TouchableOpacity transparent style = {style.seeMoreButton}><Text style={{fontSize: 15, color: 'blue', textDecorationLine: 'underline'}}>Xem thêm >></Text></TouchableOpacity>
+                            </View>
                             <ScrollView
                                 horizontal={true}
                                 style = {style.scrollView}
+                                showsHorizontalScrollIndicator={false}
                             >
                                 <FlatList
                                     renderItem={this._renderCategoryItem}

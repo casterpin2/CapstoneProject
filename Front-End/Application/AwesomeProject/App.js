@@ -1,10 +1,5 @@
 import React from 'react'
 import { StyleSheet, Text, View, StatusBar } from 'react-native'
-// import Login from './src/components/Login/index'
-// import SearchPage from './src/components/SearchPage/index'
-// import ListDemo from './src/components/ListView/index'
-
-// import MapView from './src/components/Maps/index'
 import AppRouter from './src/AppRouter'
 
 

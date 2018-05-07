@@ -56,33 +56,86 @@ const style = StyleSheet.create({
     },
     loginWithFBandGGForm : {
         width :Dimensions.get('screen').width -100,
-        flexDirection : 'column',
-        justifyContent : 'flex-start',
-        alignItems: 'center',
         flex : 2,
-        marginTop : 10
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+        margin: 10
     },
     loginFBBtn : {
-        backgroundColor : 'blue',
-        width : 250,
+        width : (Dimensions.get('screen').width -100) /2 -10,
         borderRadius : 5,
-        flexDirection : 'column',
-        alignItems : 'center',
-        justifyContent : 'center',
-        marginBottom : 10,
+        flexDirection : 'row',
+        alignItems : 'stretch',
+        justifyContent : 'flex-start',
+        marginRight : 10,
+        height : 50,
+        flex: 1,
     },
     loginGGBtn : {
-        backgroundColor : 'red',
-        width : 250,
+        width : (Dimensions.get('screen').width -100) /2 -10,
         borderRadius : 5,
         flexDirection : 'column',
         alignItems : 'center',
         justifyContent : 'center',
+        height : 50,
     }, 
     errorMessage : {
         color: 'red',
         marginTop: 20,
-    }
+    }, 
+    imageItem : {
+        flex :1, 
+        width: null,
+        height: null
+    }, 
+    GooglePlusStyle: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: '#dc4e41',
+        height: 40,
+        borderRadius: 5 ,
+        margin: 5,
+        width : 250,
+     },
+      
+     FacebookStyle: {
+       flexDirection: 'row',
+       alignItems: 'center',
+       backgroundColor: '#485a96',
+       height: 40,
+       borderRadius: 5 ,
+       margin: 5,
+       width : 250,
+     },
+      
+     ImageIconStyle: {
+        padding: 10,
+        margin: 5,
+        height: 25,
+        width: 25,
+        resizeMode : 'stretch',
+      
+     },
+      
+     TextStyle :{
+      
+       color: "#fff",
+       marginBottom : 4,
+       flexDirection : 'row',
+       justifyContent : 'center',
+       alignItems: 'center',
+       
+     },
+      
+     SeparatorLine :{
+      
+     backgroundColor : '#fff',
+     width: 1,
+     height: 40
+      
+     }
+      
+    
 });
 
 export default style;

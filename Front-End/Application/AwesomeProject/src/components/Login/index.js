@@ -1,8 +1,10 @@
 import React , { Component } from 'react'
-import { View, TextInput, Dimensions, Image } from 'react-native'
+import { View, TextInput, Dimensions, Image, TouchableOpacity } from 'react-native'
 import { Container, Content, Icon, Button, Text, Root } from 'native-base'
 import style from './style'
 import { Font, AppLoading } from "expo";
+
+
 
 
 class Login extends Component {
@@ -17,7 +19,28 @@ class Login extends Component {
         this._setErrorRequiredMessage = this._setErrorRequiredMessage.bind(this);
         this._stepToHomepage = this._stepToHomepage.bind(this);
       }
+
+    //   componentDidMount() {
+
+    //   }
+
+    //   _onPress = async () => {
+    //       try {
+    //             const data = new FormData();
+    //             const response = fetch('url', data)
+    //             const method = 'POST'
+
+    //             data.append('username', username)
+    //             data.append('password', password)
+    //       }
+    //       catch (error) {
+
+    //       }
+    //   }
       
+    //   _handleNetwork(response, error) {
+
+    //   }
 
       async componentWillMount() {
         await Font.loadAsync({
@@ -66,12 +89,13 @@ class Login extends Component {
                         source={require('../../../resources/images/login_background.jpg')}
                     />
                     <View style = {style.loginPage}>
+                    
                         <View style = {style.logo}><Image source={require('../../../resources/images/grab_logo.png')} /></View>
                         <View style= {style.loginForm}>
                             <View style = {style.inputRow}>
                                 <Icon name='md-person' style = {style.icon}/>
                                 <TextInput 
-                                    placeholder = 'Enter Username'
+                                    placeholder = 'Nhập tên đăng nhập...'
                                     style = {style.textInput}
                                     returnKeyType = {"next"}
                                     onChangeText = {(usernameStr) => {this.setState({ usernameStr})}}
@@ -81,7 +105,7 @@ class Login extends Component {
                             <View style = {style.inputRow}>
                                 <Icon name='ios-pricetags' style = {style.icon}/>
                                 <TextInput secureTextEntry
-                                    placeholder = 'Enter Password'
+                                    placeholder = 'Nhập mật khẩu...'
                                     style = {style.textInput}
                                     returnKeyType = {"next"}
                                     onChangeText = {(passwordStr) => {this.setState({ passwordStr})}}
@@ -90,11 +114,11 @@ class Login extends Component {
                             </View>
                             <View style= {style.buttonView}>
                                 { this.state.usernameStr && this.state.passwordStr
-                                    ? <Button block transparent style = {style.loginBtn} onPress = {this._stepToHomepage}>
-                                    <Text>Login</Text>
+                                    ? <Button block style = {style.loginBtn} onPress = {this._stepToHomepage}>
+                                    <Text>Đăng nhập</Text>
                                     </Button>
-                                    : <Button block transparent style = {style.loginBtn} onPress = {this._setErrorRequiredMessage}>
-                                    <Text>Login</Text>
+                                    : <Button block style = {style.loginBtn} onPress = {this._setErrorRequiredMessage}>
+                                    <Text>Đăng nhập</Text>
                                     </Button>
                                 }                                
                             </View>
@@ -107,12 +131,23 @@ class Login extends Component {
                         </View>
 
                         <View style = {style.loginWithFBandGGForm}>
-                            <Button block success style = {style.loginFBBtn} >
-                                <Text>Login via Facebook</Text>
-                            </Button>
-                            <Button block success style = {style.loginGGBtn} >
-                                <Text>Login via Google</Text>
-                                </Button>
+                            <Text style = {{color: 'white', marginBottom: 10}}>hoặc </Text>
+                            <TouchableOpacity style={style.FacebookStyle} activeOpacity={0.5}>
+                                <Image 
+                                    source={require('../../../resources/images/fb_logo.png')} 
+                                    style={style.ImageIconStyle} 
+                                />
+                                <View style={style.SeparatorLine} />
+                                <Text style={style.TextStyle}> Đăng nhập với tài khoản Facebook </Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={style.GooglePlusStyle} activeOpacity={0.5}>
+                                <Image 
+                                    source={require('../../../resources/images/gg_logo.png')} 
+                                    style={style.ImageIconStyle} 
+                                />
+                                <View style={style.SeparatorLine} />
+                                <Text style={style.TextStyle}> Đăng nhập với tài khoản Google Plus </Text>
+                            </TouchableOpacity>
                         </View>
                     </View> 
                 </Content>
@@ -121,4 +156,8 @@ class Login extends Component {
     }
 }
 
+
 export default Login;
+
+ 
+ 

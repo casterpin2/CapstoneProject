@@ -3,13 +3,12 @@ import {StyleSheet, Dimensions} from 'react-native'
 const style = StyleSheet.create({
     category: {
         marginTop : 10,
-        backgroundColor : '#CCCCCC',
+        backgroundColor : '#DDDDDD',
         height: 130,
     },
     mainCategory : {
         marginLeft: 10,
         marginBottom: 5,
-        marginTop: 5,
         height : 130,
     },
     itemInScroolView : {
@@ -30,12 +29,21 @@ const style = StyleSheet.create({
         height: null
     }, 
     categoryTitle : {
-        fontSize: 22, 
-        color: '#6666FF', 
-        textDecorationLine : 'underline'
+        fontSize: 23, 
+        color: 'black', 
+        flex: 7
     },
     scrollView: {
         marginTop : 5,
+    },
+    categoryControlBar : {
+        flexDirection: "row",
+        alignItems: 'flex-start',
+        justifyContent : 'flex-start',
+    },
+    seeMoreButton: {
+        flex: 2,
+        marginTop : 2,
     }
 });
 
