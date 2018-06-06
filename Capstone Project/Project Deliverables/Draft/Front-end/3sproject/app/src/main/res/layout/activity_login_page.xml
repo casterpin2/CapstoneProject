@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".LoginPage"
+    android:id="@+id/scrollView"
+    >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_gravity="center"
+        android:orientation="horizontal" >
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/imageView"
+            android:layout_alignStart="@+id/imageView"
+            android:layout_below="@+id/imageView"
+            >
+            <AutoCompleteTextView
+                android:id="@+id/usernameValue"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="@string/username_placeholder"
+                android:inputType="textAutoComplete"
+                android:singleLine="true"/>
+
+
+        </android.support.design.widget.TextInputLayout>
+
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/password"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/username"
+            android:layout_alignStart="@+id/username"
+            android:layout_below="@+id/username"
+            >
+            <AutoCompleteTextView
+                android:id="@+id/passwordValue"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="@string/password_placeholder"
+                android:inputType="textPassword"
+                android:singleLine="true"/>
+
+
+        </android.support.design.widget.TextInputLayout>
+
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="300dp"
+            android:layout_height="170dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="30dp"
+            app:srcCompat="@drawable/applogo"
+            tools:layout_editor_absoluteX="42dp"
+            tools:layout_editor_absoluteY="16dp" />
+
+        <TextView
+            android:id="@+id/errorTextView"
+            android:layout_width="242dp"
+            android:layout_height="20dp"
+            android:layout_below="@+id/password"
+            android:layout_centerHorizontal="true"
+            android:textAlignment="center"
+            android:textColor="@color/colorRed"
+            android:textSize="10dp" />
+
+        <Button
+            android:id="@+id/loginBtn"
+            android:layout_width="300dp"
+            android:layout_height="40dp"
+            android:layout_alignStart="@+id/imageView"
+            android:layout_below="@+id/password"
+            android:background="@drawable/login_button"
+            android:text="Đăng nhập"
+            android:textColor="@color/colorWhite"
+            android:textSize="10dp"
+            android:layout_marginTop="20dp"/>
+
+        <TextView
+            android:id="@+id/crossLine"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/loginBtn"
+            android:layout_alignStart="@+id/loginBtn"
+            android:layout_below="@+id/loginBtn"
+            android:layout_marginTop="20dp"
+            android:ems="10"
+            android:enabled="false"
+            android:inputType="textPersonName"
+            android:text="Or"
+            android:textColor="@color/colorBlack"
+            android:gravity="center"/>
+
+        <Button
+            android:id="@+id/loginFBBtn"
+            android:layout_width="300dp"
+            android:layout_height="40dp"
+            android:layout_alignStart="@+id/crossLine"
+            android:layout_below="@+id/crossLine"
+            android:layout_marginTop="10dp"
+            android:text="Đăng nhập với Facebook"
+            android:textSize="10dp"
+            android:textColor="@color/colorWhite"
+            android:background="@drawable/login_with_facebook_button"/>
+
+        <Button
+            android:id="@+id/loginGPBtn"
+            android:layout_width="300dp"
+            android:layout_height="40dp"
+            android:layout_alignStart="@+id/loginFBBtn"
+            android:layout_below="@+id/loginFBBtn"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/login_with_google_plus_button"
+            android:text="Login With Google+"
+            android:textColor="@color/colorWhite"
+            android:textSize="10dp" />
+    </RelativeLayout>
+</ScrollView>
