@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">3sproject</string>
+
+    <!-- TODO: placeholder text in register and login page -->
+    <string name="username_placeholder">Tên đăng nhập</string>
+    <string name="password_placeholder">Mật khẩu</string>
+</resources>
