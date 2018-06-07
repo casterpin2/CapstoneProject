@@ -15,6 +15,8 @@ import android.widget.TextView;
 
 public class LoginPage extends AppCompatActivity {
 
+    private Dialog dialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,7 +55,7 @@ public class LoginPage extends AppCompatActivity {
 
 
 
-        dialog = new Dialog(Login.this);
+        dialog = new Dialog(LoginPage.this);
         dialog.setContentView(R.layout.dialog);
         final TextView dialogContent = (TextView) dialog.findViewById(R.id.content);
         final Button okBtn = (Button) dialog.findViewById(R.id.okBtn);
