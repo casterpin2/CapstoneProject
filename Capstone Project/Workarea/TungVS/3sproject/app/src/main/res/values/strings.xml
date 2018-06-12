@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">3sproject</string>
+
+    <!-- TODO: placeholder text in register and login page -->
+    <string name="username_placeholder">Tên đăng nhập</string>
+    <string name="password_placeholder">Mật khẩu</string>
+
+    <!-- TODO: placeholder text in change password -->
+    <string name="old_password">Mật khẩu hiện tại</string>
+    <string name="new_password">Mật khẩu mới</string>
+    <string name="retype_password">Nhập lại mật khẩu</string>
+    <string name="text_remind">Vui lòng nhập mật khẩu mới của bạn bên dưới</string>
+    <string name="btn_save_change">Lưu thay đổi</string>
+
+
+    <!-- TODO: dialog-->
+    <string name="title_dialog">Cảnh báo</string>
+    <string name="content_dialog">Mật khẩu mới nhập lại không khớp</string>
+</resources>
