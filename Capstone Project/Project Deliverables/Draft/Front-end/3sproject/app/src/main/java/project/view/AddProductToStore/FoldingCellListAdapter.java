@@ -40,7 +40,7 @@ public class FoldingCellListAdapter extends ArrayAdapter<Item> {
     @Override
     public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         // get item for selected view
-        Item item = getItem(position);
+        final Item item = getItem(position);
         // if cell is exists - reuse it, if not - create the new one from resource
         FoldingCell cell = (FoldingCell) convertView;
         ViewHolder viewHolder;
@@ -60,6 +60,7 @@ public class FoldingCellListAdapter extends ArrayAdapter<Item> {
             viewHolder.productBrand = cell.findViewById(R.id.productBrand);
             viewHolder.requestBtn = cell.findViewById(R.id.content_request_btn);
             viewHolder.productImage_content = cell.findViewById(R.id.productImage_content);
+            viewHolder.productImage_title = cell.findViewById(R.id.productImage_title);
 
             cell.setTag(viewHolder);
         } else {
@@ -86,11 +87,15 @@ public class FoldingCellListAdapter extends ArrayAdapter<Item> {
                 .using(new FirebaseImageLoader())
                 .load(gsReference.child(item.getImage_path()))
                 .into(viewHolder.productImage_content);
+        Glide.with(this.getContext())
+                .using(new FirebaseImageLoader())
+                .load(gsReference.child(item.getImage_path()))
+                .into(viewHolder.productImage_title);
         viewHolder.requestBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                puttedProductList.add(new Item(1,"Nước giải khát Mirinda ","Đồ uống","Pepsi.Co","ảnh mirinda","Đạt ngu như chó",""));
-                puttedProductList.add(new Item(1,"Nước giải khát Fanta ","Đồ uống","Pepsi.Co","ảnh mirinda","Đạt ngu như chó",""));
+                SearchProductAddToStore.addedProductList.add(item);
+                //puttedProductList.add(new Item(1,"Nước giải khát Fanta ","Đồ uống","Pepsi.Co","ảnh mirinda","Đạt ngu như chó",""));
             }
         });
 
@@ -141,5 +146,6 @@ public class FoldingCellListAdapter extends ArrayAdapter<Item> {
         TextView productBrand;
         TextView requestBtn;
         ImageView productImage_content;
+        ImageView productImage_title;
     }
 }

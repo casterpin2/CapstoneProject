@@ -80,27 +80,28 @@ public class SearchProductAddToStore extends AppCompatActivity implements Naviga
             public void onSearchConfirmed(CharSequence text) {
 
 //                Toast.makeText(getApplicationContext(), searchBar.getText().toString(), Toast.LENGTH_SHORT).show();
-                mAPI.getProducts(ApiUtils.removeAccent(searchBar.getText().toString().trim())).enqueue(new Callback<List<Item>>() {
-                    @Override
-                    public void onResponse(Call<List<Item>> call, Response<List<Item>> response) {
-                        searchedProductList.clear();
-                        for (int i = 0; i<response.body().size();i++){
-                            searchedProductList.add(response.body().get(i));
+                if(!searchBar.getText().toString().trim().isEmpty()) {
+                    mAPI.getProducts(ApiUtils.removeAccent(searchBar.getText().toString().trim())).enqueue(new Callback<List<Item>>() {
+                        @Override
+                        public void onResponse(Call<List<Item>> call, Response<List<Item>> response) {
+                            searchedProductList.clear();
+                            for (int i = 0; i < response.body().size(); i++) {
+                                searchedProductList.add(response.body().get(i));
+                            }
+                            //searchedProductList = response.body();
+                            adapter.notifyDataSetChanged();
+                            //Toast.makeText(SearchProductAddToStore.this,searchedProductList.get(0).getProduct_name(),Toast.LENGTH_LONG).show();
+                            //Toast.makeText(SearchProductAddToStore.this,searchBar.getText().toString().trim(),Toast.LENGTH_LONG).show();
+                            Intent intent = new Intent(SearchProductAddToStore.this, MainActivity.class);
+                            startActivity(intent);
                         }
-                        //searchedProductList = response.body();
-                        adapter.notifyDataSetChanged();
-                        //Toast.makeText(SearchProductAddToStore.this,searchedProductList.get(0).getProduct_name(),Toast.LENGTH_LONG).show();
-                        //Toast.makeText(SearchProductAddToStore.this,searchBar.getText().toString().trim(),Toast.LENGTH_LONG).show();
-                        //Intent intent = new Intent(SearchProductAddToStore.this, MainActivity.class);
-                        //startActivity(intent);
-                    }
 
-                    @Override
-                    public void onFailure(Call<List<Item>> call, Throwable t) {
-                        Toast.makeText(SearchProductAddToStore.this,"Something Wrong",Toast.LENGTH_LONG).show();
-                    }
-                });
-
+                        @Override
+                        public void onFailure(Call<List<Item>> call, Throwable t) {
+                            Toast.makeText(SearchProductAddToStore.this, "Something Wrong", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
 
             }
 

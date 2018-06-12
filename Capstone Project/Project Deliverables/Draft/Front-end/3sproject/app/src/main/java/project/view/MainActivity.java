@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
         if(getData.isEmpty()){
 
         } else {
-            //Toast.makeText(getApplicationContext(), getData.get(0).getProductName() + "", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), getData.get(getData.size()-1).getProduct_name() + "", Toast.LENGTH_SHORT).show();
         }
         button.setOnClickListener(new View.OnClickListener() {
             @Override
