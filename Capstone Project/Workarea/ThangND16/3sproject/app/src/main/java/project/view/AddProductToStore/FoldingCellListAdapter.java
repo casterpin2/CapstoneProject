@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.HashSet;
@@ -53,6 +54,7 @@ public class FoldingCellListAdapter extends ArrayAdapter<Item> {
             viewHolder.productName_title = cell.findViewById(R.id.productName_title);
             viewHolder.productBrand = cell.findViewById(R.id.productBrand);
             viewHolder.requestBtn = cell.findViewById(R.id.content_request_btn);
+            viewHolder.productImage_content = cell.findViewById(R.id.productImage_content);
             cell.setTag(viewHolder);
         } else {
             // for existing cell set valid valid state(without animation)
@@ -81,6 +83,7 @@ public class FoldingCellListAdapter extends ArrayAdapter<Item> {
                 puttedProductList.add(new Item("Nước giải khát Fanta ","Đồ uống","Pepsi.Co","ảnh mirinda","Đạt ngu như chó"));
             }
         });
+
 
 
         // set custom btn handler for list item from that item
@@ -127,5 +130,6 @@ public class FoldingCellListAdapter extends ArrayAdapter<Item> {
         TextView productName_title;
         TextView productBrand;
         TextView requestBtn;
+        ImageView productImage_content;
     }
 }
