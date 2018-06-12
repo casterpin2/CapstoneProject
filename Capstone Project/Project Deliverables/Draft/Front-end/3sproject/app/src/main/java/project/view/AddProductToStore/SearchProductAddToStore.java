@@ -5,13 +5,16 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,13 +45,6 @@ public class SearchProductAddToStore extends AppCompatActivity implements Naviga
     public static List<Item> addedProductList = new ArrayList<Item>();
 
 
-
-
-
-
-
-//    private TextView requestBtn;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,16 +57,28 @@ public class SearchProductAddToStore extends AppCompatActivity implements Naviga
         final ListView theListView = findViewById(R.id.mainListView);
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setCustomView(R.layout.actionbar_search_product_add_to_store_page);
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.rgb(0,187,0)));
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorApplication)));
 
         //Toast.makeText(getApplicationContext(), addedProductList.size()+"", Toast.LENGTH_SHORT).show();
 
+        final ImageView searchBtn = findViewById(R.id.searchBtn);
+        searchBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searchBar.setVisibility(View.VISIBLE);
+                searchBtn.setVisibility(View.INVISIBLE);
+                TextView pageTitle = findViewById(R.id.pageTitle);
+                pageTitle.setVisibility(View.INVISIBLE);
+            }
+        });
+
         // searchBar initial value and do something
         searchBar = findViewById(R.id.searchBar);
-        searchBar.setSpeechMode(true);
+        searchBar.setSpeechMode(false);
         searchBar.setArrowIconTint(R.color.colorBlack);
-//        searchBar.showSuggestionsList();
+        searchBar.showSuggestionsList();
         searchBar.setOnSearchActionListener(new MaterialSearchBar.OnSearchActionListener() {
+
             @Override
             public void onSearchStateChanged(boolean enabled) {
 //                Toast.makeText(getApplicationContext(), "onSearchStateChanged", Toast.LENGTH_SHORT).show();
@@ -90,10 +98,19 @@ public class SearchProductAddToStore extends AppCompatActivity implements Naviga
                             }
                             //searchedProductList = response.body();
                             adapter.notifyDataSetChanged();
+                            if(searchedProductList.isEmpty()) {
+                                TextView nullMessage = findViewById(R.id.nullMessage);
+                                nullMessage.setText("Không có sản phẩm nào phù hợp!");
+                                theListView.setVisibility(View.INVISIBLE);
+                            } else {
+                                TextView nullMessage = findViewById(R.id.nullMessage);
+                                nullMessage.setText("");
+                                theListView.setVisibility(View.VISIBLE);
+                            }
                             //Toast.makeText(SearchProductAddToStore.this,searchedProductList.get(0).getProduct_name(),Toast.LENGTH_LONG).show();
                             //Toast.makeText(SearchProductAddToStore.this,searchBar.getText().toString().trim(),Toast.LENGTH_LONG).show();
-                            Intent intent = new Intent(SearchProductAddToStore.this, MainActivity.class);
-                            startActivity(intent);
+//                            Intent intent = new Intent(SearchProductAddToStore.this, MainActivity.class);
+//                            startActivity(intent);
                         }
 
                         @Override
@@ -115,16 +132,15 @@ public class SearchProductAddToStore extends AppCompatActivity implements Naviga
 
 
 
-        // get our to_cart_btn
-//        requestBtn = findViewById(R.id.content_request_btn);
-
-        // get list to display to list view
-        //searchedProductList = Item.getTestingList();
-
-        // get button add
-
-
-
+        //get floating action button
+        FloatingActionButton addFab = findViewById(R.id.fab);
+        addFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent accessToCartActivity = new Intent(SearchProductAddToStore.this, MainActivity.class);
+                startActivity(accessToCartActivity);
+            }
+        });
 
 
         // create custom adapter that holds elements and their state (we need hold a id's of unfolded elements for reusable elements)
