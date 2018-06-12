@@ -40,6 +40,11 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.6.1'
     implementation 'com.squareup.retrofit2:converter-gson:2.1.0'
     testImplementation 'junit:junit:4.12'
+
+    //front-end
+    implementation 'com.ramotion.foldingcell:folding-cell:1.2.2'
+    implementation 'com.github.mancj:MaterialSearchBar:0.7.6'
+
 }
 //fire base
 apply plugin: 'com.google.gms.google-services'
