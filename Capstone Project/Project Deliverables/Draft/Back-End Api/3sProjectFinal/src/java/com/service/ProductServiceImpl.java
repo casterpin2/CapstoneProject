@@ -6,23 +6,24 @@
 package com.service;
 
 import com.dao.ProductDao;
-import com.entites.ProductAddEntites;
+import com.entites.ProductEntites;
 import java.sql.SQLException;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
  *
- * @author AHBP
+ * @author TUYEN
  */
 @Service("productService")
-public class ProductServiceImpl implements ProductService{
+public class ProductServiceImpl implements ProductService {
+
     @Autowired
     ProductDao dao;
 
     @Override
-    public List<ProductAddEntites> getProductForAdd(String query) throws SQLException {
-        return dao.getProductForAdd(query);
+    public boolean insertProductStore(ProductEntites p) throws SQLException {
+        return dao.insertProductStore(p);
     }
+
 }

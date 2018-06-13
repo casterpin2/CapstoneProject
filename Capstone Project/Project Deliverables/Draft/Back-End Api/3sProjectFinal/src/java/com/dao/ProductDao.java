@@ -5,15 +5,14 @@
  */
 package com.dao;
 
-import com.entites.ProductAddEntites;
-import com.entites.UserEntites;
+import com.entites.ProductEntites;
 import java.sql.SQLException;
-import java.util.List;
 
 /**
  *
- * @author AHBP
+ * @author TUYEN
  */
 public interface ProductDao {
-     public List<ProductAddEntites> getProductForAdd(String query) throws SQLException;
+    public boolean insertProductStore(ProductEntites p) throws SQLException;
+    
 }

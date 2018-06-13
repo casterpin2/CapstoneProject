@@ -5,14 +5,14 @@
  */
 package com.service;
 
-import com.entites.ProductAddEntites;
+import com.entites.ProductEntites;
 import java.sql.SQLException;
-import java.util.List;
 
 /**
  *
- * @author AHBP
+ * @author TUYEN
  */
 public interface ProductService {
-     public List<ProductAddEntites> getProductForAdd(String query) throws SQLException;
+    public boolean insertProductStore(ProductEntites p) throws SQLException;
+    
 }

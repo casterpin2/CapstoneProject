@@ -42,7 +42,7 @@ public class BaseDao {
             String username = properties.getProperty("username");
             String password = properties.getProperty("password");
             String databaseName = properties.getProperty("databaseName");
-            String url = properties.getProperty("url") + databaseName +"?characterEncoding=UTF-8";
+            String url = properties.getProperty("url") + databaseName;
             Class.forName(properties.getProperty("driver"));
             connection = DriverManager.getConnection(url, username, password);
         } catch (IOException | ClassNotFoundException e) {

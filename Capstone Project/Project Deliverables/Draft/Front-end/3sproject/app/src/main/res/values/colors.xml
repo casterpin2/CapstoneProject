@@ -7,13 +7,6 @@
     <color name="colorBlack">#000000</color>
     <color name="registerButton">#F4A460</color>
     <color name="colorRed">#FF0000</color>
-    <color name="colorApplication">#6c5ce7</color>
+    <color name="colorApplication">#00BB00</color>
     <color name="colorCancelDialog">#FF3300</color>
-
-    <color name="contentBadgeTitle">#a9a9a9</color>
-    <color name="mainTextColor">#343d43</color>
-    <color name="contentDividerLine">#e0e0e0</color>
-    <color name="bgTitleLeft">#594691</color>
-    <color name="bgTitleRight">#ffffff</color>
-
 </resources>
