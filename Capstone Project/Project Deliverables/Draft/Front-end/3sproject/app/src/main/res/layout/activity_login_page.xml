@@ -25,7 +25,7 @@
                 android:id="@+id/usernameValue"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:hint="@string/username_placeholder"
+                android:hint="@string/login_page_username_placeholder"
                 android:inputType="textAutoComplete"
                 android:singleLine="true"/>
 
@@ -45,7 +45,7 @@
                 android:id="@+id/passwordValue"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:hint="@string/password_placeholder"
+                android:hint="@string/login_page_password_placeholder"
                 android:inputType="textPassword"
                 android:singleLine="true"/>
 
@@ -81,7 +81,7 @@
             android:layout_alignStart="@+id/imageView"
             android:layout_below="@+id/password"
             android:background="@drawable/login_button"
-            android:text="Đăng nhập"
+            android:text="@string/login_page_login3SBtn"
             android:textColor="@color/colorWhite"
             android:textSize="10dp"
             android:layout_marginTop="20dp"/>
@@ -97,7 +97,7 @@
             android:ems="10"
             android:enabled="false"
             android:inputType="textPersonName"
-            android:text="Or"
+            android:text="Hoặc"
             android:textColor="@color/colorBlack"
             android:gravity="center"/>
 
@@ -108,7 +108,7 @@
             android:layout_alignStart="@+id/crossLine"
             android:layout_below="@+id/crossLine"
             android:layout_marginTop="10dp"
-            android:text="Đăng nhập với Facebook"
+            android:text="@string/login_page_loginFBBtn"
             android:textSize="10dp"
             android:textColor="@color/colorWhite"
             android:background="@drawable/login_with_facebook_button"/>
@@ -121,7 +121,7 @@
             android:layout_below="@+id/loginFBBtn"
             android:layout_marginTop="15dp"
             android:background="@drawable/login_with_google_plus_button"
-            android:text="Login With Google+"
+            android:text="@string/login_page_loginGGBtn"
             android:textColor="@color/colorWhite"
             android:textSize="10dp" />
     </RelativeLayout>

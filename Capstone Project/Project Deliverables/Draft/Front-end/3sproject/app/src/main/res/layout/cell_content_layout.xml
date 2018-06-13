@@ -3,8 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:visibility="gone"
-    android:id="@+id/content_cell">
+    android:visibility="gone">
 
     <!-- content header line -->
     <RelativeLayout
@@ -21,7 +20,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:gravity="center"
-            android:text="Thông tin sản phẩm"
+            android:text="@string/search_product_cell_content_title"
             android:textColor="@android:color/white"
             android:textSize="20sp"/>
 
@@ -123,7 +122,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
-                    android:text="Nhãn hiệu"
+                    android:text="@string/search_product_cell_content_brand"
                     android:textColor="@color/colorApplication"/>
 
                 <TextView
@@ -162,7 +161,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
-                    android:text="Danh mục sản phẩm"
+                    android:text="@string/search_product_cell_content_category"
                     android:textColor="@color/colorApplication"/>
 
                 <TextView
@@ -220,7 +219,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
-                    android:text="Mô tả sản phẩm"
+                    android:text="@string/search_product_cell_content_desc"
                     android:textColor="@color/colorApplication"/>
 
                 <TextView
@@ -244,27 +243,27 @@
 
 
         <!--<Button-->
-            <!--android:id="@+id/addBtn"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_marginTop="16dp"-->
-            <!--android:background="@drawable/login_button"-->
-            <!--android:padding="10dp"-->
-            <!--android:text="Thêm sản phẩm"-->
-            <!--android:textAlignment="center"-->
-            <!--android:textColor="@color/mainTextColor"-->
-            <!--android:textSize="30sp"-->
+        <!--android:id="@+id/addBtn"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginTop="16dp"-->
+        <!--android:background="@drawable/login_button"-->
+        <!--android:padding="10dp"-->
+        <!--android:text="Thêm sản phẩm"-->
+        <!--android:textAlignment="center"-->
+        <!--android:textColor="@color/mainTextColor"-->
+        <!--android:textSize="30sp"-->
         <!--/>-->
         <TextView
             android:id="@+id/content_request_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:background="@drawable/common_google_signin_btn_icon_light"
+            android:background="@drawable/login_button"
             android:padding="10dp"
-            android:text="Thêm sản phẩm"
+            android:text="@string/search_product_cell_content_addBtn"
             android:textAlignment="center"
-            android:textColor="@color/mainTextColor"
+            android:textColor="@color/colorWhite"
             android:textSize="20sp" />
 
         <TextView
