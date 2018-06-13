@@ -5,11 +5,13 @@
  */
 package com.entites;
 
+import java.io.Serializable;
+
 /**
  *
  * @author AHBP
  */
-public class ProductAddEntites {
+public class ProductAddEntites implements Serializable{
     private int product_id;
     private String product_name;
     private String brand_name;
@@ -18,7 +20,7 @@ public class ProductAddEntites {
     private String type_name;
     private String image_path;
     private Double price;
-
+    private Double promotion;
     public Double getPrice() {
         return price;
     }
@@ -105,6 +107,14 @@ public class ProductAddEntites {
 
     public void setImage_path(String image_path) {
         this.image_path = image_path;
+    }
+
+    public Double getPromotion() {
+        return promotion;
+    }
+
+    public void setPromotion(Double promotion) {
+        this.promotion = promotion;
     }
     
     

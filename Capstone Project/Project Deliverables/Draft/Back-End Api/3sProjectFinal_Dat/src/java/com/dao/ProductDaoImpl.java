@@ -56,4 +56,36 @@ public class ProductDaoImpl extends BaseDao implements ProductDao{
         return listData;
     }
     
+    @Override
+    public boolean insertProdcut(List<ProductAddEntites> productList, int storeId) throws SQLException {
+        Connection conn = null;
+        PreparedStatement pre = null;
+        int count = 0;
+        try {
+            String sql = "insert into product_store (price,promotion,store_id,product_id) values(?,?,?,?)";
+            conn = getConnection();
+            conn.setAutoCommit(false);
+            pre = conn.prepareStatement(sql);
+            for (ProductAddEntites p : productList) {
+                pre.setDouble(1, p.getPrice());
+                pre.setDouble(2, p.getPromotion());
+                pre.setInt(3, storeId);
+                pre.setInt(4, p.getProduct_id());
+                count++;
+                pre.addBatch();
+}
+            int temp[] = pre.executeBatch();
+            if (temp.length == count) {
+                return true;
+            } else {
+                conn.setAutoCommit(true);
+                conn.rollback();
+                return false;
+            }
+        } finally {
+            closeConnect(conn, pre, null);
+        }
+
+    }
+
 }

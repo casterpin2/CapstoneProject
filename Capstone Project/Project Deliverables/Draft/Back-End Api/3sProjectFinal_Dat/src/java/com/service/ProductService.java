@@ -6,6 +6,7 @@
 package com.service;
 
 import com.entites.ProductAddEntites;
+import com.entites.ProductEntities;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -15,4 +16,5 @@ import java.util.List;
  */
 public interface ProductService {
      public List<ProductAddEntites> getProductForAdd(String query) throws SQLException;
+     public boolean  insertProdcut(List<ProductAddEntites> productList,int storeId) throws SQLException;
 }
