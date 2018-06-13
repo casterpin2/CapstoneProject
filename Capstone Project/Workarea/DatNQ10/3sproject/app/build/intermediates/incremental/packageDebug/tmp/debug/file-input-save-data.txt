@@ -1,0 +1,7 @@
+#Internal package file, do not edit.
+#Fri Jun 08 20:23:11 ICT 2018
+0.baseType=DIRECTORY
+0.base=F\:\\Project\\Capstone Project\\Workarea\\DatNQ10\\3sproject\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\0
+0.path=classes.dex
+0.set=DEX
+count=1
