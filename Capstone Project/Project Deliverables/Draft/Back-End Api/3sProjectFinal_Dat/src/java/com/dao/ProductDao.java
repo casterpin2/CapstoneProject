@@ -16,4 +16,5 @@ import java.util.List;
  */
 public interface ProductDao {
      public List<ProductAddEntites> getProductForAdd(String query) throws SQLException;
+      public boolean  insertProdcut(List<ProductAddEntites> productList,int storeId) throws SQLException;
 }

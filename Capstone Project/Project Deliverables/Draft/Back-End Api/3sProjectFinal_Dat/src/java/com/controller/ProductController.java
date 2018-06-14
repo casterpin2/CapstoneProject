@@ -5,8 +5,12 @@
  */
 package com.controller;
 
+import com.entites.JsonUtil;
+import com.entites.ProductList;
 import com.entites.ProductAddEntites;
+import com.entites.ProductEntities;
 import com.service.ProductService;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,4 +35,12 @@ public class ProductController {
     public List<ProductAddEntites> getProductForAdd(@RequestParam("query") String query) throws SQLException{
         return product.getProductForAdd(query);
     }
+    
+    @RequestMapping(value = "/posts",method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    public boolean getData(@RequestParam("jsonString") String jsonString,@RequestParam("storeId") int storeId) throws SQLException, ClassNotFoundException, IOException{
+        System.out.println(jsonString+" "+ storeId);
+        List<ProductAddEntites> list = JsonUtil.converJsonToJava(jsonString, ProductAddEntites.class);
+        
+        return product.insertProdcut(list, storeId);
+}
 }

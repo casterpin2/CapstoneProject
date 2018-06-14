@@ -25,4 +25,11 @@ public class ProductServiceImpl implements ProductService{
     public List<ProductAddEntites> getProductForAdd(String query) throws SQLException {
         return dao.getProductForAdd(query);
     }
+
+    @Override
+    public boolean insertProdcut(List<ProductAddEntites> productList, int storeId) throws SQLException {
+       return dao.insertProdcut(productList, storeId);
+    }
+
+
 }
