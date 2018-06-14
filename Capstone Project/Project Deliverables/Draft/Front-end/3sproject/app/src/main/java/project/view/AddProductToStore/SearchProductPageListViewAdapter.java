@@ -56,7 +56,7 @@ public class SearchProductPageListViewAdapter extends BaseAdapter {
             holder.productName = (TextView) view.findViewById(R.id.productName);
             holder.productBrand =(TextView) view.findViewById(R.id.productBrand);
             holder.productCategory =(TextView) view.findViewById(R.id.productCategory);
-            holder.addBtn = (Button) view.findViewById(R.id.addBtn);
+            holder.addBtn = (TextView) view.findViewById(R.id.addBtn);
             holder.addBtn.setTag(position);
 
             view.setTag(holder);
@@ -84,6 +84,6 @@ public class SearchProductPageListViewAdapter extends BaseAdapter {
         TextView productName;
         TextView productBrand;
         TextView productCategory;
-        Button addBtn;
+        TextView addBtn;
     }
 }

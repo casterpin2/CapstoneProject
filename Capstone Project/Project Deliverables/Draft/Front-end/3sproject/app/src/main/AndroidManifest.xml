@@ -12,14 +12,14 @@
         <activity android:name=".MainActivity" />
         <activity android:name=".LoginPage" />
         <activity android:name=".AddProductToStore.SearchProductAddToStore">
-
-        </activity>
-        <activity android:name=".Cart.CartProductToStore">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity android:name=".Cart.CartProductToStore">
+
         </activity>
     </application>
 

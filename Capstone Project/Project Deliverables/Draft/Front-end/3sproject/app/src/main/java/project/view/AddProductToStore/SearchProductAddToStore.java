@@ -182,7 +182,7 @@ public class SearchProductAddToStore extends AppCompatActivity {
     }
 
     //create information dialog
-    public void showInfoDialog(List<Item> productList, int position) {
+    public void showInfoDialog(List<Item> productList, final int position) {
 
 
 
@@ -195,6 +195,7 @@ public class SearchProductAddToStore extends AppCompatActivity {
         final TextView productDesc_infoDialog = (TextView) dialog.findViewById(R.id.productDesc_infoDialog);
         final TextView productTypeText_infoDialog = (TextView) dialog.findViewById(R.id.productTypeText_infoDialog);
         final TextView productType_infoDialog = (TextView) dialog.findViewById(R.id.productType_infoDialog);
+        final TextView addBtn_infoDialog = (TextView) dialog.findViewById(R.id.addBtn_infoDialog);
         final ImageView productImage = (ImageView) dialog.findViewById(R.id.productImage);
 
 //        productImage.setMaxHeight(productImage.getWidth());
@@ -205,6 +206,15 @@ public class SearchProductAddToStore extends AppCompatActivity {
         productTypeText_infoDialog.setText("Loại "+productList.get(position).getBrand_name().toLowerCase());
         productType_infoDialog.setText(productList.get(position).getType_name());
         productImage.setBackgroundColor(R.drawable.background);
+        addBtn_infoDialog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                intentToCartPageFromDialog(v);
+                String productName = productName_infoDialog.getText().toString();
+                Toast.makeText(getApplicationContext(), productName, Toast.LENGTH_SHORT).show();
+            }
+        });
+
 
 
 
@@ -227,12 +237,17 @@ public class SearchProductAddToStore extends AppCompatActivity {
         dialog.show();
     }
 
-    public void intentToCartPage(View view){
-        Toast.makeText(getApplicationContext(), "hahah", Toast.LENGTH_SHORT).show();
+    public void intentToCartPageFromListView(View view){
         //Intent accessToCartPage = new Intent()
-        Button bt = (Button) view;
+        TextView bt = (TextView) view;
         int i = (Integer) bt.getTag();
         Toast.makeText(getApplicationContext(), searchedProductList.get(i).getProduct_name()+"hih", Toast.LENGTH_SHORT).show();
+    }
+
+    public void intentToCartPageFromDialog(View view){
+        //Intent accessToCartPage = new Intent()
+
+
     }
 
 }
