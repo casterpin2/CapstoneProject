@@ -31,7 +31,7 @@ public class UserDaoImpl extends BaseDao implements UserDao {
         try {
             listData = new ArrayList();
             conn = getConnection();
-            String sql = "select username, password,device_id,role_id,first_name,last_name,location_id,role_id from user";
+            String sql = "select username, password,device_id,role_id,first_name,last_name,location_id,role_id from User";
             pre = conn.prepareStatement(sql);
             rs = pre.executeQuery();
             while (rs.next()) {

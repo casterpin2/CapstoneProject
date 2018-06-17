@@ -29,7 +29,7 @@ public class ProductController {
      @Autowired
     ProductService product;
 
-    @RequestMapping(value = "/getProductForAdd", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    @RequestMapping(value = "/getProductForAdd", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
     public List<ProductAddEntites> getProductForAdd(@RequestParam("query") String query) throws SQLException{
         return product.getProductForAdd(query);
     }
