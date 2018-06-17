@@ -6,9 +6,7 @@
 package com.controller;
 
 import com.entites.JsonUtil;
-import com.entites.ProductList;
 import com.entites.ProductAddEntites;
-import com.entites.ProductEntities;
 import com.service.ProductService;
 import java.io.IOException;
 import java.sql.SQLException;

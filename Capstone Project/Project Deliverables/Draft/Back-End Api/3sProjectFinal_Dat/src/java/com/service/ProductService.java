@@ -6,7 +6,6 @@
 package com.service;
 
 import com.entites.ProductAddEntites;
-import com.entites.ProductEntities;
 import java.sql.SQLException;
 import java.util.List;
 
