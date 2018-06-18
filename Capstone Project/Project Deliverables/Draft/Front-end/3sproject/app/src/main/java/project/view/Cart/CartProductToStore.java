@@ -9,6 +9,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
@@ -17,15 +18,21 @@ import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
+import com.google.gson.Gson;
 import com.hitomi.cmlibrary.CircleMenu;
 import com.hitomi.cmlibrary.OnMenuSelectedListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import project.retrofit.APIService;
+import project.retrofit.ApiUtils;
 import project.view.AddProductToStore.Item;
 import project.view.AddProductToStore.SearchProductAddToStore;
 import project.view.R;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class CartProductToStore extends AppCompatActivity {
 
@@ -35,7 +42,10 @@ public class CartProductToStore extends AppCompatActivity {
     private TextView nullMessage;
     FloatingActionMenu materialDesignFAM;
     FloatingActionButton delete, back, success;
-
+    private APIService apiService;
+    private String jsonString;
+    private int storeId;
+    private Gson gson;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,16 +54,34 @@ public class CartProductToStore extends AppCompatActivity {
         getSupportActionBar().setCustomView(R.layout.actionbar_search_product_add_to_store_page);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorApplication)));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        nullMessage = (TextView) findViewById(R.id.nullMessage);
+        apiService = ApiUtils.getAPIService();
+        productListView = findViewById(R.id.productListView);
+        if (productList == null) {
+            productList = new ArrayList<>();
+        }
+        productList = SearchProductAddToStore.addedProductList;
+        if (productList.size() == 0) {
+            productListView.setVisibility(View.INVISIBLE);
+            nullMessage.setVisibility(View.VISIBLE);
+            nullMessage.setText("Không có sản phẩm nào");
+        }
+        gson = new Gson();
+        jsonString = gson.toJson(productList);
 
+        storeId = 1;
+        adapter = new CartProductToStorePageListViewAdapter(CartProductToStore.this, R.layout.cart_product_to_store_page_custom_listview, productList);
+        productListView.setAdapter(adapter);
         materialDesignFAM = (FloatingActionMenu) findViewById(R.id.material_design_android_floating_action_menu);
         delete = (FloatingActionButton) findViewById(R.id.fab_delete);
         back = (FloatingActionButton) findViewById(R.id.fab_back);
         success = (FloatingActionButton) findViewById(R.id.fab_success);
-
+        Toast.makeText(this, ""+ jsonString, Toast.LENGTH_SHORT).show();
         delete.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 //TODO something when floating action menu first item clicked
 //                Toast.makeText(getApplicationContext(), "Đây là nút thêm sản phẩm", Toast.LENGTH_SHORT).show();
+
                 if(productList.size() == 0) {
                     View searchPage = findViewById(R.id.search_page);
                     String message = "Không có sản phẩm để xóa";
@@ -75,27 +103,37 @@ public class CartProductToStore extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "Đây là nút quay về", Toast.LENGTH_SHORT).show();
             }
         });
+
         success.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 //TODO something when floating action menu third item clicked
-                Toast.makeText(getApplicationContext(), "Đây là nút thêm sản phẩm", Toast.LENGTH_SHORT).show();
+                StringBuilder str = new StringBuilder();
+                str.append(jsonString);
+                apiService.insertProduct(str,storeId).enqueue(new Callback<Boolean>(){
+
+                    @Override
+                    public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+
+                        if(response.isSuccessful()){
+                            Toast.makeText(CartProductToStore.this, "Pro Vl", Toast.LENGTH_SHORT).show();
+
+                        }else{
+                            Toast.makeText(CartProductToStore.this, "Server Error", Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<Boolean> call, Throwable t) {
+                        Log.d("MainActivity", "error loading from API");
+                    }
+                });
+
             }
         });
 
-        nullMessage = (TextView) findViewById(R.id.nullMessage);
 
-        productListView = findViewById(R.id.productListView);
-        if (productList == null) {
-            productList = new ArrayList<>();
-        }
-        productList = SearchProductAddToStore.addedProductList;
-        if (productList.size() == 0) {
-            productListView.setVisibility(View.INVISIBLE);
-            nullMessage.setVisibility(View.VISIBLE);
-            nullMessage.setText("Không có sản phẩm nào");
-        }
-        adapter = new CartProductToStorePageListViewAdapter(CartProductToStore.this, R.layout.cart_product_to_store_page_custom_listview, productList);
-        productListView.setAdapter(adapter);
+
 
 //        final CircleMenu menu = findViewById(R.id.circleMenu);
 //        menu.setMainMenu(Color.parseColor("#CDCDCD"), R.drawable.add, R.drawable.cancel)
@@ -201,5 +239,29 @@ public class CartProductToStore extends AppCompatActivity {
 
         snackbar.show();
     }
+    private boolean check = false;
+//    public boolean addProduct(String jsonString,int storeId){
+//
+//        apiService.insertProduct(jsonString,storeId).enqueue(new Callback<Boolean>(){
+//
+//            @Override
+//            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+//
+//                if(response.isSuccessful()){
+//                    Toast.makeText(CartProductToStore.this, "Pro Vl", Toast.LENGTH_SHORT).show();
+//                    check = true;
+//                }else{
+//                    Toast.makeText(CartProductToStore.this, "Server Error", Toast.LENGTH_SHORT).show();
+//                }
+//
+//            }
+//
+//            @Override
+//            public void onFailure(Call<Boolean> call, Throwable t) {
+//                Log.d("MainActivity", "error loading from API");
+//            }
+//        });
+//        return check;
+//    }
 
 }

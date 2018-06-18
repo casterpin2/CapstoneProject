@@ -13,28 +13,34 @@ import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import project.retrofit.APIService;
+import project.retrofit.ApiUtils;
 import project.view.Category.Category;
 import project.view.Category.CategoryCustomCardviewAdapter;
 import project.view.Category.CategoryDisplayPage;
 import project.view.R;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class BrandDisplayPage extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private BrandCustomCardviewAdapter adapter;
     private List<Brand> brandList;
-
+    private APIService apiService;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_brand_display_page);
-
+        apiService = ApiUtils.getAPIService();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         setSupportActionBar(toolbar);
@@ -46,6 +52,7 @@ public class BrandDisplayPage extends AppCompatActivity {
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
         brandList = new ArrayList<>();
+        prepareAlbums();
         adapter = new BrandCustomCardviewAdapter(this, brandList);
 
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 2);
@@ -54,7 +61,7 @@ public class BrandDisplayPage extends AppCompatActivity {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
 
-        prepareAlbums();
+
 
         try {
             Glide.with(this).load(R.drawable.cover).into((ImageView) findViewById(R.id.backdrop));
@@ -95,23 +102,24 @@ public class BrandDisplayPage extends AppCompatActivity {
      * Adding few albums for testing
      */
     private void prepareAlbums() {
-        Brand a = new Brand(1,"Lavie", "đáhsad", 100);
-        brandList.add(a);
+       apiService.getBrands().enqueue(new Callback<List<Brand>>() {
+           @Override
+           public void onResponse(Call<List<Brand>> call, Response<List<Brand>> response) {
+               for(int i =0;i<response.body().size();i++){
 
-        a = new Brand(1,"Lavie", "đáhsad", 100);
-        brandList.add(a);
-        a = new Brand(1,"Lavie", "đáhsad", 100);
-        brandList.add(a);
-        a = new Brand(1,"Lavie", "đáhsad", 100);
-        brandList.add(a);
-        a = new Brand(1,"Lavie", "đáhsad", 100);
-        brandList.add(a);
-        a = new Brand(1,"Lavie", "đáhsad", 100);
-        brandList.add(a);
-        a = new Brand(1,"Lavie", "đáhsad", 100);
-        brandList.add(a);
-        a = new Brand(1,"Lavie", "đáhsad", 100);
-        brandList.add(a);
+                       brandList.add(response.body().get(i));
+
+               }
+               if(brandList.isEmpty()){
+                   Toast.makeText(BrandDisplayPage.this, "SomeThing Wrong", Toast.LENGTH_LONG).show();
+               }
+           }
+
+           @Override
+           public void onFailure(Call<List<Brand>> call, Throwable t) {
+
+           }
+       });
 
 
     }

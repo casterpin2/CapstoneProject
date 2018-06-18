@@ -1,11 +1,23 @@
 package project.view.ProductBrandDisplay;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class ProductBrand {
+public class ProductBrand implements Serializable{
+    @SerializedName("product_id")
+    @Expose
     private int productID;
+    @SerializedName("product_name")
+    @Expose
     private String productName;
+    @SerializedName("description")
+    @Expose
     private String productDesc;
+    @SerializedName("image_path")
+    @Expose
     private String productImageLink;
 
     public ProductBrand() {}
@@ -49,20 +61,5 @@ public class ProductBrand {
         this.productImageLink = productImageLink;
     }
 
-    public static ArrayList<ProductBrand> getTestingList() {
-        ArrayList<ProductBrand> products = new ArrayList<>();
-        products.add(new ProductBrand(1,"Bánh Custard","Hello bánh custard","đâsdsadas"));
-        products.add(new ProductBrand(1,"Bánh Custard","Hello bánh custard","đâsdsadas"));
-        products.add(new ProductBrand(1,"Bánh Custard","Hello bánh custard","đâsdsadas"));
-        products.add(new ProductBrand(1,"Bánh Custard","Hello bánh custard","đâsdsadas"));
-        products.add(new ProductBrand(1,"Bánh Custard","Hello bánh custard","đâsdsadas"));
-        products.add(new ProductBrand(1,"Bánh Custard","Hello bánh custard","đâsdsadas"));
-        products.add(new ProductBrand(1,"Bánh Custard","Hello bánh custard","đâsdsadas"));
 
-
-
-
-        return products;
-
-    }
 }

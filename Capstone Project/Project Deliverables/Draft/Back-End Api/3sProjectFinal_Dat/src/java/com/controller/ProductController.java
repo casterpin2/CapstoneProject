@@ -36,9 +36,9 @@ public class ProductController {
     }
     
     @RequestMapping(value = "/posts", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
-    public boolean getData(@RequestParam("jsonString") String jsonString, @RequestParam("storeId") int storeId) throws SQLException, ClassNotFoundException, IOException {
-        System.out.println(jsonString + " " + storeId);
-        List<ProductAddEntites> list = JsonUtil.converJsonToJava(jsonString, ProductAddEntites.class);
+    public boolean getData(@RequestParam("jsonString") StringBuilder jsonString, @RequestParam("storeId") int storeId) throws SQLException, ClassNotFoundException, IOException {
+        
+        List<ProductAddEntites> list = JsonUtil.converJsonToJava(jsonString.toString(), ProductAddEntites.class);
         
         return product.insertProdcut(list, storeId);
     }

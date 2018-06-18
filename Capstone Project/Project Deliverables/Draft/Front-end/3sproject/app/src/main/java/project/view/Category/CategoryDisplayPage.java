@@ -20,19 +20,25 @@ import com.bumptech.glide.Glide;
 import java.util.ArrayList;
 import java.util.List;
 
+import project.retrofit.APIService;
+import project.retrofit.ApiUtils;
 import project.view.R;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class CategoryDisplayPage extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private CategoryCustomCardviewAdapter adapter;
     private List<Category> categoryList;
+    private APIService apiService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_category_display_page);
-
+        apiService = ApiUtils.getAPIService();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         setSupportActionBar(toolbar);
@@ -44,6 +50,8 @@ public class CategoryDisplayPage extends AppCompatActivity {
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
         categoryList = new ArrayList<>();
+        prepareAlbums();
+        Toast.makeText(this, categoryList.size()+ " ", Toast.LENGTH_SHORT).show();
         adapter = new CategoryCustomCardviewAdapter(this, categoryList);
 
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 2);
@@ -52,7 +60,6 @@ public class CategoryDisplayPage extends AppCompatActivity {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
 
-        prepareAlbums();
 
         try {
             Glide.with(this).load(R.drawable.cover).into((ImageView) findViewById(R.id.backdrop));
@@ -92,22 +99,24 @@ public class CategoryDisplayPage extends AppCompatActivity {
     /**
      * Adding few albums for testing
      */
-    private void prepareAlbums() {
-        Category a = new Category(1,"Đồ ăn", "đáhsad", 100);
-        categoryList.add(a);
+    public void prepareAlbums() {
 
-        a = new Category(1,"Đồ ăn", "đáhsad", 100);
-        categoryList.add(a);
-        a = new Category(1,"Đồ ăn", "đáhsad", 100);
-        categoryList.add(a);
-        a = new Category(1,"Đồ ăn", "đáhsad", 100);
-        categoryList.add(a);
-        a = new Category(1,"Đồ ăn", "đáhsad", 100);
-        categoryList.add(a);a = new Category(1,"Đồ ăn", "đáhsad", 100);
-        categoryList.add(a);
-        a = new Category(1,"Đồ ăn", "đáhsad", 100);
-        categoryList.add(a);
+        apiService.getCategory().enqueue(new Callback<List<Category>>() {
+            @Override
+            public void onResponse(Call<List<Category>> call, Response<List<Category>> response) {
+                for (int i = 0; i < response.body().size(); i++) {
+                    categoryList.add(response.body().get(i));
+                }
+                if (categoryList.isEmpty()) {
+                    Toast.makeText(CategoryDisplayPage.this, "SomeThing Wrong", Toast.LENGTH_LONG).show();
+                }
+            }
 
+            @Override
+            public void onFailure(Call<List<Category>> call, Throwable t) {
+
+            }
+        });
 
     }
 

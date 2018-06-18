@@ -1,9 +1,22 @@
 package project.view.Brand;
 
-public class Brand {
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
+import java.io.Serializable;
+
+public class Brand implements Serializable{
+    @SerializedName("brandId")
+    @Expose
     private int brandID;
+    @SerializedName("brandName")
+    @Expose
     private String brandName;
+    @SerializedName("brandImg")
+    @Expose
     private String brandImageLink;
+    @SerializedName("numberProduct")
+    @Expose
     private int numberOfRecord;
 
     public Brand() {}

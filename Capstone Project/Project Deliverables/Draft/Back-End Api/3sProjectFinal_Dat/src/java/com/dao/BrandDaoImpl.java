@@ -22,9 +22,9 @@ import org.springframework.stereotype.Repository;
 @Repository("brandDao")
 public class BrandDaoImpl extends BaseDao implements BrandDao {
 
-    private final static String SQL = "select b.id,b.name,i.path,p.name,count(p.id) as countProduct from Brand b left join (Image_Brand ib left join Image i on ib.image_id = i.id) on b.id = ib.brand_id \n"
-            + "left join (Type_Brand tb left join Product p on tb.id = p.id) on b.id = tb.brand_id \n"
-            + "group by b.id,b.name,i.path,p.name";
+    private final static String SQL = " select b.id,b.name,i.path,count(p.id) as countProduct from Brand b  join (Image_Brand ib  join Image i on ib.image_id = i.id) on b.id = ib.brand_id \n"
+            + "            join (Type_Brand tb  join Product p on tb.id = p.type_brand_id) on b.id = tb.brand_id \n"
+            + "            group by b.id,b.name,i.path";
 
     @Override
     public List<BrandEntities> listBrand() throws SQLException {
@@ -87,8 +87,8 @@ public class BrandDaoImpl extends BaseDao implements BrandDao {
         try {
             list = new ArrayList<>();
             conn = getConnection();
-            String sql = "select p.id,p.name,i.path,p.description from Product p left join (Type_Brand tb left join Brand b on tb.brand_id = b.id) on p.id = tb.id \n"
-                    + "left join (Image_Product ip left join Image i on ip.image_id = i.id) on p.id = ip.product_id where p.type_brand_id = ?";
+            String sql = "select p.id,p.name,p.description,i.path from Product p   join (Type_Brand tb   join Brand b on tb.brand_id = b.id) on p.type_brand_id = tb.id \n"
+                    + "                     join (Image_Product ip   join Image i on ip.image_id = i.id) on p.id = ip.product_id where b.id = ?";
             pre = conn.prepareStatement(sql);
             pre.setInt(1, brandId);
             rs = pre.executeQuery();

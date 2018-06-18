@@ -1,9 +1,22 @@
 package project.view.Category;
 
-public class Category {
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
+import java.io.Serializable;
+
+public class Category implements Serializable{
+    @SerializedName("categoryId")
+    @Expose
     private int categoryID;
+    @SerializedName("categoryName")
+    @Expose
     private String categoryName;
+    @SerializedName("categoryPath")
+    @Expose
     private String categoryImageLink;
+    @SerializedName("count")
+    @Expose
     private int numberOfRecord;
 
     public Category() {}
