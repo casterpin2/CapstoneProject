@@ -21,6 +21,7 @@ public class ProductAddEntites implements Serializable{
     private String image_path;
     private Double price;
     private Double promotion;
+    private String storeName;
     public Double getPrice() {
         return price;
     }
@@ -115,6 +116,14 @@ public class ProductAddEntites implements Serializable{
 
     public void setPromotion(Double promotion) {
         this.promotion = promotion;
+    }
+
+    public String getStoreName() {
+        return storeName;
+    }
+
+    public void setStoreName(String storeName) {
+        this.storeName = storeName;
     }
     
     

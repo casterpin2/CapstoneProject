@@ -19,12 +19,14 @@ import org.springframework.stereotype.Repository;
  *
  * @author AHBP
  */
-@Repository ("productDao")
-public class ProductDaoImpl extends BaseDao implements ProductDao{
-    private final String PRODUCT_QUERY = "SELECT c.product_id,product_name,brand_name,description,category_name,type_name,image_path FROM\n" +
-"(SELECT b.id as product_id,product_name,brand_name,description,category_name,type_name,path as image_path FROM Image i,\n" +
-"(SELECT image_id,id,product_name,brand_name,description,category_name,type_name FROM Image_Product, \n" +
-"(SELECT e.id,e.product_name,e.brand_name,e.description,d.name as category_name , e.type_name FROM Category d , (SELECT c.name as type_name,c.category_id,b.id,b.brand_name,b.name as product_name,description FROM Type c, (SELECT b.name as brand_name , a.id , a.name , a.type_id, description FROM Brand b,(SELECT p.id,name,description,type_brand_id,type_id,brand_id FROM Product p,Type_Brand t WHERE name LIKE ? AND p.type_brand_id = t.id) a WHERE b.id = a.brand_id) b WHERE c.id = b.type_id) e WHERE d.id = e.category_id) a WHERE a.id = product_id) b WHERE  i.id = image_id) c WHERE c.product_id not in (SELECT product_id FROM Product_Store where Store_id = 1) Order BY c.product_id asc";
+@Repository("productDao")
+public class ProductDaoImpl extends BaseDao implements ProductDao {
+
+    private final String PRODUCT_QUERY = "SELECT c.product_id,product_name,brand_name,description,category_name,type_name,image_path FROM\n"
+            + "(SELECT b.id as product_id,product_name,brand_name,description,category_name,type_name,path as image_path FROM Image i,\n"
+            + "(SELECT image_id,id,product_name,brand_name,description,category_name,type_name FROM Image_Product, \n"
+            + "(SELECT e.id,e.product_name,e.brand_name,e.description,d.name as category_name , e.type_name FROM Category d , (SELECT c.name as type_name,c.category_id,b.id,b.brand_name,b.name as product_name,description FROM Type c, (SELECT b.name as brand_name , a.id , a.name , a.type_id, description FROM Brand b,(SELECT p.id,name,description,type_brand_id,type_id,brand_id FROM Product p,Type_Brand t WHERE name LIKE ? AND p.type_brand_id = t.id) a WHERE b.id = a.brand_id) b WHERE c.id = b.type_id) e WHERE d.id = e.category_id) a WHERE a.id = product_id) b WHERE  i.id = image_id) c WHERE c.product_id not in (SELECT product_id FROM Product_Store where Store_id = 1) Order BY c.product_id asc";
+
     @Override
     public List<ProductAddEntites> getProductForAdd(String query) throws SQLException {
         List<ProductAddEntites> listData = null;
@@ -78,16 +80,77 @@ public class ProductDaoImpl extends BaseDao implements ProductDao{
             int temp[] = pre.executeBatch();
             if (temp.length == count) {
                 conn.commit();
-                check =true;
+                check = true;
             } else {
                 conn.rollback();
                 conn.setAutoCommit(true);
-               
+
             }
         } finally {
             closeConnect(conn, pre, null);
         }
         return check;
+    }
+    private final static String SQL = "select p.id,p.name,i.path,s.name as storeName,ps.price,ps.promotion from Product p \n"
+            + "                  join (Product_Store ps  join Store s on ps.store_id = s.id) on p.id = ps.product_id\n"
+            + "                  join (Image_Product ip  join Image i on ip.image_id = i.id) on p.id = ip.product_id where promotion > ? ";
+
+    @Override
+    public List<ProductAddEntites> getProductSaleList(int number) throws SQLException {
+        Connection conn = null;
+        PreparedStatement pre = null;
+        ResultSet rs = null;
+        List<ProductAddEntites> list = null;
+        try {
+            list = new ArrayList<>();
+            conn = getConnection();
+            
+            pre = conn.prepareStatement(SQL);
+            pre.setInt(1, number);
+            rs = pre.executeQuery();
+            while (rs.next()) {
+                ProductAddEntites product = new ProductAddEntites();
+                product.setProduct_id(rs.getInt("id"));
+                product.setProduct_name(rs.getNString("name"));
+                product.setImage_path(rs.getNString("path"));
+                product.setStoreName(rs.getNString("storeName"));
+                product.setPrice(rs.getDouble("price"));
+                product.setPromotion(rs.getDouble("promotion"));
+                list.add(product);
+            }
+        } finally {
+            closeConnect(conn, pre, rs);
+        }
+        return list;
+    }
+
+    @Override
+    public List<ProductAddEntites> getProductSaleListTop20(int number) throws SQLException {
+        Connection conn = null;
+        PreparedStatement pre = null;
+        ResultSet rs = null;
+        List<ProductAddEntites> list = null;
+        try {
+            list = new ArrayList<>();
+            conn = getConnection();
+            
+            pre = conn.prepareStatement(SQL+ "limit 20");
+            pre.setInt(1, number);
+            rs = pre.executeQuery();
+            while (rs.next()) {
+                ProductAddEntites product = new ProductAddEntites();
+                product.setProduct_id(rs.getInt("id"));
+                product.setProduct_name(rs.getNString("name"));
+                product.setImage_path(rs.getNString("path"));
+                product.setStoreName(rs.getNString("storeName"));
+                product.setPrice(rs.getDouble("price"));
+                product.setPromotion(rs.getDouble("promotion"));
+                list.add(product);
+            }
+        } finally {
+            closeConnect(conn, pre, rs);
+        }
+        return list;
     }
 
 }

@@ -26,19 +26,29 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @RequestMapping(value = "/api")
 @EnableWebMvc
 public class ProductController {
-     @Autowired
-    ProductService product;
 
+    @Autowired
+    ProductService product;
+    
     @RequestMapping(value = "/getProductForAdd", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
-    public List<ProductAddEntites> getProductForAdd(@RequestParam("query") String query) throws SQLException{
+    public List<ProductAddEntites> getProductForAdd(@RequestParam("query") String query) throws SQLException {
         return product.getProductForAdd(query);
     }
     
-    @RequestMapping(value = "/posts",method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
-    public boolean getData(@RequestParam("jsonString") String jsonString,@RequestParam("storeId") int storeId) throws SQLException, ClassNotFoundException, IOException{
-        System.out.println(jsonString+" "+ storeId);
+    @RequestMapping(value = "/posts", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    public boolean getData(@RequestParam("jsonString") String jsonString, @RequestParam("storeId") int storeId) throws SQLException, ClassNotFoundException, IOException {
+        System.out.println(jsonString + " " + storeId);
         List<ProductAddEntites> list = JsonUtil.converJsonToJava(jsonString, ProductAddEntites.class);
         
         return product.insertProdcut(list, storeId);
-}
+    }
+
+    @RequestMapping(value = "/productSales", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
+    public List<ProductAddEntites> getSaleList() throws SQLException {
+        return product.getProductSaleList(0);
+    }
+    @RequestMapping(value = "/productSales/top20", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
+    public List<ProductAddEntites> getSaleListTop20() throws SQLException {
+        return product.getProductSaleListTop20(0);
+    }
 }
