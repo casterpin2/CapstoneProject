@@ -25,12 +25,16 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
+import com.google.firebase.storage.StorageReference;
 import com.mancj.materialsearchbar.MaterialSearchBar;
 import com.ramotion.circlemenu.CircleMenuView;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import project.firebase.Firebase;
 import project.retrofit.APIService;
 import project.retrofit.ApiUtils;
 import project.view.Cart.CartProductToStore;
@@ -46,7 +50,7 @@ public class SearchProductAddToStore extends AppCompatActivity {
 
     private MaterialSearchBar searchBar;
     private APIService mAPI;
-    public List<Item> searchedProductList;
+    public static List<Item> searchedProductList;
     // get list to display to list view;
 
     // get button add
@@ -67,6 +71,7 @@ public class SearchProductAddToStore extends AppCompatActivity {
         setContentView(R.layout.activity_search_product_add_to_store);
         mAPI = ApiUtils.getAPIService();
         // create custom adapter that holds elements and their state (we need hold a id's of unfolded elements for reusable elements)
+        if (SearchProductAddToStore.searchedProductList == null)
         searchedProductList = Item.getTestingList();
         adapter = new SearchProductPageListViewAdapter(this,R.layout.search_product_page_custom_list_view,searchedProductList);
         // get our list view
@@ -117,14 +122,17 @@ public class SearchProductAddToStore extends AppCompatActivity {
             @Override
             public void onSearchConfirmed(CharSequence text) {
 
-                Toast.makeText(getApplicationContext(), searchBar.getText().toString(), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplicationContext(), searchBar.getText().toString(), Toast.LENGTH_SHORT).show();
                 if(!searchBar.getText().toString().trim().isEmpty()) {
+                    //Call API
                     mAPI.getProducts(ApiUtils.removeAccent(searchBar.getText().toString().trim())).enqueue(new Callback<List<Item>>() {
                         @Override
                         public void onResponse(Call<List<Item>> call, Response<List<Item>> response) {
                             searchedProductList.clear();
                             for (int i = 0; i < response.body().size(); i++) {
-                                searchedProductList.add(response.body().get(i));
+                                Item item = response.body().get(i);
+                                if (checkID(item.getProduct_id()))
+                                searchedProductList.add(item);
                             }
                             //searchedProductList = response.body();
                             adapter.notifyDataSetChanged();
@@ -175,7 +183,8 @@ public class SearchProductAddToStore extends AppCompatActivity {
         theListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getApplicationContext(), searchedProductList.get(position).getProduct_name(), Toast.LENGTH_SHORT).show();
+                //
+                // Toast.makeText(getApplicationContext(), searchedProductList.get(position).getProduct_name(), Toast.LENGTH_SHORT).show();
                 showInfoDialog(searchedProductList, position);
             }
         });
@@ -185,7 +194,7 @@ public class SearchProductAddToStore extends AppCompatActivity {
 
 
 
-
+        StorageReference storageReference = Firebase.getFirebase();
         dialog = new Dialog(SearchProductAddToStore.this);
         dialog.setContentView(R.layout.search_product_page_product_information_dialog_custom);
         final TextView productName_infoDialog = (TextView) dialog.findViewById(R.id.productName_infoDialog);
@@ -202,9 +211,13 @@ public class SearchProductAddToStore extends AppCompatActivity {
         productCategory_infoDialog.setText(productList.get(position).getCategory_name());
         productBrand_infoDialog.setText(productList.get(position).getBrand_name());
         productDesc_infoDialog.setText(productList.get(position).getDescription());
-        productTypeText_infoDialog.setText("Loại "+productList.get(position).getBrand_name().toLowerCase());
+        productTypeText_infoDialog.setText("Loại "+productList.get(position).getCategory_name().toLowerCase());
         productType_infoDialog.setText(productList.get(position).getType_name());
-        productImage.setBackgroundColor(R.drawable.background);
+        //productImage.setBackgroundColor(R.drawable.background);
+        Glide.with(this /* context */)
+                .using(new FirebaseImageLoader())
+                .load(storageReference.child(productList.get(position).getImage_path()))
+                .into(productImage);
         addBtn_infoDialog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -249,10 +262,14 @@ public class SearchProductAddToStore extends AppCompatActivity {
     public void intentToCartPageFromListView(View view){
 //        Toast.makeText(getApplicationContext(), "hahah", Toast.LENGTH_SHORT).show();
         //Intent accessToCartPage = new Intent()
-        Toast.makeText(getApplicationContext(), "Đã add được sản phẩm bằng listview", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getApplicationContext(), "Đã add được sản phẩm bằng listview", Toast.LENGTH_SHORT).show();
         TextView textviewValue = (TextView) view;
         int position = (Integer) textviewValue.getTag();
         addedProductList.add(searchedProductList.get(position));
+        //Dat Fix
+        searchedProductList.remove(position);
+        adapter.notifyDataSetChanged();
+        //
         String message = "Đã thêm sản phẩm thành công";
         int duration = Snackbar.LENGTH_LONG;
 
@@ -321,5 +338,10 @@ public class SearchProductAddToStore extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
-
+    private boolean checkID(int productID){
+        for (Item item:SearchProductAddToStore.addedProductList) {
+            if (item.getProduct_id() == productID) return false;
+        }
+        return true;
+    }
 }

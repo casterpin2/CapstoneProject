@@ -66,6 +66,7 @@ public class CartProductToStore extends AppCompatActivity {
             nullMessage.setVisibility(View.VISIBLE);
             nullMessage.setText("Không có sản phẩm nào");
         }
+        //Chuyển List product thành JSON
         gson = new Gson();
         jsonString = gson.toJson(productList);
 
@@ -76,7 +77,7 @@ public class CartProductToStore extends AppCompatActivity {
         delete = (FloatingActionButton) findViewById(R.id.fab_delete);
         back = (FloatingActionButton) findViewById(R.id.fab_back);
         success = (FloatingActionButton) findViewById(R.id.fab_success);
-        Toast.makeText(this, ""+ jsonString, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, ""+ jsonString, Toast.LENGTH_LONG).show();
         delete.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 //TODO something when floating action menu first item clicked
@@ -100,7 +101,7 @@ public class CartProductToStore extends AppCompatActivity {
                 //TODO something when floating action menu second item clicked
                 Intent accessToSearchProductToStorePage = new Intent(CartProductToStore.this, SearchProductAddToStore.class);
                 startActivity(accessToSearchProductToStorePage);
-                Toast.makeText(getApplicationContext(), "Đây là nút quay về", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplicationContext(), "Đây là nút quay về", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -109,13 +110,14 @@ public class CartProductToStore extends AppCompatActivity {
                 //TODO something when floating action menu third item clicked
                 StringBuilder str = new StringBuilder();
                 str.append(jsonString);
+                //Call API
                 apiService.insertProduct(str,storeId).enqueue(new Callback<Boolean>(){
 
                     @Override
                     public void onResponse(Call<Boolean> call, Response<Boolean> response) {
 
                         if(response.isSuccessful()){
-                            Toast.makeText(CartProductToStore.this, "Pro Vl", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(CartProductToStore.this, "Thêm sản phẩm thành công", Toast.LENGTH_SHORT).show();
 
                         }else{
                             Toast.makeText(CartProductToStore.this, "Server Error", Toast.LENGTH_SHORT).show();

@@ -11,7 +11,13 @@
         android:theme="@style/AppTheme">
         <activity android:name=".MainActivity" />
         <activity android:name=".LoginPage"></activity>
-        <activity android:name=".AddProductToStore.SearchProductAddToStore"></activity>
+        <activity android:name=".AddProductToStore.SearchProductAddToStore">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity android:name=".Cart.CartProductToStore"></activity>
         <activity android:name=".Register.RegisterPage"></activity>
         <activity
@@ -19,17 +25,15 @@
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".Category.CategoryDisplayPage"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar">
+
+        </activity>
         <activity android:name=".ProductBrandDisplay.ProductBrandDisplay">
 
         </activity>
         <activity android:name=".Brand.BrandDisplayPage"
                   android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
     </application>
 

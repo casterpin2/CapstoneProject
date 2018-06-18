@@ -12,8 +12,13 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
+import com.google.firebase.storage.StorageReference;
+
 import java.util.List;
 
+import project.firebase.Firebase;
 import project.view.AddProductToStore.Item;
 import project.view.AddProductToStore.Product;
 import project.view.R;
@@ -21,6 +26,7 @@ import project.view.R;
 public class CartProductToStorePageListViewAdapter extends ArrayAdapter<Item> {
     private Context context;
     private List<Item> productList;
+    private StorageReference storageReference = Firebase.getFirebase();
 
     public CartProductToStorePageListViewAdapter(@NonNull Context context, int resource, @NonNull List<Item> productList) {
         super(context, resource, productList);
@@ -45,6 +51,10 @@ public class CartProductToStorePageListViewAdapter extends ArrayAdapter<Item> {
         viewHolder.productCategory.setText(productList.get(position).getCategory_name());
         viewHolder.productBrand.setText(productList.get(position).getBrand_name());
 
+        Glide.with(context /* context */)
+                .using(new FirebaseImageLoader())
+                .load(storageReference.child(productList.get(position).getImage_path()))
+                .into(viewHolder.productImage);
 
 //        viewHolder.icon.setImageResource(products.get(position).getImage());
         return convertView;

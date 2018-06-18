@@ -102,6 +102,7 @@ public class BrandDisplayPage extends AppCompatActivity {
      * Adding few albums for testing
      */
     private void prepareAlbums() {
+        //Call API
        apiService.getBrands().enqueue(new Callback<List<Brand>>() {
            @Override
            public void onResponse(Call<List<Brand>> call, Response<List<Brand>> response) {

@@ -9,8 +9,13 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
+import com.google.firebase.storage.StorageReference;
+
 import java.util.List;
 
+import project.firebase.Firebase;
 import project.view.R;
 
 public class ProductBrandDisplayListViewAdapter extends BaseAdapter {
@@ -18,6 +23,7 @@ public class ProductBrandDisplayListViewAdapter extends BaseAdapter {
     private Context context;
     private List<ProductBrand> productList;
     private int layout;
+    private StorageReference storageReference = Firebase.getFirebase();
 
     @Override
     public int getCount() {
@@ -63,7 +69,6 @@ public class ProductBrandDisplayListViewAdapter extends BaseAdapter {
         if(product != null) {
             holder.productName.setText(product.getProductName());
             holder.productDesc.setText(product.getProductDesc());
-
         }
 
         return view;

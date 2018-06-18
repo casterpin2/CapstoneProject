@@ -51,7 +51,7 @@ public class CategoryDisplayPage extends AppCompatActivity {
 
         categoryList = new ArrayList<>();
         prepareAlbums();
-        Toast.makeText(this, categoryList.size()+ " ", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, categoryList.size()+ " ", Toast.LENGTH_SHORT).show();
         adapter = new CategoryCustomCardviewAdapter(this, categoryList);
 
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 2);

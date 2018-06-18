@@ -23,7 +23,6 @@ public interface APIService {
     Call<List<Item>> getProducts(@Query("query") String query);
 
     @POST("posts")
-
     Call<Boolean> insertProduct(@Query("jsonString") StringBuilder stringJson,
                            @Query("storeId") int storeId);
 

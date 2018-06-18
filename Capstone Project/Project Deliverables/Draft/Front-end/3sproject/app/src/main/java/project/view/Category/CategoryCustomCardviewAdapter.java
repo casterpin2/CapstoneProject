@@ -11,14 +11,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.List;
 
+import project.firebase.Firebase;
 import project.view.R;
 
 public class CategoryCustomCardviewAdapter extends RecyclerView.Adapter<CategoryCustomCardviewAdapter.MyViewHolder> {
     private Context mContext;
     private List<Category> categoryList;
+    private StorageReference storageReference = Firebase.getFirebase();
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView categoryName, numberOfRecord, categoryID;
@@ -51,7 +55,10 @@ public class CategoryCustomCardviewAdapter extends RecyclerView.Adapter<Category
         Category category = categoryList.get(position);
         holder.categoryName.setText(category.getCategoryName());
         holder.numberOfRecord.setText(String.valueOf(category.getNumberOfRecord())+" sản phẩm");
-
+        Glide.with(mContext /* context */)
+                .using(new FirebaseImageLoader())
+                .load(storageReference.child(categoryList.get(position).getCategoryImageLink()))
+                .into(holder.categoryImage);
 
 
 
