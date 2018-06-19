@@ -119,6 +119,22 @@ public class Item implements Serializable{
         this.image_path = image_path;
     }
 
+    public Double getPrice() {
+        return price;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
+    }
+
+    public Double getPromotion() {
+        return promotion;
+    }
+
+    public void setPromotion(Double promotion) {
+        this.promotion = promotion;
+    }
+
     /**
      * @return List of elements prepared for tests
      */

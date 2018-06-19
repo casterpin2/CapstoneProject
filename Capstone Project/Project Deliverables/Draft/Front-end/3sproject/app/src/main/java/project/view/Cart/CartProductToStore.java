@@ -66,6 +66,10 @@ public class CartProductToStore extends AppCompatActivity {
             nullMessage.setVisibility(View.VISIBLE);
             nullMessage.setText("Không có sản phẩm nào");
         }
+        for(Item p : productList){
+            p.setPrice(20000.0);
+            p.setPromotion(0.2);
+        }
         //Chuyển List product thành JSON
         gson = new Gson();
         jsonString = gson.toJson(productList);
@@ -77,7 +81,7 @@ public class CartProductToStore extends AppCompatActivity {
         delete = (FloatingActionButton) findViewById(R.id.fab_delete);
         back = (FloatingActionButton) findViewById(R.id.fab_back);
         success = (FloatingActionButton) findViewById(R.id.fab_success);
-        Toast.makeText(this, ""+ jsonString, Toast.LENGTH_LONG).show();
+
         delete.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 //TODO something when floating action menu first item clicked
