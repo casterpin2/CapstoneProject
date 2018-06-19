@@ -1,6 +1,7 @@
 package project.view.Brand;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,11 +12,16 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import project.view.ProductBrandDisplay.ProductBrandDisplay;
 import project.view.R;
 
 public class BrandCustomCardviewAdapter extends RecyclerView.Adapter<BrandCustomCardviewAdapter.MyViewHolder> {
     private Context mContext;
     private List<Brand> brandList;
+
+    public Context getmContext() {
+        return mContext;
+    }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView brandName, numberOfRecord;
@@ -47,9 +53,18 @@ public class BrandCustomCardviewAdapter extends RecyclerView.Adapter<BrandCustom
 
     @Override
     public void onBindViewHolder(final BrandCustomCardviewAdapter.MyViewHolder holder, int position) {
-        Brand brand = brandList.get(position);
+        final Brand brand = brandList.get(position);
         holder.brandName.setText(brand.getBrandName());
         holder.numberOfRecord.setText(String.valueOf(brand.getNumberOfRecord())+" sản phẩm");
+        holder.brandImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getmContext(), ProductBrandDisplay.class);
+                intent.putExtra("brandID", brand.getBrandID());
+                intent.putExtra("brandName", brand.getBrandName());
+                getmContext().startActivity(intent);
+            }
+        });
 
 
 

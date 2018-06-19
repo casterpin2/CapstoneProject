@@ -1,16 +1,16 @@
-package project.view.ProductDisplay;
+package project.view.ProductBrandDisplay;
 
 import java.util.ArrayList;
 
-public class Product {
+public class ProductBrand {
     private int productID;
     private String productName;
     private String productDesc;
     private String productImageLink;
 
-    public Product() {}
+    public ProductBrand() {}
 
-    public Product(int productID, String productName, String productDesc, String productImageLink) {
+    public ProductBrand(int productID, String productName, String productDesc, String productImageLink) {
         this.productID = productID;
         this.productName = productName;
         this.productDesc = productDesc;
@@ -49,15 +49,15 @@ public class Product {
         this.productImageLink = productImageLink;
     }
 
-    public static ArrayList<Product> getTestingList() {
-        ArrayList<Product> products = new ArrayList<>();
-        products.add(new Product(1,"Bánh Custard","Hello bánh custard","đâsdsadas"));
-        products.add(new Product(1,"Bánh Custard","Hello bánh custard","đâsdsadas"));
-        products.add(new Product(1,"Bánh Custard","Hello bánh custard","đâsdsadas"));
-        products.add(new Product(1,"Bánh Custard","Hello bánh custard","đâsdsadas"));
-        products.add(new Product(1,"Bánh Custard","Hello bánh custard","đâsdsadas"));
-        products.add(new Product(1,"Bánh Custard","Hello bánh custard","đâsdsadas"));
-        products.add(new Product(1,"Bánh Custard","Hello bánh custard","đâsdsadas"));
+    public static ArrayList<ProductBrand> getTestingList() {
+        ArrayList<ProductBrand> products = new ArrayList<>();
+        products.add(new ProductBrand(1,"Bánh Custard","Hello bánh custard","đâsdsadas"));
+        products.add(new ProductBrand(1,"Bánh Custard","Hello bánh custard","đâsdsadas"));
+        products.add(new ProductBrand(1,"Bánh Custard","Hello bánh custard","đâsdsadas"));
+        products.add(new ProductBrand(1,"Bánh Custard","Hello bánh custard","đâsdsadas"));
+        products.add(new ProductBrand(1,"Bánh Custard","Hello bánh custard","đâsdsadas"));
+        products.add(new ProductBrand(1,"Bánh Custard","Hello bánh custard","đâsdsadas"));
+        products.add(new ProductBrand(1,"Bánh Custard","Hello bánh custard","đâsdsadas"));
 
 
 

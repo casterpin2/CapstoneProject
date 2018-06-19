@@ -20,7 +20,7 @@
         <activity
             android:name=".Category.CategoryDisplayPage"
             android:theme="@style/AppTheme.NoActionBar"></activity>
-        <activity android:name=".ProductDisplay.ProductDisplay">
+        <activity android:name=".ProductBrandDisplay.ProductBrandDisplay">
 
         </activity>
         <activity android:name=".Brand.BrandDisplayPage"

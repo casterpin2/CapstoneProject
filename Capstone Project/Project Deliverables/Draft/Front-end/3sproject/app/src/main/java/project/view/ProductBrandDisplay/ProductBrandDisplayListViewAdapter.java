@@ -1,4 +1,4 @@
-package project.view.ProductDisplay;
+package project.view.ProductBrandDisplay;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -11,14 +11,12 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import project.view.AddProductToStore.Item;
-import project.view.AddProductToStore.SearchProductPageListViewAdapter;
 import project.view.R;
 
-public class ProductDisplayListViewAdapter extends BaseAdapter {
+public class ProductBrandDisplayListViewAdapter extends BaseAdapter {
 
     private Context context;
-    private List<Product> productList;
+    private List<ProductBrand> productList;
     private int layout;
 
     @Override
@@ -36,7 +34,7 @@ public class ProductDisplayListViewAdapter extends BaseAdapter {
         return 0;
     }
 
-    public ProductDisplayListViewAdapter(Context context, int layout, List<Product> productList) {
+    public ProductBrandDisplayListViewAdapter(Context context, int layout, List<ProductBrand> productList) {
         this.context = context;
         this.layout = layout;
         this.productList = productList;
@@ -46,21 +44,21 @@ public class ProductDisplayListViewAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View view = convertView;
-        ProductDisplayListViewAdapter.ViewHolder holder;
+        ProductBrandDisplayListViewAdapter.ViewHolder holder;
         if (view  == null){
             LayoutInflater li;
             li = LayoutInflater.from(getContext());
-            view = li.inflate(R.layout.product_display_custom_listview, null);
-            holder = new ProductDisplayListViewAdapter.ViewHolder();
+            view = li.inflate(R.layout.product_brand_display_custom_listview, null);
+            holder = new ProductBrandDisplayListViewAdapter.ViewHolder();
             holder.productImage = (ImageView) view.findViewById(R.id.productImage);
             holder.productName = (TextView) view.findViewById(R.id.productName);
             holder.productDesc =(TextView) view.findViewById(R.id.productDesc);
 
             view.setTag(holder);
         }else{
-            holder = (ProductDisplayListViewAdapter.ViewHolder) view.getTag();
+            holder = (ProductBrandDisplayListViewAdapter.ViewHolder) view.getTag();
         }
-        Product product = productList.get(position);
+        ProductBrand product = productList.get(position);
 
         if(product != null) {
             holder.productName.setText(product.getProductName());
