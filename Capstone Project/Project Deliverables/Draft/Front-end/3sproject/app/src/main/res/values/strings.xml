@@ -1,0 +1,46 @@
+<resources>
+    <string name="app_name">3sproject</string>
+
+    <!-- TODO: placeholder text in register and login page -->
+    <string name="login_page_username_placeholder">Tên đăng nhập</string>
+    <string name="login_page_password_placeholder">Mật khẩu</string>
+    <string name="login_page_login3SBtn">Đăng nhập</string>
+    <string name="login_page_loginFBBtn">Đăng nhập với tài khoản Facebook</string>
+    <string name="login_page_loginGGBtn">Đăng nhập với tài khoản Google +</string>
+
+
+    <!-- TODO: placeholder text in search product to add to store -->
+    <string name="search_product_page_title">Danh sách sản phẩm</string>
+    <string name="search_product_searchbar_hint">Nhập sản phẩm bạn muốn tìm...</string>
+    <string name="search_product_cell_content_title">Thông tin sản phẩm</string>
+    <string name="search_product_cell_content_brand">Nhãn hiệu</string>
+    <string name="search_product_cell_content_category">Danh mục sản phẩm</string>
+    <string name="search_product_cell_content_desc">Mô tả sản phẩm</string>
+    <string name="search_product_cell_content_addBtn">Thêm sản phẩm</string>
+    <string name="title_add_alert_dialog">Thêm sản phẩm</string>
+    <string name="content_add_alert_dialog">Bạn có muốn thêm sản phẩm này vào cửa hàng không?</string>
+    <string name="btn_add">Thêm</string>
+
+    <!-- TODO: placeholder text in cart product to store -->
+    <string name="cart_product_page_title">Sản phẩm được thêm</string>
+    <string name="add_item">Thêm</string>
+    <string name="title_delete">Xóa sản phẩm</string>
+    <string name="confirm_delete">Bạn có muốn xóa sản phẩm này không?</string>
+    <string name="title_delete_all">Xóa tất cả sản phẩm</string>
+    <string name="confirm_delete_all">Bạn có muốn xóa tất cả sản phẩm vừa thêm không?</string>
+    <string name="btn_delete">Xóa</string>
+    <string name="btn_cancel">Hủy</string>
+
+    <!-- TODO: placeholder text in sale product display page -->
+    <string name="action_settings">Settings</string>
+    <string name="action_add_favourite">Add to Favourites</string>
+    <string name="action_search">Search</string>
+    <string name="search_hint">Type name…</string>
+    <string name="backdrop_subtitle">This season top 20 product</string>
+    <string name="sale_product_title">Sản phẩm giảm giá</string>
+    <string name="category_backdrop_title">Danh Mục</string>
+    <string name="category_display_title">Danh mục sản phẩm</string>
+    <string name="brand_display_title">Thương hiệu</string>
+
+
+</resources>
