@@ -8,6 +8,8 @@ import project.view.Brand.Brand;
 import project.view.Category.Category;
 import project.view.ProductBrandDisplay.ProductBrand;
 import retrofit2.Call;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -34,4 +36,9 @@ public interface APIService {
     Call<List<ProductBrand>> getProductBrand(@Query("brandId") int brandId);
     @GET("category")
     Call<List<Category>> getCategory();
+
+    public static final Retrofit retrofit = new Retrofit.Builder()
+            .baseUrl("http://150.95.111.195:8080/3sProjectFinal/api/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build();
 }

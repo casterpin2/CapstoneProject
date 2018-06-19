@@ -3,17 +3,20 @@ package project.view.ProductBrandDisplay;
 import android.app.ActionBar;
 import android.app.ProgressDialog;
 import android.graphics.drawable.ColorDrawable;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import project.retrofit.APIService;
 import project.retrofit.ApiUtils;
+import project.view.Category.Category;
 import project.view.R;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -25,24 +28,27 @@ public class ProductBrandDisplay extends AppCompatActivity {
     private ListView theListView;
     private ProductBrandDisplayListViewAdapter adapter;
     private APIService apiService;
+    private int brandID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_brand_display);
         apiService = ApiUtils.getAPIService();
-        int brandID = getIntent().getIntExtra("brandID", -1);
+        brandID = getIntent().getIntExtra("brandID", -1);
         String brandName = getIntent().getStringExtra("brandName");
-        listProduct(brandID);
-        adapter = new ProductBrandDisplayListViewAdapter(this, R.layout.product_brand_display_custom_listview, productList);
-        // get our list view
-        theListView = (ListView) findViewById(R.id.mainListView);
-
+//        listProduct(brandID);
+//
+//        // get our list view
+//        theListView = (ListView) findViewById(R.id.mainListView);
+        apiService = APIService.retrofit.create(APIService.class);
+        final Call<List<ProductBrand>> call = apiService.getProductBrand(brandID);
+        new NetworkCall().execute(call);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorApplication)));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
-        theListView.setAdapter(adapter);
+
 
 //        int brandID = getIntent().getIntExtra("brandID", -1);
 //        String brandName = getIntent().getStringExtra("brandName");
@@ -78,7 +84,7 @@ public class ProductBrandDisplay extends AppCompatActivity {
                 for (int i = 0; i < response.body().size(); i++) {
                     productList.add(response.body().get(i));
                 }
-                if(productList.size() == response.body().size()){
+                if (productList.size() == response.body().size()) {
                     progressDoalog.dismiss();
                 }
                 if (productList.isEmpty()) {
@@ -93,5 +99,81 @@ public class ProductBrandDisplay extends AppCompatActivity {
             }
         });
         return productList;
+    }
+
+    private class NetworkCall extends AsyncTask<Call, Void, Void> {
+
+//        @Override
+//        protected void onPreExecute() {
+//            super.onPreExecute();
+//        }
+//
+//        @Override
+//        protected void onPostExecute(List<ProductBrand> productBrands) {
+//            super.onPostExecute(productBrands);
+//        }
+//
+//        @Override
+//        protected void onProgressUpdate(List<ProductBrand>... values) {
+//            super.onProgressUpdate(values);
+//
+//            adapter = new ProductBrandDisplayListViewAdapter(ProductBrandDisplay.this, R.layout.product_brand_display_custom_listview, values[0]);
+//            theListView.setAdapter(adapter);
+//        }
+//
+//        @Override
+//        protected List<ProductBrand> doInBackground(Call... calls) {
+//            try {
+//                Call<List<ProductBrand>> call = calls[0];
+//                Response<List<ProductBrand>> response = call.execute();
+//                List<ProductBrand> list = new ArrayList<>();
+//                for (int i = 0; i < response.body().size(); i++) {
+//                    list.add(response.body().get(i));
+//                }
+//                publishProgress(list);
+//                return list;
+//            } catch (IOException e) {
+//            }
+//            return null;
+//        }
+
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            super.onProgressUpdate(values);
+
+        }
+
+        @Override
+        protected Void doInBackground(Call... calls) {
+            try {
+                Call<List<ProductBrand>> call = calls[0];
+                Response<List<ProductBrand>> response = call.execute();
+                 List<ProductBrand> list = new ArrayList<>();
+                for (int i = 0; i < response.body().size(); i++) {
+                    list.add(response.body().get(i));
+                }
+                adapter = new ProductBrandDisplayListViewAdapter(ProductBrandDisplay.this, R.layout.product_brand_display_custom_listview, list);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        theListView = (ListView) findViewById(R.id.mainListView);
+                        theListView.setAdapter(adapter);
+                    }});
+            } catch (IOException e) {
+            }
+            return null;
+        }
     }
 }
