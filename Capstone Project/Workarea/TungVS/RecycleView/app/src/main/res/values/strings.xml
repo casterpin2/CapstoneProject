@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">RecycleView</string>
+    <string name="label_quantity">Số lượng: </string>
+    <string name="tv_more">Xem thêm</string>
+
+    <string name="lb_brands">Thương Hiệu</string>
+    <string name="lb_categories">Danh Mục Sản Phẩm</string>
+    <string name="lb_OnSale">Hàng Giảm Giá</string>
+
+    <string name="tab1">Trang chủ</string>
+    <string name="tab2">Cửa hàng</string>
+    <string name="tab3">Người dùng</string>
+
+</resources>
