@@ -6,9 +6,7 @@
 package com.controller;
 
 import com.entites.JsonUtil;
-import com.entites.ProductList;
 import com.entites.ProductAddEntites;
-import com.entites.ProductEntities;
 import com.service.ProductService;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -31,7 +29,7 @@ public class ProductController {
      @Autowired
     ProductService product;
 
-    @RequestMapping(value = "/getProductForAdd", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    @RequestMapping(value = "/getProductForAdd", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
     public List<ProductAddEntites> getProductForAdd(@RequestParam("query") String query) throws SQLException{
         return product.getProductForAdd(query);
     }
