@@ -134,24 +134,7 @@ public class Item implements Serializable{
     public void setPromotion(Double promotion) {
         this.promotion = promotion;
     }
+    
 
-    /**
-     * @return List of elements prepared for tests
-     */
-    public static ArrayList<Item> getTestingList() {
-        ArrayList<Item> items = new ArrayList<>();
-        items.add(new Item(1,"Bình sứ Lavie","Đồ uống","Pepsi.Cooooodađasadsadbsagdsagdhgsahjdgsahjgddddddddddddddddddddddđâsdsajdksajdklsajkdljaskldjaskldjaklsjdklasjkldjaskldjaskdjaskljdkljdklasjlkdasdddddddddddddddddddddddddaaaaaaaaaaaaaaaaaaosdosadosaodasodoasodasodoasdoasodaosdoasodasodoasodasodoasdoasodoasdoasodasodoasdoasod","ảnh mirinda","Nước lọc đóng chai","Products/Đồ uống/Nước lọc đóng chai/La Vie/Bình sứ Lavie.png"));
-        items.add(new Item(1,"Lavie 350ml","Đồ uống","Pepsi.Co","ảnh mirinda","Nước lọc đóng chai","Products/Đồ uống/Nước lọc đóng chai/La Vie/Lavie 350ml.png"));
-        items.add(new Item(1,"Lavie 500ml","Đồ uống","Pepsi.Co","ảnh mirinda","Nước lọc đóng chai","Products/Đồ uống/Nước lọc đóng chai/La Vie/Lavie 500ml.png"));
-        items.add(new Item(1,"Lavie kids 350ml","Đồ uống","Pepsi.Co","ảnh mirinda","Nước lọc đóng chai","Products/Đồ uống/Nước lọc đóng chai/La Vie/Lavie kids 350ml.png"));
-        items.add(new Item(1,"Nước khoáng Lavie bìdsadsadhsakjdhasjkdhjashdjashdkshadshakdhsaknh 19L","Đồ uống","Pepsi.Co","ảnh mirinda","Nước lọc đóng chai","Products/Đồ uống/Nước lọc đóng chai/La Vie/Nước khoáng Lavie bình 19L.png"));
-        items.add(new Item(1,"Lavie 500ml","Đồ uống","Pepsi.Co","ảnh mirinda","Nước lọc đóng chai","Products/Đồ uống/Nước lọc đóng chai/La Vie/Lavie 500ml.png"));
-        items.add(new Item(1,"Lavie kids 350ml","Đồ uống","Pepsi.Co","ảnh mirinda","Nước lọc đóng chai","Products/Đồ uống/Nước lọc đóng chai/La Vie/Lavie kids 350ml.png"));
-
-
-
-        return items;
-
-    }
 
 }

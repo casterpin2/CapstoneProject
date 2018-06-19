@@ -61,7 +61,7 @@ public class SearchProductAddToStore extends AppCompatActivity {
     private Dialog dialog;
     private TextView textOne;
     private TextView nullMessage;
-
+    private static String query = "";
 
 //    private TextView requestBtn;
 
@@ -71,8 +71,7 @@ public class SearchProductAddToStore extends AppCompatActivity {
         setContentView(R.layout.activity_search_product_add_to_store);
         mAPI = ApiUtils.getAPIService();
         // create custom adapter that holds elements and their state (we need hold a id's of unfolded elements for reusable elements)
-        if (SearchProductAddToStore.searchedProductList == null)
-        searchedProductList = Item.getTestingList();
+        callAPI(query);
         adapter = new SearchProductPageListViewAdapter(this,R.layout.search_product_page_custom_list_view,searchedProductList);
         // get our list view
         theListView = (ListView) findViewById(R.id.mainListView);
@@ -111,6 +110,7 @@ public class SearchProductAddToStore extends AppCompatActivity {
         searchBar.setArrowIconTint(R.color.colorBlack);
         searchBar.showSuggestionsList();
         searchBar.setRoundedSearchBarEnabled(true);
+        searchBar.setText(query);
         searchBar.setOnSearchActionListener(new MaterialSearchBar.OnSearchActionListener() {
 
             @Override
@@ -121,41 +121,10 @@ public class SearchProductAddToStore extends AppCompatActivity {
 
             @Override
             public void onSearchConfirmed(CharSequence text) {
-
+                query = searchBar.getText().toString().trim();
                 //Toast.makeText(getApplicationContext(), searchBar.getText().toString(), Toast.LENGTH_SHORT).show();
-                if(!searchBar.getText().toString().trim().isEmpty()) {
-                    //Call API
-                    mAPI.getProducts(ApiUtils.removeAccent(searchBar.getText().toString().trim())).enqueue(new Callback<List<Item>>() {
-                        @Override
-                        public void onResponse(Call<List<Item>> call, Response<List<Item>> response) {
-                            searchedProductList.clear();
-                            for (int i = 0; i < response.body().size(); i++) {
-                                Item item = response.body().get(i);
-                                if (checkID(item.getProduct_id()))
-                                searchedProductList.add(item);
-                            }
-                            //searchedProductList = response.body();
-                            adapter.notifyDataSetChanged();
-                            if(searchedProductList.isEmpty()) {
-                                TextView nullMessage = findViewById(R.id.nullMessage);
-                                nullMessage.setText("Không có sản phẩm nào phù hợp!");
-                                theListView.setVisibility(View.INVISIBLE);
-                            } else {
-                                TextView nullMessage = findViewById(R.id.nullMessage);
-                                nullMessage.setText("");
-                                theListView.setVisibility(View.VISIBLE);
-                            }
-                            //Toast.makeText(SearchProductAddToStore.this,searchedProductList.get(0).getProduct_name(),Toast.LENGTH_LONG).show();
-                            //Toast.makeText(SearchProductAddToStore.this,searchBar.getText().toString().trim(),Toast.LENGTH_LONG).show();
-//                            Intent intent = new Intent(SearchProductAddToStore.this, MainActivity.class);
-//                            startActivity(intent);
-                        }
-
-                        @Override
-                        public void onFailure(Call<List<Item>> call, Throwable t) {
-                            Toast.makeText(SearchProductAddToStore.this, "Something Wrong", Toast.LENGTH_LONG).show();
-                        }
-                    });
+                if(!query.isEmpty()) {
+                    callAPI(query);
                 }
             }
             @Override
@@ -265,11 +234,16 @@ public class SearchProductAddToStore extends AppCompatActivity {
         //Toast.makeText(getApplicationContext(), "Đã add được sản phẩm bằng listview", Toast.LENGTH_SHORT).show();
         TextView textviewValue = (TextView) view;
         int position = (Integer) textviewValue.getTag();
-        addedProductList.add(searchedProductList.get(position));
-        //Dat Fix
-        searchedProductList.remove(position);
-        adapter.notifyDataSetChanged();
-        //
+        for (int i = 0 ;i<searchedProductList.size();i++) {
+            if (position == searchedProductList.get(i).getProduct_id()) {
+                addedProductList.add(searchedProductList.get(i));
+                //Dat Fix
+                searchedProductList.remove(searchedProductList.get(i));
+                adapter.notifyDataSetChanged();
+                break;
+            }
+            //
+        }
         String message = "Đã thêm sản phẩm thành công";
         int duration = Snackbar.LENGTH_LONG;
 
@@ -343,5 +317,45 @@ public class SearchProductAddToStore extends AppCompatActivity {
             if (item.getProduct_id() == productID) return false;
         }
         return true;
+    }
+
+    private void callAPI (String query){
+        //Call API
+        if (SearchProductAddToStore.searchedProductList == null) {
+            SearchProductAddToStore.searchedProductList = new ArrayList<>();
+            return;
+        }
+        if (query.isEmpty()) return;
+        mAPI.getProducts(query).enqueue(new Callback<List<Item>>() {
+            @Override
+            public void onResponse(Call<List<Item>> call, Response<List<Item>> response) {
+                searchedProductList.clear();
+                for (int i = 0; i < response.body().size(); i++) {
+                    Item item = response.body().get(i);
+                    if (checkID(item.getProduct_id()))
+                        searchedProductList.add(item);
+                }
+                //searchedProductList = response.body();
+                adapter.notifyDataSetChanged();
+                if(searchedProductList.isEmpty()) {
+                    TextView nullMessage = findViewById(R.id.nullMessage);
+                    nullMessage.setText("Không có sản phẩm nào phù hợp!");
+                    theListView.setVisibility(View.INVISIBLE);
+                } else {
+                    TextView nullMessage = findViewById(R.id.nullMessage);
+                    nullMessage.setText("");
+                    theListView.setVisibility(View.VISIBLE);
+                }
+                //Toast.makeText(SearchProductAddToStore.this,searchedProductList.get(0).getProduct_name(),Toast.LENGTH_LONG).show();
+                //Toast.makeText(SearchProductAddToStore.this,searchBar.getText().toString().trim(),Toast.LENGTH_LONG).show();
+//                            Intent intent = new Intent(SearchProductAddToStore.this, MainActivity.class);
+//                            startActivity(intent);
+            }
+
+            @Override
+            public void onFailure(Call<List<Item>> call, Throwable t) {
+                Toast.makeText(SearchProductAddToStore.this, "Something Wrong", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 }

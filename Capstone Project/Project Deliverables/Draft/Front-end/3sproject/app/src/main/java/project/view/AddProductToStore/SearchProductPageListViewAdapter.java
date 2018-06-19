@@ -52,6 +52,7 @@ public class SearchProductPageListViewAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         View view = convertView;
         SearchProductPageListViewAdapter.ViewHolder holder;
+        Item product = productList.get(position);
         if (view  == null){
             LayoutInflater li;
             li = LayoutInflater.from(getContext());
@@ -62,13 +63,14 @@ public class SearchProductPageListViewAdapter extends BaseAdapter {
             holder.productBrand =(TextView) view.findViewById(R.id.productBrand);
             holder.productCategory =(TextView) view.findViewById(R.id.productCategory);
             holder.addBtn = (TextView) view.findViewById(R.id.addBtn);
-            holder.addBtn.setTag(position);
+            holder.addBtn.setTag(product.getProduct_id());
 
             view.setTag(holder);
         }else{
             holder = (SearchProductPageListViewAdapter.ViewHolder) view.getTag();
+            holder.addBtn.setTag(product.getProduct_id());
         }
-        Item product = productList.get(position);
+        //Item product = productList.get(position);
 
         if(product != null) {
             holder.productName.setText(product.getProduct_name());
