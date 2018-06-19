@@ -4,6 +4,7 @@ import android.app.ActionBar;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -37,5 +38,16 @@ public class ProductBrandDisplay extends AppCompatActivity {
         String brandName = getIntent().getStringExtra("brandName");
         getSupportActionBar().setTitle(brandName);
         Toast.makeText(this, brandID+" brand", Toast.LENGTH_SHORT).show();
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                // app icon in action bar clicked; go home
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }
