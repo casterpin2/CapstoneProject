@@ -10,19 +10,22 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".MainActivity" />
-        <activity android:name=".LoginPage"></activity>
-        <activity android:name=".AddProductToStore.SearchProductAddToStore">
+        <activity android:name=".LoginPage" />
+        <activity android:name=".AddProductToStore.SearchProductAddToStore" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Cart.CartProductToStore"></activity>
-        <activity android:name=".Register.RegisterPage"></activity>
+        <activity android:name=".Cart.CartProductToStore" />
+        <activity android:name=".Register.RegisterPage" />
         <activity
             android:name=".SaleProduct.SaleProductDisplayPage"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" >
+
+        </activity>
+
         <activity
             android:name=".Category.CategoryDisplayPage"
             android:theme="@style/AppTheme.NoActionBar">
@@ -31,8 +34,17 @@
         <activity android:name=".ProductBrandDisplay.ProductBrandDisplay">
 
         </activity>
+
+
         <activity android:name=".Brand.BrandDisplayPage"
-                  android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar">
+
+        </activity>
+        <activity android:name=".TypeCategory.TypeCategoryPage"
+            android:theme="@style/AppTheme.NoActionBar">
+
+        </activity>
+        <activity android:name=".ProductTypeDisplay.ProductTypeDisplay">
 
         </activity>
     </application>

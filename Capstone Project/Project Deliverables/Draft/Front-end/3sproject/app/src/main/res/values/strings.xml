@@ -41,6 +41,8 @@
     <string name="category_backdrop_title">Danh Mục</string>
     <string name="category_display_title">Danh mục sản phẩm</string>
     <string name="brand_display_title">Thương hiệu</string>
+    <string name="type_title">Chủng loại sản phẩm</string>
+
 
 
 </resources>

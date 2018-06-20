@@ -1,4 +1,4 @@
-package project.view.Brand;
+package project.view.TypeCategory;
 
 import android.content.Intent;
 import android.content.res.Resources;
@@ -24,30 +24,28 @@ import com.bumptech.glide.Glide;
 import java.util.ArrayList;
 import java.util.List;
 
-import project.retrofit.APIService;
-import project.retrofit.ApiUtils;
 import project.view.AddProductToStore.Item;
 import project.view.AddProductToStore.SearchProductAddToStore;
-import project.view.Category.Category;
-import project.view.Category.CategoryCustomCardviewAdapter;
-import project.view.Category.CategoryDisplayPage;
+import project.view.Brand.Brand;
+import project.view.Brand.BrandCustomCardviewAdapter;
+import project.view.Brand.BrandDisplayPage;
 import project.view.MainActivity;
 import project.view.R;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class BrandDisplayPage extends AppCompatActivity {
+public class TypeCategoryPage extends AppCompatActivity {
 
     private RecyclerView recyclerView;
-    private BrandCustomCardviewAdapter adapter;
-    private List<Brand> brandList;
-    private APIService apiService;
+    private TypePageListViewAdapter adapter;
+    private List<Type> typeList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_brand_display_page);
-        apiService = ApiUtils.getAPIService();
+        setContentView(R.layout.activity_type_category_page);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         setSupportActionBar(toolbar);
@@ -58,23 +56,21 @@ public class BrandDisplayPage extends AppCompatActivity {
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
-        brandList = new ArrayList<>();
+        typeList = new ArrayList<>();
         prepareAlbums();
-        adapter = new BrandCustomCardviewAdapter(this, brandList);
-
-        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 2);
-        recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.addItemDecoration(new BrandDisplayPage.GridSpacingItemDecoration(2, dpToPx(10), true));
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(adapter);
-
-
-
         try {
             Glide.with(this).load(R.drawable.cover).into((ImageView) findViewById(R.id.backdrop));
         } catch (Exception e) {
             e.printStackTrace();
         }
+        adapter = new TypePageListViewAdapter(this, typeList);
+
+        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 2);
+        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.addItemDecoration(new TypeCategoryPage.GridSpacingItemDecoration(2, dpToPx(10), true));
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(adapter);
+
     }
 
     private void initCollapsingToolbar() {
@@ -95,7 +91,7 @@ public class BrandDisplayPage extends AppCompatActivity {
                     scrollRange = appBarLayout.getTotalScrollRange();
                 }
                 if (scrollRange + verticalOffset == 0) {
-                    collapsingToolbar.setTitle(getString(R.string.brand_display_title));
+                    collapsingToolbar.setTitle(getString(R.string.type_title));
                     isShow = true;
                     getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#F50057")));
                 } else if (isShow) {
@@ -112,24 +108,24 @@ public class BrandDisplayPage extends AppCompatActivity {
      */
     private void prepareAlbums() {
         //Call API
-       apiService.getBrands().enqueue(new Callback<List<Brand>>() {
-           @Override
-           public void onResponse(Call<List<Brand>> call, Response<List<Brand>> response) {
-               for(int i =0;i<response.body().size();i++){
-
-                       brandList.add(response.body().get(i));
-
-               }
-               if(brandList.isEmpty()){
-                   Toast.makeText(BrandDisplayPage.this, "SomeThing Wrong", Toast.LENGTH_LONG).show();
-               }
-           }
-
-           @Override
-           public void onFailure(Call<List<Brand>> call, Throwable t) {
-
-           }
-       });
+//        apiService.getBrands().enqueue(new Callback<List<Brand>>() {
+//            @Override
+//            public void onResponse(Call<List<Brand>> call, Response<List<Brand>> response) {
+//                for(int i =0;i<response.body().size();i++){
+//
+//                    brandList.add(response.body().get(i));
+//
+//                }
+//                if(brandList.isEmpty()){
+//                    Toast.makeText(BrandDisplayPage.this, "SomeThing Wrong", Toast.LENGTH_LONG).show();
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<List<Brand>> call, Throwable t) {
+//
+//            }
+//        });
 
 
     }

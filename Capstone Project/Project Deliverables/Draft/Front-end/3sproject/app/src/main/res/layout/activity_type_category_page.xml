@@ -50,7 +50,7 @@
                         android:id="@+id/love_music"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/sale_product_title"
+                        android:text="@string/type_title"
                         android:textColor="@android:color/white"
                         android:textSize="@dimen/backdrop_title" />
 

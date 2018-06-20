@@ -7,7 +7,7 @@ public class SaleProduct {
     private String productID;
     private String productName;
     private double productPrice;
-    private double producrPromotionPercent;
+    private double productPromotionPercent;
     private String storeName;
 
 
@@ -19,7 +19,7 @@ public class SaleProduct {
         this.productID = productID;
         this.productName = productName;
         this.productPrice = productPrice;
-        this.producrPromotionPercent = producrPromotionPercent;
+        this.productPromotionPercent = producrPromotionPercent;
         this.storeName = storeName;
     }
 
@@ -48,11 +48,11 @@ public class SaleProduct {
     }
 
     public double getProducrPromotionPercent() {
-        return producrPromotionPercent;
+        return productPromotionPercent;
     }
 
     public void setProducrPromotionPercent(double producrPromotionPercent) {
-        this.producrPromotionPercent = producrPromotionPercent;
+        this.productPromotionPercent = producrPromotionPercent;
     }
 
     public String getStoreName() {

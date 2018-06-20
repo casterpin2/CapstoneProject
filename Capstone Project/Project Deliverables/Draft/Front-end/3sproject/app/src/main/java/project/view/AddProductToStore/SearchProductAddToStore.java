@@ -190,7 +190,7 @@ public class SearchProductAddToStore extends AppCompatActivity {
         });
     }
     //create information dialog
-    public void showInfoDialog(List<Item> productList, final int position) {
+    public void showInfoDialog(final List<Item> productList, final int position) {
 
 
 
@@ -221,7 +221,7 @@ public class SearchProductAddToStore extends AppCompatActivity {
         addBtn_infoDialog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                intentToCartPageFromDialog(v, position, new Item(1,productName_infoDialog.getText().toString(),productBrand_infoDialog.getText().toString(),productDesc_infoDialog.getText().toString(),productCategory_infoDialog.getText().toString(),productType_infoDialog.getText().toString(),"Products/Đồ uống/Nước lọc đóng chai/La Vie/Lavie kids 350ml.png"));
+                intentToCartPageFromDialog(v, position, new Item(productList.get(position).getProduct_id(),productName_infoDialog.getText().toString(),productBrand_infoDialog.getText().toString(),productDesc_infoDialog.getText().toString(),productCategory_infoDialog.getText().toString(),productType_infoDialog.getText().toString(),productList.get(position).getImage_path()));
             }
         });
 

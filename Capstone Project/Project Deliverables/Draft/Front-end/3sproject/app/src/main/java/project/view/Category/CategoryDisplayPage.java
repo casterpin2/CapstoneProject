@@ -1,7 +1,10 @@
 package project.view.Category;
 
+import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.graphics.Rect;
+import android.graphics.drawable.ColorDrawable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +14,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -22,6 +26,9 @@ import java.util.List;
 
 import project.retrofit.APIService;
 import project.retrofit.ApiUtils;
+import project.view.AddProductToStore.Item;
+import project.view.AddProductToStore.SearchProductAddToStore;
+import project.view.MainActivity;
 import project.view.R;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -88,9 +95,11 @@ public class CategoryDisplayPage extends AppCompatActivity {
                 if (scrollRange + verticalOffset == 0) {
                     collapsingToolbar.setTitle(getString(R.string.category_display_title));
                     isShow = true;
+                    getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#F50057")));
                 } else if (isShow) {
                     collapsingToolbar.setTitle(" ");
                     isShow = false;
+                    getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#00000000")));
                 }
             }
         });
@@ -166,4 +175,22 @@ public class CategoryDisplayPage extends AppCompatActivity {
         return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics()));
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                // app icon in action bar clicked; go home
+                Intent intent = new Intent(this, MainActivity.class);
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+    private boolean checkID(int productID){
+        for (Item item: SearchProductAddToStore.addedProductList) {
+            if (item.getProduct_id() == productID) return false;
+        }
+        return true;
+    }
 }
