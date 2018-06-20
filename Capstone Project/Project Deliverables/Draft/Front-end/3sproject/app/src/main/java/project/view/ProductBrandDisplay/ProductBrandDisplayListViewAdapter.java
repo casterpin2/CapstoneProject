@@ -69,6 +69,10 @@ public class ProductBrandDisplayListViewAdapter extends BaseAdapter {
         if(product != null) {
             holder.productName.setText(product.getProductName());
             holder.productDesc.setText(product.getProductDesc());
+            Glide.with(context /* context */)
+                    .using(new FirebaseImageLoader())
+                    .load(storageReference.child(product.getProductImageLink()))
+                    .into(holder.productImage);
         }
 
         return view;
