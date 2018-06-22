@@ -38,8 +38,6 @@ import project.firebase.Firebase;
 import project.retrofit.APIService;
 import project.retrofit.ApiUtils;
 import project.view.Cart.CartProductToStore;
-import project.view.Cart.CartProductToStorePageListViewAdapter;
-import project.view.LoginPage;
 import project.view.MainActivity;
 import project.view.R;
 import retrofit2.Call;
