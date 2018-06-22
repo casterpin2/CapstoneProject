@@ -36,7 +36,7 @@ public class Item implements Serializable{
     private String image_path;
     @SerializedName("price")
     @Expose
-    private Double price;
+    private Long price;
     @SerializedName("promotion")
     @Expose
     private Double promotion;
@@ -45,7 +45,7 @@ public class Item implements Serializable{
     public Item() {
     }
 
-    public Item(int product_id, String product_name, String brand_name, String description, String category_name, String type_name, String image_path) {
+    public Item(int product_id, String product_name, String brand_name, String description, String category_name, String type_name, String image_path, long price, double promotion) {
         this.product_id = product_id;
         this.product_name = product_name;
         this.brand_name = brand_name;
@@ -53,6 +53,8 @@ public class Item implements Serializable{
         this.category_name = category_name;
         this.type_name = type_name;
         this.image_path = image_path;
+        this.price = price;
+        this.promotion = promotion;
     }
 
     public View.OnClickListener getRequestBtnClickListener() {
@@ -119,11 +121,11 @@ public class Item implements Serializable{
         this.image_path = image_path;
     }
 
-    public Double getPrice() {
+    public Long getPrice() {
         return price;
     }
 
-    public void setPrice(Double price) {
+    public void setPrice(Long price) {
         this.price = price;
     }
 
@@ -134,7 +136,7 @@ public class Item implements Serializable{
     public void setPromotion(Double promotion) {
         this.promotion = promotion;
     }
-    
+
 
 
 }

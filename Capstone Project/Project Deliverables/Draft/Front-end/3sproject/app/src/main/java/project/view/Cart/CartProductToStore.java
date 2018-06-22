@@ -67,8 +67,8 @@ public class CartProductToStore extends AppCompatActivity {
             nullMessage.setText("Không có sản phẩm nào");
         }
         for(Item p : productList){
-            p.setPrice(20000.0);
-            p.setPromotion(0.2);
+            p.setPrice(p.getPrice());
+            p.setPromotion(p.getPromotion());
         }
         //Chuyển List product thành JSON
         gson = new Gson();

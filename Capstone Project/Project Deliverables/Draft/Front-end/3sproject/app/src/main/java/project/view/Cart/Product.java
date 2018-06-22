@@ -36,7 +36,7 @@ public class Product implements Serializable{
     private String image_path;
     @SerializedName("price")
     @Expose
-    private Double price;
+    private Long price;
     @SerializedName("promotion")
     @Expose
     private Double promotion;
@@ -45,7 +45,7 @@ public class Product implements Serializable{
     public Product() {
     }
 
-    public Product(int product_id, String product_name, String brand_name, String description, String category_name, String type_name, String image_path) {
+    public Product(int product_id, String product_name, String brand_name, String description, String category_name, String type_name, String image_path, long price, double promotion) {
         this.product_id = product_id;
         this.product_name = product_name;
         this.brand_name = brand_name;
@@ -53,6 +53,8 @@ public class Product implements Serializable{
         this.category_name = category_name;
         this.type_name = type_name;
         this.image_path = image_path;
+        this.price = price;
+        this.promotion = promotion;
     }
 
     public View.OnClickListener getRequestBtnClickListener() {
@@ -119,23 +121,17 @@ public class Product implements Serializable{
         this.image_path = image_path;
     }
 
+    public Long getPrice() {return price;}
+
+    public void setPrice(Long price) {this.price = price;}
+
+    public Double getPromotion() {return promotion;}
+
+    public void setPromotion(Double promotion) {this.promotion = promotion;}
+
     /**
      * @return List of elements prepared for tests
      */
-    public static ArrayList<Item> getTestingList() {
-        ArrayList<Item> items = new ArrayList<>();
-        items.add(new Item(1,"Bình sứ Lavie","Đồ uống","Pepsi.Cooooodađasadsadbsagdsagdhgsahjdgsahjgddddddddddddddddddddddđâsdsajdksajdklsajkdljaskldjaskldjaklsjdklasjkldjaskldjaskdjaskljdkljdklasjlkdasdddddddddddddddddddddddddaaaaaaaaaaaaaaaaaaosdosadosaodasodoasodasodoasdoasodaosdoasodasodoasodasodoasdoasodoasdoasodasodoasdoasod","ảnh mirinda","Nước lọc đóng chai","Products/Đồ uống/Nước lọc đóng chai/La Vie/Bình sứ Lavie.png"));
-        items.add(new Item(1,"Lavie 350ml","Đồ uống","Pepsi.Co","ảnh mirinda","Nước lọc đóng chai","Products/Đồ uống/Nước lọc đóng chai/La Vie/Lavie 350ml.png"));
-        items.add(new Item(1,"Lavie 500ml","Đồ uống","Pepsi.Co","ảnh mirinda","Nước lọc đóng chai","Products/Đồ uống/Nước lọc đóng chai/La Vie/Lavie 500ml.png"));
-        items.add(new Item(1,"Lavie kids 350ml","Đồ uống","Pepsi.Co","ảnh mirinda","Nước lọc đóng chai","Products/Đồ uống/Nước lọc đóng chai/La Vie/Lavie kids 350ml.png"));
-        items.add(new Item(1,"Nước khoáng Lavie bìdsadsadhsakjdhasjkdhjashdjashdkshadshakdhsaknh 19L","Đồ uống","Pepsi.Co","ảnh mirinda","Nước lọc đóng chai","Products/Đồ uống/Nước lọc đóng chai/La Vie/Nước khoáng Lavie bình 19L.png"));
-        items.add(new Item(1,"Lavie 500ml","Đồ uống","Pepsi.Co","ảnh mirinda","Nước lọc đóng chai","Products/Đồ uống/Nước lọc đóng chai/La Vie/Lavie 500ml.png"));
-        items.add(new Item(1,"Lavie kids 350ml","Đồ uống","Pepsi.Co","ảnh mirinda","Nước lọc đóng chai","Products/Đồ uống/Nước lọc đóng chai/La Vie/Lavie kids 350ml.png"));
 
-
-
-        return items;
-
-    }
 
 }

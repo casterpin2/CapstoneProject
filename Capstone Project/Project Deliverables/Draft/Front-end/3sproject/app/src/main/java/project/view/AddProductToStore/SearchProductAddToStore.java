@@ -13,7 +13,9 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,6 +23,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -125,14 +128,12 @@ public class SearchProductAddToStore extends AppCompatActivity {
 
             @Override
             public void onSearchStateChanged(boolean enabled) {
-//                Toast.makeText(getApplicationContext(), "onSearchStateChanged", Toast.LENGTH_SHORT).show();
             }
 
 
             @Override
             public void onSearchConfirmed(CharSequence text) {
                 query = searchBar.getText().toString().trim();
-                //Toast.makeText(getApplicationContext(), searchBar.getText().toString(), Toast.LENGTH_SHORT).show();
                 if(!query.isEmpty()) {
                     callAPI(query);
                 }
@@ -162,8 +163,6 @@ public class SearchProductAddToStore extends AppCompatActivity {
         theListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //
-                // Toast.makeText(getApplicationContext(), searchedProductList.get(position).getProduct_name(), Toast.LENGTH_SHORT).show();
                 showInfoDialog(searchedProductList, position, view);
             }
         });
@@ -218,30 +217,64 @@ public class SearchProductAddToStore extends AppCompatActivity {
 
 
         informationDialog.getWindow().setAttributes(lp);
-//        dialogContent.setText("Tên đăng nhập hoặc mật khẩu không đúng. Vui lòng thử lại.");
-//        dialogContent.setTextColor(Color.rgb(255,0,0));
-//        okBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                dialog.dismiss();
-//            }
-//        });
+
         informationDialog.show();
     }
 
-    public void showOptionDialog(final List<Item> productList, final int position, final View view) {
+    public void showOptionDialog(final List<Item> productList, final int position, View view) {
 
-
+        view = (View) findViewById(R.id.search_page);
 
         StorageReference storageReference = Firebase.getFirebase();
         optionDialog = new Dialog(SearchProductAddToStore.this);
         optionDialog.setContentView(R.layout.search_product_page_price_dialog_custom);
-        final CurrencyEditText priceValue_optionDialog = (CurrencyEditText) optionDialog.findViewById(R.id.priceValue_optionDialog);
+        final EditText priceValue_optionDialog = (EditText) optionDialog.findViewById(R.id.priceValue_optionDialog);
         final TextView promotionPercent_optionDialog = (TextView) optionDialog.findViewById(R.id.promotionPercentText_optionDialog);
         final TextView promotionPercentErrorMessage_optionDialog = (TextView) optionDialog.findViewById(R.id.promotionPercentErrorMessage_optionDialog);
+        final TextView priceErrorMessage_optionDialog = (TextView) optionDialog.findViewById(R.id.priceErrorMessage_optionDialog);
         final Button addButton_optionDialog = (Button) optionDialog.findViewById(R.id.addBtn_optionDialog);
 
 
+        priceValue_optionDialog.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                priceValue_optionDialog.removeTextChangedListener(this);
+
+                try {
+                    String originalString = s.toString();
+                    Long longval;
+                    if (originalString.contains(",")) {
+                        originalString = originalString.replaceAll(",", "");
+                    }
+                    longval = Long.parseLong(originalString);
+
+                    DecimalFormat formatter = (DecimalFormat) NumberFormat.getInstance(Locale.US);
+                    formatter.applyPattern("#,###,###,###");
+                    String formattedString = formatter.format(longval);
+
+                    //setting text after format to EditText
+                    priceValue_optionDialog.setText(formattedString);
+                    priceValue_optionDialog.setSelection(priceValue_optionDialog.getText().length());
+                } catch (NumberFormatException nfe) {
+                    nfe.printStackTrace();
+                }
+
+                priceValue_optionDialog.addTextChangedListener(this);
+            }
+        });
+
+
+        final View finalView = view;
         addButton_optionDialog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -252,27 +285,41 @@ public class SearchProductAddToStore extends AppCompatActivity {
                 builder.setPositiveButton(R.string.btn_add, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        long priceLong = priceValue_optionDialog.getRawValue();
-                        double promotionPercent = Double.parseDouble(promotionPercent_optionDialog.getText().toString());
-                        if (Double.parseDouble(promotionPercent_optionDialog.getText().toString()) > 100.00 || Double.parseDouble(promotionPercent_optionDialog.getText().toString()) < 0.00) {
-                            promotionPercentErrorMessage_optionDialog.setText("Chiết khấu phải ở trong khoảng từ 0% tới 100%!!");
-                        } else {
-                            Toast.makeText(SearchProductAddToStore.this, priceLong+ " - price", Toast.LENGTH_SHORT).show();
+
+                        if (priceValue_optionDialog.getText().toString().length() > 0 && promotionPercent_optionDialog.getText().toString().length() > 0) {
+                            priceErrorMessage_optionDialog.setText("");
                             promotionPercentErrorMessage_optionDialog.setText("");
-                            productList.get(position).setPromotion(promotionPercent);
-//                            productList.get(position).setPrice(priceLong);
 
-                            String message = "Thêm sản phẩm thành công";
-                            int duration = Snackbar.LENGTH_LONG;
-                            showSnackbar(view, message, duration);
-                            textOne.setText(String.valueOf(addedProductList.size()));
+                            if (Double.parseDouble(promotionPercent_optionDialog.getText().toString()) > 100.00 || Double.parseDouble(promotionPercent_optionDialog.getText().toString()) < 0.00) {
+                                promotionPercentErrorMessage_optionDialog.setText("Chiết khấu phải ở trong khoảng từ 0% tới 100%!!");
+                            } else {
+                                long priceLong = Long.parseLong(priceValue_optionDialog.getText().toString().replaceAll(",", ""));
+                                double promotionPercent = Double.parseDouble(promotionPercent_optionDialog.getText().toString());
+                                Toast.makeText(SearchProductAddToStore.this, priceLong+ " - price", Toast.LENGTH_SHORT).show();
+                                promotionPercentErrorMessage_optionDialog.setText("");
+                                productList.get(position).setPromotion(promotionPercent);
+                                productList.get(position).setPrice(priceLong);
 
-                            optionDialog.dismiss();
-                            informationDialog.dismiss();
+                                addedProductList.add(productList.get(position));
 
+
+                                String message = "Thêm sản phẩm thành công";
+                                int duration = Snackbar.LENGTH_LONG;
+                                showSnackbar(finalView, message, duration);
+                                textOne.setText(String.valueOf(addedProductList.size()));
+
+                                searchedProductList.remove(searchedProductList.get(position));
+                                adapter.notifyDataSetChanged();
+
+                                optionDialog.dismiss();
+                                informationDialog.dismiss();
+
+                            }
+                        } else {
+                            priceErrorMessage_optionDialog.setText("Trường này không thể để trống");
+                            promotionPercentErrorMessage_optionDialog.setText("Trường này không thể để trống");
                         }
 
-//                        final double promotionPercent = Double.parseDouble(promotionPercent_optionDialog.toString());
 
                     }
                 });
@@ -297,14 +344,7 @@ public class SearchProductAddToStore extends AppCompatActivity {
 
 
         optionDialog.getWindow().setAttributes(lp);
-//        dialogContent.setText("Tên đăng nhập hoặc mật khẩu không đúng. Vui lòng thử lại.");
-//        dialogContent.setTextColor(Color.rgb(255,0,0));
-//        okBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                dialog.dismiss();
-//            }
-//        });
+
         optionDialog.show();
     }
 
@@ -323,9 +363,6 @@ public class SearchProductAddToStore extends AppCompatActivity {
 
     }
     public void intentToCartPageFromListView(View view){
-//        Toast.makeText(getApplicationContext(), "hahah", Toast.LENGTH_SHORT).show();
-        //Intent accessToCartPage = new Intent()
-        //Toast.makeText(getApplicationContext(), "Đã add được sản phẩm bằng listview", Toast.LENGTH_SHORT).show();
         TextView textviewValue = (TextView) view;
         int position = (Integer) textviewValue.getTag();
         for (int i = 0 ;i<searchedProductList.size();i++) {

@@ -43,18 +43,18 @@
                     android:layout_marginRight="10dp">
 
 
-                <TextView
-                    android:id="@+id/productName"
-                    android:layout_height="wrap_content"
-                    android:layout_width="0dp"
-                    android:singleLine="true"
-                    android:ellipsize="marquee"
-                    android:text="Evoqđasadsadasdasdasdasdasue"
-                    android:textSize="13dp"
-                    android:textColor="@color/colorBlack"
-                    android:layout_weight="1"
-                    android:textStyle="bold"
-                    />
+                    <TextView
+                        android:id="@+id/productName"
+                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:singleLine="true"
+                        android:ellipsize="marquee"
+                        android:text="Evoqđasadsadasdasdasdasdasue"
+                        android:textSize="13dp"
+                        android:textColor="@color/colorBlack"
+                        android:layout_weight="1"
+                        android:textStyle="bold"
+                        />
                 </LinearLayout>
                 <LinearLayout
                     android:id="@+id/productLinearLayout"
@@ -68,14 +68,14 @@
                         android:layout_width="0dp"
                         android:singleLine="true"
                         android:ellipsize="marquee"
-                        android:text="Danh mục"
+                        android:text="Giá"
                         android:textSize="13dp"
                         android:textColor="@color/colorBlack"
                         android:layout_weight="2"
 
                         />
                     <TextView
-                        android:id="@+id/productCategory"
+                        android:id="@+id/productPrice"
                         android:layout_height="wrap_content"
                         android:layout_width="0dp"
                         android:singleLine="true"
@@ -99,11 +99,11 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
-                        android:text="Nhãn hiệu"
+                        android:text="Chiết khấu"
                         android:textColor="@color/colorBlack"
                         android:textSize="13dp" />
                     <TextView
-                        android:id="@+id/productBrand"
+                        android:id="@+id/productPromotion"
                         android:layout_height="wrap_content"
                         android:layout_width="0dp"
                         android:singleLine="true"

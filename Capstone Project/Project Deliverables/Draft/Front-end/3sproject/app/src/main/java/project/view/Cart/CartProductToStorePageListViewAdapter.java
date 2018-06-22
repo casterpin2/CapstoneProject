@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,11 +17,13 @@ import com.bumptech.glide.Glide;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.storage.StorageReference;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 
 import project.firebase.Firebase;
 import project.view.AddProductToStore.Item;
-import project.view.AddProductToStore.Product;
 import project.view.R;
 
 public class CartProductToStorePageListViewAdapter extends ArrayAdapter<Item> {
@@ -48,8 +51,8 @@ public class CartProductToStorePageListViewAdapter extends ArrayAdapter<Item> {
         }
 
         viewHolder.productName.setText(productList.get(position).getProduct_name());
-        viewHolder.productCategory.setText(productList.get(position).getCategory_name());
-        viewHolder.productBrand.setText(productList.get(position).getBrand_name());
+        viewHolder.productPromotion.setText(productList.get(position).getPromotion()+" %");
+        viewHolder.productPrice.setText(convertLongToString(productList.get(position).getPrice())+ " đ");
 
         Glide.with(context /* context */)
                 .using(new FirebaseImageLoader())
@@ -62,16 +65,32 @@ public class CartProductToStorePageListViewAdapter extends ArrayAdapter<Item> {
 
     private static class ViewHolder {
         TextView productName;
-        TextView productBrand;
-        TextView productCategory;
+        TextView productPrice;
+        TextView productPromotion;
         ImageView productImage;
 
         public ViewHolder(View view) {
             productImage = (ImageView) view.findViewById(R.id.productImage);
             productName = (TextView) view.findViewById(R.id.productName);
-            productBrand =(TextView) view.findViewById(R.id.productBrand);
-            productCategory =(TextView) view.findViewById(R.id.productCategory);
+            productPrice =(TextView) view.findViewById(R.id.productPrice);
+            productPromotion =(TextView) view.findViewById(R.id.productPromotion);
 
         }
+    }
+
+    public String convertLongToString (long needConvert) {
+        String formattedString = null;
+        try {
+
+            DecimalFormat formatter = (DecimalFormat) NumberFormat.getInstance(Locale.US);
+            formatter.applyPattern("#,###,###,###");
+            formattedString = formatter.format(needConvert);
+
+            //setting text after format to EditText
+
+        } catch (NumberFormatException nfe) {
+            nfe.printStackTrace();
+        }
+        return formattedString;
     }
 }
