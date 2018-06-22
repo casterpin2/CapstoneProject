@@ -14,7 +14,7 @@
         android:focusable="false"
         android:longClickable="false"
         android:text="Đăng kí"
-        android:textColor="@color/colorBlack"
+        android:textColor="@color/colorWhite"
         android:textSize="20dp" />
 
 </LinearLayout>

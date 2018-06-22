@@ -98,7 +98,7 @@
                 android:id="@+id/toForgetPasswordPageBtn"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:text="Quên mật khẩu?"
+                android:text="@string/login_page_forgetPassword"
                 android:textColor="@color/colorApplication"
                 android:layout_alignParentEnd="true"
                 android:layout_marginTop="10dp"/>
@@ -151,13 +151,13 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Bạn chưa có tài khoản?"
+                    android:text="@string/login_page_nohaveAcc"
                     android:textSize="13dp"/>
                 <TextView
                     android:id="@+id/toRegisterPageBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Đăng kí"
+                    android:text="@string/register_page_registerTitle"
                     android:textColor="@color/colorApplication"
                     android:textSize="15dp"
                     android:layout_marginLeft="5dp"/>
