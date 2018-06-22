@@ -127,7 +127,7 @@
                 android:text="Thêm"
                 android:textColor="@color/colorWhite"
                 android:textSize="13dp"
-                android:onClick="showConfirmDialogWhenAdd"/>
+                android:onClick="intentToCartPageFromListView"/>
             <TextView
                 android:id="@+id/detail"
                 android:layout_width="0dp"

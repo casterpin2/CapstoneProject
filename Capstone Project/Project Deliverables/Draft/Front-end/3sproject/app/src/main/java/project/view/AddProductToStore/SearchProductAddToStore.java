@@ -1,23 +1,24 @@
 package project.view.AddProductToStore;
 
 import android.app.ActionBar;
+import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.hardware.camera2.CameraCharacteristics;
-import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -25,14 +26,18 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.blackcat.currencyedittext.CurrencyEditText;
 import com.bumptech.glide.Glide;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.storage.StorageReference;
 import com.mancj.materialsearchbar.MaterialSearchBar;
-import com.ramotion.circlemenu.CircleMenuView;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Currency;
 import java.util.List;
+import java.util.Locale;
 
 import project.firebase.Firebase;
 import project.retrofit.APIService;
@@ -49,6 +54,7 @@ public class SearchProductAddToStore extends AppCompatActivity {
     private MaterialSearchBar searchBar;
     private APIService mAPI;
     public static List<Item> searchedProductList;
+    private Context context;
     // get list to display to list view;
 
     // get button add
@@ -56,12 +62,17 @@ public class SearchProductAddToStore extends AppCompatActivity {
 
     private ListView theListView;
     private SearchProductPageListViewAdapter adapter;
-    private Dialog dialog;
+    private Dialog informationDialog, optionDialog;
     private TextView textOne;
     private TextView nullMessage;
     private static String query = "";
 
 //    private TextView requestBtn;
+
+
+    public Context getContext() {
+        return context;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +93,7 @@ public class SearchProductAddToStore extends AppCompatActivity {
 
 
         textOne.setText(String.valueOf(addedProductList.size()));
+        informationDialog = new Dialog(SearchProductAddToStore.this);
 
         //Toast.makeText(getApplicationContext(), addedProductList.size()+"", Toast.LENGTH_SHORT).show()
         nullMessage = (TextView) findViewById(R.id.nullMessage);
@@ -152,26 +164,26 @@ public class SearchProductAddToStore extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //
                 // Toast.makeText(getApplicationContext(), searchedProductList.get(position).getProduct_name(), Toast.LENGTH_SHORT).show();
-                showInfoDialog(searchedProductList, position);
+                showInfoDialog(searchedProductList, position, view);
             }
         });
     }
     //create information dialog
-    public void showInfoDialog(final List<Item> productList, final int position) {
+    public void showInfoDialog(final List<Item> productList, final int position, View view) {
 
 
-
+        view = (View) findViewById(R.id.search_page);
         StorageReference storageReference = Firebase.getFirebase();
-        dialog = new Dialog(SearchProductAddToStore.this);
-        dialog.setContentView(R.layout.search_product_page_product_information_dialog_custom);
-        final TextView productName_infoDialog = (TextView) dialog.findViewById(R.id.productName_infoDialog);
-        final TextView productCategory_infoDialog = (TextView) dialog.findViewById(R.id.productCategory_infoDialog);
-        final TextView productBrand_infoDialog = (TextView) dialog.findViewById(R.id.productBrand_infoDialog);
-        final TextView productDesc_infoDialog = (TextView) dialog.findViewById(R.id.productDesc_infoDialog);
-        final TextView productTypeText_infoDialog = (TextView) dialog.findViewById(R.id.productTypeText_infoDialog);
-        final TextView productType_infoDialog = (TextView) dialog.findViewById(R.id.productType_infoDialog);
-        final TextView addBtn_infoDialog = (TextView) dialog.findViewById(R.id.addBtn_infoDialog);
-        final ImageView productImage = (ImageView) dialog.findViewById(R.id.productImage);
+
+        informationDialog.setContentView(R.layout.search_product_page_product_information_dialog_custom);
+        final TextView productName_infoDialog = (TextView) informationDialog.findViewById(R.id.productName_infoDialog);
+        final TextView productCategory_infoDialog = (TextView) informationDialog.findViewById(R.id.productCategory_infoDialog);
+        final TextView productBrand_infoDialog = (TextView) informationDialog.findViewById(R.id.productBrand_infoDialog);
+        final TextView productDesc_infoDialog = (TextView) informationDialog.findViewById(R.id.productDesc_infoDialog);
+        final TextView productTypeText_infoDialog = (TextView) informationDialog.findViewById(R.id.productTypeText_infoDialog);
+        final TextView productType_infoDialog = (TextView) informationDialog.findViewById(R.id.productType_infoDialog);
+        final TextView addBtn_infoDialog = (TextView) informationDialog.findViewById(R.id.addBtn_infoDialog);
+        final ImageView productImage = (ImageView) informationDialog.findViewById(R.id.productImage);
 
 //        productImage.setMaxHeight(productImage.getWidth());
         productName_infoDialog.setText(productList.get(position).getProduct_name());
@@ -185,23 +197,27 @@ public class SearchProductAddToStore extends AppCompatActivity {
                 .using(new FirebaseImageLoader())
                 .load(storageReference.child(productList.get(position).getImage_path()))
                 .into(productImage);
+        final View optionView = view;
         addBtn_infoDialog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                intentToCartPageFromDialog(v, position, new Item(productList.get(position).getProduct_id(),productName_infoDialog.getText().toString(),productBrand_infoDialog.getText().toString(),productDesc_infoDialog.getText().toString(),productCategory_infoDialog.getText().toString(),productType_infoDialog.getText().toString(),productList.get(position).getImage_path()));
+
+
+                showOptionDialog(productList, position, optionView);
+//                intentToCartPageFromDialog(v, position, new Item(productList.get(position).getProduct_id(),productName_infoDialog.getText().toString(),productBrand_infoDialog.getText().toString(),productDesc_infoDialog.getText().toString(),productCategory_infoDialog.getText().toString(),productType_infoDialog.getText().toString(),productList.get(position).getImage_path()));
             }
         });
 
 
 
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-        lp.copyFrom(dialog.getWindow().getAttributes());
+        lp.copyFrom(informationDialog.getWindow().getAttributes());
         lp.width = WindowManager.LayoutParams.WRAP_CONTENT;
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
         lp.gravity = Gravity.CENTER;
 
 
-        dialog.getWindow().setAttributes(lp);
+        informationDialog.getWindow().setAttributes(lp);
 //        dialogContent.setText("Tên đăng nhập hoặc mật khẩu không đúng. Vui lòng thử lại.");
 //        dialogContent.setTextColor(Color.rgb(255,0,0));
 //        okBtn.setOnClickListener(new View.OnClickListener() {
@@ -210,8 +226,88 @@ public class SearchProductAddToStore extends AppCompatActivity {
 //                dialog.dismiss();
 //            }
 //        });
-        dialog.show();
+        informationDialog.show();
     }
+
+    public void showOptionDialog(final List<Item> productList, final int position, final View view) {
+
+
+
+        StorageReference storageReference = Firebase.getFirebase();
+        optionDialog = new Dialog(SearchProductAddToStore.this);
+        optionDialog.setContentView(R.layout.search_product_page_price_dialog_custom);
+        final CurrencyEditText priceValue_optionDialog = (CurrencyEditText) optionDialog.findViewById(R.id.priceValue_optionDialog);
+        final TextView promotionPercent_optionDialog = (TextView) optionDialog.findViewById(R.id.promotionPercentText_optionDialog);
+        final TextView promotionPercentErrorMessage_optionDialog = (TextView) optionDialog.findViewById(R.id.promotionPercentErrorMessage_optionDialog);
+        final Button addButton_optionDialog = (Button) optionDialog.findViewById(R.id.addBtn_optionDialog);
+
+
+        addButton_optionDialog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(SearchProductAddToStore.this);
+                builder.setTitle(R.string.title_add_alert_dialog);
+                builder.setMessage(R.string.content_add_alert_dialog);
+
+                builder.setPositiveButton(R.string.btn_add, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        long priceLong = priceValue_optionDialog.getRawValue();
+                        double promotionPercent = Double.parseDouble(promotionPercent_optionDialog.getText().toString());
+                        if (Double.parseDouble(promotionPercent_optionDialog.getText().toString()) > 100.00 || Double.parseDouble(promotionPercent_optionDialog.getText().toString()) < 0.00) {
+                            promotionPercentErrorMessage_optionDialog.setText("Chiết khấu phải ở trong khoảng từ 0% tới 100%!!");
+                        } else {
+                            Toast.makeText(SearchProductAddToStore.this, priceLong+ " - price", Toast.LENGTH_SHORT).show();
+                            promotionPercentErrorMessage_optionDialog.setText("");
+                            productList.get(position).setPromotion(promotionPercent);
+//                            productList.get(position).setPrice(priceLong);
+
+                            String message = "Thêm sản phẩm thành công";
+                            int duration = Snackbar.LENGTH_LONG;
+                            showSnackbar(view, message, duration);
+                            textOne.setText(String.valueOf(addedProductList.size()));
+
+                            optionDialog.dismiss();
+                            informationDialog.dismiss();
+
+                        }
+
+//                        final double promotionPercent = Double.parseDouble(promotionPercent_optionDialog.toString());
+
+                    }
+                });
+                builder.setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        return;
+                    }
+                });
+                builder.show();
+
+            }
+        });
+
+
+
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(optionDialog.getWindow().getAttributes());
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        lp.gravity = Gravity.CENTER;
+
+
+        optionDialog.getWindow().setAttributes(lp);
+//        dialogContent.setText("Tên đăng nhập hoặc mật khẩu không đúng. Vui lòng thử lại.");
+//        dialogContent.setTextColor(Color.rgb(255,0,0));
+//        okBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                dialog.dismiss();
+//            }
+//        });
+        optionDialog.show();
+    }
+
 
 
     public void intentToCartPageFromDialog(View view, int position, Item item){
@@ -219,10 +315,10 @@ public class SearchProductAddToStore extends AppCompatActivity {
         addedProductList.add(item);
 
         View pageView = findViewById(R.id.search_page);
-        String message = "Đã thêm sản phẩm thành công";
+        String message = "Thêm sản phẩm thành công";
         int duration = Snackbar.LENGTH_LONG;
         showSnackbar(pageView, message, duration);
-        dialog.dismiss();
+        informationDialog.dismiss();
         textOne.setText(String.valueOf(addedProductList.size()));
 
     }
@@ -234,19 +330,18 @@ public class SearchProductAddToStore extends AppCompatActivity {
         int position = (Integer) textviewValue.getTag();
         for (int i = 0 ;i<searchedProductList.size();i++) {
             if (position == searchedProductList.get(i).getProduct_id()) {
-                addedProductList.add(searchedProductList.get(i));
-                //Dat Fix
-                searchedProductList.remove(searchedProductList.get(i));
-                adapter.notifyDataSetChanged();
+
+                showOptionDialog(searchedProductList,i, view);
+
+//                addedProductList.add(searchedProductList.get(i));
+//                //Dat Fix
+//                searchedProductList.remove(searchedProductList.get(i));
+//                adapter.notifyDataSetChanged();
                 break;
             }
             //
         }
-        String message = "Đã thêm sản phẩm thành công";
-        int duration = Snackbar.LENGTH_LONG;
 
-        showSnackbar(view, message, duration);
-        textOne.setText(String.valueOf(addedProductList.size()));
 
     }
 
@@ -356,4 +451,5 @@ public class SearchProductAddToStore extends AppCompatActivity {
             }
         });
     }
+
 }
