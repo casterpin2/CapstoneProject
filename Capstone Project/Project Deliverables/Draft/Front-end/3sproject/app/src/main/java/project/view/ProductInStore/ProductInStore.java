@@ -1,14 +1,31 @@
 package project.view.ProductInStore;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import java.util.ArrayList;
 
 public class ProductInStore {
+    @SerializedName("product_id")
+    @Expose
     private int productID;
+    @SerializedName("product_name")
+    @Expose
     private String productName;
+    @SerializedName("image_path")
+    @Expose
     private String productImage;
+    @SerializedName("category_name")
+    @Expose
     private String categoryName;
+    @SerializedName("brand_name")
+    @Expose
     private String brandName;
+    @SerializedName("price")
+    @Expose
     private long productPrice;
+    @SerializedName("promotion")
+    @Expose
     private double promotionPercent;
 
     public ProductInStore (){}

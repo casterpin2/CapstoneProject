@@ -9,13 +9,19 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
+import com.google.firebase.storage.StorageReference;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
 
+import project.firebase.Firebase;
 import project.view.ProductInStore.ProductInStore;
 import project.view.R;
 
@@ -23,8 +29,10 @@ public class EditProductInStorePage extends AppCompatActivity {
 
     private TextView productName,categoryName, brandName, promotionPercentErrorMessage, productPriceErrorMessage;
     private EditText productPrice, promotionPercent;
+    private StorageReference storageReference = Firebase.getFirebase();
     private ProductInStore product;
     private Button testBtn;
+    private ImageView imageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +51,7 @@ public class EditProductInStorePage extends AppCompatActivity {
         promotionPercentErrorMessage = (TextView) findViewById(R.id.promotionPercentErrorMessage);
         productPriceErrorMessage = (TextView) findViewById(R.id.productPriceErrorMessage);
         testBtn = (Button) findViewById(R.id.testBtn);
+        imageView = (ImageView) findViewById(R.id.productImage);
 
         final String productNameValue = getIntent().getStringExtra("productName");
         final String productImageLink = getIntent().getStringExtra("productImageLink");
@@ -54,6 +63,10 @@ public class EditProductInStorePage extends AppCompatActivity {
         double promotionPercentValue = getIntent().getDoubleExtra("promotionPercent",-1.0);
 
         getSupportActionBar().setTitle(productNameValue);
+        Glide.with(this /* context */)
+                .using(new FirebaseImageLoader())
+                .load(storageReference.child(productImageLink))
+                .into(imageView);
         productName.setText(productNameValue);
         categoryName.setText(categoryNameValue);
         brandName.setText(brandNameValue);
