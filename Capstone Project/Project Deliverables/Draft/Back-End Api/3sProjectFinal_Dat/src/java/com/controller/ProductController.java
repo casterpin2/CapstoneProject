@@ -51,4 +51,9 @@ public class ProductController {
     public List<ProductAddEntites> getSaleListTop20() throws SQLException {
         return product.getProductSaleListTop20(0);
     }
+    
+    @RequestMapping(value = "/getProductInStore", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
+    public List<ProductAddEntites> getProductInStore(@RequestParam("storeID") int storeID) throws SQLException {
+        return product.getProductInStore(storeID);
+    }
 }

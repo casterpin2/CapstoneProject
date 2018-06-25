@@ -41,5 +41,10 @@ public class ProductServiceImpl implements ProductService{
          return dao.getProductSaleListTop20(number);
     }
 
+    @Override
+    public List<ProductAddEntites> getProductInStore(int storeID) throws SQLException{
+        return dao.getProductInStore(storeID);
+    }
+
 
 }

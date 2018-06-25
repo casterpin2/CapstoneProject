@@ -19,4 +19,5 @@ public interface ProductDao {
       public boolean  insertProdcut(List<ProductAddEntites> productList,int storeId) throws SQLException;
       public List<ProductAddEntites> getProductSaleList(int number) throws SQLException;
       public List<ProductAddEntites> getProductSaleListTop20(int number) throws SQLException;
+      public List<ProductAddEntites> getProductInStore(int storeID) throws SQLException;
 }
