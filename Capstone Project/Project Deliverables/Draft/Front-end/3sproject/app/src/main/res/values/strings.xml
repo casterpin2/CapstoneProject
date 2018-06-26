@@ -14,6 +14,12 @@
     <string name="register_page_phone_placeholder">Điện thoại</string>
     <string name="register_page_registerTitle">Đăng kí</string>
     <string name="register_page_haveAcc">Bạn đã có tài khoản?</string>
+    <string name="user_name">Tên đăng nhập</string>
+    <string name="password">Mật Khẩu</string>
+    <string name="confirm_password">Nhập lại mật khẩu</string>
+    <string name="email">Email</string>
+    <string name="phone_number">Số điện thoại</string>
+    <string name="btn_register">Đăng kí</string>
 
 
     <!-- TODO: placeholder text in search product to add to store -->
@@ -67,12 +73,7 @@
     <string name="error_empty">Bạn không thể bỏ trống chỗ này</string>
 
 
-    <string name="user_name">Tên đăng nhập</string>
-    <string name="password">Mật Khẩu</string>
-    <string name="confirm_password">Nhập lại mật khẩu</string>
-    <string name="email">Email</string>
-    <string name="phone_number">Số điện thoại</string>
-    <string name="btn_register">Đăng kí</string>
+
 
     <!-- TODO: placeholder text in product in store display page -->
     <string name="delete_alertdialog_title">Xóa sản phẩm khỏi cửa hàng</string>

@@ -1,5 +1,6 @@
 package project.view.Register;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
@@ -8,16 +9,19 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import project.view.Login.LoginPage;
 import project.view.R;
 
 public class RegisterActivity extends AppCompatActivity {
     private TextInputEditText etUserName,etPassword,etConfirmPass,etEmail,etPhoneNumber;
-    private TextView tvUserName, tvPassword, tvConfirmPassword, tvEmail, tvPhoneNumber;
+    private TextView tvUserName, tvPassword, tvConfirmPassword, tvEmail, tvPhoneNumber, toLoginPageBtn;
     private Button btnRegister;
     private boolean isUserName,isPassword, confirm,isEmail,isPhone = true;
+    private ScrollView scroll;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -37,12 +41,17 @@ public class RegisterActivity extends AppCompatActivity {
         etConfirmPass = findViewById(R.id.etConfirmPassword);
         etEmail = findViewById(R.id.etEmail);
         etPhoneNumber = findViewById(R.id.etPhoneNumber);
+        scroll = findViewById(R.id.scroll);
+        toLoginPageBtn = findViewById(R.id.toLoginPageBtn);
 
         tvUserName = findViewById(R.id.tvUserName);
         tvPassword = findViewById(R.id.tvPassword);
         tvConfirmPassword = findViewById(R.id.tvConfirmPassword);
         tvEmail = findViewById(R.id.tvEmail);
         tvPhoneNumber = findViewById(R.id.tvPhoneNumber);
+
+        scroll.setVerticalScrollBarEnabled(false);
+        scroll.setHorizontalScrollBarEnabled(false);
 
         etUserName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -85,6 +94,14 @@ public class RegisterActivity extends AppCompatActivity {
                 if(!hasFocus){
                     tvPhoneNumber.setText("");
                 }
+            }
+        });
+
+        toLoginPageBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent toLoginPage = new Intent(RegisterActivity.this, LoginPage.class);
+                startActivity(toLoginPage);
             }
         });
 

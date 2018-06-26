@@ -25,6 +25,7 @@
             android:textSize="20dp"/>
     </android.support.v7.widget.Toolbar>
     <ScrollView
+        android:id="@+id/scroll"
         android:layout_below="@id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -42,6 +43,7 @@
                 android:layout_alignParentTop="true"
                 android:layout_marginTop="16dp"/>
             <RelativeLayout
+                android:id="@+id/registerForm"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_below="@id/appLogo"
@@ -160,6 +162,27 @@
                 </android.support.design.widget.TextInputLayout>
 
             </RelativeLayout>
+            <LinearLayout
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_below="@+id/registerForm"
+                android:layout_marginBottom="5dp"
+                >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/register_page_haveAcc"
+                    android:textSize="13dp"/>
+                <TextView
+                    android:id="@+id/toLoginPageBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/login_page_login3SBtn"
+                    android:textColor="@color/colorApplication"
+                    android:textSize="15dp"
+                    android:layout_marginLeft="5dp"/>
+            </LinearLayout>
         </RelativeLayout>
     </ScrollView>
 
