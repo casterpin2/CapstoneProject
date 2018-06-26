@@ -111,33 +111,17 @@ public class ProductInStoreCustomListViewAdapter extends ArrayAdapter<ProductInS
         viewHolder.editBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setTitle(R.string.edit_alertdialog_title);
-                builder.setMessage(R.string.edit_alertdialog_content);
-                builder.setPositiveButton(R.string.alertdialog_acceptButton, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Intent toEditProductInformationPage = new Intent(getContext(), EditProductInStorePage.class);
-                        toEditProductInformationPage.putExtra("productName", productList.get(position).getProductName());
-                        toEditProductInformationPage.putExtra("productID", productList.get(position).getProductID());
-                        toEditProductInformationPage.putExtra("storeID", storeID);
-                        toEditProductInformationPage.putExtra("categoryName", productList.get(position).getCategoryName());
-                        toEditProductInformationPage.putExtra("brandName", productList.get(position).getBrandName());
-                        toEditProductInformationPage.putExtra("productPrice", productList.get(position).getProductPrice());
-                        toEditProductInformationPage.putExtra("promotionPercent", productList.get(position).getPromotionPercent());
-                        toEditProductInformationPage.putExtra("productImageLink", productList.get(position).getProductImage());
-                        context.startActivity(toEditProductInformationPage);
-                    }
-                });
-                builder.setNegativeButton(R.string.alertdialog_cancelButton, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        return;
-                    }
-                });
-                builder.show();
 
-
+                Intent toEditProductInformationPage = new Intent(getContext(), EditProductInStorePage.class);
+                toEditProductInformationPage.putExtra("productName", productList.get(position).getProductName());
+                toEditProductInformationPage.putExtra("productID", productList.get(position).getProductID());
+                toEditProductInformationPage.putExtra("storeID", storeID);
+                toEditProductInformationPage.putExtra("categoryName", productList.get(position).getCategoryName());
+                toEditProductInformationPage.putExtra("brandName", productList.get(position).getBrandName());
+                toEditProductInformationPage.putExtra("productPrice", productList.get(position).getProductPrice());
+                toEditProductInformationPage.putExtra("promotionPercent", productList.get(position).getPromotionPercent());
+                toEditProductInformationPage.putExtra("productImageLink", productList.get(position).getProductImage());
+                context.startActivity(toEditProductInformationPage);
 
             }
         });

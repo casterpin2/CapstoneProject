@@ -40,7 +40,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_alignParentStart="true"
-            android:background="@drawable/login_button"
+            android:background="@drawable/add_new_product_btn"
             android:text="Thêm sản phẩm"
             android:textColor="@color/colorWhite"/>
     </RelativeLayout>

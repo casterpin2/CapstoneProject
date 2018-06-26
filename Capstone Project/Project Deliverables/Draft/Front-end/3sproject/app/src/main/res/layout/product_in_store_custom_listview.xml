@@ -50,7 +50,7 @@
                         android:lines="3"
                         android:ellipsize="end"
                         android:text="Evoqđasadsadasdddddddddddasue"
-                        android:textSize="14dp"
+                        android:textSize="13dp"
                         android:textColor="@color/colorBlack"
                         android:layout_weight="1"
                         android:textStyle="bold"
@@ -70,7 +70,7 @@
                         android:singleLine="true"
                         android:ellipsize="marquee"
                         android:text="Giá"
-                        android:textSize="13dp"
+                        android:textSize="12dp"
                         android:textColor="@color/colorBlack"
                         android:layout_weight="2"
 
@@ -82,7 +82,7 @@
                         android:singleLine="true"
                         android:ellipsize="marquee"
                         android:text="dsadsadsađasadasdsadasdasdadasdasdsa"
-                        android:textSize="13dp"
+                        android:textSize="12dp"
                         android:textColor="@color/colorBlack"
                         android:layout_weight="3"
 
@@ -102,7 +102,7 @@
                         android:layout_weight="2"
                         android:text="Chiết khấu"
                         android:textColor="@color/colorBlack"
-                        android:textSize="13dp" />
+                        android:textSize="12dp" />
                     <TextView
                         android:id="@+id/productPromotion"
                         android:layout_height="wrap_content"
@@ -110,7 +110,7 @@
                         android:singleLine="true"
                         android:ellipsize="marquee"
                         android:text="Evoqđasadsadasdasdasdasdasue"
-                        android:textSize="13dp"
+                        android:textSize="12dp"
                         android:textColor="@color/colorBlack"
                         android:layout_weight="3"
                         />

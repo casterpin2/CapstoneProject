@@ -5,6 +5,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -50,10 +51,6 @@ public class ProductInStoreDisplayPage extends AppCompatActivity {
 //        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
 //        getSupportActionBar().setCustomView(R.layout.actionbar_search_product_add_to_store_page);
 
-
-//        final int storeID = getIntent().getIntExtra("storeID", -1);
-
-//        adapter.setStoreID(storeID);
         new NetworkCall().execute(call);
     }
     private class NetworkCall extends AsyncTask<Call, Void, Void> {
@@ -108,6 +105,17 @@ public class ProductInStoreDisplayPage extends AppCompatActivity {
             } catch (IOException e) {
             }
             return null;
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                // app icon in action bar clicked; go home
+                finish();
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 }

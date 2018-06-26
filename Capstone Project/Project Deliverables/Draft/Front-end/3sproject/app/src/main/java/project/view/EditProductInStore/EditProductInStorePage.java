@@ -1,6 +1,8 @@
 package project.view.EditProductInStore;
 
+import android.content.DialogInterface;
 import android.graphics.drawable.ColorDrawable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -10,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,7 +25,6 @@ import java.text.NumberFormat;
 import java.util.Locale;
 
 import project.firebase.Firebase;
-import project.view.ProductInStore.ProductInStore;
 import project.view.R;
 
 public class EditProductInStorePage extends AppCompatActivity {
@@ -30,9 +32,9 @@ public class EditProductInStorePage extends AppCompatActivity {
     private TextView productName,categoryName, brandName, promotionPercentErrorMessage, productPriceErrorMessage;
     private EditText productPrice, promotionPercent;
     private StorageReference storageReference = Firebase.getFirebase();
-    private ProductInStore product;
-    private Button testBtn;
+    private Button saveBtn;
     private ImageView imageView;
+    private ScrollView scroll;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,8 +52,9 @@ public class EditProductInStorePage extends AppCompatActivity {
         promotionPercent = (EditText) findViewById(R.id.promotionPercent);
         promotionPercentErrorMessage = (TextView) findViewById(R.id.promotionPercentErrorMessage);
         productPriceErrorMessage = (TextView) findViewById(R.id.productPriceErrorMessage);
-        testBtn = (Button) findViewById(R.id.testBtn);
+        saveBtn = (Button) findViewById(R.id.saveBtn);
         imageView = (ImageView) findViewById(R.id.productImage);
+        scroll = (ScrollView) findViewById(R.id.scroll);
 
         final String productNameValue = getIntent().getStringExtra("productName");
         final String productImageLink = getIntent().getStringExtra("productImageLink");
@@ -59,10 +62,14 @@ public class EditProductInStorePage extends AppCompatActivity {
         int storeIDValue = getIntent().getIntExtra("storeID",-1);
         final String categoryNameValue = getIntent().getStringExtra("categoryName");
         final String brandNameValue = getIntent().getStringExtra("brandName");
-        long productPriceValue = getIntent().getLongExtra("productPrice",-1);
-        double promotionPercentValue = getIntent().getDoubleExtra("promotionPercent",-1.0);
+        final long productPriceValue = getIntent().getLongExtra("productPrice",-1);
+        final double promotionPercentValue = getIntent().getDoubleExtra("promotionPercent",-1.0);
 
         getSupportActionBar().setTitle(productNameValue);
+
+        scroll.setVerticalScrollBarEnabled(false);
+        scroll.setHorizontalScrollBarEnabled(false);
+
         Glide.with(this /* context */)
                 .using(new FirebaseImageLoader())
                 .load(storageReference.child(productImageLink))
@@ -71,7 +78,9 @@ public class EditProductInStorePage extends AppCompatActivity {
         categoryName.setText(categoryNameValue);
         brandName.setText(brandNameValue);
         productPrice.setText(convertLongToString(productPriceValue));
+        productPrice.setSelection(productPrice.getText().toString().length());
         promotionPercent.setText(String.valueOf(promotionPercentValue));
+        promotionPercent.setSelection(promotionPercent.getText().toString().length());
         productPrice.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -110,7 +119,7 @@ public class EditProductInStorePage extends AppCompatActivity {
             }
         });
 
-        testBtn.setOnClickListener(new View.OnClickListener() {
+        saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (productPrice.getText().toString().length() > 0 ) {
@@ -132,9 +141,13 @@ public class EditProductInStorePage extends AppCompatActivity {
                         long priceLong = Long.parseLong(productPrice.getText().toString().replaceAll(",", ""));
                         double promotionValue = Double.parseDouble(promotionPercent.getText().toString());
                         promotionPercentErrorMessage.setText("");
-                        product = new ProductInStore(productIDValue, productNameValue, productImageLink, categoryNameValue, brandNameValue, priceLong, promotionValue);
-                        Toast.makeText(EditProductInStorePage.this, productIDValue + " id - " + productNameValue + " name - " + productImageLink + " - " + categoryNameValue + " - " + brandNameValue + " - " + priceLong + " - " + promotionValue, Toast.LENGTH_SHORT).show();
+                        if (productPriceValue == priceLong && promotionPercentValue == promotionValue ) {
+                            Toast.makeText(EditProductInStorePage.this, "Thông tin không thay đổi", Toast.LENGTH_SHORT).show();
 
+                        } else {
+
+                            Toast.makeText(EditProductInStorePage.this, productIDValue + " id - " + productNameValue + " name - " + productImageLink + " - " + categoryNameValue + " - " + brandNameValue + " - " + priceLong + " - " + promotionValue, Toast.LENGTH_SHORT).show();
+                        }
 
                     }
                 }
@@ -146,7 +159,35 @@ public class EditProductInStorePage extends AppCompatActivity {
         switch (item.getItemId()) {
             case android.R.id.home:
                 // app icon in action bar clicked; go home
-                finish();
+                productPrice = (EditText) findViewById(R.id.productPrice);
+                promotionPercent = (EditText) findViewById(R.id.promotionPercent);
+                final long productPriceValue = getIntent().getLongExtra("productPrice",-1);
+                final double promotionPercentValue = getIntent().getDoubleExtra("promotionPercent",-1.0);
+                long priceLong = Long.parseLong(productPrice.getText().toString().replaceAll(",", ""));
+                double promotionValue = Double.parseDouble(promotionPercent.getText().toString());
+                if (productPriceValue == priceLong && promotionPercentValue == promotionValue ) {
+                    finish();
+                } else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(EditProductInStorePage.this);
+                    builder.setTitle(R.string.back_alertdialog_title);
+                    builder.setMessage(R.string.back_alertdialog_content);
+
+                    builder.setPositiveButton(R.string.alertdialog_acceptButton, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            finish();
+                        }
+                    });
+
+                    builder.setNegativeButton(R.string.alertdialog_cancelButton, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            return;
+                        }
+                    });
+                    builder.show();
+                }
+
             default:
                 return super.onOptionsItemSelected(item);
         }
