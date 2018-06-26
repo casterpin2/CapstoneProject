@@ -3,8 +3,6 @@ package project.view.Login;
 import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -17,7 +15,7 @@ import android.widget.TextView;
 
 import project.view.MainActivity;
 import project.view.R;
-import project.view.Register.RegisterPage;
+import project.view.Register.RegisterActivity;
 
 public class LoginPage extends AppCompatActivity {
 
@@ -53,7 +51,7 @@ public class LoginPage extends AppCompatActivity {
         toRegisterPage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent toRegisterPage = new Intent(LoginPage.this, RegisterPage.class);
+                Intent toRegisterPage = new Intent(LoginPage.this, RegisterActivity.class);
                 startActivity(toRegisterPage);
             }
         });
