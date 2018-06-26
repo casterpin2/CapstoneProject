@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginRight="16dp"
+    android:layout_marginLeft="16dp"
+    tools:context=".EditProductInStore.EditProductInStorePage">
+
+    <RelativeLayout
+        android:id="@+id/image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        >
+
+        <ImageView
+            android:id="@+id/productImage"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_centerInParent="true"/>
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/productNameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/image"
+        android:layout_marginRight="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="20dp"
+        android:background="@color/colorWhite"
+        android:padding="10dp">
+        <TextView
+            android:id="@+id/productNameText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:text="Tên sản phẩm"
+            android:textSize="11dp"/>
+        <TextView
+            android:id="@+id/productName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hiha"
+            android:layout_below="@+id/productNameText"
+            android:textSize="14dp"
+            android:textColor="@color/colorBlack"
+            android:layout_marginTop="5dp"/>
+
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/categoryNameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/productNameLayout"
+        android:layout_marginRight="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/colorWhite"
+        android:padding="10dp">
+        <TextView
+            android:id="@+id/categoryNameText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:text="Danh mục"
+            android:textSize="11dp"/>
+        <TextView
+            android:id="@+id/categoryName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hiha"
+            android:layout_below="@+id/categoryNameText"
+            android:textSize="14dp"
+            android:textColor="@color/colorBlack"
+            android:layout_marginTop="5dp"/>
+
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/brandNameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/categoryNameLayout"
+        android:layout_marginRight="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/colorWhite"
+        android:padding="10dp">
+        <TextView
+            android:id="@+id/brandNameText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:text="Thương hiệu"
+            android:textSize="11dp"/>
+        <TextView
+            android:id="@+id/brandName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hiha"
+            android:layout_below="@+id/brandNameText"
+            android:textSize="14dp"
+            android:textColor="@color/colorBlack"
+            android:layout_marginTop="5dp"/>
+
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/productPriceLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/brandNameLayout"
+        android:layout_marginRight="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/colorWhite"
+        android:padding="10dp">
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/productPriceInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+            <EditText
+                android:id="@+id/productPrice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="15dp"
+                android:inputType="number"
+                android:hint="Giá sản phẩm"/>
+        </android.support.design.widget.TextInputLayout>
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:id="@+id/productPriceErrorMessage"
+            android:layout_below="@id/productPriceInputLayout"
+            android:textColor="@color/colorRed"
+            android:textSize="10dp"/>
+
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/promotionPercentLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/productPriceLayout"
+        android:layout_marginRight="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/colorWhite"
+        android:padding="10dp">
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/promotionPercentInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+            <EditText
+                android:id="@+id/promotionPercent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="15dp"
+                android:inputType="numberDecimal"
+                android:hint="Chiết khấu"/>
+        </android.support.design.widget.TextInputLayout>
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:id="@+id/promotionPercentErrorMessage"
+            android:layout_below="@id/promotionPercentInputLayout"
+            android:textColor="@color/colorRed"
+            android:textSize="10dp"/>
+
+    </RelativeLayout>
+    <Button
+        android:id="@+id/testBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Lưu thay đổi"
+        android:background="@drawable/login_button"
+        android:layout_alignParentBottom="true"
+        android:textColor="@color/colorWhite"
+        android:layout_marginBottom="5dp"/>
+
+
+
+</RelativeLayout>

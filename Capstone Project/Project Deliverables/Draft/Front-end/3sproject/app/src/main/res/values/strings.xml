@@ -16,9 +16,6 @@
     <string name="register_page_haveAcc">Bạn đã có tài khoản?</string>
 
 
-
-
-
     <!-- TODO: placeholder text in search product to add to store -->
     <string name="search_product_page_title">Danh sách sản phẩm</string>
     <string name="search_product_searchbar_hint">Nhập sản phẩm bạn muốn tìm...</string>
@@ -77,6 +74,13 @@
     <string name="phone_number">Số điện thoại</string>
     <string name="btn_register">Đăng kí</string>
 
+    <!-- TODO: placeholder text in product in store display page -->
+    <string name="delete_alertdialog_title">Xóa sản phẩm khỏi cửa hàng</string>
+    <string name="delete_alertdialog_content">Bạn có chắc chắn xóa sản phẩm này khỏi danh mục của của hàng?</string>
+    <string name="edit_alertdialog_title">Chỉnh sửa sản phẩm </string>
+    <string name="edit_alertdialog_content">Bạn có muốn chỉnh sửa thông tin sản phẩm này ?</string>
+    <string name="alertdialog_acceptButton">Đồng ý</string>
+    <string name="alertdialog_cancelButton">Hủy</string>
 
 
 </resources>
