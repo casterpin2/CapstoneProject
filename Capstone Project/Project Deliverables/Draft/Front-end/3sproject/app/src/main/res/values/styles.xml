@@ -7,7 +7,9 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:actionBarStyle">@style/MyActionBar</item>
-
+        <!-- edit textcolor -->
+        <item name="colorControlActivated">@color/colorPrimaryDark</item>
+        <!--<item name="colorControlNormal">#2196F3</item>-->
     </style>
 
     <style name="MyActionBar" parent="@android:style/Widget.Holo.Light.ActionBar">
@@ -50,9 +52,8 @@
               but setting this also changes the popup menu's background,
               even if we define popupTheme for our <Toolbar> -->
         <!-- <item name="android:background">@color/color_primary</item> -->
+
+
     </style>
-
-
-
 </resources>
 

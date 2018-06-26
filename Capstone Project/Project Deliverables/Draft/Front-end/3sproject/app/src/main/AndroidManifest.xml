@@ -15,13 +15,6 @@
 
         </activity>
         <activity android:name=".Cart.CartProductToStore" />
-        <activity android:name=".Register.RegisterPage" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
         <activity
             android:name=".SaleProduct.SaleProductDisplayPage"
             android:theme="@style/AppTheme.NoActionBar" >
@@ -48,6 +41,14 @@
         </activity>
         <activity android:name=".ProductTypeDisplay.ProductTypeDisplay">
 
+        </activity>
+        <activity android:name=".Register.RegisterActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
     </application>
 

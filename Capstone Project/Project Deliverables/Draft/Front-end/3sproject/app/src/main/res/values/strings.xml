@@ -54,5 +54,29 @@
     <string name="type_title">Chủng loại sản phẩm</string>
 
 
+    <!-- TODO: placeholder text in change password -->
+    <string name="old_password">Mật khẩu hiện tại</string>
+    <string name="new_password">Mật khẩu mới</string>
+    <string name="retype_password">Nhập lại mật khẩu</string>
+    <string name="text_remind">Vui lòng nhập mật khẩu mới của bạn bên dưới</string>
+    <string name="btn_save_change">Lưu thay đổi</string>
+    <string name="title_change_password">Đổi mật khẩu</string>
+    <string name="error_password_not_match">Mật khẩu nhập lại không khớp</string>
+    <string name="error_validate_username">Tên người dùng không hợp lệ</string>
+    <string name="error_validate_password">Mật khẩu phải từ 8 ký tự bao gồm ký tự đặc biệt, ký tự chữ số</string>
+    <string name="error_validate_phone">Số điện thoại không hợp lệ</string>
+    <string name="error_validate_email">Email không hợp lệ</string>
+    <string name="error_confirm_password">Mật khẩu đã nhập không trùng nhau</string>
+    <string name="error_empty">Bạn không thể bỏ trống chỗ này</string>
+
+
+    <string name="user_name">Tên đăng nhập</string>
+    <string name="password">Mật Khẩu</string>
+    <string name="confirm_password">Nhập lại mật khẩu</string>
+    <string name="email">Email</string>
+    <string name="phone_number">Số điện thoại</string>
+    <string name="btn_register">Đăng kí</string>
+
+
 
 </resources>
