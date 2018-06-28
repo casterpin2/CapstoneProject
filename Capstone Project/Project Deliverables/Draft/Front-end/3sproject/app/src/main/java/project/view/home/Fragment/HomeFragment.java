@@ -22,16 +22,19 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import project.view.Brand.Brand;
 import project.view.Brand.BrandDisplayPage;
+import project.view.Category.Category;
 import project.view.Category.CategoryDisplayPage;
 import project.view.R;
 import project.view.SaleProduct.SaleProduct;
 import project.view.SaleProduct.SaleProductCustomCardviewAdapter;
-import project.view.home.adapter.ItemsAdapter;
+import project.view.home.adapter.BrandRecycleViewAdapter;
+import project.view.home.adapter.CategoryRecycleViewAdapter;
 import project.view.home.adapter.SliderImageViewPagerAdapter;
-import project.view.home.model.Item;
 
 
 /**
@@ -39,7 +42,8 @@ import project.view.home.model.Item;
  */
 public class HomeFragment extends Fragment {
     private RecyclerView recyclerViewCategories,recyclerViewBrands, recyclerViewSaleProduct;
-    private ItemsAdapter itemsAdapterCategories, itemsAdapterBrands;
+    private CategoryRecycleViewAdapter categoryAdapter;
+    BrandRecycleViewAdapter brandAdapter;
     private SaleProductCustomCardviewAdapter saleProductCustomCardviewAdapter;
 
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -137,19 +141,37 @@ public class HomeFragment extends Fragment {
             }
         });
 
-
+        List<Category> categories = new ArrayList<>();
+        categories.add(new Category(1,"Đồ uống có ga","",1));
+        categories.add(new Category(2,"Bột giặt","",1));
+        categories.add(new Category(3,"Đồ ăn vặt","",1));
+        categories.add(new Category(4,"Bột giặt","",1));
+        categories.add(new Category(5,"Nước ngọt","",1));
+        categories.add(new Category(6,"Nước ngọt","",1));
+        categories.add(new Category(7,"Nước ngọt","",1));
         //categorié
         recyclerViewCategories = view.findViewById(R.id.list_category);
-        itemsAdapterCategories = new ItemsAdapter(getContext(), new Item().setItem());
-        recyclerViewCategories.setAdapter(itemsAdapterCategories);
+        categoryAdapter = new CategoryRecycleViewAdapter(getContext(), categories);
+        recyclerViewCategories.setAdapter(categoryAdapter);
         LinearLayoutManager linearLayoutManager1 = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         recyclerViewCategories.setLayoutManager(linearLayoutManager1);
 
 
+        List<Brand> brands = new ArrayList<>();
+        brands.add(new Brand(1,"Samsung","",111));
+        brands.add(new Brand(2,"Apple","",111));
+        brands.add(new Brand(3,"Oppo","",111));
+        brands.add(new Brand(4,"Sony","",111));
+        brands.add(new Brand(5,"Lg","",111));
+        brands.add(new Brand(6,"Bosch","",111));
+        brands.add(new Brand(7,"Makita","",111));
+        brands.add(new Brand(8,"Miwauki","",111));
+        brands.add(new Brand(9,"Philip","",111));
+
         //brand
         recyclerViewBrands = view.findViewById(R.id.list_brand);
-        itemsAdapterBrands = new ItemsAdapter(getContext(), new Item().setItem());
-        recyclerViewBrands.setAdapter(itemsAdapterBrands);
+        brandAdapter = new BrandRecycleViewAdapter(getContext(), brands);
+        recyclerViewBrands.setAdapter(brandAdapter);
         LinearLayoutManager linearLayoutManager2 = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         recyclerViewBrands.setLayoutManager(linearLayoutManager2);
 
