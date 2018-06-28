@@ -25,5 +25,10 @@
     <color name="album_title">#4c4c4c</color>
 
     <color name="errorMess">#FF0000</color>
+    <color name="lb_more">#4B9CB7</color>
 
+
+    <color name="nav_bottom">#ffffff</color>
+    <color name="tab_checked">#F50057</color>
+    <color name="tab_unchecked">#979797</color>
 </resources>

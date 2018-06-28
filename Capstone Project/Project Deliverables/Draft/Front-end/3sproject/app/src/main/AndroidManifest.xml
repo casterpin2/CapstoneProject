@@ -38,13 +38,18 @@
 
         </activity>
         <activity android:name=".ProductInStore.ProductInStoreDisplayPage" >
+        </activity>
+        <activity android:name=".EditProductInStore.EditProductInStorePage"></activity>
+        <activity
+            android:name=".home.HomeActivity"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".EditProductInStore.EditProductInStorePage"></activity>
+
     </application>
 
 </manifest>

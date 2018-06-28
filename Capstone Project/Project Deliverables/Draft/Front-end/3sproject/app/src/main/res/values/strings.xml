@@ -87,5 +87,16 @@
     <string name="back_alertdialog_title">Quay lại trang hiển thị sản phẩm</string>
     <string name="back_alertdialog_content">Có những thông tin đã chỉnh sửa. Bạn có chắc chắn muốn quay lại trang trước không?</string>
 
+    <!-- TODO: placeholder text in home screen -->
+    <string name="label_quantity">Số lượng: </string>
+    <string name="tv_more">Xem thêm</string>
 
+    <string name="lb_brands">Thương Hiệu</string>
+    <string name="lb_sale">Sản phẩm giảm giá</string>
+    <string name="lb_categories">Danh Mục Sản Phẩm</string>
+    <string name="lb_more">Xem thêm</string>
+
+    <string name="tab1">Trang chủ</string>
+    <string name="tab2">Cửa hàng</string>
+    <string name="tab3">Người dùng</string>
 </resources>
