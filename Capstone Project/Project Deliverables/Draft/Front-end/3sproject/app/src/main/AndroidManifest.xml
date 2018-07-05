@@ -3,6 +3,8 @@
     package="project.view">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -34,20 +36,26 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ChangePassword.ChangePasswordActivity"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
-        <activity android:name=".ProductInStore.ProductInStoreDisplayPage"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".ProductInStore.ProductInStoreDisplayPage" />
         <activity android:name=".EditProductInStore.EditProductInStorePage" />
-        <activity android:name=".home.HomeActivity"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
-        <activity android:name=".StoreInformation.StoreInformationPage">
+        <activity
+            android:name=".home.HomeActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".StoreInformation.StoreInformationPage"
+            android:theme="@style/AppTheme.NoActionBar">
+
+        </activity>
+        <activity android:name=".RegisterStore.RegisterStorePage" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-
+        <activity android:name=".RegisterStore.CityChoosenPage" />
+        <activity android:name=".RegisterStore.TownChoosenPage" />
+        <activity android:name=".RegisterStore.CommuneChoosenPage"></activity>
     </application>
 
 </manifest>

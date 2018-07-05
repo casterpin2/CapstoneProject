@@ -73,8 +73,6 @@
     <string name="error_empty">Bạn không thể bỏ trống chỗ này</string>
 
 
-
-
     <!-- TODO: placeholder text in product in store display page -->
     <string name="delete_alertdialog_title">Xóa sản phẩm khỏi cửa hàng</string>
     <string name="delete_alertdialog_content">Bạn có chắc chắn xóa sản phẩm này khỏi danh mục của của hàng?</string>
@@ -108,5 +106,15 @@
     <string name="addressText">Địa chỉ</string>
     <string name="registerDateText">Ngày đăng kí</string>
     <string name="phoneText">Số điện thoại</string>
-    Ngày đăng kí
+
+    <!-- TODO: placeholder text in register store screen -->
+
+    <string name="registerStorePageTitle">Đăng kí cửa hàng</string>
+    <string name="storeNameText">Tên cửa hàng</string>
+    <string name="cityText">Tỉnh / Thành phố</string>
+    <string name="townText">Quận / Huyện</string>
+    <string name="communeText">Phường / Xã</string>
+    <string name="locateCurrentLocationText">Lấy vị trí hiện tại của bạn làm địa chỉ của cửa hàng.</string>
+
+
 </resources>
