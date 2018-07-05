@@ -99,4 +99,14 @@
     <string name="tab1">Trang chủ</string>
     <string name="tab2">Cửa hàng</string>
     <string name="tab3">Người dùng</string>
+
+    <!-- TODO: placeholder text in store infformation screen -->
+    <string name="doNotHaveStore">Bạn chưa có cửa hàng</string>
+    <string name="orderText">Đơn hàng</string>
+    <string name="productText">Sản phẩm</string>
+    <string name="ownerText">Tên chủ cửa hàng</string>
+    <string name="addressText">Địa chỉ</string>
+    <string name="registerDateText">Ngày đăng kí</string>
+    <string name="phoneText">Số điện thoại</string>
+    Ngày đăng kí
 </resources>

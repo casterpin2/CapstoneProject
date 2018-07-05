@@ -34,21 +34,19 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ChangePassword.ChangePasswordActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-
-        </activity>
-        <activity android:name=".ProductInStore.ProductInStoreDisplayPage" >
-        </activity>
-        <activity android:name=".EditProductInStore.EditProductInStorePage"></activity>
-        <activity
-            android:name=".home.HomeActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity android:name=".ProductInStore.ProductInStoreDisplayPage"></activity>
+        <activity android:name=".EditProductInStore.EditProductInStorePage" />
+        <activity android:name=".home.HomeActivity"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity android:name=".StoreInformation.StoreInformationPage">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
 
     </application>
 

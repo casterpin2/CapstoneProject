@@ -31,4 +31,11 @@
     <color name="nav_bottom">#ffffff</color>
     <color name="tab_checked">#F50057</color>
     <color name="tab_unchecked">#979797</color>
+
+    <!-- user information and store information-->
+    <color name="gradEnd">#67EFC8</color>
+    <color name="gradStart">#63C9FF</color>
+    <color name="followersBg">#FF00A6</color>
+    <color name="followingBg">#FF007C</color>
+
 </resources>
