@@ -2,12 +2,14 @@ package project.view.RegisterStore;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -20,6 +22,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import project.view.EditProductInStore.EditProductInStorePage;
 import project.view.MainActivity;
 import project.view.R;
 
@@ -30,7 +33,7 @@ public class RegisterStorePage extends AppCompatActivity {
     private RelativeLayout cityLayout, townLayout, communeLayout;
     private CheckBox checkbox;
     private Button registerBtn;
-    TextView city, town, commune, storeName, phone, tvStoreNameError;
+    TextView city, town, commune, storeName, phone, tvStoreNameError, etDetailAddress;
     ImageView rightArrowCity, rightArrowTown, rightArrowCommune;
 
     private int userID;
@@ -82,6 +85,7 @@ public class RegisterStorePage extends AppCompatActivity {
         storeName = (TextView) findViewById(R.id.etStoreName);
         phone = (TextView) findViewById(R.id.etPhone);
         tvStoreNameError = (TextView) findViewById(R.id.tvStoreNameError);
+        etDetailAddress =(TextView) findViewById(R.id.etDetailAddress);
 
         rightArrowCity = (ImageView) findViewById(R.id.rightArrowCity);
         rightArrowTown = (ImageView) findViewById(R.id.rightArrowTown);
@@ -210,8 +214,31 @@ public class RegisterStorePage extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                finish();
-                return true;
+                if(storeName.getText().toString().length() == 0 && phone.getText().toString().length() == 0 && etDetailAddress.getText().toString().length() == 0
+                        && cityID == 0 && townID == 0 && communeID == 0) {
+                    finish();
+                    return true;
+                } else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(RegisterStorePage.this);
+                    builder.setTitle(R.string.back_alertdialog_title);
+                    builder.setMessage(R.string.back_alertdialog_content);
+
+                    builder.setPositiveButton(R.string.alertdialog_acceptButton, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            finish();
+                        }
+                    });
+
+                    builder.setNegativeButton(R.string.alertdialog_cancelButton, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            return;
+                        }
+                    });
+                    builder.show();
+                }
+
             default:
                 return super.onOptionsItemSelected(item);
         }

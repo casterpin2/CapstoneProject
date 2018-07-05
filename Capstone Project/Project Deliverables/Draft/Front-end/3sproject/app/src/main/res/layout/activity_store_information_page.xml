@@ -84,7 +84,8 @@
                         android:layout_marginRight="10dp"
                         android:adjustViewBounds="true"
                         android:scaleType="centerInside"
-                        android:src="@drawable/ic_settings" />
+                        android:src="@drawable/menu"
+                        android:background="@color/colorWhite"/>
                 </RelativeLayout>
 
 

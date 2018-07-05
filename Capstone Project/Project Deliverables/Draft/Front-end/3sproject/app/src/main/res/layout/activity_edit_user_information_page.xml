@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/scrollView">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginRight="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp">
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/usernameLayout"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent">
+
+                <AutoCompleteTextView
+                    android:id="@+id/userNameText"
+                    android:layout_height="match_parent"
+                    android:layout_width="match_parent"
+                    android:singleLine="true"
+                    android:inputType="textPersonName"
+                    android:hint="Tên"
+                    android:textSize="13dp"/>
+
+            </android.support.design.widget.TextInputLayout>
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/addressLayout"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_below="@+id/usernameLayout"
+                android:layout_marginTop="8dp">
+
+                <AutoCompleteTextView
+                    android:id="@+id/addressText"
+                    android:layout_height="match_parent"
+                    android:layout_width="match_parent"
+                    android:singleLine="true"
+                    android:inputType="text"
+                    android:hint="Địa chỉ"
+                    android:textSize="13dp"/>
+
+            </android.support.design.widget.TextInputLayout>
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/phoneLayout"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_below="@+id/addressLayout"
+                android:layout_marginTop="8dp">
+
+                <AutoCompleteTextView
+                    android:id="@+id/phoneText"
+                    android:layout_height="match_parent"
+                    android:layout_width="match_parent"
+                    android:singleLine="true"
+                    android:inputType="number"
+                    android:hint="Số điện thoại"
+                    android:textSize="13dp"/>
+
+            </android.support.design.widget.TextInputLayout>
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/emailLayout"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_below="@+id/phoneLayout"
+                android:layout_marginTop="8dp">
+
+                <AutoCompleteTextView
+                    android:id="@+id/emailText"
+                    android:layout_height="match_parent"
+                    android:layout_width="match_parent"
+                    android:singleLine="true"
+                    android:inputType="textEmailAddress"
+                    android:hint="Email"
+                    android:textSize="13dp"/>
+
+            </android.support.design.widget.TextInputLayout>
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/dobLayout"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_below="@+id/emailLayout"
+                android:layout_marginTop="8dp"
+                android:focusable="false">
+
+                <AutoCompleteTextView
+                    android:id="@+id/dobText"
+                    android:layout_height="match_parent"
+                    android:layout_width="match_parent"
+                    android:singleLine="true"
+                    android:inputType="textEmailAddress"
+                    android:hint="Ngày sinh"
+                    android:textSize="13dp"
+                    android:focusable="false"/>
+
+            </android.support.design.widget.TextInputLayout>
+            <TextView
+                android:id="@+id/textView6"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Giới tính"
+                android:layout_below="@+id/dobLayout"
+                android:layout_marginTop="16dp"
+                android:textSize="15dp"/>
+
+            <RadioGroup
+                android:id="@+id/rdGender"
+                android:layout_width="93dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="8dp"
+                android:layout_below="@+id/textView6">
+
+
+                <RadioButton
+                    android:id="@+id/rbtn_male"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Nam"
+                    />
+
+                <RadioButton
+                    android:id="@+id/rbtn_female"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Nữ"
+                    />
+            </RadioGroup>
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/saveBtn"
+                android:layout_below="@+id/rdGender"
+                android:text="Lưu thay đổi"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/login_button"
+                android:textColor="@color/colorWhite"/>
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/cancelBtn"
+                android:layout_below="@+id/saveBtn"
+                android:text="Hủy thay đổi"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/cancel_button"
+                android:textColor="@color/colorWhite"/>
+        </RelativeLayout>
+    </ScrollView>
+</RelativeLayout>
+

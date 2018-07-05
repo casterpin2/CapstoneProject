@@ -42,20 +42,29 @@
         <activity
             android:name=".home.HomeActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".StoreInformation.StoreInformationPage"
-            android:theme="@style/AppTheme.NoActionBar">
+        <activity
+            android:name=".StoreInformation.StoreInformationPage"
+            android:theme="@style/AppTheme.NoActionBar" >
 
         </activity>
-        <activity android:name=".RegisterStore.RegisterStorePage" >
+        <activity android:name=".RegisterStore.RegisterStorePage">
+
+        </activity>
+        <activity android:name=".RegisterStore.CityChoosenPage" />
+        <activity android:name=".RegisterStore.TownChoosenPage" />
+        <activity android:name=".RegisterStore.CommuneChoosenPage" />
+        <activity
+            android:name=".UserInformation.UserInformationPage"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".RegisterStore.CityChoosenPage" />
-        <activity android:name=".RegisterStore.TownChoosenPage" />
-        <activity android:name=".RegisterStore.CommuneChoosenPage"></activity>
+        <activity android:name=".EditUserInformation.EditUserInformationPage">
+
+        </activity>
     </application>
 
 </manifest>

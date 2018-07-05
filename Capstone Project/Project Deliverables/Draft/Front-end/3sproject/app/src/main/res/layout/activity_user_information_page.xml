@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".UserInformation.UserInformationPage">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <RelativeLayout
+            android:id="@+id/rellay1"
+            android:layout_width="match_parent"
+            android:layout_height="220dp"
+            android:background="@drawable/applogo"
+            android:paddingBottom="20dp">
+
+            <RelativeLayout
+                android:id="@+id/imgUser"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="20dp"
+                android:gravity="center">
+
+                <ImageView
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:layout_margin="9dp"
+                    android:adjustViewBounds="true"
+                    android:padding="3dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_user"
+                    android:layout_centerInParent="true"/>
+
+
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/txt_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/imgUser"
+                android:layout_centerHorizontal="true"
+                android:text="Mai Gia Tú"
+                android:textColor="@color/colorBlack"
+                android:textSize="17dp" />
+
+
+            <TextView
+                android:id="@+id/txt_address"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txt_name"
+                android:layout_centerHorizontal="true"
+                android:fontFamily="sans-serif"
+                android:text="Tiểu vương quốc"
+                android:textAllCaps="true"
+                android:textSize="13dp" />
+            <ImageView
+                android:id="@+id/btnEdit"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:adjustViewBounds="true"
+                android:scaleType="centerInside"
+                android:src="@drawable/menu"
+                android:background="@color/colorWhite"/>
+
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/linlay1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/rellay1"
+            android:orientation="horizontal"
+            >
+
+            <RelativeLayout
+                android:id="@+id/rela3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="4"
+                android:background="@color/followersBg"
+                android:gravity="center"
+                android:paddingBottom="5dp"
+                android:paddingTop="5dp">
+
+                <LinearLayout
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/txtOrder"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Đơn hàng"
+                        android:textColor="@color/white"
+                        android:textSize="18dp" />
+
+                    <TextView
+                        android:id="@+id/numberOfOrder"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-light"
+                        android:text="453"
+                        android:textAllCaps="true"
+                        android:textColor="@color/white"
+                        android:textSize="10dp" />
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="4"
+                android:background="@color/followingBg"
+                android:gravity="center"
+                android:paddingBottom="5dp"
+                android:paddingTop="5dp"
+                >
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Cửa hàng"
+                        android:textColor="@color/white"
+                        android:textSize="18dp" />
+
+                    <TextView
+                        android:id="@+id/storeName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-light"
+                        android:text="Cửa hàng bách hóa"
+                        android:textAllCaps="true"
+                        android:singleLine="true"
+                        android:ellipsize="end"
+                        android:textColor="@color/white"
+                        android:textSize="10dp" />
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+
+        </LinearLayout>
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/linlay1">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_centerInParent="true"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                >
+
+                <LinearLayout
+                    android:id="@+id/dob"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@color/colorWhite"
+                    android:padding="10dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Ngày sinh"
+                        android:textSize="13sp" />
+
+                    <TextView
+                        android:id="@+id/txt_dob"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-light"
+                        android:text="18/01/1996"
+                        android:textColor="#000000"
+                        android:textSize="18sp" />
+
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/phone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:orientation="vertical"
+                    android:background="@color/colorWhite"
+                    android:padding="10dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Số điện thoại"
+                        android:textSize="13sp" />
+
+                    <TextView
+                        android:id="@+id/txt_phone"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-light"
+                        android:text="0972678655"
+                        android:textColor="#000000"
+                        android:textSize="18sp" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:orientation="vertical"
+                    android:background="@color/colorWhite"
+                    android:padding="10dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Email"
+                        android:textSize="13sp" />
+
+                    <TextView
+                        android:id="@+id/txt_email"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-light"
+                        android:text="tumgse04012@fpt.edu.vn"
+                        android:textColor="#000000"
+                        android:textSize="18sp" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/gender"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:orientation="vertical"
+                    android:background="@color/colorWhite"
+                    android:padding="10dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Giới tính"
+                        android:textSize="13sp" />
+
+                    <TextView
+                        android:id="@+id/txt_gender"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-light"
+                        android:text="Nam"
+                        android:textColor="#000000"
+                        android:textSize="18sp" />
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+
+        </RelativeLayout>
+    </RelativeLayout>
+</ScrollView>

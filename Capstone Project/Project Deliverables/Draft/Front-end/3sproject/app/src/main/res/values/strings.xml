@@ -82,7 +82,7 @@
     <string name="alertdialog_cancelButton">Hủy</string>
 
     <!-- TODO: placeholder text in edit product infor in store page -->
-    <string name="back_alertdialog_title">Quay lại trang hiển thị sản phẩm</string>
+    <string name="back_alertdialog_title">Quay lại </string>
     <string name="back_alertdialog_content">Có những thông tin đã chỉnh sửa. Bạn có chắc chắn muốn quay lại trang trước không?</string>
 
     <!-- TODO: placeholder text in home screen -->
