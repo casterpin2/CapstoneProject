@@ -10,12 +10,17 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
+import com.google.firebase.storage.StorageReference;
+
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Currency;
 import java.util.List;
 import java.util.Locale;
 
+import project.firebase.Firebase;
 import project.view.R;
 
 /**
@@ -25,7 +30,7 @@ public class SaleProductCustomCardviewAdapter extends RecyclerView.Adapter<SaleP
 
     private Context mContext;
     private List<SaleProduct> saleProductList;
-
+    private StorageReference storageReference = Firebase.getFirebase();
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView promotionPercent, productName, storeName, originalPrice, promotionPrice;
@@ -66,7 +71,10 @@ public class SaleProductCustomCardviewAdapter extends RecyclerView.Adapter<SaleP
         holder.originalPrice.setPaintFlags(holder.originalPrice.getPaintFlags()| Paint.STRIKE_THRU_TEXT_FLAG);
         holder.promotionPrice.setText(formatDoubleToMoney(mContext, String.valueOf(saleProduct.getProductPrice() - (saleProduct.getProductPrice()* saleProduct.getProducrPromotionPercent()/100))));
         holder.promotionPercent.setText(formatDoubleToInt(mContext, "-"+String.valueOf(saleProduct.getProducrPromotionPercent())));
-
+        Glide.with(mContext /* context */)
+                .using(new FirebaseImageLoader())
+                .load(storageReference.child(saleProduct.getImgProductSale()))
+                .into(holder.productImage);
 
 
         // loading album cover using Glide library

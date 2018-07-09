@@ -4,6 +4,7 @@ package project.view.home.Fragment;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Rect;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -22,19 +23,30 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
+import com.google.firebase.storage.StorageReference;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import project.firebase.Firebase;
+import project.retrofit.APIService;
 import project.view.Brand.Brand;
 import project.view.Brand.BrandDisplayPage;
 import project.view.Category.Category;
 import project.view.Category.CategoryDisplayPage;
 import project.view.R;
+import project.view.Register.RegisterActivity;
 import project.view.SaleProduct.SaleProduct;
 import project.view.SaleProduct.SaleProductCustomCardviewAdapter;
+import project.view.SaleProduct.SaleProductDisplayPage;
 import project.view.home.adapter.BrandRecycleViewAdapter;
 import project.view.home.adapter.CategoryRecycleViewAdapter;
 import project.view.home.adapter.SliderImageViewPagerAdapter;
+import retrofit2.Call;
+import retrofit2.Response;
 
 
 /**
@@ -45,16 +57,16 @@ public class HomeFragment extends Fragment {
     private CategoryRecycleViewAdapter categoryAdapter;
     BrandRecycleViewAdapter brandAdapter;
     private SaleProductCustomCardviewAdapter saleProductCustomCardviewAdapter;
-
+    private APIService apiService;
     private SwipeRefreshLayout swipeRefreshLayout;
-
+    private LinearLayoutManager linearLayoutManagerCategory;
     private TextView tv_more_category,tv_more_brand;
-
+    private View view;
     ViewPager viewPager;
     LinearLayout sliderDotspanel;
     private int dotscount;
     private ImageView[] dots;
-
+    private LinearLayoutManager linearLayoutManagerBrand;
     public HomeFragment() {
         // Required empty public constructor
     }
@@ -63,7 +75,7 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_home,container,false);
+        view = inflater.inflate(R.layout.fragment_home,container,false);
         ScrollView scroll = view.findViewById(R.id.scroll_view);
 
         scroll.setVerticalScrollBarEnabled(false);
@@ -142,51 +154,44 @@ public class HomeFragment extends Fragment {
         });
 
         List<Category> categories = new ArrayList<>();
-        categories.add(new Category(1,"Đồ uống có ga","",1));
-        categories.add(new Category(2,"Bột giặt","",1));
-        categories.add(new Category(3,"Đồ ăn vặt","",1));
-        categories.add(new Category(4,"Bột giặt","",1));
-        categories.add(new Category(5,"Nước ngọt","",1));
-        categories.add(new Category(6,"Nước ngọt","",1));
-        categories.add(new Category(7,"Nước ngọt","",1));
+//        categories.add(new Category(1,"Đồ uống có ga","",1));
+//        categories.add(new Category(2,"Bột giặt","",1));
+//        categories.add(new Category(3,"Đồ ăn vặt","",1));
+//        categories.add(new Category(4,"Bột giặt","",1));
+//        categories.add(new Category(5,"Nước ngọt","",1));
+//        categories.add(new Category(6,"Nước ngọt","",1));
+//        categories.add(new Category(7,"Nước ngọt","",1));
+        apiService = APIService.retrofit.create(APIService.class);
+        final Call<List<Category>> callCategory = apiService.getCategory();
+        new CategoryData().execute(callCategory);
         //categorié
-        recyclerViewCategories = view.findViewById(R.id.list_category);
-        categoryAdapter = new CategoryRecycleViewAdapter(getContext(), categories);
-        recyclerViewCategories.setAdapter(categoryAdapter);
-        LinearLayoutManager linearLayoutManager1 = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
-        recyclerViewCategories.setLayoutManager(linearLayoutManager1);
+
 
 
         List<Brand> brands = new ArrayList<>();
-        brands.add(new Brand(1,"Samsung","",111));
-        brands.add(new Brand(2,"Apple","",111));
-        brands.add(new Brand(3,"Oppo","",111));
-        brands.add(new Brand(4,"Sony","",111));
-        brands.add(new Brand(5,"Lg","",111));
-        brands.add(new Brand(6,"Bosch","",111));
-        brands.add(new Brand(7,"Makita","",111));
-        brands.add(new Brand(8,"Miwauki","",111));
-        brands.add(new Brand(9,"Philip","",111));
+//        brands.add(new Brand(1,"Samsung","",111));
+//        brands.add(new Brand(2,"Apple","",111));
+//        brands.add(new Brand(3,"Oppo","",111));
+//        brands.add(new Brand(4,"Sony","",111));
+//        brands.add(new Brand(5,"Lg","",111));
+//        brands.add(new Brand(6,"Bosch","",111));
+//        brands.add(new Brand(7,"Makita","",111));
+//        brands.add(new Brand(8,"Miwauki","",111));
+//        brands.add(new Brand(9,"Philip","",111));
 
         //brand
-        recyclerViewBrands = view.findViewById(R.id.list_brand);
-        brandAdapter = new BrandRecycleViewAdapter(getContext(), brands);
-        recyclerViewBrands.setAdapter(brandAdapter);
-        LinearLayoutManager linearLayoutManager2 = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
-        recyclerViewBrands.setLayoutManager(linearLayoutManager2);
+        apiService = APIService.retrofit.create(APIService.class);
+        final Call<List<Brand>> callBrand = apiService.getBrands();
+        new BrandData().execute(callBrand);
 
         //sale
         recyclerViewSaleProduct= view.findViewById(R.id.list_sale);
 
-        List<SaleProduct> saleProductList;
-        saleProductList = SaleProduct.setListProduct();
-        saleProductCustomCardviewAdapter = new SaleProductCustomCardviewAdapter(getContext(), saleProductList);
+        apiService = APIService.retrofit.create(APIService.class);
+        final Call<List<SaleProduct>> callSale = apiService.getSaleProduct();
+        new SaleData().execute(callSale);
 
-        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getContext(), 2);
-        recyclerViewSaleProduct.setLayoutManager(mLayoutManager);
-        recyclerViewSaleProduct.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(2), true));
-        recyclerViewSaleProduct.setItemAnimator(new DefaultItemAnimator());
-        recyclerViewSaleProduct.setAdapter(saleProductCustomCardviewAdapter);
+
 
 
         swipeRefreshLayout = view.findViewById(R.id.main_layout);
@@ -244,7 +249,134 @@ public class HomeFragment extends Fragment {
             }
         }
     }
+    private class CategoryData extends AsyncTask<Call, List<Category>, Void>{
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
 
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+        }
+
+        @Override
+        protected void onProgressUpdate(List<Category>... values) {
+            super.onProgressUpdate(values);
+            StorageReference storageReference = Firebase.getFirebase();
+            List<Category> categoryList = values[0];
+
+
+            recyclerViewCategories = view.findViewById(R.id.list_category);
+            categoryAdapter = new CategoryRecycleViewAdapter(categoryList,getContext());
+            recyclerViewCategories.setAdapter(categoryAdapter);
+            linearLayoutManagerCategory  = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+            recyclerViewCategories.setLayoutManager(linearLayoutManagerCategory);
+        }
+
+        @Override
+        protected Void doInBackground(Call... calls) {
+
+            try {
+                Call<List<Category>> call = calls[0];
+                Response<List<Category>> response = call.execute();
+                List<Category> list = new ArrayList<>();
+                for(int i =0;i< response.body().size();i++){
+                    list.add(response.body().get(i));
+                }
+                publishProgress(list);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+    }
+    private class BrandData extends AsyncTask<Call, List<Brand>, Void>{
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+        }
+
+        @Override
+        protected void onProgressUpdate(List<Brand>... values) {
+            super.onProgressUpdate(values);
+            StorageReference storageReference = Firebase.getFirebase();
+            List<Brand> brandList = values[0];
+
+
+            recyclerViewBrands = view.findViewById(R.id.list_brand);
+            brandAdapter = new BrandRecycleViewAdapter(brandList,getContext());
+            recyclerViewBrands.setAdapter(brandAdapter);
+            linearLayoutManagerBrand = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+            recyclerViewBrands.setLayoutManager(linearLayoutManagerBrand);
+        }
+
+        @Override
+        protected Void doInBackground(Call... calls) {
+
+            try {
+                Call<List<Brand>> call = calls[0];
+                Response<List<Brand>> response = call.execute();
+                List<Brand> list = new ArrayList<>();
+                for(int i =0;i< response.body().size();i++){
+                    list.add(response.body().get(i));
+                }
+                publishProgress(list);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+    }
+    public class SaleData extends AsyncTask<Call,List<SaleProduct>,Void>{
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+        }
+
+        @Override
+        protected void onProgressUpdate(List<SaleProduct>... values) {
+            super.onProgressUpdate(values);
+            List<SaleProduct> listSale = values[0];
+            saleProductCustomCardviewAdapter = new SaleProductCustomCardviewAdapter(getContext(), listSale);
+
+            RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getContext(), 2);
+            recyclerViewSaleProduct.setLayoutManager(mLayoutManager);
+            recyclerViewSaleProduct.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(2), true));
+            recyclerViewSaleProduct.setItemAnimator(new DefaultItemAnimator());
+            recyclerViewSaleProduct.setAdapter(saleProductCustomCardviewAdapter);
+        }
+
+        @Override
+        protected Void doInBackground(Call... calls) {
+
+            try {
+                Call<List<SaleProduct>> call = calls[0];
+                Response<List<SaleProduct>> response = call.execute();
+                List<SaleProduct> list = new ArrayList<>();
+                for(int i =0 ; i< response.body().size();i++){
+                    list.add(response.body().get(i));
+                }
+                publishProgress(list);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+    }
 }
 
 
