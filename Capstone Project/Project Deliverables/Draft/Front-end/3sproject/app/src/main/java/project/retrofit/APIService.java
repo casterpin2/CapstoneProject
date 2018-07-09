@@ -44,7 +44,7 @@ public interface APIService {
     Call<List<ProductInStore>> getProductInStore(@Query("storeID") int storeID);
 
     public static final Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl("http://150.95.111.195:8080/3sProject/api/")
+            .baseUrl("http://192.168.107.101:8080/3sProjectFinal/api/")
             .addConverterFactory(GsonConverterFactory.create())
             .build();
 
