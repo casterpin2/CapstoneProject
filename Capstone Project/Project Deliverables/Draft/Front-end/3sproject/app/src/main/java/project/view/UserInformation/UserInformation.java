@@ -1,6 +1,8 @@
 package project.view.UserInformation;
 
-public class UserInformation {
+import java.io.Serializable;
+
+public class UserInformation implements Serializable {
     private int userID;
     private String userName;
     private String DOB;
@@ -12,6 +14,9 @@ public class UserInformation {
     private String userImg;
     private int numberofOrder;
     private String storeName;
+
+    public UserInformation() {
+    }
 
     public UserInformation(int userID, String userName, String DOB, String address, String phone, String email, String gender, String password, String userImg, int numberofOrder, String storeName) {
         this.userID = userID;

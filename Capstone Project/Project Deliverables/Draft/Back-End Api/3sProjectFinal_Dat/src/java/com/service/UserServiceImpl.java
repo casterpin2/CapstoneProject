@@ -26,4 +26,14 @@ public class UserServiceImpl implements UserService{
     public List<UserEntites> getAllUserForAdmin() throws SQLException {
        return dao.getAllUserForAdmin();
     }
+
+    @Override
+    public int userHasExists(String username, String email, String phone,String typeSearch) throws SQLException {
+        return dao.userHasExists(username,email,phone,typeSearch);
+    }
+
+    @Override
+    public Boolean registerUser(UserEntites us) throws SQLException {
+     return  dao.registerUser(us);
+    }
 }

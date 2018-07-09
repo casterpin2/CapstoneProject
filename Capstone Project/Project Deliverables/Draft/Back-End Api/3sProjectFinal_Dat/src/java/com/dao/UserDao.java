@@ -15,4 +15,8 @@ import java.util.List;
  */
 public interface UserDao {
     public List<UserEntites> getAllUserForAdmin() throws SQLException;
+    //lấy user theo người dùng nhập lúc đăng ký và đăng nhập
+    public int userHasExists( String username, String email, String phone,String typeSearch) throws SQLException;
+    //danh ky
+    public Boolean registerUser(UserEntites us) throws SQLException;
 }
