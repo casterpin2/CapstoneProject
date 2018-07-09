@@ -20,8 +20,8 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="32dp">
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="24dp">
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/etStoreNameLayout"
@@ -32,10 +32,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="text"
-                    android:hint="@string/storeNameText"
+                    android:hint="Tên cửa hàng"
                     android:textSize="13dp"
-                    android:focusable="true"
-                    android:focusableInTouchMode="true"/>
+                    android:maxLength="64"
+                    android:focusedByDefault="false"/>
+
                 <TextView
                     android:id="@+id/tvStoreNameError"
                     android:layout_width="match_parent"
@@ -49,17 +50,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:passwordToggleEnabled="true"
-                android:layout_below="@id/etStoreNameLayout">
+                android:layout_below="@id/etStoreNameLayout"
+                android:layout_marginTop="5dp">
                 <android.support.design.widget.TextInputEditText
                     android:id="@+id/etPhone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="number"
-                    android:hint="@string/phoneText"
+                    android:hint="Số điện thoại"
                     android:textSize="13dp"
-                    android:focusable="true"
-                    android:focusableInTouchMode="true"/>
+                    android:focusedByDefault="false"/>
             </android.support.design.widget.TextInputLayout>
+
             <!--<LinearLayout-->
             <!--android:id="@+id/addressLayout"-->
             <!--android:layout_height="wrap_content"-->
@@ -96,7 +98,7 @@
             <!--</LinearLayout>-->
 
             <RelativeLayout
-                android:id="@+id/cityLayout"
+                android:id="@+id/handleAddressLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/etPhoneLayout"
@@ -104,23 +106,23 @@
                 android:background="@color/colorWhite"
                 android:padding="10dp">
                 <TextView
-                    android:id="@+id/cityText"
+                    android:id="@+id/handleAddress"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
-                    android:text="@string/cityText"
+                    android:text="Chọn địa điểm"
                     android:textSize="11dp"/>
                 <TextView
-                    android:id="@+id/city"
+                    android:id="@+id/handleAddressText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text=""
-                    android:layout_below="@+id/cityText"
+                    android:layout_below="@+id/handleAddress"
                     android:textSize="14dp"
                     android:textColor="@color/colorBlack"
                     android:layout_marginTop="5dp"/>
                 <ImageView
-                    android:id="@+id/rightArrowCity"
+                    android:id="@+id/rightArrowHandleLocation"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_alignParentRight="true"
@@ -129,96 +131,43 @@
 
             </RelativeLayout>
             <RelativeLayout
-                android:id="@+id/townLayout"
+                android:id="@+id/autoAddressLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/cityLayout"
+                android:layout_below="@+id/handleAddressLayout"
                 android:layout_marginTop="10dp"
                 android:background="@color/colorWhite"
                 android:padding="10dp">
+
                 <TextView
                     android:id="@+id/townText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:text="@string/townText"
-                    android:textSize="11dp"/>
-                <TextView
-                    android:id="@+id/town"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+
+                    android:text="Tự động lấy địa điểm"
+                    android:textSize="11dp" />
+
+                <!--<com.polyak.iconswitch.IconSwitch-->
+                <!--android:id="@+id/icon_switch"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_alignParentEnd="true"-->
+                <!--android:layout_alignParentTop="true"-->
+                <!--app:isw_icon_left="@drawable/cancel_16dp"-->
+                <!--app:isw_icon_right="@drawable/location_16dp"/>-->
+                <com.suke.widget.SwitchButton
+                    android:id="@+id/switch_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text=""
-                    android:layout_below="@+id/townText"
-                    android:textSize="14dp"
-                    android:textColor="@color/colorBlack"
-                    android:layout_marginTop="5dp"/>
-                <ImageView
-                    android:id="@+id/rightArrowTown"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:src="@drawable/right_arrow"/>
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentTop="true"/>
 
             </RelativeLayout>
-            <RelativeLayout
-                android:id="@+id/communeLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/townLayout"
-                android:layout_marginTop="10dp"
-                android:background="@color/colorWhite"
-                android:padding="10dp">
-                <TextView
-                    android:id="@+id/communeText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:text="@string/communeText"
-                    android:textSize="11dp"/>
-                <TextView
-                    android:id="@+id/commune"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text=""
-                    android:layout_below="@+id/communeText"
-                    android:textSize="14dp"
-                    android:textColor="@color/colorBlack"
-                    android:layout_marginTop="5dp"/>
-                <ImageView
-                    android:id="@+id/rightArrowCommune"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:src="@drawable/right_arrow"/>
 
-            </RelativeLayout>
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/etDetailAddressLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/communeLayout"
-                android:layout_marginTop="10dp">
-                <android.support.design.widget.TextInputEditText
-                    android:id="@+id/etDetailAddress"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="text"
-                    android:hint="@string/addressText"
-                    android:textSize="13dp"
-                    android:focusable="true"
-                    android:focusableInTouchMode="true"/>
 
-            </android.support.design.widget.TextInputLayout>
-            <CheckBox
-                android:id="@+id/checkBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/etDetailAddressLayout"
-                android:layout_marginTop="10dp"
-                android:textSize="13dp"
-                android:text="@string/locateCurrentLocationText"/>
+
 
 
 
@@ -238,11 +187,19 @@
                 android:id="@+id/registerBtn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/checkBox"
-                android:text="@string/btn_register"
+                android:layout_below="@+id/map"
+                android:text="Đăng kí"
                 android:background="@drawable/login_button"
                 android:textColor="@color/colorWhite"
                 android:layout_marginTop="10dp"/>
+            <fragment
+                android:id="@+id/map"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:layout_below="@+id/autoAddressLayout"
+                tools:context=".TestMap"
+                android:layout_marginTop="5dp"/>
         </RelativeLayout>
 
     </RelativeLayout>

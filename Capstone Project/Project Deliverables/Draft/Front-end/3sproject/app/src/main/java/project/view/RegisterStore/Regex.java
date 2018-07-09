@@ -1,4 +1,4 @@
-package project.view.Register;
+package project.view.RegisterStore;
 
 import java.util.regex.Pattern;
 

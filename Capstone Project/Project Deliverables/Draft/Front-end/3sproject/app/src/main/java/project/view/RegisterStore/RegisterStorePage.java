@@ -14,210 +14,259 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.ImageView;
+import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import project.view.EditProductInStore.EditProductInStorePage;
-import project.view.MainActivity;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocomplete;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.suke.widget.SwitchButton;
+
 import project.view.R;
 
-public class RegisterStorePage extends AppCompatActivity {
+public class RegisterStorePage extends AppCompatActivity implements OnMapReadyCallback {
 
     final static int REQUEST_LOCATION = 1;
+    int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
+
+    private GoogleMap mMap;
     private LocationManager locationManager;
-    private RelativeLayout cityLayout, townLayout, communeLayout;
-    private CheckBox checkbox;
+    private RelativeLayout handleAddressLayout;
     private Button registerBtn;
-    TextView city, town, commune, storeName, phone, tvStoreNameError, etDetailAddress;
-    ImageView rightArrowCity, rightArrowTown, rightArrowCommune;
+    private TextView handleAddressText, tvStoreNameError;
+    private EditText etStoreName, etPhone;
+    private String handleLocationPlace = "";
+    private SwitchButton iconSwitch;
 
-    private int userID;
-    private int cityID = 0;
-    private int townID = 0;
-    private int communeID = 0;
+    double handleLongtitude = 0.0;
+    double handleLatitude = 0.0;
+    double autoLatitude = 0.0;
+    double autoLongtitude = 0.0;
 
-    public void setCityID(int cityID) {
-        this.cityID = cityID;
+    public void setAutoLatitude(double autoLatitude) {
+        this.autoLatitude = autoLatitude;
     }
 
-    public void setTownID(int townID) {
-        this.townID = townID;
-    }
-
-    public void setCommuneID(int communeID) {
-        this.communeID = communeID;
+    public void setAutoLongtitude(double autoLongtitude) {
+        this.autoLongtitude = autoLongtitude;
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register_store_page);
+
+        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
         getSupportActionBar().setTitle("Đăng kí cửa hàng");
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorApplication)));
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getColor(R.color.colorApplication)));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        checkbox = findViewById(R.id.checkBox);
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
 
-        locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-        checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        mapFragment.getMapAsync(this);
+
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+
+        handleAddressLayout = (RelativeLayout) findViewById(R.id.handleAddressLayout);
+
+        handleAddressText = (TextView) findViewById(R.id.handleAddressText);
+        tvStoreNameError = (TextView) findViewById(R.id.tvStoreNameError);
+        etPhone = (EditText) findViewById(R.id.etPhone);
+        etStoreName = (EditText) findViewById(R.id.etStoreName);
+
+        iconSwitch = findViewById(R.id.switch_button);
+
+        registerBtn = (Button) findViewById(R.id.registerBtn);
+
+
+        etStoreName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(checkbox.isChecked()){
-                    getLocation();
-                } else {
-                    setEnableAndVisibleLayout();
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(!hasFocus){
+                    Regex regex = new Regex();
+                    String input = etStoreName.getText().toString();
+                    if(!regex.isStoreName(input)){
+                        tvStoreNameError.setText("Tên cửa hàng không chứa kí tự đặc biệt, lớn hơn 6 kí tựu và nhỏ hơn 64 kí tự!!");
+                    }
+                    else
+                        tvStoreNameError.setText("");
                 }
             }
         });
 
-        cityLayout = (RelativeLayout) findViewById(R.id.cityLayout);
-        townLayout = (RelativeLayout) findViewById(R.id.townLayout);
-        communeLayout = (RelativeLayout) findViewById(R.id.communeLayout);
-
-        city = (TextView) findViewById(R.id.city);
-        town = (TextView) findViewById(R.id.town);
-        commune = (TextView) findViewById(R.id.commune);
-        storeName = (TextView) findViewById(R.id.etStoreName);
-        phone = (TextView) findViewById(R.id.etPhone);
-        tvStoreNameError = (TextView) findViewById(R.id.tvStoreNameError);
-        etDetailAddress =(TextView) findViewById(R.id.etDetailAddress);
-
-        rightArrowCity = (ImageView) findViewById(R.id.rightArrowCity);
-        rightArrowTown = (ImageView) findViewById(R.id.rightArrowTown);
-        rightArrowCommune = (ImageView) findViewById(R.id.rightArrowCommune);
-
-        registerBtn = (Button) findViewById(R.id.registerBtn);
-
-        city.setText(String.valueOf(cityID));
-        town.setText(String.valueOf(townID));
-        commune.setText(String.valueOf(communeID));
-
-        userID = getIntent().getIntExtra("userID", -1);
-
-
-        cityLayout.setOnClickListener(new View.OnClickListener() {
+        iconSwitch.setOnCheckedChangeListener(new SwitchButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View v) {
-                Intent toCitySelectorPage = new Intent(RegisterStorePage.this, CityChoosenPage.class);
-                startActivityForResult(toCitySelectorPage, 1);
+            public void onCheckedChanged(SwitchButton view, boolean isChecked) {
+                if(view.isChecked()) {
+                    getLocation();
+                    handleAddressLayout.setEnabled(false);
+                    handleAddressText.setText("Vị trí hiện tại của bạn");
+                } else {
+                    setAutoLatitude(0.0);
+                    setAutoLongtitude(0.0);
+                        handleAddressText.setText(handleLocationPlace);
+                        handleAddressLayout.setEnabled(true);
+                    if(handleLongtitude == 0.0 && handleLatitude == 0.0) {
+                        LatLng defaultLocation = new LatLng(21.028511, 105.804817);
+                        mMap.moveCamera(CameraUpdateFactory.newLatLng(defaultLocation));
+                        mMap.setMinZoomPreference(10.0f);
+                        mMap.setMaxZoomPreference(10.1f);
+                    } else {
+                        markerToMap(handleLongtitude,handleLatitude,mMap,"Vị trí đăng kí");
+                    }
+
+                }
             }
 
         });
 
-        townLayout.setOnClickListener(new View.OnClickListener() {
+        handleAddressLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getActivityInTown(cityID);
-            }
-        });
+                try {
+                    Intent intent =
+                            new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_FULLSCREEN)
+                                    .build(RegisterStorePage.this);
+                    startActivityForResult(intent, PLACE_AUTOCOMPLETE_REQUEST_CODE);
 
-        communeLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getActivityInCommune(cityID, townID);
+                } catch (GooglePlayServicesRepairableException e) {
+                    // TODO: Handle the error.
+                } catch (GooglePlayServicesNotAvailableException e) {
+                    // TODO: Handle the error.
+                }
             }
+
         });
 
         registerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(RegisterStorePage.this, "cityID : "+cityID, Toast.LENGTH_SHORT).show();
-                Toast.makeText(RegisterStorePage.this, "townID : "+townID, Toast.LENGTH_SHORT).show();
-                Toast.makeText(RegisterStorePage.this, "communeID : "+communeID, Toast.LENGTH_SHORT).show();
+
             }
         });
+
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         if (requestCode == 1) {
-            if(resultCode == Activity.RESULT_OK){
-                cityID = data.getIntExtra("cityID", cityID);
-                townID = data.getIntExtra("townID", townID);
-                communeID = data.getIntExtra("communeID", communeID);
+            if (resultCode == Activity.RESULT_OK) {
+//                cityID = data.getIntExtra("cityID", cityID);
+//                townID = data.getIntExtra("townID", townID);
+//                communeID = data.getIntExtra("communeID", communeID);
 
-                city.setText(String.valueOf(cityID));
-                town.setText(String.valueOf(townID));
-                commune.setText(String.valueOf(communeID));
+//                city.setText(String.valueOf(cityID));
+//                town.setText(String.valueOf(townID));
+//                commune.setText(String.valueOf(communeID));
 
             }
             if (resultCode == Activity.RESULT_CANCELED) {
                 //Write your code if there's no result
             }
+
+            if (requestCode == PLACE_AUTOCOMPLETE_REQUEST_CODE) {
+                if (resultCode == RESULT_OK) {
+                    Place place = PlaceAutocomplete.getPlace(this, data);
+                    Toast.makeText(RegisterStorePage.this, "Place: " + place.getName(), Toast.LENGTH_SHORT).show();
+                    handleLocationPlace = place.getAddress().toString();
+                    handleAddressText.setText(handleLocationPlace);
+                    handleLongtitude = place.getLatLng().longitude;
+                    handleLatitude = place.getLatLng().latitude;
+                    markerToMap(handleLongtitude, handleLatitude, mMap, "Vị trí đăng kí");
+                } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
+                    Status status = PlaceAutocomplete.getStatus(this, data);
+                    // TODO: Handle the error.
+                    Toast.makeText(RegisterStorePage.this, "An error occurred: " + status, Toast.LENGTH_SHORT).show();
+
+                } else if (resultCode == RESULT_CANCELED) {
+                    // The user canceled the operation.
+                }
+            }
         }
     }
 
-    public void getActivityInTown(int cityID){
-        if(cityID == 0) {
-            // to
-            Intent i = new Intent(RegisterStorePage.this, CityChoosenPage.class);
-            startActivityForResult(i, 1);
-        } else {
-            Intent i = new Intent(RegisterStorePage.this, TownChoosenPage.class);
-            startActivityForResult(i,1);
-        }
-    }
 
-
-    public void getActivityInCommune(int cityID, int townID){
-        if(cityID == 0) {
-            // to
-            Intent i = new Intent(RegisterStorePage.this, CityChoosenPage.class);
-            startActivityForResult(i, 1);
-        } else if (cityID != 0 && townID == 0) {
-            Intent i = new Intent(RegisterStorePage.this, TownChoosenPage.class);
-            startActivityForResult(i,1);
-        } else if (cityID != 0 && townID != 0) {
-            Intent i = new Intent(RegisterStorePage.this, CommuneChoosenPage.class);
-            startActivityForResult(i,1);
-        }
-    }
-
-    public void setEnableAndVisibleLayout(){
-        cityLayout.setEnabled(true);
-        townLayout.setEnabled(true);
-        communeLayout.setEnabled(true);
-        rightArrowCity.setVisibility(View.VISIBLE);
-        rightArrowTown.setVisibility(View.VISIBLE);
-        rightArrowCommune.setVisibility(View.VISIBLE);
-    }
-    public void setDisableAndInvisibleLayout(){
-        cityLayout.setEnabled(false);
-        townLayout.setEnabled(false);
-        communeLayout.setEnabled(false);
-        rightArrowCity.setVisibility(View.INVISIBLE);
-        rightArrowTown.setVisibility(View.INVISIBLE);
-        rightArrowCommune.setVisibility(View.INVISIBLE);
-    }
-
-    public void getLocation(){
-        if(ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+    public void getLocation() {
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
         } else {
             Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-            if(location != null){
-                double latitude = location.getLatitude();
-                double longtitude = location.getLongitude();
+            if (location != null) {
+                autoLatitude = location.getLatitude();
+                autoLongtitude = location.getLongitude();
+
+                markerToMap(autoLongtitude, autoLatitude, mMap, "Ví trí của bạn");
+            } else {
+                Toast.makeText(this, "Chưa có vị trí định vị!!", Toast.LENGTH_SHORT).show();
             }
-            setDisableAndInvisibleLayout();
+
         }
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+        } else {
+            Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            if (location != null) {
+                double latitude = 21.028511;
+                double longtitude = 105.804817;
+
+//                 Add a marker in Ha Noi and move the camer
+                LatLng hanoi = new LatLng(latitude, longtitude);
+                mMap.moveCamera(CameraUpdateFactory.newLatLng(hanoi));
+                mMap.setMinZoomPreference(10.0f);
+
+            }
+
+        }
+    }
+
+    public void markerToMap(double longtitude, double latitude, GoogleMap mMap, String markerContent) {
+        markerContent = "";
+        LatLng myLocation = new LatLng(latitude, longtitude);
+        mMap.clear();
+        mMap.addMarker(new MarkerOptions().position(myLocation).title(markerContent));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(myLocation));
+        mMap.setMinZoomPreference(15);
+        mMap.setMaxZoomPreference(25);
+        mMap.getUiSettings().isMyLocationButtonEnabled();
+        mMap.getUiSettings().setScrollGesturesEnabled(false);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                if(storeName.getText().toString().length() == 0 && phone.getText().toString().length() == 0 && etDetailAddress.getText().toString().length() == 0
-                        && cityID == 0 && townID == 0 && communeID == 0) {
+                final int storeNameLength = etStoreName.getText().toString().length();
+                final int phoneLength = etPhone.getText().toString().length();
+
+                if (storeNameLength == 0 && phoneLength == 0
+                        && handleLatitude == 0.0 && handleLongtitude == 0.0
+                        && autoLatitude == 0.0 && autoLongtitude == 0.0) {
+
                     finish();
-                    return true;
                 } else {
                     AlertDialog.Builder builder = new AlertDialog.Builder(RegisterStorePage.this);
                     builder.setTitle(R.string.back_alertdialog_title);
@@ -238,11 +287,9 @@ public class RegisterStorePage extends AppCompatActivity {
                     });
                     builder.show();
                 }
-
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
-
 
 }
