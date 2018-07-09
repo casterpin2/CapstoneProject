@@ -7,7 +7,7 @@ public class ApiUtils {
 
     private ApiUtils() {}
 
-    public static final String BASE_URL = "http://192.168.107.101:8080/3sProjectFinal/api/";
+    public static final String BASE_URL = "http://150.95.111.195:8080:8080/3sProjectFinal/api/";
 
     public static APIService getAPIService() {
 
