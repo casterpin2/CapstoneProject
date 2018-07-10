@@ -21,7 +21,7 @@ public class StoreServiceImpl implements StoreService{
     @Autowired
     StoreDao dao;
     @Override
-    public boolean registerStore(StoreEntites store,LocationEntites location) throws SQLException {
+    public String registerStore(StoreEntites store,LocationEntites location) throws SQLException {
         return dao.registerStore(store,location);
     }
     

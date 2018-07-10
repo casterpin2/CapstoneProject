@@ -14,5 +14,5 @@ import java.sql.SQLException;
  * @author AHBP
  */
 public interface StoreService {
-    public boolean  registerStore(StoreEntites store,LocationEntites location) throws SQLException;
+    public String  registerStore(StoreEntites store,LocationEntites location) throws SQLException;
 }

@@ -10,6 +10,7 @@ import project.view.Brand.Brand;
 import project.view.Category.Category;
 import project.view.ProductBrandDisplay.ProductBrand;
 import project.view.ProductInStore.ProductInStore;
+import project.view.RegisterStore.Result;
 import project.view.SaleProduct.SaleProduct;
 import project.view.UserInformation.UserInformation;
 import retrofit2.Call;
@@ -29,7 +30,7 @@ public interface APIService {
                         @Field("password") String password);
 
     @POST("registerStore")
-    Call<String> registerStore(@Body HashMap<String,String> map);
+    Call<Result> registerStore(@Body HashMap<String,String> map);
 
     @GET("getProductForAdd")
     Call<List<Item>> getProducts(@Query("query") String query,@Query("page") int page);

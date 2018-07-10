@@ -75,7 +75,7 @@ public class RegisterStorePage extends AppCompatActivity implements OnMapReadyCa
     double handleLatitude = 0.0;
     double autoLatitude = 0.0;
     double autoLongtitude = 0.0;
-
+    private String result = "";
     public void setAutoLatitude(double autoLatitude) {
         this.autoLatitude = autoLatitude;
     }
@@ -141,8 +141,8 @@ public class RegisterStorePage extends AppCompatActivity implements OnMapReadyCa
                 } else {
                     setAutoLatitude(0.0);
                     setAutoLongtitude(0.0);
-                        handleAddressText.setText(handleLocationPlace);
-                        handleAddressLayout.setEnabled(true);
+                    handleAddressText.setText(handleLocationPlace);
+                    handleAddressLayout.setEnabled(true);
                     if(handleLongtitude == 0.0 && handleLatitude == 0.0) {
                         LatLng defaultLocation = new LatLng(21.028511, 105.804817);
                         mMap.moveCamera(CameraUpdateFactory.newLatLng(defaultLocation));
@@ -400,8 +400,7 @@ public class RegisterStorePage extends AppCompatActivity implements OnMapReadyCa
 
         @Override
         protected void onPostExecute(String result) {
-            if (result.equals("true"))
-            Toast.makeText(RegisterStorePage.this, "Đăng kí thành công", Toast.LENGTH_LONG).show();
+            Toast.makeText(RegisterStorePage.this, result, Toast.LENGTH_LONG).show();
             super.onPostExecute(result);
         }
 
@@ -415,9 +414,9 @@ public class RegisterStorePage extends AppCompatActivity implements OnMapReadyCa
         protected String doInBackground(Call... calls) {
             String result = "";
             try {
-                Call<String> call = calls[0];
-                Response<String> response = call.execute();
-                result = response.body();
+                Call<Result> call = calls[0];
+                Response<Result> response = call.execute();
+                result = response.body().getResult();
             } catch (IOException e) {
             }
             return result;
@@ -430,7 +429,7 @@ public class RegisterStorePage extends AppCompatActivity implements OnMapReadyCa
         map.put("store",jSon1);
         map.put("location",jSon2);
         mAPI = ApiUtils.getAPIService();
-        final Call<String> call = mAPI.registerStore(map);
+        final Call<Result> call = mAPI.registerStore(map);
         new CallAPI().execute(call);
     }
 }

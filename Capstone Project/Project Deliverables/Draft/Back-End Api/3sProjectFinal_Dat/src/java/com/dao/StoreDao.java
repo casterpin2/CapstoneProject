@@ -14,5 +14,5 @@ import java.sql.SQLException;
  * @author DatNQ
  */
 public interface StoreDao {
-     public boolean  registerStore(StoreEntites store,LocationEntites location) throws SQLException;
+     public String  registerStore(StoreEntites store,LocationEntites location) throws SQLException;
 }

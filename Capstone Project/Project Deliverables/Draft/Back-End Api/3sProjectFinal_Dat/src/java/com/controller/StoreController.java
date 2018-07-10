@@ -34,7 +34,7 @@ public class StoreController {
     StoreService store;
 
     @RequestMapping(value = "/registerStore", method = RequestMethod.POST, produces = "application/json;")
-    public boolean registerStore(@RequestBody String storeJSON) throws SQLException, ClassNotFoundException, IOException {
+    public String registerStore(@RequestBody String storeJSON) throws SQLException, ClassNotFoundException, IOException {
         JsonFactory factory = new JsonFactory();
         factory.enable(JsonParser.Feature.ALLOW_SINGLE_QUOTES);
         ObjectMapper mapper = new ObjectMapper(factory);
@@ -43,7 +43,8 @@ public class StoreController {
         String locationObj = Obj.get("location");
         StoreEntites store = mapper.readValue(storeObj, StoreEntites.class);
         LocationEntites location = mapper.readValue(locationObj, LocationEntites.class);
-        boolean check = this.store.registerStore(store,location);
-        return check;
+        String check = this.store.registerStore(store,location);
+        String result = "{\"result\":" + "\"" + check + "\"}" ;
+        return result;
     }
 }
