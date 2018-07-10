@@ -5,13 +5,16 @@
  */
 package com.controller;
 
+import com.entites.JsonUtil;
 import com.entites.UserEntites;
 import com.service.UserService;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
@@ -31,5 +34,17 @@ public class UserController {
     public List<UserEntites> createNewEmployee() throws SQLException {
 
         return user.getAllUserForAdmin();
+    }
+
+    @RequestMapping(value = "/registerUser", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    public Boolean registerUser(@RequestParam("jsonString") String jsonString) throws SQLException, ClassNotFoundException, IOException {
+        List<UserEntites> list = JsonUtil.converJsonToJava(jsonString, UserEntites.class);    
+        return user.registerUser(list.get(0));
+    }
+
+    @RequestMapping(value = "/vadilateRegisterUser", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
+    public Integer vadilatorUser(@RequestParam("username") String username, @RequestParam("email") String email, @RequestParam("phone") String phone, @RequestParam("typeSearch") String typeSearch) throws SQLException, ClassNotFoundException, IOException {
+
+        return user.userHasExists(username, email, phone, typeSearch);
     }
 }

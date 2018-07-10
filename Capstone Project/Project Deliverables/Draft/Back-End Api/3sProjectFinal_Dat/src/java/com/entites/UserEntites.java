@@ -5,37 +5,45 @@
  */
 package com.entites;
 
+import java.io.Serializable;
+
 /**
  *
  * @author TUYEN
  */
-public class UserEntites {
-    private int id;
-    private String username;
+public class UserEntites implements Serializable{
+    private int userID;
+    private String userName;
     private String password;
     private String deviceId;
     private int roleId;
     private String firstName;
     private String lastName;
-
+    private String email;
+    private String phone;
+    private int numberofOrder;
+    
     public UserEntites() {
     }
 
-    public int getId() {
-        return id;
+    public int getUserID() {
+        return userID;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setUserID(int userID) {
+        this.userID = userID;
     }
 
-    public String getUsername() {
-        return username;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
+
+
+    
 
     public String getPassword() {
         return password;
@@ -75,6 +83,30 @@ public class UserEntites {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public int getNumberofOrder() {
+        return numberofOrder;
+    }
+
+    public void setNumberofOrder(int numberofOrder) {
+        this.numberofOrder = numberofOrder;
     }
     
     

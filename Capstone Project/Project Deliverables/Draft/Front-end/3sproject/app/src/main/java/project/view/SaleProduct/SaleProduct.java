@@ -1,18 +1,34 @@
 package project.view.SaleProduct;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Lincoln on 18/05/16.
  */
-public class SaleProduct {
+public class SaleProduct implements Serializable{
+    @SerializedName("product_id")
+    @Expose
     private String productID;
+    @SerializedName("product_name")
+    @Expose
     private String productName;
+    @SerializedName("price")
+    @Expose
     private double productPrice;
+    @SerializedName("promotion")
+    @Expose
     private double productPromotionPercent;
+    @SerializedName("storeName")
+    @Expose
     private String storeName;
-
+    @SerializedName("image_path")
+    @Expose
+    private String imgProductSale;
 
 
     public SaleProduct() {
@@ -65,35 +81,20 @@ public class SaleProduct {
     public void setStoreName(String storeName) {
         this.storeName = storeName;
     }
-    public static List<SaleProduct> setListProduct(){
 
-        List<SaleProduct> saleProductList = new ArrayList<>();
-        SaleProduct a = new SaleProduct("123","Banh Custard", 120000, 10,"Thang Store");
-        saleProductList.add(a);
+    public double getProductPromotionPercent() {
+        return productPromotionPercent;
+    }
 
-        a = new SaleProduct("123","Banh Custard", 120000, 10,"Thang Store");
-        saleProductList.add(a);
+    public void setProductPromotionPercent(double productPromotionPercent) {
+        this.productPromotionPercent = productPromotionPercent;
+    }
 
-        a = new SaleProduct("123","Banh Custard", 120000, 10,"Thang Store");
-        saleProductList.add(a);
+    public String getImgProductSale() {
+        return imgProductSale;
+    }
 
-        a = new SaleProduct("123","Banhs Custard", 1000000, 20,"Thang Store");
-        saleProductList.add(a);
-
-        a = new SaleProduct("123","Bánh Custard", 200000, 15,"Thang Store");
-        saleProductList.add(a);
-
-        a = new SaleProduct("123","Banh Custard", 120000, 10,"Thang Store");
-        saleProductList.add(a);
-
-        a = new SaleProduct("123","Banh Custard", 120000, 10,"Thang Store");
-        saleProductList.add(a);
-
-        a = new SaleProduct("123","Banh Custard", 120000, 10,"Thang Store");
-        saleProductList.add(a);
-
-        a = new SaleProduct("123","Banh Custard", 120000, 10,"Thang Store");
-        saleProductList.add(a);
-        return saleProductList;
+    public void setImgProductSale(String imgProductSale) {
+        this.imgProductSale = imgProductSale;
     }
 }

@@ -13,6 +13,7 @@ public class ApiUtils {
 
         return RetrofitClient.getClient(BASE_URL).create(APIService.class);
     }
+
     public static String removeAccent(String s) {
         String temp = Normalizer.normalize(s, Normalizer.Form.NFD);
         Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
