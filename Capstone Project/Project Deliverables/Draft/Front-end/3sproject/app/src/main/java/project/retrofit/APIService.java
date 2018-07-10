@@ -1,7 +1,9 @@
 package project.retrofit;
 
+import java.util.HashMap;
 import java.util.List;
 
+import project.googleMapAPI.GoogleMapJSON;
 import project.objects.User;
 import project.view.AddProductToStore.Item;
 import project.view.Brand.Brand;
@@ -25,6 +27,10 @@ public interface APIService {
     @FormUrlEncoded
     Call<User> savePost(@Field("username") String username,
                         @Field("password") String password);
+
+    @POST("registerStore")
+    Call<String> registerStore(@Body HashMap<String,String> map);
+
     @GET("getProductForAdd")
     Call<List<Item>> getProducts(@Query("query") String query);
 
@@ -61,4 +67,9 @@ public interface APIService {
     Call<List<SaleProduct>> getSaleProductTop20();
     @GET("productSales")
     Call<List<SaleProduct>> getSaleProduct();
+
+    //Google Map Service
+    @GET("json")
+    Call<GoogleMapJSON> getLocation(@Query("latlng") String latlng,
+                                    @Query("key") String key);
 }
