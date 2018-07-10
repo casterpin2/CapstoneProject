@@ -1,20 +1,18 @@
 package project.view.UserInformation;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import project.view.EditUserInformation.EditUserInformationPage;
 import project.view.R;
 
 public class UserInformationPage extends AppCompatActivity {
-    private UserInformation userInfor;
-    private TextView txtName, txtAddress, txtPhone, txtEmail, txtGender, txtDob;
-    private ImageView btnEditImg;
-
+    private TextView txtName, txtAddress, txtPhone, txtEmail, txtGender, txtDob, storeName;
 
     private final int REQUEST_PROFILE_CODE = 123;
 
@@ -23,25 +21,26 @@ public class UserInformationPage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_information_page);
 
+
+
+        TweakUI.makeTransparent(this);
         mapping();
-
-        btnEditImg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Bundle extras = new Bundle();
-                extras.putString("name", txtName.getText().toString());
-                extras.putString("phone", txtPhone.getText().toString());
-                extras.putString("address", txtAddress.getText().toString());
-                extras.putString("email", txtEmail.getText().toString());
-                extras.putString("dob", txtDob.getText().toString());
-                extras.putString("gender", txtGender.getText().toString());
-
-                Intent intent = new Intent(UserInformationPage.this, EditUserInformationPage.class);
-                intent.putExtras(extras);
-                startActivityForResult(intent, REQUEST_PROFILE_CODE);
-            }
-        });
     }
+
+    public void editProfile(View view) {
+        Bundle extras = new Bundle();
+        extras.putString("name", txtName.getText().toString());
+        extras.putString("phone", txtPhone.getText().toString());
+        extras.putString("address", txtAddress.getText().toString());
+        extras.putString("email", txtEmail.getText().toString());
+        extras.putString("dob", txtDob.getText().toString());
+        extras.putString("gender", txtGender.getText().toString());
+
+        Intent toEditUserInformationPage = new Intent(UserInformationPage.this, EditUserInformationPage.class);
+        toEditUserInformationPage.putExtras(extras);
+        startActivity(toEditUserInformationPage);
+    }
+
 
     private void mapping() {
         txtName = findViewById(R.id.txt_name);
@@ -50,15 +49,15 @@ public class UserInformationPage extends AppCompatActivity {
         txtEmail = findViewById(R.id.txt_email);
         txtGender = findViewById(R.id.txt_gender);
         txtDob = findViewById(R.id.txt_dob);
-        btnEditImg = findViewById(R.id.btnEdit);
+        storeName = findViewById(R.id.storeName);
     }
 
-//    @SuppressLint("ResourceType")
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.layout.activity_editprofile, menu);
-//        return true;
-//    }
+    @SuppressLint("ResourceType")
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.layout.activity_edit_user_information_page, menu);
+        return true;
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

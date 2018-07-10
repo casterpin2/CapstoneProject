@@ -5,6 +5,7 @@
     <color name="colorAccent">#FF4081</color>
     <color name="colorWhite">#FFFFFF</color>
     <color name="colorBlack">#000000</color>
+    <color name="transparent">#00000000</color>
     <color name="registerButton">#F4A460</color>
     <color name="colorRed">#FF0000</color>
     <color name="colorApplication">#ff0080</color>
@@ -37,5 +38,6 @@
     <color name="gradStart">#63C9FF</color>
     <color name="followersBg">#FF00A6</color>
     <color name="followingBg">#FF007C</color>
+    <color name="grey">#E5E5E5</color>
 
 </resources>

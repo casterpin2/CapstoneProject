@@ -3,76 +3,134 @@ package project.view.EditUserInformation;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
 import project.view.R;
-import project.view.RegisterStore.RegisterStorePage;
 import project.view.UserInformation.UserInformationPage;
 
 public class EditUserInformationPage extends AppCompatActivity {
 
     private EditText userNameText, addressText, phoneText, emailText, dobText;
-    private RadioGroup rdGender;
-    private RadioButton rdMale, rdFemale;
     private Button saveBtn, cancelBtn;
+    private ImageButton backBtn;
+    private Spinner genderSpinner;
     Calendar myCalendar ;
     Bundle extras;
+
+    String[] genderName = {"Chưa xác định", "Nam", "Nữ"};
+    int spinnerImage[] = {R.color.transparent, R.drawable.male, R.drawable.female};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_user_information_page);
 
-        getSupportActionBar().setTitle("Thay đổi thông tin người dùng");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable((getColor(R.color.colorAccent))));
+        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         mapping();
         getIncomingIntent();
         setLastSelector();
 
+
+        CustomAdapter customAdapter=new CustomAdapter(getApplicationContext(),spinnerImage,genderName);
+        genderSpinner.setAdapter(customAdapter);
+
+        Intent intent = getIntent();
+        final Bundle extras = intent.getExtras();
+
+        String gender = extras.getString("gender");
+        if(gender.equals("")){
+            genderSpinner.setSelection(0);
+        } else if (gender.equals("Nam")){
+            genderSpinner.setSelection(1);
+        } else if(gender.equals("Nữ")) {
+            genderSpinner.setSelection(2);
+        }
+
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Bundle extras = new Bundle();
+                Intent intent = getIntent();
+                Bundle extras = intent.getExtras();
 
-                extras.putString("name", userNameText.getText().toString());
-                extras.putString("phone", phoneText.getText().toString());
-                extras.putString("email", emailText.getText().toString());
-                extras.putString("dob", dobText.getText().toString());
-                extras.putString("address", addressText.getText().toString());
-                if (rdMale.isChecked()) {
-                    extras.putString("gender", "Nam");
-                } else {
-                    extras.putString("gender", "Nữ");
+                String name = userNameText.getText().toString();
+                String phone = phoneText.getText().toString();
+                String email = emailText.getText().toString();
+                String dob = dobText.getText().toString();
+                String address = addressText.getText().toString();
+
+                String gender = "";
+                if (genderSpinner.getSelectedItemPosition() == 0) {
+                    gender = "";
+                } else if (genderSpinner.getSelectedItemPosition() == 1) {
+                    gender = "Nam";
+                } else if (genderSpinner.getSelectedItemPosition() == 2){
+                    gender = "Nữ";
                 }
 
-                Intent intent = new Intent(EditUserInformationPage.this, UserInformationPage.class);
-                intent.putExtras(extras);
-                setResult(200, intent);
-                finish();
+
+                if (extras.getString("name").equals(name) && extras.getString("phone").equals(phone)
+                        && extras.getString("email").equals(email) && extras.getString("dob").equals(dob)
+                        && extras.getString("address").equals(address) && extras.getString("gender").equals(gender)) {
+
+                    Intent toUserInformationPage = new Intent(EditUserInformationPage.this, UserInformationPage.class);
+                    startActivity(toUserInformationPage);
+
+                } else {
+                    // code service here
+                    Toast.makeText(EditUserInformationPage.this, "Done!", Toast.LENGTH_SHORT).show();
+                }
+
+
             }
         });
 
         cancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(EditUserInformationPage.this, UserInformationPage.class);
-                setResult(200, intent);
-                finish();
+                if(extras.getString("name").equals(userNameText.getText().toString())
+                        && extras.getString("phone").equals(phoneText.getText().toString())
+                        && extras.getString("address").equals(addressText.getText().toString())
+                        && extras.getString("email").equals(emailText.getText().toString())
+                        && extras.getString("dob").equals(dobText.getText().toString())) {
+                    onBackPressed();
+                } else {
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(EditUserInformationPage.this);
+                    builder.setTitle(R.string.back_alertdialog_title);
+                    builder.setMessage(R.string.back_alertdialog_content);
+
+                    builder.setPositiveButton(R.string.alertdialog_acceptButton, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            onBackPressed();
+                        }
+                    });
+
+                    builder.setNegativeButton(R.string.alertdialog_cancelButton, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            return;
+                        }
+                    });
+                    builder.show();
+                }
             }
         });
 
@@ -84,9 +142,7 @@ public class EditUserInformationPage extends AppCompatActivity {
             public void onDateSet(DatePicker view, int year, int monthOfYear,
                                   int dayOfMonth) {
                 // TODO Auto-generated method stub
-                myCalendar.set(Calendar.YEAR, year);
-                myCalendar.set(Calendar.MONTH, monthOfYear);
-                myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                myCalendar.set(year,monthOfYear,dayOfMonth);
                 updateLabel();
             }
 
@@ -100,6 +156,40 @@ public class EditUserInformationPage extends AppCompatActivity {
                 new DatePickerDialog(EditUserInformationPage.this, date, myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH)).show();
             }
         });
+
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(extras.getString("name").equals(userNameText.getText().toString())
+                        && extras.getString("phone").equals(phoneText.getText().toString())
+                        && extras.getString("address").equals(addressText.getText().toString())
+                        && extras.getString("email").equals(emailText.getText().toString())
+                        && extras.getString("dob").equals(dobText.getText().toString())) {
+                    onBackPressed();
+                } else {
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(EditUserInformationPage.this);
+                    builder.setTitle(R.string.back_alertdialog_title);
+                    builder.setMessage(R.string.back_alertdialog_content);
+
+                    builder.setPositiveButton(R.string.alertdialog_acceptButton, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            onBackPressed();
+                        }
+                    });
+
+                    builder.setNegativeButton(R.string.alertdialog_cancelButton, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            return;
+                        }
+                    });
+                    builder.show();
+                }
+
+            }
+        });
     }
 
     private void mapping() {
@@ -107,14 +197,13 @@ public class EditUserInformationPage extends AppCompatActivity {
         addressText = findViewById(R.id.addressText);
         phoneText = findViewById(R.id.phoneText);
         emailText = findViewById(R.id.emailText);
-        dobText = (EditText) findViewById(R.id.dobText);
-        rdGender = findViewById(R.id.rdGender);
-        rdMale = findViewById(R.id.rbtn_male);
-        rdFemale = findViewById(R.id.rbtn_female);
+        dobText =  findViewById(R.id.dobText);
+
         saveBtn = findViewById(R.id.saveBtn);
         cancelBtn = findViewById(R.id.cancelBtn);
+        backBtn = findViewById(R.id.backBtn);
+        genderSpinner = findViewById(R.id.genderSpinner);
 
-        rdMale.setChecked(true);
     }
 
     private void getIncomingIntent() {
@@ -128,14 +217,14 @@ public class EditUserInformationPage extends AppCompatActivity {
             addressText.setText(extras.getString("address"));
             phoneText.setText(extras.getString("phone"));
 
-            String gender = extras.getString("gender");
-            if (gender != null) {
-                if (gender.equals("Nam")) {
-                    rdMale.setChecked(true);
-                } else {
-                    rdFemale.setChecked(true);
-                }
-            }
+//            String gender = extras.getString("gender");
+//            if (gender != null) {
+//                if (gender.equals("Nam")) {
+//                    rdMale.setChecked(true);
+//                } else {
+//                    rdFemale.setChecked(true);
+//                }
+//            }
         }
     }
 
