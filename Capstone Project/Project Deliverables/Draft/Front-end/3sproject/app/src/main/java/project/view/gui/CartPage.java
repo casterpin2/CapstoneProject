@@ -36,6 +36,7 @@ import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import project.googleMapAPI.GoogleMapJSON;
@@ -285,14 +286,15 @@ public class CartPage extends BasePage{
                     for (int i = 0; i < list.size(); i++) {
                         lvPhones.expandGroup(i);
                     }
-                    //phoneListAdapter.setTotalPrice(0.0);
-                    phoneListAdapter.notifyDataSetChanged();
+
 
                     totalCart.setText(phoneListAdapter.getTotalPrice());
                     if (list.size() == 0) {
                         totalCart.setVisibility(View.INVISIBLE);
                     }
                 }
+                Collections.reverse(list);
+                phoneListAdapter.notifyDataSetChanged();
                 checkoutAllBtn.setEnabled(true);
             } else {
                 list.clear();

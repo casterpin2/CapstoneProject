@@ -702,7 +702,7 @@ public class SearchProductAddToStore extends BasePage {
             List<Item> listProduct = values[0];
             if (listProduct != null && listProduct.size() != 0 ) {
                 //theListView.removeFooterView(footerView);
-                searchedProductList.clear();
+                searchedProductList = listProduct;
             } else {
                 //theListView.removeFooterView(footerView);
                 limitData = true;

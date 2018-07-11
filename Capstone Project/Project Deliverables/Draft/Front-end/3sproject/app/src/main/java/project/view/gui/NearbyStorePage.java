@@ -237,7 +237,6 @@ public class NearbyStorePage extends BasePage implements OnMapReadyCallback, Loc
 
                             latitude = location.getLatitude();
                             longtitude = location.getLongitude();
-                            Toast.makeText(context, latitude+" "+longtitude, Toast.LENGTH_SHORT).show();
                         }
                     }
                 });

@@ -316,7 +316,7 @@ public class LoginPage extends AppCompatActivity {
                 loginBtn.setText("Đăng nhập");
                 return;
             } errorMessage.setText("");
-            if (result.getUser().getId() == 0) {
+            if (result.getUser().getId() == 0 && result.getUser().getLast_name() == null) {
                 errorMessage.setText("Tên tài khoản hoặc mật khẩu không đúng. Vui lòng đăng nhập lại");
                 loadingBar.setVisibility(View.INVISIBLE);
                 loginBtn.setEnabled(true);

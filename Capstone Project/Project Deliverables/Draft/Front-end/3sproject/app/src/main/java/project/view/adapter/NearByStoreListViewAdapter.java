@@ -166,7 +166,6 @@ public class NearByStoreListViewAdapter extends BaseAdapter {
                     public void onClick(View v) {
                         String destination = store.getLatitude()+","+store.getLongitude();
                         try {
-                            Toast.makeText(context, origin, Toast.LENGTH_SHORT).show();
                             new DirectionFinder((NearbyStorePage)context, origin, destination).execute();
                         } catch (UnsupportedEncodingException e) {
                             e.printStackTrace();
