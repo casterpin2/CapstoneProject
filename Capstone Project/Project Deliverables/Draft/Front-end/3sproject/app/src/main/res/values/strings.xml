@@ -15,6 +15,7 @@
     <string name="register_page_registerTitle">Đăng kí</string>
     <string name="register_page_haveAcc">Bạn đã có tài khoản?</string>
     <string name="user_name">Tên đăng nhập</string>
+    <string name="name">Tên hiển thị</string>
     <string name="password">Mật Khẩu</string>
     <string name="confirm_password">Nhập lại mật khẩu</string>
     <string name="email">Email</string>
@@ -66,6 +67,7 @@
     <string name="title_change_password">Đổi mật khẩu</string>
     <string name="error_password_not_match">Mật khẩu nhập lại không khớp</string>
     <string name="error_validate_username">Tên người dùng không hợp lệ</string>
+    <string name="error_validate_name">Tên không hợp lệ</string>
     <string name="error_validate_username_exists">Tên người dùng đã tồn tại</string>
     <string name="error_validate_password">Mật khẩu phải từ 8 ký tự bao gồm ký tự đặc biệt, ký tự chữ số</string>
     <string name="error_validate_phone">Số điện thoại không hợp lệ</string>

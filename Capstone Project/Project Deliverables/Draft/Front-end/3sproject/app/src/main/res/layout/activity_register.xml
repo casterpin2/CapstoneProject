@@ -70,11 +70,31 @@
                         android:textColor="@color/errorMess"/>
                 </android.support.design.widget.TextInputLayout>
                 <android.support.design.widget.TextInputLayout
+                    android:id="@+id/etNameLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/etUserNameLayout">
+                    <android.support.design.widget.TextInputEditText
+                        android:id="@+id/etName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text"
+                        android:hint="@string/name"
+                        android:textSize="13dp"/>
+                    <TextView
+                        android:id="@+id/tvName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:textSize="10dp"
+                        android:textColor="@color/errorMess"/>
+                </android.support.design.widget.TextInputLayout>
+                <android.support.design.widget.TextInputLayout
                     android:id="@+id/etNewPassLayout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:passwordToggleEnabled="true"
-                    android:layout_below="@id/etUserNameLayout">
+                    android:layout_below="@id/etNameLayout">
                     <android.support.design.widget.TextInputEditText
                         android:id="@+id/etPassword"
                         android:layout_width="match_parent"

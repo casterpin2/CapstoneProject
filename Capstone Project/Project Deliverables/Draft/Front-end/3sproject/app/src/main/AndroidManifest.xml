@@ -38,7 +38,13 @@
         <activity android:name=".ProductTypeDisplay.ProductTypeDisplay" />
         <activity
             android:name=".Register.RegisterActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".ChangePassword.ChangePasswordActivity"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -53,11 +59,7 @@
 
         </activity>
         <activity android:name=".RegisterStore.RegisterStorePage">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 
         <activity

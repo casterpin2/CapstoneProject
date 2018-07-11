@@ -32,10 +32,10 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class RegisterActivity extends AppCompatActivity {
-    private TextInputEditText etUserName, etPassword, etConfirmPass, etEmail, etPhoneNumber;
-    private TextView tvUserName, tvPassword, tvConfirmPassword, tvEmail, tvPhoneNumber, toLoginPageBtn;
+    private TextInputEditText etUserName,etName, etPassword, etConfirmPass, etEmail, etPhoneNumber;
+    private TextView tvUserName,tvName, tvPassword, tvConfirmPassword, tvEmail, tvPhoneNumber, toLoginPageBtn;
     private Button btnRegister;
-    private boolean isUserName, isPassword, confirm, isEmail, isPhone = true;
+    private boolean isUserName,isName, isPassword, confirm, isEmail, isPhone = true;
     private boolean checkUsernameTest;
     private ScrollView scroll;
     private APIService apiUserService;
@@ -59,6 +59,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         btnRegister = findViewById(R.id.btnRegister);
         etUserName = findViewById(R.id.etUserName);
+        etName = findViewById(R.id.etName);
         etPassword = findViewById(R.id.etPassword);
         etConfirmPass = findViewById(R.id.etConfirmPassword);
         etEmail = findViewById(R.id.etEmail);
@@ -67,6 +68,7 @@ public class RegisterActivity extends AppCompatActivity {
         toLoginPageBtn = findViewById(R.id.toLoginPageBtn);
 
         tvUserName = findViewById(R.id.tvUserName);
+        tvName = findViewById(R.id.tvName);
         tvPassword = findViewById(R.id.tvPassword);
         tvConfirmPassword = findViewById(R.id.tvConfirmPassword);
         tvEmail = findViewById(R.id.tvEmail);
@@ -85,6 +87,15 @@ public class RegisterActivity extends AppCompatActivity {
                     final Call<Integer> call = apiUserService.vadilator(etUserName.getText().toString(), etEmail.getText().toString(), etPhoneNumber.getText().toString(), "username");
                     new ValidatorUser().execute(call);
                     checkUserName(etUserName.getText().toString());
+                }
+            }
+        });
+
+        etName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(!hasFocus){
+                    checkName(etName.getText().toString());
                 }
             }
         });
@@ -153,6 +164,10 @@ public class RegisterActivity extends AppCompatActivity {
                 if (etUserName.getText().toString().isEmpty()) {
                     tvUserName.setText(R.string.error_empty);
                 }
+                if(etName.getText().toString().isEmpty()){
+                    tvName.setText(R.string.error_empty);
+                }
+
                 if (etPassword.getText().toString().isEmpty()) {
                     tvPassword.setText(R.string.error_empty);
                 }
@@ -168,7 +183,7 @@ public class RegisterActivity extends AppCompatActivity {
 
 
 
-                if (isUserName && isPassword && confirm && isEmail && isPhone ) {
+                if (isUserName&&isName && isPassword && confirm && isEmail && isPhone ) {
                     us.setUserName(etUserName.getText().toString());
                     us.setPhone(etPhoneNumber.getText().toString());
                     us.setEmail(etEmail.getText().toString());
@@ -208,7 +223,6 @@ public class RegisterActivity extends AppCompatActivity {
 //
 //                        }
 //                    });
-                    tvUserName.setText("bb");
                 }
             }
         });
@@ -230,6 +244,15 @@ public class RegisterActivity extends AppCompatActivity {
             tvUserName.setText(R.string.error_validate_username);
         } else
             tvUserName.setText("");
+    }
+
+    private void checkName(final String input) {
+        Regex validate = new Regex();
+        isName = validate.isName(input);
+        if (!input.isEmpty() && !isName) {
+            tvName.setText(R.string.error_validate_name);
+        } else
+            tvName.setText("");
     }
 
     private void confirmPassword(String pass, String passConfirm) {
