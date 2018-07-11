@@ -32,7 +32,7 @@ public interface APIService {
     Call<String> registerStore(@Body HashMap<String,String> map);
 
     @GET("getProductForAdd")
-    Call<List<Item>> getProducts(@Query("query") String query);
+    Call<List<Item>> getProducts(@Query("query") String query,@Query("page") int page);
 
     @POST("posts")
     @FormUrlEncoded
