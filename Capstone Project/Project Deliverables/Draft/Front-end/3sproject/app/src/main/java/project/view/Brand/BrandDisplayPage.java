@@ -33,6 +33,7 @@ import project.view.Category.CategoryCustomCardviewAdapter;
 import project.view.Category.CategoryDisplayPage;
 import project.view.MainActivity;
 import project.view.R;
+import project.view.UserInformation.TweakUI;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -190,8 +191,7 @@ public class BrandDisplayPage extends AppCompatActivity {
         switch (item.getItemId()) {
             case android.R.id.home:
                 // app icon in action bar clicked; go home
-                Intent intent = new Intent(this, MainActivity.class);
-                startActivity(intent);
+                onBackPressed();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

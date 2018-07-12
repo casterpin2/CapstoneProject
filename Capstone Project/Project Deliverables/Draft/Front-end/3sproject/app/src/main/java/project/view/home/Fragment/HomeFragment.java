@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
@@ -42,6 +43,7 @@ import project.view.Register.RegisterActivity;
 import project.view.SaleProduct.SaleProduct;
 import project.view.SaleProduct.SaleProductCustomCardviewAdapter;
 import project.view.SaleProduct.SaleProductDisplayPage;
+import project.view.UserInformation.TweakUI;
 import project.view.home.adapter.BrandRecycleViewAdapter;
 import project.view.home.adapter.CategoryRecycleViewAdapter;
 import project.view.home.adapter.SliderImageViewPagerAdapter;
@@ -75,8 +77,10 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        TweakUI.makeTransparent(getActivity());
         view = inflater.inflate(R.layout.fragment_home,container,false);
-        ScrollView scroll = view.findViewById(R.id.scroll_view);
+        NestedScrollView scroll = view.findViewById(R.id.scroll_view);
 
         scroll.setVerticalScrollBarEnabled(false);
         scroll.setHorizontalScrollBarEnabled(false);

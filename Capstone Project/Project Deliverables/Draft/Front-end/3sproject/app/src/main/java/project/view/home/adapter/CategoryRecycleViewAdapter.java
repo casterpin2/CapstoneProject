@@ -18,7 +18,6 @@ import java.util.List;
 import project.firebase.Firebase;
 import project.view.Category.Category;
 import project.view.R;
-import project.view.home.model.Item;
 
 /**
  * Created by Tung

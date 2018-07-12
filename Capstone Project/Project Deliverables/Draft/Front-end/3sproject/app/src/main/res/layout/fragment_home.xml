@@ -4,7 +4,7 @@
     android:id="@+id/main_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <ScrollView
+    <android.support.v4.widget.NestedScrollView
         android:id="@+id/scroll_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -37,7 +37,9 @@
                 <RelativeLayout
                     android:id="@+id/categoty_title"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginTop="8dp">
                     <TextView
                         android:id="@+id/tv_categories"
                         android:layout_width="wrap_content"
@@ -77,7 +79,9 @@
                 <RelativeLayout
                     android:id="@+id/brand_title"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginTop="8dp">
                     <TextView
                         android:id="@+id/tv_brand"
                         android:layout_width="wrap_content"
@@ -110,7 +114,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/layout_brand"
-                android:layout_marginTop="16dp">
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp">
                 <TextView
                     android:id="@+id/tv_sale_product"
                     android:layout_width="wrap_content"
@@ -128,5 +133,5 @@
                     android:scrollbars="vertical" />
             </RelativeLayout>
         </RelativeLayout>
-    </ScrollView>
+    </android.support.v4.widget.NestedScrollView>
 </android.support.v4.widget.SwipeRefreshLayout>
