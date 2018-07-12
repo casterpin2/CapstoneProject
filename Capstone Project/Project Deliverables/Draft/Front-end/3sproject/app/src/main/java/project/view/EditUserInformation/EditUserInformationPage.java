@@ -1,8 +1,10 @@
 package project.view.EditUserInformation;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -18,11 +20,18 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocomplete;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
 import project.view.R;
+import project.view.UserInformation.TweakUI;
 import project.view.UserInformation.UserInformationPage;
 
 public class EditUserInformationPage extends AppCompatActivity {
@@ -33,6 +42,7 @@ public class EditUserInformationPage extends AppCompatActivity {
     private Spinner genderSpinner;
     Calendar myCalendar ;
     Bundle extras;
+    int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
 
     String[] genderName = {"Chưa xác định", "Nam", "Nữ"};
     int spinnerImage[] = {R.color.transparent, R.drawable.male, R.drawable.female};
@@ -42,7 +52,7 @@ public class EditUserInformationPage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_user_information_page);
 
-        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        TweakUI.makeTransparent(this);
         mapping();
         getIncomingIntent();
         setLastSelector();
@@ -90,11 +100,14 @@ public class EditUserInformationPage extends AppCompatActivity {
                         && extras.getString("address").equals(address) && extras.getString("gender").equals(gender)) {
 
                     Intent toUserInformationPage = new Intent(EditUserInformationPage.this, UserInformationPage.class);
-                    startActivity(toUserInformationPage);
+                    setResult(201, toUserInformationPage);
+                    finish();
+
 
                 } else {
                     // code service here
-                    Toast.makeText(EditUserInformationPage.this, "Done!", Toast.LENGTH_SHORT).show();
+
+                    saveProfile(v);
                 }
 
 
@@ -190,6 +203,23 @@ public class EditUserInformationPage extends AppCompatActivity {
 
             }
         });
+
+        addressText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    Intent intent =
+                            new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_FULLSCREEN)
+                                    .build(EditUserInformationPage.this);
+                    startActivityForResult(intent, PLACE_AUTOCOMPLETE_REQUEST_CODE);
+
+                } catch (GooglePlayServicesRepairableException e) {
+                    // TODO: Handle the error.
+                } catch (GooglePlayServicesNotAvailableException e) {
+                    // TODO: Handle the error.
+                }
+            }
+        });
     }
 
     private void mapping() {
@@ -277,5 +307,71 @@ public class EditUserInformationPage extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+
+    public void saveProfile(View view) {
+        Bundle extras = new Bundle();
+
+        String gender = "";
+        if (genderSpinner.getSelectedItemPosition() == 0) {
+            gender = "";
+        } else if (genderSpinner.getSelectedItemPosition() == 1) {
+            gender = "Nam";
+        } else if (genderSpinner.getSelectedItemPosition() == 2){
+            gender = "Nữ";
+        }
+
+        extras.putString("name", userNameText.getText().toString());
+        extras.putString("phone", phoneText.getText().toString());
+        extras.putString("email", emailText.getText().toString());
+        extras.putString("dob", dobText.getText().toString());
+        extras.putString("address", addressText.getText().toString());
+        extras.putString("gender", gender);
+
+
+
+        Intent intent = new Intent(EditUserInformationPage.this, UserInformationPage.class);
+        intent.putExtras(extras);
+        setResult(200, intent);
+        finish();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == 1) {
+            if (resultCode == Activity.RESULT_OK) {
+//                cityID = data.getIntExtra("cityID", cityID);
+//                townID = data.getIntExtra("townID", townID);
+//                communeID = data.getIntExtra("communeID", communeID);
+
+//                city.setText(String.valueOf(cityID));
+//                town.setText(String.valueOf(townID));
+//                commune.setText(String.valueOf(communeID));
+
+            }
+            if (resultCode == Activity.RESULT_CANCELED) {
+                //Write your code if there's no result
+            }
+
+            if (requestCode == PLACE_AUTOCOMPLETE_REQUEST_CODE) {
+                if (resultCode == RESULT_OK) {
+                    Place place = PlaceAutocomplete.getPlace(this, data);
+                    String placeAddress = place.getAddress().toString();
+                    addressText.setText(placeAddress);
+                    Toast.makeText(EditUserInformationPage.this, "Place : " +placeAddress, Toast.LENGTH_SHORT).show();
+
+                } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
+                    Status status = PlaceAutocomplete.getStatus(this, data);
+                    // TODO: Handle the error.
+                    Toast.makeText(EditUserInformationPage.this, "An error occurred: " + status, Toast.LENGTH_SHORT).show();
+
+                } else if (resultCode == RESULT_CANCELED) {
+                    // The user canceled the operation.
+                }
+            }
+        }
+    }
+
+
 
 }
