@@ -1,13 +1,14 @@
 package project.view.Register;
 
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -23,7 +24,6 @@ import java.util.List;
 
 import project.retrofit.APIService;
 import project.retrofit.ApiUtils;
-import project.view.Category.Category;
 import project.view.Login.LoginPage;
 import project.view.R;
 import project.view.UserInformation.UserInformation;
@@ -36,48 +36,33 @@ public class RegisterActivity extends AppCompatActivity {
     private TextView tvUserName,tvName, tvPassword, tvConfirmPassword, tvEmail, tvPhoneNumber, toLoginPageBtn;
     private Button btnRegister;
     private boolean isUserName,isName, isPassword, confirm, isEmail, isPhone = true;
-    private boolean checkUsernameTest;
     private ScrollView scroll;
     private APIService apiUserService;
     private UserInformation us;
-    private String usernameTemp;
     private Gson gson;
-    private String jsonString;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+
+        findView();
         apiUserService = ApiUtils.getAPIService();
-        final Toolbar toolbar = findViewById(R.id.toolbar);
-        toolbar.setTitle("");
+
+        toolbar.setTitle(R.string.title_register_screen);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor(((ColorDrawable) toolbar.getBackground()).getColor());
+        }
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
-
-        btnRegister = findViewById(R.id.btnRegister);
-        etUserName = findViewById(R.id.etUserName);
-        etName = findViewById(R.id.etName);
-        etPassword = findViewById(R.id.etPassword);
-        etConfirmPass = findViewById(R.id.etConfirmPassword);
-        etEmail = findViewById(R.id.etEmail);
-        etPhoneNumber = findViewById(R.id.etPhoneNumber);
-        scroll = findViewById(R.id.scroll);
-        toLoginPageBtn = findViewById(R.id.toLoginPageBtn);
-
-        tvUserName = findViewById(R.id.tvUserName);
-        tvName = findViewById(R.id.tvName);
-        tvPassword = findViewById(R.id.tvPassword);
-        tvConfirmPassword = findViewById(R.id.tvConfirmPassword);
-        tvEmail = findViewById(R.id.tvEmail);
-        tvPhoneNumber = findViewById(R.id.tvPhoneNumber);
-
         scroll.setVerticalScrollBarEnabled(false);
         scroll.setHorizontalScrollBarEnabled(false);
+
         us = new UserInformation();
-        //   etUserName.setText("datduc");
 
         etUserName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -133,6 +118,7 @@ public class RegisterActivity extends AppCompatActivity {
         etPhoneNumber.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
+
                 if (!hasFocus) {
 
                     apiUserService = APIService.retrofit.create(APIService.class);
@@ -232,9 +218,29 @@ public class RegisterActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         // handle arrow click here
         if (item.getItemId() == android.R.id.home) {
-            finish();
+           onBackPressed();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void findView(){
+        toolbar = findViewById(R.id.toolbar);
+        btnRegister = findViewById(R.id.btnRegister);
+        etUserName = findViewById(R.id.etUserName);
+        etName = findViewById(R.id.etName);
+        etPassword = findViewById(R.id.etPassword);
+        etConfirmPass = findViewById(R.id.etConfirmPassword);
+        etEmail = findViewById(R.id.etEmail);
+        etPhoneNumber = findViewById(R.id.etPhoneNumber);
+        scroll = findViewById(R.id.scroll);
+        toLoginPageBtn = findViewById(R.id.toLoginPageBtn);
+
+        tvUserName = findViewById(R.id.tvUserName);
+        tvName = findViewById(R.id.tvName);
+        tvPassword = findViewById(R.id.tvPassword);
+        tvConfirmPassword = findViewById(R.id.tvConfirmPassword);
+        tvEmail = findViewById(R.id.tvEmail);
+        tvPhoneNumber = findViewById(R.id.tvPhoneNumber);
     }
 
     private void checkUserName(final String input) {
@@ -328,4 +334,6 @@ public class RegisterActivity extends AppCompatActivity {
             return null;
         }
     }
+
+
 }
