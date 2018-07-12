@@ -179,7 +179,10 @@ public class CartProductToStore extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 final int position = productListView.getPositionForView(parentView);
+                SearchProductAddToStore.searchedProductList.add(productList.get(position));
+
                 adapter.remove(productList.get(position));
+                //productList.remove(productList.get(position));
                 productListView.setAdapter(adapter);
             }
         });
@@ -199,6 +202,9 @@ public class CartProductToStore extends AppCompatActivity {
         builder.setPositiveButton(R.string.btn_delete, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                for (Item i : productList){
+                    SearchProductAddToStore.searchedProductList.add(i);
+                }
                 productList.clear();
                 adapter = new CartProductToStorePageListViewAdapter(CartProductToStore.this, R.layout.cart_product_to_store_page_custom_listview, productList);
                 productListView.setAdapter(adapter);

@@ -19,6 +19,7 @@ import android.support.v7.widget.SearchView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -96,7 +97,10 @@ public class SearchProductAddToStore extends AppCompatActivity {
 
         mAPI = ApiUtils.getAPIService();
         // create custom adapter that holds elements and their state (we need hold a id's of unfolded elements for reusable elements)
-        callAPI(query,page);
+        //callAPI(query,page);
+        if (SearchProductAddToStore.searchedProductList == null) {
+            SearchProductAddToStore.searchedProductList = new ArrayList<>();
+        }
         adapter = new SearchProductPageListViewAdapter(this,R.layout.search_product_page_custom_list_view,searchedProductList);
         // get our list view
         theListView = (ListView) findViewById(R.id.mainListView);
@@ -157,7 +161,11 @@ public class SearchProductAddToStore extends AppCompatActivity {
 
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                if(view.getLastVisiblePosition() == totalItemCount - 1 && theListView.getCount() > 5  && isLoading == false) {
+                Log.d("",String.valueOf(page));
+                Log.d("",String.valueOf(searchedProductList.size()));
+                int count = searchedProductList.size() + addedProductList.size();
+                if(view.getLastVisiblePosition() == totalItemCount - 1 && count == (page * 10)  && isLoading == false && (page == 1 || page == 2)) {
+                    Log.d("","Loading");
                     isLoading = true;
                     Thread thread = new ThreadgetMoreData();
                     thread.start();
@@ -169,8 +177,6 @@ public class SearchProductAddToStore extends AppCompatActivity {
 
     //create information dialog
     public void showInfoDialog(final List<Item> productList, final int position, View view) {
-
-
         view = (View) findViewById(R.id.search_page);
         StorageReference storageReference = Firebase.getFirebase();
 
@@ -431,7 +437,8 @@ public class SearchProductAddToStore extends AppCompatActivity {
         switch (item.getItemId()) {
             case android.R.id.home:
                 // app icon in action bar clicked; go home
-                onBackPressed();
+                Intent intent = new Intent(this, MainActivity.class);
+                startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -456,7 +463,7 @@ public class SearchProductAddToStore extends AppCompatActivity {
             public void onResponse(Call<List<Item>> call, Response<List<Item>> response) {
                 //searchedProductList.clear();
                 if (response != null && response.body().size() != 0 ) {
-                    theListView.removeFooterView(footerView);
+                    //theListView.removeFooterView(footerView);
                     for (int i = 0; i < response.body().size(); i++) {
                         Item item = response.body().get(i);
                         if (checkID(item.getProduct_id()))
@@ -515,7 +522,9 @@ public class SearchProductAddToStore extends AppCompatActivity {
 
     public void getMoreData(){
         //List<Item> addList = new ArrayList<>();
-        callAPI(query, ++page);
+        page ++;
+        callAPI(query, page);
+
         //addList = searchedProductList;
 
         //return addList;
@@ -532,9 +541,10 @@ public class SearchProductAddToStore extends AppCompatActivity {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-
-            Message msg = mHandle.obtainMessage(1);
-            mHandle.sendMessage(msg);
+            if (isLoading == true){
+                Message msg = mHandle.obtainMessage(1);
+                mHandle.sendMessage(msg);
+            }
         }
     }
 
@@ -551,8 +561,9 @@ public class SearchProductAddToStore extends AppCompatActivity {
             public boolean onQueryTextSubmit(String query) {
                 searchedProductList.clear();
                 page = 1;
-                query = searchView.getQuery().toString().trim();
 
+                query = searchView.getQuery().toString().trim();
+                SearchProductAddToStore.query = query;
                 int index = theListView.getFirstVisiblePosition();
                 View v = theListView.getChildAt(0);
                 int top = (v == null) ? 0 : v.getTop();
