@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import project.view.OrderManagerment.OrderManagement;
 import project.view.ProductInStore.ProductInStoreDisplayPage;
 import project.view.R;
 import project.view.StoreInformation.StoreInformation;
@@ -75,7 +76,8 @@ public class StoreFragment extends Fragment {
         orderLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(getContext(), OrderManagement.class);
+                getActivity().startActivity(intent);
             }
         });
 
