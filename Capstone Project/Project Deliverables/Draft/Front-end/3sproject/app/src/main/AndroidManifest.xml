@@ -39,7 +39,11 @@
         <activity
             android:name=".Register.RegisterActivity"
             android:theme="@style/AppTheme.NoActionBar" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".ChangePassword.ChangePasswordActivity"
@@ -48,13 +52,7 @@
         <activity android:name=".EditProductInStore.EditProductInStorePage" />
         <activity
             android:name=".home.HomeActivity"
-            android:theme="@style/AppTheme.NoActionBar" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".StoreInformation.StoreInformationPage"
             android:theme="@style/AppTheme.NoActionBar" >
@@ -73,15 +71,6 @@
             android:theme="@style/AppTheme.NoActionBar">
 
         </activity>
-        <activity android:name=".OrderManagerment.OrderDetailManagement"
-            android:theme="@style/AppTheme.NoActionBar">
-
-        </activity>
-        <activity android:name=".OrderManagerment.OrderManagement"
-            android:theme="@style/AppTheme.NoActionBar">
-
-        </activity>
-
     </application>
 
 </manifest>

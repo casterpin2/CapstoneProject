@@ -1,7 +1,6 @@
 package project.view.home.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,10 +16,7 @@ import com.google.firebase.storage.StorageReference;
 import java.util.List;
 
 import project.firebase.Firebase;
-import project.view.Brand.Brand;
 import project.view.Category.Category;
-import project.view.ProductBrandDisplay.ProductBrandDisplay;
-import project.view.ProductTypeDisplay.ProductTypeDisplay;
 import project.view.R;
 
 /**
@@ -76,11 +72,8 @@ public class CategoryRecycleViewAdapter extends RecyclerView.Adapter<CategoryRec
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                   /* Category category = categories.get(getAdapterPosition());
-                    Intent intent = new Intent(context, ProductTypeDisplay.class);
-                    intent.putExtra("brandID",category.getCategoryID());
-                    intent.putExtra("brandName",category.getCategoryName());
-                    context.startActivity(intent);*/
+                    Category category = categories.get(getAdapterPosition());
+                    Toast.makeText(context, category.getCategoryName(), Toast.LENGTH_SHORT).show();
                 }
             });
         }
