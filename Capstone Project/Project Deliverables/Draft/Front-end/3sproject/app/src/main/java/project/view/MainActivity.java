@@ -23,6 +23,10 @@ public class MainActivity extends AppCompatActivity {
         final List<Item> getData = SearchProductAddToStore.addedProductList;
         TextView text = findViewById(R.id.text);
         Button button = findViewById(R.id.button);
+
+        String storeName = getIntent().getStringExtra("storeName");
+        Toast.makeText(this, "storeName" + storeName, Toast.LENGTH_SHORT).show();
+
         if(getData.isEmpty()){
 
         } else {
@@ -31,9 +35,7 @@ public class MainActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getData.removeAll(getData);
-                Intent intent = new Intent(MainActivity.this, SearchProductAddToStore.class);
-                startActivity(intent);
+                finish();
             }
         });
     }

@@ -14,6 +14,7 @@
     <color name="colorTextOnAppColor">#FFFFE0</color>
     <color name="darkGrey">#616161</color>
     <color name="textColor">#ff3823</color>
+    <color name="statusBarColor">#d30000</color>
 
 
 

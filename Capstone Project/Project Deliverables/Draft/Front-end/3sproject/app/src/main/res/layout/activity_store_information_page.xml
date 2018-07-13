@@ -72,8 +72,7 @@
                         android:textColor="@color/colorWhite"
                         android:textSize="20dp"
                         android:lines="2"
-                        android:ellipsize="end"
-                        android:textAlignment="center"/>
+                        android:ellipsize="end"/>
                     <ImageView
                         android:id="@+id/btnEdit"
                         android:layout_width="40dp"

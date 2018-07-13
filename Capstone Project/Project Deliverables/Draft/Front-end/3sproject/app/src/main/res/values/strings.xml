@@ -69,18 +69,18 @@
     <string name="btn_save_change">Lưu thay đổi</string>
     <string name="title_change_password">Đổi mật khẩu</string>
     <string name="error_password_not_match">Mật khẩu nhập lại không khớp</string>
-    <string name="error_validate_username">Tên người dùng không hợp lệ</string>
-    <string name="error_validate_name">Tên không hợp lệ</string>
+    <string name="error_validate_username">Tên người dùng không chứa kí tự đặc biệt, có nhiều hơn 6 kí tự và ít hơn 30 kí tự!</string>
+    <string name="error_validate_name">Tên hiển thị không chứa kí tự đặc biêt, có nhiều hơn 6 kí tự và ít hơn 30 kí tự</string>
     <string name="error_validate_username_exists">Tên người dùng đã tồn tại</string>
     <string name="error_validate_password">Mật khẩu phải từ 8 ký tự bao gồm ký tự đặc biệt, ký tự chữ số</string>
     <string name="error_validate_phone">Số điện thoại không hợp lệ</string>
     <string name="error_validate_email">Email không hợp lệ</string>
-    <string name="error_confirm_password">Mật khẩu đã nhập không trùng nhau</string>
-    <string name="error_empty">Bạn không thể bỏ trống chỗ này</string>
-    <string name="duplicate_username">Xin lỗi, tên tài khoản đã tồn tại</string>
-    <string name="duplicate_email">Xin lỗi, thư điện tử đã tồn tại</string>
-    <string name="duplicate_phone">Xin lỗi, số điện thoại đã này đã tồn tại</string>
-    <string name="length_phone">Xin lỗi, số điện thoại phải có độ dài 10 hoặc 11 số</string>
+    <string name="error_confirm_password">Mật khẩu nhập lại không khớp</string>
+    <string name="error_empty">Bạn không thể bỏ trống trường này</string>
+    <string name="duplicate_username">Tên người dùng đã tồn tại</string>
+    <string name="duplicate_email">Thư điện tử đã tồn tại</string>
+    <string name="duplicate_phone">Số điện thoại đã này đã tồn tại</string>
+    <string name="length_phone">Số điện thoại phải có độ dài 10 kí tự  hoặc 11 kí tự</string>
     <!-- TODO: placeholder text in product in store display page -->
     <string name="delete_alertdialog_title">Xóa sản phẩm khỏi cửa hàng</string>
     <string name="delete_alertdialog_content">Bạn có chắc chắn xóa sản phẩm này khỏi danh mục của của hàng?</string>
