@@ -9,9 +9,11 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import project.view.OrderManagerment.OrderManagement;
 import project.view.ProductInStore.ProductInStoreDisplayPage;
@@ -23,12 +25,14 @@ import project.view.StoreInformation.StoreInformation;
  * A simple {@link Fragment} subclass.
  */
 public class StoreFragment extends Fragment {
+    private Context context;
     private RelativeLayout notHaveStoreLayout, haveStoreLayout, productLayout, orderLayout, storeImgLayout;
     private TextView storeName, numberOfOrder, numberOfProduct, ownerName, address, registerDate, phoneText;
     private ImageView storeImg, btnEdit;
     private int storeID = 1;
     private StoreInformation storeInformation;
     private View view;
+    private Button btnManagermentProduct,btnManagermentOrder;
 
     public StoreFragment() {
         // Required empty public constructor
@@ -41,6 +45,46 @@ public class StoreFragment extends Fragment {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_store,container,false);
         storeInformation = new StoreInformation();
+        findView();
+        setLayout(storeID,haveStoreLayout, notHaveStoreLayout);
+       btnManagermentProduct.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent toStoreProduct = new Intent(getContext(), ProductInStoreDisplayPage.class);
+                toStoreProduct.putExtra("storeID", storeID);
+                startActivity(toStoreProduct);
+            }
+        });
+
+        btnManagermentOrder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent toOrderManagement = new Intent(getContext(), OrderManagement.class);
+                toOrderManagement.putExtra("storeID", storeID);
+                getActivity().startActivity(toOrderManagement);
+            }
+        });
+
+        // click on to choose image from gallery
+        btnEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getContext(),"dsfsdfs",Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        int storeID = getActivity().getIntent().getIntExtra("storeID", -1);
+        String nameStoree = storeName.getText().toString();
+        String ownerNameStoree = ownerName.getText().toString();
+        String addressStoree = address.getText().toString();
+        String registerDateStoree = registerDate.getText().toString();
+        String phoneTextStoree = phoneText.getText().toString();
+
+        savingPreferences(storeID, nameStoree, ownerNameStoree, addressStoree, registerDateStoree, phoneTextStoree);
+        return view;
+    }
+
+    private void findView(){
 
         notHaveStoreLayout = view.findViewById(R.id.notHaveStoreLayout);
         haveStoreLayout = view.findViewById(R.id.haveStoreLayout);
@@ -56,53 +100,11 @@ public class StoreFragment extends Fragment {
         registerDate = view.findViewById(R.id.registerDate);
         phoneText = view.findViewById(R.id.phoneText);
         storeImg = view.findViewById(R.id.storeImg);
-        btnEdit = view.findViewById(R.id.btnEdit);
+        btnEdit = view.findViewById(R.id.imgEdit);
+        btnManagermentOrder = view.findViewById(R.id.btnManagerOrder);
+        btnManagermentProduct = view.findViewById(R.id.btnManagerProduct);
 
-
-        // set layout in case of store null or not
-        // storeId is transported from login action
-        //storeID = getIntent().getIntExtra("storeID", -1);
-        setLayout(storeID,haveStoreLayout,notHaveStoreLayout);
-
-        productLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent toStoreProduct = new Intent(getContext(), ProductInStoreDisplayPage.class);
-                toStoreProduct.putExtra("storeID", storeID);
-                startActivity(toStoreProduct);
-            }
-        });
-
-        orderLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getContext(), OrderManagement.class);
-                getActivity().startActivity(intent);
-            }
-        });
-
-        // click on to choose image from gallery
-        btnEdit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-
-        int storeID = getActivity().getIntent().getIntExtra("storeID", -1);
-        String nameStoree = storeName.getText().toString();
-        int numberOfOrderStoree = Integer.parseInt(numberOfOrder.getText().toString());
-        int numberOfProductStoree = Integer.parseInt(numberOfProduct.getText().toString());
-        String ownerNameStoree = ownerName.getText().toString();
-        String addressStoree = address.getText().toString();
-        String registerDateStoree = registerDate.getText().toString();
-        String phoneTextStoree = phoneText.getText().toString();
-
-        savingPreferences(storeID, nameStoree, numberOfOrderStoree, numberOfProductStoree, ownerNameStoree, addressStoree, registerDateStoree, phoneTextStoree);
-
-        return view;
     }
-
 
     @Override
     public void onResume() {
@@ -118,14 +120,13 @@ public class StoreFragment extends Fragment {
 
         int storeID = getActivity().getIntent().getIntExtra("storeID", -1);
         String nameStoree = storeName.getText().toString();
-        int numberOfOrderStoree = Integer.parseInt(numberOfOrder.getText().toString());
-        int numberOfProductStoree = Integer.parseInt(numberOfProduct.getText().toString());
+
         String ownerNameStoree = ownerName.getText().toString();
         String addressStoree = address.getText().toString();
         String registerDateStoree = registerDate.getText().toString();
         String phoneTextStoree = phoneText.getText().toString();
 
-        savingPreferences(storeID, nameStoree, numberOfOrderStoree, numberOfProductStoree, ownerNameStoree, addressStoree, registerDateStoree, phoneTextStoree);
+        savingPreferences(storeID, nameStoree, ownerNameStoree, addressStoree, registerDateStoree, phoneTextStoree);
     }
 
     public void setLayout(int storeID, RelativeLayout haveStore, RelativeLayout notHaveStore){
@@ -135,20 +136,16 @@ public class StoreFragment extends Fragment {
         } else if(storeID > 0) {
             haveStore.setVisibility(View.VISIBLE);
             notHaveStore.setVisibility(View.INVISIBLE);
-        } else {
-
         }
     }
 
-    public void savingPreferences(int storeID, String name, int numberOfOrder, int numberOfProduct, String ownerName, String address, String registerDate, String phoneText){
+    public void savingPreferences(int storeID, String name, String ownerName, String address, String registerDate, String phoneText){
         //tạo đối tượng getSharedPreferences
         SharedPreferences pre=this.getActivity().getSharedPreferences("storeInformation", Context.MODE_PRIVATE);
         //tạo đối tượng Editor để lưu thay đổi
         SharedPreferences.Editor editor=pre.edit();
         //lưu vào editor
         editor.putString("name", name);
-        editor.putInt("numberOfOrder", numberOfOrder);
-        editor.putInt("numberOfProduct", numberOfProduct);
         editor.putString("ownerName", ownerName);
         editor.putString("address", address);
         editor.putString("registerDate", registerDate);
@@ -166,8 +163,6 @@ public class StoreFragment extends Fragment {
         //lấy user, pwd, nếu không thấy giá trị mặc định là rỗng
         int storeID = pre.getInt("storeID", -1);
         String nameStoree = pre.getString("name", "");
-        int numberOfOrderStoree = pre.getInt("numberOfOrder", 0);
-        int numberOfProductStoree = pre.getInt("numberOfProduct", 0);
         String ownerNameStoree = pre.getString("ownerName", "");
         String addressStoree = pre.getString("address", "");
         String registerDateStoree = pre.getString("registerDate", "");
@@ -175,8 +170,6 @@ public class StoreFragment extends Fragment {
 
 
         storeName.setText(nameStoree);
-        numberOfOrder.setText(String.valueOf(numberOfOrderStoree));
-        numberOfProduct.setText(String.valueOf(numberOfProductStoree));
         ownerName.setText(ownerNameStoree);
         address.setText(addressStoree);
         registerDate.setText(registerDateStoree);

@@ -2,6 +2,7 @@
 package project.view.home.adapter;
 
         import android.content.Context;
+        import android.content.Intent;
         import android.support.v7.widget.RecyclerView;
         import android.view.LayoutInflater;
         import android.view.View;
@@ -18,6 +19,7 @@ package project.view.home.adapter;
 
         import project.firebase.Firebase;
         import project.view.Brand.Brand;
+        import project.view.ProductBrandDisplay.ProductBrandDisplay;
         import project.view.R;
 
 /**
@@ -73,7 +75,10 @@ public class BrandRecycleViewAdapter extends RecyclerView.Adapter<BrandRecycleVi
                 @Override
                 public void onClick(View v) {
                     Brand brand = brands.get(getAdapterPosition());
-                    Toast.makeText(context, brand.getBrandName(), Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(context, ProductBrandDisplay.class);
+                    intent.putExtra("brandID",brand.getBrandID());
+                    intent.putExtra("brandName",brand.getBrandName());
+                    context.startActivity(intent);
                 }
             });
         }
