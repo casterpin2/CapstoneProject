@@ -5,6 +5,7 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -30,6 +31,7 @@ import project.view.AddProductToStore.Item;
 import project.view.AddProductToStore.SearchProductAddToStore;
 import project.view.MainActivity;
 import project.view.R;
+import project.view.UserInformation.TweakUI;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -40,16 +42,18 @@ public class CategoryDisplayPage extends AppCompatActivity {
     private CategoryCustomCardviewAdapter adapter;
     private List<Category> categoryList;
     private APIService apiService;
-
+    private Toolbar toolbar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_category_display_page);
+        TweakUI.makeTransparent(this);
         apiService = ApiUtils.getAPIService();
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimary));
+        }
         setSupportActionBar(toolbar);
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         initCollapsingToolbar();
