@@ -78,7 +78,7 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        TweakUI.makeTransparent(getActivity());
+       // TweakUI.makeTransparent(this.getActivity());
         view = inflater.inflate(R.layout.fragment_home,container,false);
         NestedScrollView scroll = view.findViewById(R.id.scroll_view);
 

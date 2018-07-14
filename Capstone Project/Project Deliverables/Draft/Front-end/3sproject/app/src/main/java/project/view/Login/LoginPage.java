@@ -24,7 +24,7 @@ public class LoginPage extends AppCompatActivity {
     private ScrollView scroll;
     private Button loginBtn, loginFBBtn, loginGPBtn;
     private TextView toRegisterPage, toForgetPasswordPage, errorMessage, usernameValue, passwordValue ;
-    private Toolbar toolbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,7 +100,6 @@ public class LoginPage extends AppCompatActivity {
     }
 
     private void findView(){
-        toolbar = findViewById(R.id.toolbar);
         loginBtn = (Button) findViewById(R.id.loginBtn);
         loginFBBtn = (Button) findViewById(R.id.loginFBBtn);
         loginGPBtn = (Button) findViewById(R.id.loginGPBtn);

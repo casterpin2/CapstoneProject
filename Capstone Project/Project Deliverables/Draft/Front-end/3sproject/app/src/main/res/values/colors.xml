@@ -34,7 +34,6 @@
 
 
     <color name="nav_bottom">#ffffff</color>
-    <color name="tab_checked">#F50057</color>
     <color name="tab_unchecked">#979797</color>
 
     <!-- user information and store information-->

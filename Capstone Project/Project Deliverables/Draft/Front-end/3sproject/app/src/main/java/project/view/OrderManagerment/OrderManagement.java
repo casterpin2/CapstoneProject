@@ -118,7 +118,7 @@ public class OrderManagement extends AppCompatActivity {
         }
     }
     public int getColorForTab(int position) {
-        if (position == 0) return ContextCompat.getColor(this, R.color.colorPrimary);
+        if (position == 0) return ContextCompat.getColor(this, R.color.colorApplication);
         else if (position == 1) return ContextCompat.getColor(this, R.color.colorGreen);
         else return ContextCompat.getColor(this, R.color.colorGray);
 

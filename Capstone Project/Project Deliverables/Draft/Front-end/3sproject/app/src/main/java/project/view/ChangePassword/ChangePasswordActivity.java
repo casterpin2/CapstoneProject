@@ -1,5 +1,6 @@
 package project.view.ChangePassword;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
@@ -17,25 +18,25 @@ public class ChangePasswordActivity extends AppCompatActivity{
     private  Button btnChangePass;
     private TextView tvOldPass, tvConfirmPass,tvNewPass;
     private TextInputEditText oldPass, newPass, confirmPass;
+    private Toolbar toolbar;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_password);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        toolbar.setTitle("");
+        findView();
+        toolbar.setTitle(R.string.title_change_password);
+
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null){
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor((getResources().getColor(R.color.colorApplication)));
+        }
 
-        tvOldPass = findViewById(R.id.tvOldPass);
-        tvNewPass = findViewById(R.id.tvNewPassword);
-        tvConfirmPass = findViewById(R.id.tvConfirmPass);
 
-        oldPass = findViewById(R.id.etOldPassword);
-        newPass = findViewById(R.id.etNewPassword);
-        confirmPass = findViewById(R.id.etConfirmPass);
         newPass.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -61,6 +62,18 @@ public class ChangePasswordActivity extends AppCompatActivity{
                 }
             }
         });
+    }
+
+    private void findView(){
+        toolbar = findViewById(R.id.toolbar);
+
+        tvOldPass = findViewById(R.id.tvOldPass);
+        tvNewPass = findViewById(R.id.tvNewPassword);
+        tvConfirmPass = findViewById(R.id.tvConfirmPass);
+
+        oldPass = findViewById(R.id.etOldPassword);
+        newPass = findViewById(R.id.etNewPassword);
+        confirmPass = findViewById(R.id.etConfirmPass);
     }
 
     @Override

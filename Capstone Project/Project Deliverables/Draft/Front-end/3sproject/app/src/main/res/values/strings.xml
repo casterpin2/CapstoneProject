@@ -81,6 +81,9 @@
     <string name="duplicate_email">Thư điện tử đã tồn tại</string>
     <string name="duplicate_phone">Số điện thoại đã này đã tồn tại</string>
     <string name="length_phone">Số điện thoại phải có độ dài 10 kí tự  hoặc 11 kí tự</string>
+
+
+
     <!-- TODO: placeholder text in product in store display page -->
     <string name="delete_alertdialog_title">Xóa sản phẩm khỏi cửa hàng</string>
     <string name="delete_alertdialog_content">Bạn có chắc chắn xóa sản phẩm này khỏi danh mục của của hàng?</string>
@@ -130,4 +133,7 @@
     <string name="doing">Đang xử lý</string>
     <string name="done">Đã xử lý</string>
     <string name="lb_order_date">Đặt ngày:  </string>
+
+
+    <string name="title_fragment_me">Tài khoản</string>
 </resources>

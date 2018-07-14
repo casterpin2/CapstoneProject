@@ -144,7 +144,7 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:fontFamily="sans-serif-light"
-                                    android:text="Thắng Nguyễn"
+                                    android:text="Vu Tung"
                                     android:textColor="@color/colorBlack"
                                     android:textSize="15dp"
                                     android:layout_marginRight="20dp"/>

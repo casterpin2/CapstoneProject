@@ -1,5 +1,7 @@
 package project.view.home;
 
+import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -9,6 +11,7 @@ import android.util.Log;
 import android.view.MenuItem;
 
 import project.view.R;
+import project.view.UserInformation.TweakUI;
 import project.view.home.Fragment.HomeFragment;
 import project.view.home.Fragment.StoreFragment;
 import project.view.home.Fragment.UserFragment;
@@ -32,7 +35,9 @@ public class HomeActivity extends AppCompatActivity {
 
         //Initializing viewPager
         viewPager = (ViewPager) findViewById(R.id.viewpager);
-
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor(getResources().getColor(R.color.colorApplication));
+        }
         //Initializing the bottomNavigationView
         bottomNavigationView = findViewById(R.id.bottom_navigation);
 
