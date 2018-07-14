@@ -3,15 +3,20 @@ package project.view.AddProductToStore;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.MatrixCursor;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.BaseColumns;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.CursorAdapter;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -26,7 +31,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -39,7 +43,6 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.storage.StorageReference;
-import com.mancj.materialsearchbar.MaterialSearchBar;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -552,10 +555,11 @@ public class SearchProductAddToStore extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         // thêm search vào vào action bar
-        getMenuInflater().inflate(R.menu.search_view, menu);
+        getMenuInflater().inflate(R.menu.search_view_with_barcode, menu);
         MenuItem itemSearch = menu.findItem(R.id.search_view);
+        MenuItem itemSearchWithBarcode = menu.findItem(R.id.search_with_barcode);
         searchView = (SearchView) itemSearch.getActionView();
-        //set OnQueryTextListener cho search view để thực hiện search theo text
+
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -576,13 +580,26 @@ public class SearchProductAddToStore extends AppCompatActivity {
                 return false;
             }
 
+
             @Override
             public boolean onQueryTextChange(String newText) {
-//                Toast.makeText(SearchProductAddToStore.this, "content : "+ newText, Toast.LENGTH_SHORT).show();
                 return true;
             }
         });
+
+
+
+        itemSearchWithBarcode.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                Intent intent = new Intent(SearchProductAddToStore.this, MainActivity.class);
+                startActivity(intent);
+                return false;
+            }
+        });
+
         return true;
     }
+
 
 }

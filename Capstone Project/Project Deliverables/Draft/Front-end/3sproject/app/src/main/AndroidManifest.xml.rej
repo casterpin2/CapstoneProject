@@ -1,0 +1,13 @@
+diff a/Capstone Project/Project Deliverables/Draft/Front-end/3sproject/app/src/main/AndroidManifest.xml b/Capstone Project/Project Deliverables/Draft/Front-end/3sproject/app/src/main/AndroidManifest.xml	(rejected hunks)
+@@ -49,11 +49,7 @@
+         <activity
+             android:name=".home.HomeActivity"
+             android:theme="@style/AppTheme.NoActionBar" >
+-            <intent-filter>
+-                <action android:name="android.intent.action.MAIN" />
+ 
+-                <category android:name="android.intent.category.LAUNCHER" />
+-            </intent-filter>
+         </activity>
+         <activity
+             android:name=".StoreInformation.StoreInformationPage"

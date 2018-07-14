@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="15dp"
+    android:layout_marginBottom="15dp"
+    android:background="@color/colorWhite"
+    android:orientation="vertical"
+    android:padding="10dp"
+    >
+    <!--product avatar-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+        <LinearLayout
+            android:id="@+id/test"
+            android:layout_width="0dp"
+            android:layout_height="45dp"
+            android:layout_weight="6">
+
+
+
+                <TextView
+                    android:id="@+id/storeName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/colorWhite"
+                    android:gravity="center_vertical"
+                    android:ellipsize="end"
+                    android:singleLine="true"
+                    android:text="Cửa hàng số 1"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="17dp"
+                    android:textStyle="bold"
+                    android:padding="5dp"/>
+">
+                <!--<ImageView-->
+                    <!--android:id="@+id/saleImage"-->
+                    <!--android:layout_width="40dp"-->
+                    <!--android:layout_height="40dp"-->
+                    <!--android:src="@drawable/sale">-->
+                    <!--<TextView-->
+                        <!--android:width="wra">-->
+                <!--</ImageView>-->
+                <TextView
+                    android:id="@+id/promotionPercent"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/sale"
+                    android:gravity="center"
+                    android:textAlignment="center"
+                    android:text="99%"
+                    android:textSize="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:textColor="@color/white"/>
+
+
+        </LinearLayout>
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:layout_marginLeft="5dp"
+            android:layout_gravity="center_vertical">
+            <TextView
+                android:id="@+id/productPrice"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:background="@color/colorWhite"
+                android:textColor="@color/textColor"
+                android:text="29.000 đ"
+                android:textSize="15dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:textAlignment="center"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:paddingStart="5dp"
+                />
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="6">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <TextView
+                        android:id="@+id/storeAddress"
+                        android:layout_height="match_parent"
+                        android:layout_width="wrap_content"
+                        android:background="@color/colorWhite"
+                        android:textColor="@color/darkGrey"
+                        android:text="Hello"
+                        android:textSize="15dp"
+                        android:ellipsize="end"
+                        android:singleLine="true"
+                        android:paddingEnd="5dp"
+                        android:paddingStart="5dp"
+                        android:layout_marginTop="5dp"
+                        />
+                    <TextView
+                        android:id="@+id/distance"
+                        android:layout_height="match_parent"
+                        android:layout_width="wrap_content"
+                        android:background="@color/colorWhite"
+                        android:textColor="@color/darkGrey"
+                        android:text="Hello"
+                        android:textSize="15dp"
+                        android:ellipsize="end"
+                        android:singleLine="true"
+                        android:paddingEnd="5dp"
+                        android:paddingStart="5dp"
+                        android:layout_marginTop="5dp"
+                        />
+
+                </LinearLayout>
+
+            </LinearLayout>
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:layout_marginLeft="5dp"
+                android:layout_gravity="center">
+                <Button
+                    android:id="@+id/orderBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
+                    android:text="Đặt hàng"
+                    android:textSize="11dp"
+                    android:background="@drawable/login_button"
+                    android:textColor="@color/colorWhite"/>
+            </RelativeLayout>
+    </LinearLayout>
+
+</LinearLayout>
