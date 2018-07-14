@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="15dp"
+    android:layout_marginTop="20dp"
+    android:background="@color/colorWhite"
+    android:orientation="vertical">
+    <!--product avatar-->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="166dp">
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1">
+
+            <ImageView
+                android:id="@+id/buyproductImage"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+
+                />
+        </RelativeLayout>
+
+        <!--product information-->
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="160dp"
+            android:layout_weight="1">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true">
+
+
+                <LinearLayout
+                    android:id="@+id/buyproductCategoryLinearLayout"
+                    android:layout_width="fill_parent"
+                    android:layout_height="30dp"
+                    android:layout_marginRight="10dp">
+
+                    <TextView
+                        android:id="@+id/buyproductCategory"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:ellipsize="marquee"
+                        android:singleLine="true"
+                        android:text="Chai nước Lavie"
+                        android:textColor="@color/colorBlack"
+                        android:textSize="23dp"
+
+                        />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/buySalecategory"
+                    android:layout_width="fill_parent"
+                    android:layout_height="30dp"
+                    android:layout_below="@+id/buyproductCategoryLinearLayout"
+                    android:layout_marginRight="10dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="Giảm giá đến 20%"
+                        android:textColor="@color/colorRed"
+                        android:textSize="13dp" />
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/buySalecategoryOld"
+                    android:layout_width="fill_parent"
+                    android:layout_height="30dp"
+                    android:layout_below="@+id/buySalecategory"
+                    android:layout_marginRight="10dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="29,969đ"
+                        android:textColor="@color/colorBlack"
+                        android:textSize="15dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/buyproductBrandLinearLayout"
+                    android:layout_width="fill_parent"
+                    android:layout_height="30dp"
+                    android:layout_below="@+id/buySalecategoryOld"
+                    android:layout_marginRight="10dp">
+
+
+                    <TextView
+                        android:id="@+id/buySaleproduct"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:ellipsize="marquee"
+                        android:singleLine="true"
+                        android:text="20,959đ"
+                        android:textColor="@color/colorRed"
+                        android:textSize="17dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/buy"
+                    android:layout_width="fill_parent"
+                    android:layout_height="50dp"
+                    android:layout_below="@+id/buyproductBrandLinearLayout"
+                    android:layout_marginRight="15dp">
+
+
+                    <Button
+                        android:id="@+id/btnBuy"
+                        android:layout_width="117dp"
+                        android:layout_height="40dp"
+                        android:layout_marginRight="50dp"
+                        android:layout_weight="2"
+                        android:background="@color/colorApplication"
+                        android:gravity="center"
+                        android:onClick="showDialog"
+                        android:text="Mua ngay"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="18dp"
+
+
+                        />
+
+                </LinearLayout>
+
+            </RelativeLayout>
+        </RelativeLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/buylinlay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rellay1"
+        android:layout_marginTop="20dp"
+        android:layout_alignParentBottom="true"
+        android:divider="?android:listDivider"
+        android:dividerPadding="2.5dp"
+        android:orientation="horizontal"
+        android:showDividers="middle"
+        android:weightSum="2">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-light"
+                    android:text="Loại"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="17sp" />
+
+                <TextView
+                    android:id="@+id/buyOder"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-light"
+                    android:text="Nước tinh khiết"
+                    android:textColor="@color/colorRed"
+                    android:textSize="22sp" />
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-light"
+                    android:text="Thương hiệu"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="17sp" />
+
+                <TextView
+                    android:id="@+id/buyBranName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-light"
+                    android:text="Lavie"
+                    android:textColor="@color/colorRed"
+                    android:textSize="25sp" />
+
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="13dp"
+        android:layout_weight="1"
+        android:paddingBottom="5dp"
+        android:paddingTop="15dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:ellipsize="marquee"
+                android:singleLine="true"
+                android:text="Mô tả"
+                android:textColor="@color/colorBlack"
+                android:textSize="20sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="13dp"
+                android:text="Với 100 nhà máy đặt tại 35 quốc gia, Nestlé Water sở hữu 52 nhãn hiệu đáp ứng nhu cầu khách hàng khác nhau tại mỗi quốc gia. Nước được coi là sự lựa chọn cho việc bù chất hàng ngày cho cơ thể vì nó không thêm bất kỳ calo trong khẩu phần ăn, đặc biệt là tình trạng béo phì trên thế giới đang ngày càng gia tăng. Nước đóng chai là nước giải khát tốt cho sức khỏe do không chứa calo, nguồn gốc nước được kiểm soát, chất lượng vượt trội, mùi vị và sự tiện lợi."
+                android:textSize="15dp" />
+
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

@@ -65,6 +65,12 @@
             android:name=".OrderManagerment.OrderDetailManagement"
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity android:name=".NearbyStore.NearbyStorePage" >
+
+
+        </activity>
+        <activity
+            android:name=".ZTest.DescribeProduct"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
