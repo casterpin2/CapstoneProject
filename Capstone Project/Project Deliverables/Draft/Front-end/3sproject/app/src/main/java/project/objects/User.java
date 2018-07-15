@@ -3,22 +3,106 @@ package project.objects;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 public class User {
-    @SerializedName("id")
+    @SerializedName("userID")
     @Expose
     private int id;
-    @SerializedName("name")
-    @Expose
-    private String name;
-    @SerializedName("first_name")
+    @SerializedName("firstName")
     @Expose
     private String first_name;
-    @SerializedName("last_name")
+    @SerializedName("lastName")
     @Expose
     private String last_name;
+    @SerializedName("phone")
+    @Expose
+    private String phone;
+    @SerializedName("deviceId")
+    @Expose
+    private String deviceId;
+    @SerializedName("gender")
+    @Expose
+    private String gender;
+    @SerializedName("image_path")
+    @Expose
+    private String image_path;
+    @SerializedName("email")
+    @Expose
+    private String email;
+    @SerializedName("userName")
+    @Expose
+    private String username;
+    @SerializedName("roleId")
+    @Expose
+    private String roleId;
+    @SerializedName("hasStore")
+    @Expose
+    private int hasStore;
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getDeviceId() {
+        return deviceId;
+    }
+
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public String getImage_path() {
+        return image_path;
+    }
+
+    public void setImage_path(String image_path) {
+        this.image_path = image_path;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getRoleId() {
+        return roleId;
+    }
+
+    public void setRoleId(String roleId) {
+        this.roleId = roleId;
+    }
+
+    public int getHasStore() {
+        return hasStore;
+    }
+
+    public void setHasStore(int hasStore) {
+        this.hasStore = hasStore;
+    }
 
     public User(int id, String name, String img) {
         this.id = id;
-        this.name = name;
         this.first_name = img;
     }
     public int getId() {
@@ -47,21 +131,21 @@ public class User {
     public void setId(int id) {
         this.id = id;
     }
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     @Override
     public String toString() {
         return "User{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
                 ", first_name='" + first_name + '\'' +
                 ", last_name='" + last_name + '\'' +
+                ", phone='" + phone + '\'' +
+                ", deviceId='" + deviceId + '\'' +
+                ", gender='" + gender + '\'' +
+                ", image_path='" + image_path + '\'' +
+                ", email='" + email + '\'' +
+                ", username='" + username + '\'' +
+                ", roleId='" + roleId + '\'' +
+                ", hasStore=" + hasStore +
                 '}';
     }
 }

@@ -8,6 +8,7 @@ import project.objects.User;
 import project.view.AddProductToStore.Item;
 import project.view.Brand.Brand;
 import project.view.Category.Category;
+import project.view.Login.Login;
 import project.view.ProductBrandDisplay.ProductBrand;
 import project.view.ProductInStore.ProductInStore;
 import project.view.RegisterStore.Result;
@@ -24,10 +25,14 @@ import retrofit2.http.POST;
 import retrofit2.http.Query;
 
 public interface APIService {
-    @POST("login")
-    @FormUrlEncoded
-    Call<User> savePost(@Field("username") String username,
-                        @Field("password") String password);
+    //API Login
+    @GET("login")
+    Call<Login> login(@Query("username") String username,
+                      @Query("password") String password);
+    @POST("loginFB")
+    Call<Login> loginFB(@Body User user,
+                        @Query("FBId") String FBId);
+    ////////////////////////////////////////////////
 
     @POST("registerStore")
     Call<Result> registerStore(@Body HashMap<String,String> map);
