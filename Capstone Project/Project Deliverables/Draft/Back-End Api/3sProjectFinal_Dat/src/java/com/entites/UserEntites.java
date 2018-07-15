@@ -19,8 +19,11 @@ public class UserEntites implements Serializable{
     private int roleId;
     private String firstName;
     private String lastName;
+    private String image_path;
     private String email;
     private String phone;
+    private int hasStore;
+    private String gender;
     private int numberofOrder;
     
     public UserEntites() {
@@ -40,6 +43,30 @@ public class UserEntites implements Serializable{
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public String getImage_path() {
+        return image_path;
+    }
+
+    public void setImage_path(String image_path) {
+        this.image_path = image_path;
+    }
+
+    public int getHasStore() {
+        return hasStore;
+    }
+
+    public void setHasStore(int hasStore) {
+        this.hasStore = hasStore;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 
 

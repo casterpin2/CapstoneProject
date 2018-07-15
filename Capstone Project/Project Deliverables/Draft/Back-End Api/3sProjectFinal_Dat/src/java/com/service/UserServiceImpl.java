@@ -8,6 +8,7 @@ package com.service;
 import com.dao.UserDao;
 import com.entites.UserEntites;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,5 +36,15 @@ public class UserServiceImpl implements UserService{
     @Override
     public Boolean registerUser(UserEntites us) throws SQLException {
      return  dao.registerUser(us);
+    }
+    
+    @Override
+    public HashMap<String, Object> login(String username, String password) throws SQLException {
+        return dao.login(username, password);
+    }
+
+    @Override
+    public HashMap<String, Object> loginFB(UserEntites user, String FBId) throws SQLException {
+        return dao.loginFB(user, FBId);
     }
 }

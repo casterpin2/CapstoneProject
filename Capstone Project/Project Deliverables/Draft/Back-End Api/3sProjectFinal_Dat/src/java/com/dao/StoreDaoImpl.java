@@ -21,7 +21,7 @@ import org.springframework.stereotype.Repository;
 @Repository("storeDao")
 public class StoreDaoImpl extends BaseDao implements StoreDao {
 
-    private final static String REGISTER_STORE_INSERT = "insert into Store(name,location_id,user_id,phone,status) values (?,?,?,?,1)";
+    private final static String REGISTER_STORE_INSERT = "update Store set name = ? , location_id = ? , phone = ? , status = 1 where user_id = ?";
     private final static String REGISTER_LOCATION_INSERT = "insert into Location(apartment_number,street,county,district,city,longitude,latitude) values (?,?,?,?,?,?,?)";
     private final static String GET_LAST_LOCATION_ID = "select MAX(id) as id from Location";
     private final static String GET_LOCATION_ID = "select * from Location where latitude = ? and longitude = ?";
