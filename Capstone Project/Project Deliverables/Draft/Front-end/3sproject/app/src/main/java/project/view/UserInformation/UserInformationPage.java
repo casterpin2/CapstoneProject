@@ -7,6 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -15,7 +17,8 @@ import project.view.R;
 
 public class UserInformationPage extends AppCompatActivity {
     private TextView txtName, txtAddress, txtPhone, txtEmail, txtGender, txtDob, storeName;
-
+    private ImageView btnBack;
+    private Button btnEditInfo;
     private final int REQUEST_PROFILE_CODE = 123;
 
     @Override
@@ -32,6 +35,28 @@ public class UserInformationPage extends AppCompatActivity {
         String gender = txtGender.getText().toString();
         String dob = txtDob.getText().toString();
 
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+        btnEditInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle extras = new Bundle();
+                extras.putString("name", txtName.getText().toString());
+                extras.putString("phone", txtPhone.getText().toString());
+                extras.putString("address", txtAddress.getText().toString());
+                extras.putString("email", txtEmail.getText().toString());
+                extras.putString("dob", txtDob.getText().toString());
+                extras.putString("gender", txtGender.getText().toString());
+
+                Intent toEditUserInformationPage = new Intent(UserInformationPage.this, EditUserInformationPage.class);
+                toEditUserInformationPage.putExtras(extras);
+                startActivityForResult(toEditUserInformationPage, REQUEST_PROFILE_CODE);
+            }
+        });
         //gọi hàm lưu trạng thái ở đây
         savingPreferences(name, address, phone, email, gender, dob);
     }
@@ -59,22 +84,10 @@ public class UserInformationPage extends AppCompatActivity {
         restoringPreferences();
     }
 
-    public void editProfile(View view) {
-        Bundle extras = new Bundle();
-        extras.putString("name", txtName.getText().toString());
-        extras.putString("phone", txtPhone.getText().toString());
-        extras.putString("address", txtAddress.getText().toString());
-        extras.putString("email", txtEmail.getText().toString());
-        extras.putString("dob", txtDob.getText().toString());
-        extras.putString("gender", txtGender.getText().toString());
-
-        Intent toEditUserInformationPage = new Intent(UserInformationPage.this, EditUserInformationPage.class);
-        toEditUserInformationPage.putExtras(extras);
-        startActivityForResult(toEditUserInformationPage, REQUEST_PROFILE_CODE);
-    }
-
 
     private void mapping() {
+        btnEditInfo = findViewById(R.id.btnEditInfo);
+        btnBack = findViewById(R.id.backBtn);
         txtName = findViewById(R.id.txt_name);
         txtPhone = findViewById(R.id.txt_phone);
         txtAddress = findViewById(R.id.txt_address);
@@ -84,12 +97,6 @@ public class UserInformationPage extends AppCompatActivity {
         storeName = findViewById(R.id.storeName);
     }
 
-    @SuppressLint("ResourceType")
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.layout.activity_edit_user_information_page, menu);
-        return true;
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -130,8 +137,6 @@ public class UserInformationPage extends AppCompatActivity {
         editor.putString("email", email);
         editor.putString("gender", gender);
         editor.putString("dob", dob);
-
-
         //chấp nhận lưu xuống file
         editor.commit();
     }
@@ -148,12 +153,6 @@ public class UserInformationPage extends AppCompatActivity {
         String email = pre.getString("email", "");
         String gender = pre.getString("gender", "");
         String dob = pre.getString("dob", "");
-
-//        Toast.makeText(this, "name" + name, Toast.LENGTH_SHORT).show();
-//        Toast.makeText(this, "address" + address, Toast.LENGTH_SHORT).show();
-//        Toast.makeText(this, "phone" + phone, Toast.LENGTH_SHORT).show();
-//        Toast.makeText(this, "gender" + gender, Toast.LENGTH_SHORT).show();
-//        Toast.makeText(this, "dob" + dob, Toast.LENGTH_SHORT).show();
 
         txtName.setText(name);
         txtAddress.setText(address);

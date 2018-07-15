@@ -10,7 +10,7 @@
     <string name="login_page_nohaveAcc">Bạn chưa có tài khoản?</string>
     <string name="login_page_forgetPassword">Quên mật khẩu?</string>
     <string name="register_page_repassword_placeholder">Nhập lại mật khẩu</string>
-    <string name="register_page_email_placeholder">Thư điện tử</string>
+    <string name="register_page_email_placeholder">Email</string>
     <string name="register_page_phone_placeholder">Điện thoại</string>
     <string name="register_page_registerTitle">Đăng kí</string>
     <string name="register_page_haveAcc">Bạn đã có tài khoản?</string>

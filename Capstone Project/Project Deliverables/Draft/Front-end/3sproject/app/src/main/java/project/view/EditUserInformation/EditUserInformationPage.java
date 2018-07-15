@@ -8,9 +8,11 @@ import android.content.SharedPreferences;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -35,6 +37,7 @@ import project.view.UserInformation.TweakUI;
 import project.view.UserInformation.UserInformationPage;
 
 public class EditUserInformationPage extends AppCompatActivity {
+    private static final String TAG = "EditUserInformationPage";
 
     private EditText userNameText, addressText, phoneText, emailText, dobText;
     private Button saveBtn, cancelBtn;
@@ -45,7 +48,6 @@ public class EditUserInformationPage extends AppCompatActivity {
     int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
 
     String[] genderName = {"Chưa xác định", "Nam", "Nữ"};
-    int spinnerImage[] = {R.color.transparent, R.drawable.male, R.drawable.female};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,9 +59,12 @@ public class EditUserInformationPage extends AppCompatActivity {
         getIncomingIntent();
         setLastSelector();
 
+        Log.d(TAG, "onCreate: ");
 
-        CustomAdapter customAdapter=new CustomAdapter(getApplicationContext(),spinnerImage,genderName);
-        genderSpinner.setAdapter(customAdapter);
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, genderName);
+        genderSpinner.setAdapter(adapter);
+
 
         Intent intent = getIntent();
         final Bundle extras = intent.getExtras();
@@ -109,8 +114,6 @@ public class EditUserInformationPage extends AppCompatActivity {
 
                     saveProfile(v);
                 }
-
-
             }
         });
 
@@ -319,6 +322,7 @@ public class EditUserInformationPage extends AppCompatActivity {
         } else if (genderSpinner.getSelectedItemPosition() == 2){
             gender = "Nữ";
         }
+        gender = "Nam";
 
         extras.putString("name", userNameText.getText().toString());
         extras.putString("phone", phoneText.getText().toString());

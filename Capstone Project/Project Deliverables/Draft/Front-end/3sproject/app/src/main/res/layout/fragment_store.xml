@@ -68,20 +68,20 @@
                         android:gravity="center"
                         android:text="Cửa hàng bách hóa số 27"
                         android:textColor="@color/colorWhite"
-                        android:textSize="20dp"
-                        android:background="#80000000"
+                        android:textSize="21dp"
+                        android:background="#70000000"
                         android:ellipsize="end"
-                        android:padding="16dp"/>
+                        android:padding="8dp"/>
                 </RelativeLayout>
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_below="@id/storeImgLayout"
-                    android:layout_marginTop="-28dp">
+                    android:layout_marginTop="-16dp">
                     <ImageView
                         android:id="@+id/imgEdit"
-                        android:layout_width="56dp"
-                        android:layout_height="56dp"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
                         android:src="@drawable/edit1"
                         android:background="@drawable/circle"
                         android:layout_marginRight="24dp"
@@ -120,8 +120,9 @@
                                 android:layout_height="match_parent"
                                 android:layout_weight="5">
                                 <ImageView
-                                    android:layout_width="32dp"
-                                    android:layout_height="32dp"
+                                    android:layout_width="24dp"
+                                    android:layout_height="24dp"
+                                    android:layout_gravity="center"
                                     android:src="@drawable/store"
                                     android:layout_marginLeft="16dp"
                                     android:adjustViewBounds="true"
@@ -137,7 +138,7 @@
                                     android:layout_height="wrap_content"
                                     android:text="@string/ownerText"
                                     android:textColor="@color/colorPrimaryDark"
-                                    android:textSize="13dp" />
+                                    android:textSize="10dp" />
 
                                 <TextView
                                     android:id="@+id/ownerName"
@@ -146,7 +147,7 @@
                                     android:fontFamily="sans-serif-light"
                                     android:text="Vu Tung"
                                     android:textColor="@color/colorBlack"
-                                    android:textSize="15dp"
+                                    android:textSize="13dp"
                                     android:layout_marginRight="20dp"/>
                             </LinearLayout>
                         </LinearLayout>
@@ -171,8 +172,9 @@
                             android:layout_height="match_parent"
                             android:layout_weight="5">
                                 <ImageView
-                                    android:layout_width="32dp"
-                                    android:layout_height="32dp"
+                                    android:layout_width="24dp"
+                                    android:layout_height="24dp"
+                                    android:layout_gravity="center"
                                     android:src="@drawable/address"
                                     android:adjustViewBounds="true"
                                     android:scaleType="fitXY"
@@ -187,7 +189,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="@string/addressText"
-                                    android:textSize="13dp"
+                                    android:textSize="10dp"
                                     android:textColor="@color/colorPrimaryDark"/>
 
                                 <TextView
@@ -198,7 +200,7 @@
                                     android:text="Hà Nội"
                                     android:ellipsize="end"
                                     android:textColor="@color/colorBlack"
-                                    android:textSize="15dp"
+                                    android:textSize="13dp"
                                     android:layout_marginRight="20dp"/>
                         </LinearLayout>
                     </LinearLayout>
@@ -224,8 +226,9 @@
                                 android:layout_height="match_parent"
                                 android:layout_weight="5">
                                 <ImageView
-                                    android:layout_width="32dp"
-                                    android:layout_height="32dp"
+                                    android:layout_width="24dp"
+                                    android:layout_height="24dp"
+                                    android:layout_gravity="center"
                                     android:src="@drawable/calendar"
                                     android:adjustViewBounds="true"
                                     android:scaleType="fitXY"
@@ -240,7 +243,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/registerDateText"
-                                android:textSize="13sp"
+                                android:textSize="10dp"
                                 android:textColor="@color/colorPrimaryDark"/>
 
                             <TextView
@@ -250,7 +253,7 @@
                                 android:fontFamily="sans-serif-light"
                                 android:text="21/09/2017"
                                 android:textColor="@color/colorBlack"
-                                android:textSize="15dp"
+                                android:textSize="13dp"
                                 android:layout_marginRight="20dp"/>
                          </LinearLayout>
                      </LinearLayout>
@@ -276,8 +279,9 @@
                                 android:layout_height="match_parent"
                                 android:layout_weight="5">
                                 <ImageView
-                                    android:layout_width="32dp"
-                                    android:layout_height="32dp"
+                                    android:layout_width="24dp"
+                                    android:layout_height="24dp"
+                                    android:layout_gravity="center"
                                     android:src="@drawable/phone"
                                     android:adjustViewBounds="true"
                                     android:scaleType="fitXY"
@@ -292,7 +296,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="@string/phoneText"
-                                    android:textSize="13sp"
+                                    android:textSize="10dp"
                                     android:textColor="@color/colorPrimaryDark"/>
 
                                 <TextView
@@ -302,7 +306,7 @@
                                     android:fontFamily="sans-serif-light"
                                     android:text="0123456789"
                                     android:textColor="@color/colorBlack"
-                                    android:textSize="15dp"
+                                    android:textSize="13dp"
                                     android:layout_marginRight="20dp"/>
                             </LinearLayout>
                         </LinearLayout>

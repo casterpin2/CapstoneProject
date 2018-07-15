@@ -88,13 +88,10 @@ public class StoreFragment extends Fragment {
 
         notHaveStoreLayout = view.findViewById(R.id.notHaveStoreLayout);
         haveStoreLayout = view.findViewById(R.id.haveStoreLayout);
-        productLayout = view.findViewById(R.id.productLayout);
         orderLayout = view.findViewById(R.id.orderLayout);
         storeImgLayout = view.findViewById(R.id.storeImgLayout);
 
         storeName = view.findViewById(R.id.storeName);
-        numberOfOrder = view.findViewById(R.id.numberOfOrder);
-        numberOfProduct = view.findViewById(R.id.numberOfProduct);
         ownerName = view.findViewById(R.id.ownerName);
         address = view.findViewById(R.id.address);
         registerDate = view.findViewById(R.id.registerDate);

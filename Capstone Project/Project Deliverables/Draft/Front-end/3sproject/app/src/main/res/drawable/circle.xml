@@ -24,8 +24,8 @@
         <solid
             android:color="@color/contentDividerLine"/>
         <size
-            android:width="48dp"
-            android:height="48dp"/>
+            android:width="32dp"
+            android:height="32dp"/>
     </shape>
 </item>
 </selector>

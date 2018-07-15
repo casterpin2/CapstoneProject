@@ -5,21 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/scrollView">
-
         <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <RelativeLayout
                 android:id="@+id/rellay1"
                 android:layout_width="match_parent"
                 android:layout_height="220dp"
                 android:background="@drawable/background"
-                android:paddingBottom="10dp"
                 android:paddingTop="20dp">
 
                 <RelativeLayout
@@ -31,164 +21,167 @@
 
                     <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
                         android:id="@+id/profile_image"
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:layout_alignParentStart="true"
-                        android:layout_alignParentTop="true"
-                        android:src="@drawable/user"
+                        android:layout_width="112dp"
+                        android:layout_height="112dp"
+                        android:src="@drawable/cover"
                         app:civ_border_color="#ffffff"
-                        app:civ_border_width="3dp" />
+                        app:civ_border_width="2dp" />
 
                 </RelativeLayout>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:id="@+id/txt_name"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/imgUser"
-                    android:layout_centerHorizontal="true"
-                    android:fontFamily="sans-serif-light"
-                    android:text="Thay đổi thông tin tài khoản"
-                    android:textColor="@color/white"
-                    android:textSize="18dp" />
-
-                <ImageView
-                    android:id="@+id/btnEdit"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentTop="true"
-                    android:layout_marginRight="15dp"
-                    android:adjustViewBounds="true"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/setting" />
+                    android:layout_alignParentBottom="true"
+                    android:background="#70000000"
+                    android:ellipsize="end"
+                    android:gravity="center"
+                    android:padding="8dp"
+                    android:text="Vu Tung"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="21dp" />
 
                 <ImageButton
                     android:id="@+id/backBtn"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_alignParentLeft="true"
-                    android:layout_marginLeft="5dp"
                     android:layout_alignParentTop="true"
+                    android:layout_marginLeft="5dp"
                     android:adjustViewBounds="true"
                     android:background="@null"
                     android:scaleType="centerInside"
                     android:src="@drawable/btn_back" />
 
             </RelativeLayout>
-            <RelativeLayout
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/rellay1">
+        <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_below="@+id/rellay1">
+                android:layout_marginRight="16dp">
+
                 <android.support.design.widget.TextInputLayout
                     android:id="@+id/usernameLayout"
-                    android:layout_height="wrap_content"
                     android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="10dp">
 
                     <android.support.design.widget.TextInputEditText
                         android:id="@+id/userNameText"
-                        android:layout_height="match_parent"
                         android:layout_width="match_parent"
-                        android:singleLine="true"
-                        android:inputType="textCapWords"
+                        android:layout_height="match_parent"
+                        android:focusedByDefault="false"
                         android:hint="Tên"
-                        android:textSize="13dp"
-                        android:focusedByDefault="false"/>
+                        android:inputType="textCapWords"
+                        android:singleLine="true"
+                        android:textSize="13dp" />
 
                 </android.support.design.widget.TextInputLayout>
+
                 <android.support.design.widget.TextInputLayout
                     android:id="@+id/addressLayout"
-                    android:layout_height="wrap_content"
                     android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_below="@+id/usernameLayout"
                     android:layout_marginTop="8dp">
 
                     <android.support.design.widget.TextInputEditText
                         android:id="@+id/addressText"
-                        android:layout_height="match_parent"
                         android:layout_width="match_parent"
-                        android:singleLine="true"
-                        android:inputType="text"
-                        android:hint="Địa chỉ"
-                        android:textSize="13dp"
+                        android:layout_height="match_parent"
+                        android:focusable="false"
                         android:focusedByDefault="false"
-                        android:focusable="false"/>
+                        android:hint="Địa chỉ"
+                        android:inputType="text"
+                        android:singleLine="true"
+                        android:textSize="13dp" />
 
                 </android.support.design.widget.TextInputLayout>
+
                 <android.support.design.widget.TextInputLayout
                     android:id="@+id/phoneLayout"
-                    android:layout_height="wrap_content"
                     android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_below="@+id/addressLayout"
                     android:layout_marginTop="8dp">
 
                     <android.support.design.widget.TextInputEditText
                         android:id="@+id/phoneText"
-                        android:layout_height="match_parent"
                         android:layout_width="match_parent"
-                        android:singleLine="true"
-                        android:inputType="number"
+                        android:layout_height="match_parent"
+                        android:focusedByDefault="false"
                         android:hint="Số điện thoại"
-                        android:textSize="13dp"
-                        android:focusedByDefault="false"/>
+                        android:inputType="number"
+                        android:singleLine="true"
+                        android:textSize="13dp" />
 
                 </android.support.design.widget.TextInputLayout>
+
                 <android.support.design.widget.TextInputLayout
                     android:id="@+id/emailLayout"
-                    android:layout_height="wrap_content"
                     android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_below="@+id/phoneLayout"
                     android:layout_marginTop="8dp">
 
                     <android.support.design.widget.TextInputEditText
                         android:id="@+id/emailText"
-                        android:layout_height="match_parent"
                         android:layout_width="match_parent"
-                        android:singleLine="true"
-                        android:inputType="textEmailAddress"
+                        android:layout_height="match_parent"
+                        android:focusedByDefault="false"
                         android:hint="Email"
-                        android:textSize="13dp"
-                        android:focusedByDefault="false"/>
+                        android:inputType="textEmailAddress"
+                        android:singleLine="true"
+                        android:textSize="13dp" />
 
                 </android.support.design.widget.TextInputLayout>
+
                 <android.support.design.widget.TextInputLayout
                     android:id="@+id/dobLayout"
-                    android:layout_height="wrap_content"
                     android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_below="@+id/emailLayout"
                     android:layout_marginTop="8dp"
                     android:focusable="false">
 
                     <android.support.design.widget.TextInputEditText
                         android:id="@+id/dobText"
-                        android:layout_height="match_parent"
                         android:layout_width="match_parent"
-                        android:singleLine="true"
-                        android:inputType="textEmailAddress"
+                        android:layout_height="match_parent"
+                        android:focusedByDefault="false"
                         android:hint="Ngày sinh"
-                        android:textSize="13dp"
-                        android:focusedByDefault="false"/>
+                        android:inputType="textEmailAddress"
+                        android:singleLine="true"
+                        android:textSize="13dp" />
 
                 </android.support.design.widget.TextInputLayout>
+
                 <LinearLayout
                     android:id="@+id/genderLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/dobLayout"
                     android:layout_marginTop="8dp">
+
                     <TextView
                         android:id="@+id/textView6"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
                         android:layout_weight="1"
                         android:text="Giới tính"
-                        android:textSize="13dp"/>
+                        android:textSize="13dp" />
+
                     <RelativeLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1">
+
                         <Spinner
                             android:id="@+id/genderSpinner"
                             android:layout_width="wrap_content"
@@ -200,28 +193,26 @@
                 </LinearLayout>
 
                 <Button
+                    android:id="@+id/saveBtn"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:id="@+id/saveBtn"
                     android:layout_below="@+id/genderLayout"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/border_button"
                     android:text="Lưu thay đổi"
+                    android:textColor="@color/colorApplication" />
+
+                <Button
+                    android:id="@+id/cancelBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_below="@+id/saveBtn"
+                    android:layout_marginBottom="16dp"
                     android:layout_marginTop="16dp"
                     android:background="@drawable/login_button"
-                    android:textColor="@color/colorWhite"/>
-                <Button
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:id="@+id/cancelBtn"
-                    android:layout_below="@+id/saveBtn"
                     android:text="Hủy thay đổi"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginBottom="16dp"
-                    android:background="@drawable/cancel_button"
-                    android:textColor="@color/colorWhite"/>
+                    android:textColor="@color/colorWhite" />
             </RelativeLayout>
-
-
-        </RelativeLayout>
     </ScrollView>
 </RelativeLayout>
 

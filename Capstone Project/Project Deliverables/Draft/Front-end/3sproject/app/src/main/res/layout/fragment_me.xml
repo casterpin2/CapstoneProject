@@ -88,8 +88,9 @@
                     android:layout_height="match_parent">
 
                     <ImageView
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="center"
                         android:src="@drawable/user"
                         android:layout_marginLeft="16dp"
                         android:adjustViewBounds="true"
@@ -120,8 +121,9 @@
                     android:layout_height="match_parent">
 
                         <ImageView
-                            android:layout_width="32dp"
-                            android:layout_height="32dp"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_gravity="center"
                             android:src="@drawable/cart"
                             android:layout_marginLeft="16dp"
                             android:adjustViewBounds="true"
@@ -151,8 +153,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
                         <ImageView
-                            android:layout_width="32dp"
-                            android:layout_height="32dp"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_gravity="center"
                             android:src="@drawable/pack"
                             android:adjustViewBounds="true"
                             android:scaleType="fitXY"
@@ -191,8 +194,9 @@
                     android:layout_marginTop="16dp"
                     android:layout_marginBottom="16dp">
                     <ImageView
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="center"
                         android:src="@drawable/logout"
                         android:layout_marginLeft="16dp"
                         android:adjustViewBounds="true"
