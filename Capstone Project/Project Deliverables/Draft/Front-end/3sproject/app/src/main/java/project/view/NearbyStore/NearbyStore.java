@@ -1,6 +1,7 @@
 package project.view.NearbyStore;
 
 public class NearbyStore {
+    int storeID;
     String storeName;
     String storeAddress;
     double distance;
@@ -11,7 +12,8 @@ public class NearbyStore {
 
     public NearbyStore(){}
 
-    public NearbyStore(String storeName, String storeAddress, double distance, long productPrice, double promotionPercent, double longtitude, double latitude) {
+    public NearbyStore(int storeID, String storeName, String storeAddress, double distance, long productPrice, double promotionPercent, double longtitude, double latitude) {
+        this.storeID = storeID;
         this.storeName = storeName;
         this.storeAddress = storeAddress;
         this.distance = distance;
@@ -19,6 +21,14 @@ public class NearbyStore {
         this.promotionPercent = promotionPercent;
         this.longtitude = longtitude;
         this.latitude = latitude;
+    }
+
+    public int getStoreID() {
+        return storeID;
+    }
+
+    public void setStoreID(int storeID) {
+        this.storeID = storeID;
     }
 
     public String getStoreName() {

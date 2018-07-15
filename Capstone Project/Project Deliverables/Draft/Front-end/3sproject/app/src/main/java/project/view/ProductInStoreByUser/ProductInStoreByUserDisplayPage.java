@@ -1,4 +1,4 @@
-package project.view.ProductInStore;
+package project.view.ProductInStoreByUser;
 
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
@@ -9,7 +9,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,29 +19,23 @@ import java.util.List;
 
 import project.retrofit.APIService;
 import project.retrofit.ApiUtils;
-import project.view.AddProductToStore.Item;
-import project.view.AddProductToStore.SearchProductAddToStore;
 import project.view.MainActivity;
-import project.view.ProductBrandDisplay.ProductBrand;
-import project.view.ProductBrandDisplay.ProductBrandDisplay;
-import project.view.ProductBrandDisplay.ProductBrandDisplayListViewAdapter;
-import project.view.ProductInStoreByUser.ProductInStoreByUserDisplayPage;
+import project.view.ProductInStore.ProductInStore;
 import project.view.R;
 import retrofit2.Call;
 import retrofit2.Response;
 
-public class ProductInStoreDisplayPage extends AppCompatActivity {
-
+public class ProductInStoreByUserDisplayPage extends AppCompatActivity {
     private List<ProductInStore> productList;
-    private ProductInStoreCustomListViewAdapter adapter;
+    private ProductInStoreByUserCustomListViewAdapter adapter;
     private ListView theListView;
-    private Button addNewBtn;
     private APIService mAPI;
     private ViewGroup context;
     private int storeID;
     private TextView nullMessage;
 
-    public ProductInStoreDisplayPage() {
+
+    public ProductInStoreByUserDisplayPage() {
     }
 
     public ViewGroup getContext() {
@@ -52,19 +45,21 @@ public class ProductInStoreDisplayPage extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_product_in_store_display_page);
+        setContentView(R.layout.activity_product_in_store_by_user_display_page);
 
         getSupportActionBar().setTitle("Sản phẩm cửa hàng");
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorApplication)));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         storeID = getIntent().getIntExtra("storeID", -1);
+
         mAPI = ApiUtils.getAPIService();
-        final Call<List<ProductInStore>> call = mAPI.getProductInStore(1);
+        final Call<List<ProductInStore>> call = mAPI.getProductInStore(storeID);
 //        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
 //        getSupportActionBar().setCustomView(R.layout.actionbar_search_product_add_to_store_page);
 
-        new NetworkCall().execute(call);
+        new ProductInStoreByUserDisplayPage.NetworkCall().execute(call);
     }
+
     private class NetworkCall extends AsyncTask<Call, Void, Void> {
 
 
@@ -94,11 +89,13 @@ public class ProductInStoreDisplayPage extends AppCompatActivity {
                 for (int i = 0; i < response.body().size(); i++) {
                     list.add(response.body().get(i));
                 }
-                adapter = new ProductInStoreCustomListViewAdapter(ProductInStoreDisplayPage.this,R.layout.search_product_page_custom_list_view,list);
+
+                adapter = new ProductInStoreByUserCustomListViewAdapter(ProductInStoreByUserDisplayPage.this,R.layout.search_product_page_custom_list_view,list);
                 adapter.setStoreID(1);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+
                         nullMessage = findViewById(R.id.nullMessage);
                         theListView = (ListView) findViewById(R.id.mainListView);
                         theListView.setAdapter(adapter);
@@ -115,23 +112,15 @@ public class ProductInStoreDisplayPage extends AppCompatActivity {
                             @Override
                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                                 int productID = list.get(position).getProductID();
-                                int isStoreProduct = 0;
-                                Intent toProductDetailPage = new Intent(ProductInStoreDisplayPage.this, MainActivity.class);
+                                int isStoreProduct = 1;
+                                Intent toProductDetailPage = new Intent(ProductInStoreByUserDisplayPage.this, MainActivity.class);
                                 toProductDetailPage.putExtra("productID",productID);
                                 toProductDetailPage.putExtra("storeID",storeID);
                                 toProductDetailPage.putExtra("isStoreProduct",isStoreProduct);
+//                                Toast.makeText(ProductInStoreByUserDisplayPage.this, "Vị trí: "+position, Toast.LENGTH_SHORT).show();
                             }
                         });
 
-                        addNewBtn = (Button) findViewById(R.id.addNewBtn);
-                        addNewBtn.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Intent toSearchProductToStore = new Intent(ProductInStoreDisplayPage.this, SearchProductAddToStore.class);
-//                toSearchProductToStore.putExtra("storeID",storeID);
-                                startActivity(toSearchProductToStore);
-                            }
-                        });
                     }});
             } catch (IOException e) {
             }

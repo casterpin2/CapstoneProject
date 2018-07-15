@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +22,7 @@ import java.util.Locale;
 import project.firebase.Firebase;
 import project.view.MainActivity;
 import project.view.R;
+import project.view.StoreInformation.StoreInformationPage;
 
 public class ListViewAdapter extends BaseAdapter {
 
@@ -71,20 +71,12 @@ public class ListViewAdapter extends BaseAdapter {
             holder.test = (LinearLayout) view.findViewById(R.id.test);
             holder.orderBtn = (Button) view.findViewById(R.id.orderBtn);
 
-
-
             view.setTag(holder);
         }else{
             holder = (ViewHolder) view.getTag();
-
         }
-        //Item product = productList.get(position);
-
-        int width = holder.test.getWidth();
-
 
         if(store != null) {
-
             holder.storeName.setText(store.getStoreName());
             holder.storeAddress.setText(store.getStoreAddress());
             holder.distance.setText(String.valueOf(store.getDistance())+ " km");
@@ -103,12 +95,6 @@ public class ListViewAdapter extends BaseAdapter {
 //                holder.promotionPercent.setText(formatDoubleToInt(context, String.valueOf(store.getPromotionPercent())));
             }
 
-//            if (isSale == false){
-//
-//            } else {
-//
-//            }
-
             holder.orderBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -119,6 +105,18 @@ public class ListViewAdapter extends BaseAdapter {
                 }
             });
         }
+
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int storeID = store.getStoreID();
+                Intent toStoreInformation = new Intent(getContext(), StoreInformationPage.class);
+                toStoreInformation.putExtra("storeID", storeID);
+                getContext().startActivity(toStoreInformation);
+//                    Toast.makeText(context, "Nhảy vào màn thông tin cửa hàng", Toast.LENGTH_SHORT).show();
+
+            }
+        });
 
         return view;
     }

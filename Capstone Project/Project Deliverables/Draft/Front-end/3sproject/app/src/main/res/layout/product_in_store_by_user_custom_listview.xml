@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="15dp"
+    android:layout_marginBottom="15dp"
+    android:background="@color/colorWhite"
+    android:orientation="vertical">
+    <!--product avatar-->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <RelativeLayout
+            android:layout_width="140dp"
+            android:layout_height="140dp">
+
+            <ImageView
+                android:id="@+id/productImage"
+                android:layout_width="130dp"
+                android:layout_height="130dp"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+
+                />
+        </RelativeLayout>
+
+        <!--product information-->
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="140dp"
+            android:layout_gravity="center"
+            android:layout_marginLeft="20dp">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="135dp"
+                android:layout_centerVertical="true">
+                <LinearLayout
+                    android:id="@+id/productNameLinearLayout"
+                    android:layout_width="fill_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginRight="10dp">
+
+
+                    <TextView
+                        android:id="@+id/productName"
+                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:lines="3"
+                        android:ellipsize="end"
+                        android:text="Evoqđasadsadasdddddddddddasue"
+                        android:textSize="13dp"
+                        android:textColor="@color/colorBlack"
+                        android:layout_weight="1"
+                        android:textStyle="bold"
+                        />
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/productLinearLayout"
+                    android:layout_width="fill_parent"
+                    android:layout_height="30dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_below="@+id/productNameLinearLayout"
+                    android:layout_marginTop="5dp">
+                    <TextView
+                        android:id="@+id/categoryText"
+                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:singleLine="true"
+                        android:ellipsize="marquee"
+                        android:text="Giá"
+                        android:textSize="12dp"
+                        android:textColor="@color/colorBlack"
+                        android:layout_weight="2"
+
+                        />
+                    <TextView
+                        android:id="@+id/productPrice"
+                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:singleLine="true"
+                        android:ellipsize="marquee"
+                        android:text="dsadsadsađasadasdsadasdasdadasdasdsa"
+                        android:textSize="12dp"
+                        android:textColor="@color/colorBlack"
+                        android:layout_weight="3"
+
+                        />
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/productBrandLinearLayout"
+                    android:layout_width="fill_parent"
+                    android:layout_height="30dp"
+                    android:layout_below="@+id/productLinearLayout"
+                    android:layout_marginRight="10dp">
+
+                    <TextView
+                        android:id="@+id/brandText"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:text="Chiết khấu"
+                        android:textColor="@color/colorBlack"
+                        android:textSize="12dp" />
+                    <TextView
+                        android:id="@+id/productPromotion"
+                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:singleLine="true"
+                        android:ellipsize="marquee"
+                        android:text="Evoqđasadsadasdasdasdasdasue"
+                        android:textSize="12dp"
+                        android:textColor="@color/colorBlack"
+                        android:layout_weight="3"
+                        />
+                </LinearLayout>
+
+
+            </RelativeLayout>
+        </RelativeLayout>
+    </LinearLayout>
+
+</LinearLayout>
