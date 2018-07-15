@@ -322,7 +322,6 @@ public class EditUserInformationPage extends AppCompatActivity {
         } else if (genderSpinner.getSelectedItemPosition() == 2){
             gender = "Nữ";
         }
-        gender = "Nam";
 
         extras.putString("name", userNameText.getText().toString());
         extras.putString("phone", phoneText.getText().toString());

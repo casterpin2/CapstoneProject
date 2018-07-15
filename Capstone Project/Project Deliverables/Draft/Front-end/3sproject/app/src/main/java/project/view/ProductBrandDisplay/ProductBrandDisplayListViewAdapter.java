@@ -2,6 +2,7 @@ package project.view.ProductBrandDisplay;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import java.util.List;
 
 import project.firebase.Firebase;
 import project.view.R;
+import project.view.ZTest.DescribeProduct;
 
 public class ProductBrandDisplayListViewAdapter extends BaseAdapter {
 
@@ -64,7 +66,7 @@ public class ProductBrandDisplayListViewAdapter extends BaseAdapter {
         }else{
             holder = (ProductBrandDisplayListViewAdapter.ViewHolder) view.getTag();
         }
-        ProductBrand product = productList.get(position);
+        final ProductBrand product = productList.get(position);
 
         if(product != null) {
             holder.productName.setText(product.getProductName());
@@ -74,6 +76,20 @@ public class ProductBrandDisplayListViewAdapter extends BaseAdapter {
                     .load(storageReference.child(product.getProductImageLink()))
                     .into(holder.productImage);
         }
+
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean isStoreProduct = false;
+                int productID = product.getProductID();
+                String productName = product.getProductName();
+                Intent toProductDetail = new Intent(getContext(), DescribeProduct.class);
+                toProductDetail.putExtra("isStoreProduct",isStoreProduct);
+                toProductDetail.putExtra("productID",productID);
+                toProductDetail.putExtra("productName",productName);
+                getContext().startActivity(toProductDetail);
+            }
+        });
 
         return view;
     }

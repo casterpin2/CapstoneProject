@@ -22,6 +22,7 @@ import project.retrofit.ApiUtils;
 import project.view.MainActivity;
 import project.view.ProductInStore.ProductInStore;
 import project.view.R;
+import project.view.ZTest.DescribeProduct;
 import retrofit2.Call;
 import retrofit2.Response;
 
@@ -112,11 +113,14 @@ public class ProductInStoreByUserDisplayPage extends AppCompatActivity {
                             @Override
                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                                 int productID = list.get(position).getProductID();
-                                int isStoreProduct = 1;
-                                Intent toProductDetailPage = new Intent(ProductInStoreByUserDisplayPage.this, MainActivity.class);
+                                String productName = list.get(position).getProductName();
+                                boolean isStoreProduct = true;
+                                Intent toProductDetailPage = new Intent(ProductInStoreByUserDisplayPage.this, DescribeProduct.class);
+                                toProductDetailPage.putExtra("productName",productName);
                                 toProductDetailPage.putExtra("productID",productID);
                                 toProductDetailPage.putExtra("storeID",storeID);
                                 toProductDetailPage.putExtra("isStoreProduct",isStoreProduct);
+                                startActivity(toProductDetailPage);
 //                                Toast.makeText(ProductInStoreByUserDisplayPage.this, "Vị trí: "+position, Toast.LENGTH_SHORT).show();
                             }
                         });

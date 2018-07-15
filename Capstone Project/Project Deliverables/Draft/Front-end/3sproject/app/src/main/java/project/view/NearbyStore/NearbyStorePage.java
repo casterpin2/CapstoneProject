@@ -77,6 +77,8 @@ public class NearbyStorePage extends AppCompatActivity implements OnMapReadyCall
     boolean limitData = false;
     int page =1;
 
+    private String productName;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,6 +86,8 @@ public class NearbyStorePage extends AppCompatActivity implements OnMapReadyCall
 
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorApplication)));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        productName = getIntent().getStringExtra("productName");
 
         nearbyStoreList.add(new NearbyStore(1,"Cửa hàng số 1 2 3 4 5 6 7 8 9 10 11 12","Hà Nội1 2 3 4 5 6 7 8 9 10",0.5,12000000,0.0,11.323,12.554));
         nearbyStoreList.add(new NearbyStore(2,"Cửa hàng số 1 2 3 4 5 6 7 8 9 10 11 12","Hà Nội",0.6,12000,2,11.329,12.555));
@@ -265,7 +269,7 @@ public class NearbyStorePage extends AppCompatActivity implements OnMapReadyCall
         searchView.setIconifiedByDefault(false);
 
         searchView.setLayoutParams(new ActionBar.LayoutParams(Gravity.LEFT));
-        searchView.setQuery("Tên sản phẩm vừa tìm", false);
+        searchView.setQuery(productName, true);
 
 
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
