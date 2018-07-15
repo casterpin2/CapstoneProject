@@ -27,11 +27,11 @@ public class UserDaoImpl extends BaseDao implements UserDao {
     private String QUERY_LOGIN = "SELECT a.*,b.path as store_image_path FROM\n"
             + "(SELECT a.*,b.image_id as store_image_id FROM\n"
             + "(SELECT a.*,b.path as user_image_path FROM \n"
-            + "(SELECT a.id as user_id,username,a.password,first_name,last_name,email,device_id,role_id,a.phone as user_phone,hasStore,gender,a.image_id as user_image_id,b.`location_id`, b.`phone` as store_phone, `status`,b.name,b.id as store_id FROM (SELECT * FROM User WHERE username = ? AND password = ?) as a , Store b WHERE a.id = b.user_id) a , Image b WHERE a.user_image_id = b.id) a , Image_Store b WHERE a.store_id = b.store_id) a , Image b WHERE a.store_image_id = b.id";
+            + "(SELECT a.id as user_id,username,a.password,first_name,last_name,email,device_id,role_id,a.phone as user_phone,dateOfBirth,hasStore,gender,a.image_id as user_image_id,b.`location_id`, b.`phone` as store_phone, `status`,b.name,b.id as store_id FROM (SELECT * FROM User WHERE username = ? AND password = ?) as a , Store b WHERE a.id = b.user_id) a , Image b WHERE a.user_image_id = b.id) a , Image_Store b WHERE a.store_id = b.store_id) a , Image b WHERE a.store_image_id = b.id";
     private String QUERY_LOGIN_FB = "SELECT a.*,b.path as store_image_path FROM\n"
             + "(SELECT a.*,b.image_id as store_image_id FROM\n"
             + "(SELECT a.*,b.path as user_image_path FROM \n"
-            + "(SELECT a.id as user_id,username,a.password,first_name,last_name,email,device_id,role_id,a.phone as user_phone,hasStore,gender,a.image_id as user_image_id,b.`location_id`, b.`phone` as store_phone, `status`,b.name,b.id as store_id FROM (SELECT * FROM User WHERE facebook_id = ?) as a , Store b WHERE a.id = b.user_id) a , Image b WHERE a.user_image_id = b.id) a , Image_Store b WHERE a.store_id = b.store_id) a , Image b WHERE a.store_image_id = b.id";
+            + "(SELECT a.id as user_id,username,a.password,first_name,last_name,email,device_id,role_id,a.phone as user_phone,dateOfBirth,hasStore,gender,a.image_id as user_image_id,b.`location_id`, b.`phone` as store_phone, `status`,b.name,b.id as store_id FROM (SELECT * FROM User WHERE facebook_id = ?) as a , Store b WHERE a.id = b.user_id) a , Image b WHERE a.user_image_id = b.id) a , Image_Store b WHERE a.store_id = b.store_id) a , Image b WHERE a.store_image_id = b.id";
 
     private String INSERT_ACCOUNT_FB = "INSERT INTO User(first_name,last_name,email,hasStore,role_id,facebook_id,image_id) VALUES (?,?,?,0,2,?,?)";
 
