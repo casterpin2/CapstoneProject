@@ -4,8 +4,12 @@ package project.view.home.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,9 +19,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import project.view.Login.LoginPage;
 import project.view.OrderManagerment.OrderManagement;
 import project.view.ProductInStore.ProductInStoreDisplayPage;
 import project.view.R;
+import project.view.RegisterStore.RegisterStorePage;
 import project.view.StoreInformation.StoreInformation;
 
 
@@ -26,18 +32,20 @@ import project.view.StoreInformation.StoreInformation;
  */
 public class StoreFragment extends Fragment {
     private Context context;
-    private RelativeLayout notHaveStoreLayout, haveStoreLayout, productLayout, orderLayout, storeImgLayout;
+    private RelativeLayout notHaveStoreLayout, haveStoreLayout, productLayout, orderLayout, storeImgLayout, noHaveInternet, noLoginLayout;
     private TextView storeName, numberOfOrder, numberOfProduct, ownerName, address, registerDate, phoneText;
     private ImageView storeImg, btnEdit;
     private int storeID = 1;
+    private int hasStore = 0;
+    private int userID = 1;
     private StoreInformation storeInformation;
     private View view;
-    private Button btnManagermentProduct,btnManagermentOrder;
+    private Button btnManagermentProduct,btnManagermentOrder, loginBtn, registerStoreBtn;
+    private SwipeRefreshLayout mainLayout;
 
     public StoreFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -45,8 +53,24 @@ public class StoreFragment extends Fragment {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_store,container,false);
         storeInformation = new StoreInformation();
+
+        //get value here
+//        storeID = getActivity().getIntent().getIntExtra("storeID", 0);
+//        hasStore = getActivity().getIntent().getIntExtra("hasStore", 0);
+//        userID = getActivity().getIntent().getIntExtra("userID", 0);
+
         findView();
-        setLayout(storeID,haveStoreLayout, notHaveStoreLayout);
+        setLayout(hasStore,userID,haveStoreLayout, notHaveStoreLayout, noHaveInternet,noLoginLayout);
+
+        mainLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                setLayout(hasStore,userID,haveStoreLayout, notHaveStoreLayout, noHaveInternet,noLoginLayout);
+                stopRefresh();
+            }
+        });
+        mainLayout.setColorSchemeResources(R.color.colorPrimary);
+
        btnManagermentProduct.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -70,6 +94,22 @@ public class StoreFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Toast.makeText(getContext(),"dsfsdfs",Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        loginBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent toLoginPage = new Intent(getContext(), LoginPage.class);
+                startActivity(toLoginPage);
+            }
+        });
+
+        registerStoreBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent toRegisterStorePage = new Intent(getContext(), RegisterStorePage.class);
+                startActivity(toRegisterStorePage);
             }
         });
 
@@ -101,6 +141,12 @@ public class StoreFragment extends Fragment {
         btnManagermentOrder = view.findViewById(R.id.btnManagerOrder);
         btnManagermentProduct = view.findViewById(R.id.btnManagerProduct);
 
+        mainLayout = view.findViewById(R.id.storeFragmentLayout);
+        noHaveInternet = view.findViewById(R.id.noHaveInternet);
+        noLoginLayout = view.findViewById(R.id.noLoginLayout);
+        loginBtn = view.findViewById(R.id.loginBtn);
+        registerStoreBtn = view.findViewById(R.id.registerStoreBtn);
+
     }
 
     @Override
@@ -126,13 +172,34 @@ public class StoreFragment extends Fragment {
         savingPreferences(storeID, nameStoree, ownerNameStoree, addressStoree, registerDateStoree, phoneTextStoree);
     }
 
-    public void setLayout(int storeID, RelativeLayout haveStore, RelativeLayout notHaveStore){
-        if (storeID == 0) {
-            haveStore.setVisibility(View.INVISIBLE);
-            notHaveStore.setVisibility(View.VISIBLE);
-        } else if(storeID > 0) {
+    public void setLayout(int hasStore, int userID, RelativeLayout haveStore, RelativeLayout notHaveStore, RelativeLayout noHaveInternet, RelativeLayout noLoginLayout){
+//        if (hasStore == 0) {
+//            haveStore.setVisibility(View.INVISIBLE);
+//            notHaveStore.setVisibility(View.VISIBLE);
+//        } else if(hasStore == 1) {
+//            haveStore.setVisibility(View.VISIBLE);
+//            notHaveStore.setVisibility(View.INVISIBLE);
+//        }
+        if (isNetworkAvailable() == true && hasStore == 1) {
             haveStore.setVisibility(View.VISIBLE);
             notHaveStore.setVisibility(View.INVISIBLE);
+            noHaveInternet.setVisibility(View.INVISIBLE);
+            noLoginLayout.setVisibility(View.INVISIBLE);
+        } else if (isNetworkAvailable() == true && hasStore == 0 && userID == 0) {
+            haveStore.setVisibility(View.INVISIBLE);
+            notHaveStore.setVisibility(View.INVISIBLE);
+            noHaveInternet.setVisibility(View.INVISIBLE);
+            noLoginLayout.setVisibility(View.VISIBLE);
+        } else if(isNetworkAvailable() == true && hasStore == 0 && userID == 1) {
+            haveStore.setVisibility(View.INVISIBLE);
+            notHaveStore.setVisibility(View.VISIBLE);
+            noHaveInternet.setVisibility(View.INVISIBLE);
+            noLoginLayout.setVisibility(View.INVISIBLE);
+        } else if (isNetworkAvailable() == false) {
+            haveStore.setVisibility(View.INVISIBLE);
+            notHaveStore.setVisibility(View.INVISIBLE);
+            noHaveInternet.setVisibility(View.VISIBLE);
+            noLoginLayout.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -172,6 +239,18 @@ public class StoreFragment extends Fragment {
         registerDate.setText(registerDateStoree);
         phoneText.setText(phoneTextStoree);
 
+    }
+
+    private void stopRefresh(){
+
+        mainLayout.setRefreshing(false);
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
 }

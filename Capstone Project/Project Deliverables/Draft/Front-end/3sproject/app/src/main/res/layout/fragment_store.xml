@@ -1,12 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.SwipeRefreshLayout
+    android:id="@+id/storeFragmentLayout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
     <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:id="@+id/noLoginLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            android:layout_centerInParent="true">
+
+            <TextView
+                android:id="@+id/noLoginMessage2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="20dp"
+                android:text="Vui lòng đăng nhập để xem thông tin cửa hàng"
+                android:layout_marginTop="7dp"
+                android:maxLines="3"
+                android:textAlignment="center"/>
+            <Button
+                android:id="@+id/loginBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/login_page_login3SBtn"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/noLoginMessage2"
+                android:background="@drawable/login_button"
+                android:textColor="@color/colorWhite"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/noHaveInternet"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="invisible"
+            android:layout_centerInParent="true">
+            <ImageView
+                android:id="@+id/errorImage"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/error"/>
+            <TextView
+                android:id="@+id/noHaveInternetmessage"
+                android:layout_below="@+id/errorImage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="20dp"
+                android:text="Không có kết nối"
+                android:textAlignment="center"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="20dp"
+                android:text="Vui lòng kết nối mạng"
+                android:layout_below="@+id/noHaveInternetmessage"
+                android:textAlignment="center"/>
+        </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/notHaveStoreLayout"
@@ -30,11 +94,13 @@
                 android:id="@+id/registerStoreBtn"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:text="@string/btn_register"
+                android:text="@string/registerStorePageTitle"
                 android:background="@drawable/login_button"
                 android:layout_centerHorizontal="true"
                 android:layout_below="@id/notHaveStoreMessage"
-                android:textColor="@color/colorWhite"/>
+                android:textColor="@color/colorWhite"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"/>
         </RelativeLayout>
 
 
@@ -339,4 +405,5 @@
             </RelativeLayout>
         </RelativeLayout>
     </RelativeLayout>
-</ScrollView>
+    </ScrollView>
+</android.support.v4.widget.SwipeRefreshLayout>

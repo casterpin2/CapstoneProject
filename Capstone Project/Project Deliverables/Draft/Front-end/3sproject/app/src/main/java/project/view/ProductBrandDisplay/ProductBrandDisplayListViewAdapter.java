@@ -18,7 +18,7 @@ import java.util.List;
 
 import project.firebase.Firebase;
 import project.view.R;
-import project.view.ZTest.DescribeProduct;
+import project.view.ProductDetail.ProductDetailPage;
 
 public class ProductBrandDisplayListViewAdapter extends BaseAdapter {
 
@@ -83,7 +83,7 @@ public class ProductBrandDisplayListViewAdapter extends BaseAdapter {
                 boolean isStoreProduct = false;
                 int productID = product.getProductID();
                 String productName = product.getProductName();
-                Intent toProductDetail = new Intent(getContext(), DescribeProduct.class);
+                Intent toProductDetail = new Intent(getContext(), ProductDetailPage.class);
                 toProductDetail.putExtra("isStoreProduct",isStoreProduct);
                 toProductDetail.putExtra("productID",productID);
                 toProductDetail.putExtra("productName",productName);

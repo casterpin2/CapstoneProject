@@ -1,4 +1,4 @@
-package project.view.ZTest;
+package project.view.ProductDetail;
 
 import android.content.Context;
 import android.content.Intent;
@@ -16,8 +16,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.storage.StorageReference;
 
 import java.text.DecimalFormat;
@@ -26,11 +24,10 @@ import java.util.Currency;
 import java.util.Locale;
 
 import project.firebase.Firebase;
-import project.view.NearbyStore.NearbyStore;
 import project.view.NearbyStore.NearbyStorePage;
 import project.view.R;
 
-public class DescribeProduct extends AppCompatActivity {
+public class ProductDetailPage extends AppCompatActivity {
     private ImageView productImage;
     private TextView salePriceText, productPriceText, promotionPercentText, productNameText, categoryNameText, brandNameText, productDescText;
     private TextView productNotInStoreName, productNotInStoreCategoryName, productNotInStoreBrandName, productNotInStoreDesc;
@@ -103,11 +100,11 @@ public class DescribeProduct extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     String productName = product.getProductName();
-                    Intent toNearbyStorePage = new Intent(DescribeProduct.this, NearbyStorePage.class);
+                    Intent toNearbyStorePage = new Intent(ProductDetailPage.this, NearbyStorePage.class);
                     toNearbyStorePage.putExtra("productName",productName);
-                    if (ActivityCompat.checkSelfPermission(DescribeProduct.this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                            && ActivityCompat.checkSelfPermission(DescribeProduct.this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                        ActivityCompat.requestPermissions(DescribeProduct.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
+                    if (ActivityCompat.checkSelfPermission(ProductDetailPage.this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                            && ActivityCompat.checkSelfPermission(ProductDetailPage.this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(ProductDetailPage.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
                     } else {
                         startActivity(toNearbyStorePage);
                     }

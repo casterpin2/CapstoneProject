@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,10 +18,9 @@ import java.util.List;
 
 import project.retrofit.APIService;
 import project.retrofit.ApiUtils;
-import project.view.MainActivity;
 import project.view.ProductInStore.ProductInStore;
 import project.view.R;
-import project.view.ZTest.DescribeProduct;
+import project.view.ProductDetail.ProductDetailPage;
 import retrofit2.Call;
 import retrofit2.Response;
 
@@ -115,7 +113,7 @@ public class ProductInStoreByUserDisplayPage extends AppCompatActivity {
                                 int productID = list.get(position).getProductID();
                                 String productName = list.get(position).getProductName();
                                 boolean isStoreProduct = true;
-                                Intent toProductDetailPage = new Intent(ProductInStoreByUserDisplayPage.this, DescribeProduct.class);
+                                Intent toProductDetailPage = new Intent(ProductInStoreByUserDisplayPage.this, ProductDetailPage.class);
                                 toProductDetailPage.putExtra("productName",productName);
                                 toProductDetailPage.putExtra("productID",productID);
                                 toProductDetailPage.putExtra("storeID",storeID);

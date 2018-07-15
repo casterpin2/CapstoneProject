@@ -1,4 +1,4 @@
-package project.view.ZTest;
+package project.view.ProductDetail;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
