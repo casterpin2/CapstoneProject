@@ -57,7 +57,7 @@ public class UserDaoImpl extends BaseDao implements UserDao {
         try {
             listData = new ArrayList();
             conn = getConnection();
-            String sql = "select username, password,device_id,role_id,first_name,last_name,location_id,role_id from User";
+            String sql = "select username, password,device_id,role_id,first_name,last_name,location_id,role_id,dateOfBirth from User";
             pre = conn.prepareStatement(sql);
             rs = pre.executeQuery();
             while (rs.next()) {
@@ -67,6 +67,7 @@ public class UserDaoImpl extends BaseDao implements UserDao {
                 us.setDeviceId(rs.getString("device_id"));
                 us.setFirstName(rs.getString("first_name"));
                 us.setLastName(rs.getString("last_name"));
+                us.setDateOfBirth(rs.getString("dateOfBirth"));
                 listData.add(us);
             }
         } finally {
@@ -194,6 +195,7 @@ public class UserDaoImpl extends BaseDao implements UserDao {
                 us.setEmail(rs.getString("email"));
                 us.setHasStore(rs.getInt("hasStore"));
                 us.setGender(rs.getString("gender"));
+                us.setDateOfBirth(rs.getString("dateOfBirth"));
                 us.setPhone(rs.getString("user_phone"));
                 us.setImage_path(rs.getString("user_image_path"));
                 hashMap.put("user", us);
@@ -235,6 +237,7 @@ public class UserDaoImpl extends BaseDao implements UserDao {
                 us.setEmail(rs.getString("email"));
                 us.setHasStore(rs.getInt("hasStore"));
                 us.setGender(rs.getString("gender"));
+                us.setDateOfBirth(rs.getString("dateOfBirth"));
                 us.setPhone(rs.getString("user_phone"));
                 us.setImage_path(rs.getString("user_image_path"));
                 hashMap.put("user", us);

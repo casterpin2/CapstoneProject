@@ -5,29 +5,17 @@
  */
 package com.entites;
 
-import java.io.Serializable;
-
 /**
  *
  * @author TUYEN
  */
-public class UserEntites implements Serializable{
+public class UserEntites {
     private int userID;
     private String userName;
     private String password;
     private String deviceId;
     private int roleId;
-    private String firstName;
-    private String lastName;
-    private String image_path;
-    private String email;
-    private String phone;
-    private int hasStore;
-    private String gender;
-    private int numberofOrder;
-    
-    public UserEntites() {
-    }
+    private String dateOfBirth;
 
     public int getUserID() {
         return userID;
@@ -45,14 +33,29 @@ public class UserEntites implements Serializable{
         this.userName = userName;
     }
 
-    public String getImage_path() {
-        return image_path;
+    public String getDateOfBirth() {
+        return dateOfBirth;
     }
 
-    public void setImage_path(String image_path) {
-        this.image_path = image_path;
+    public void setDateOfBirth(String dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+    private String firstName;
+    private String lastName;
+    private String image_path;
+    private String email;
+    private String phone;
+    private int hasStore;
+    private String gender;
+
+    public String getPhone() {
+        return phone;
     }
 
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+    
     public int getHasStore() {
         return hasStore;
     }
@@ -68,9 +71,28 @@ public class UserEntites implements Serializable{
     public void setGender(String gender) {
         this.gender = gender;
     }
-
-
     
+    
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+    
+    public String getImage_path() {
+        return image_path;
+    }
+
+    public void setImage_path(String image_path) {
+        this.image_path = image_path;
+    }
+    
+    public UserEntites() {
+    }
+
+
 
     public String getPassword() {
         return password;
@@ -110,30 +132,6 @@ public class UserEntites implements Serializable{
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public int getNumberofOrder() {
-        return numberofOrder;
-    }
-
-    public void setNumberofOrder(int numberofOrder) {
-        this.numberofOrder = numberofOrder;
     }
     
     

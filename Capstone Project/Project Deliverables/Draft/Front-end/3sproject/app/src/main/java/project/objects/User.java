@@ -24,6 +24,18 @@ public class User {
     @SerializedName("image_path")
     @Expose
     private String image_path;
+    @SerializedName("dateOfBirth")
+    @Expose
+    private String dateOfBirth;
+
+    public String getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(String dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
     @SerializedName("email")
     @Expose
     private String email;
