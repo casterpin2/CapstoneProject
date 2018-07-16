@@ -27,198 +27,273 @@
         </android.support.v7.widget.Toolbar>
 
     </android.support.design.widget.AppBarLayout>
-
-    <android.support.v7.widget.CardView
-        android:id="@+id/card_view1"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/userInforLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_below="@id/appbar">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <de.hdodenhof.circleimageview.CircleImageView
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/profile_image"
-                android:layout_marginLeft="8dp"
-                android:layout_width="96dp"
-                android:layout_height="96dp"
-                android:src="@drawable/cover"
-                android:padding="8dp"
-                app:civ_border_width="2dp"
-                app:civ_border_color="@color/colorApplication"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Xin chào,"
-                android:textSize="16dp"
-                android:layout_marginLeft="8dp"
-                android:layout_gravity="center"
-                android:textColor="@color/colorBlack"/>
-            <TextView
-                android:id="@+id/tvUserName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Vu Tung"
-                android:textSize="16dp"
-                android:layout_gravity="center"
-                android:textColor="@color/colorBlack"/>
-        </LinearLayout>
-
-    </android.support.v7.widget.CardView>
-    <android.support.v7.widget.CardView
-        android:id="@+id/card_view2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/card_view1"
-        android:layout_marginTop="32dp">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_centerInParent="true"
-            android:layout_margin="16dp">
-            <LinearLayout
-                android:id="@+id/userInfoLayout"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/appbar">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+            <RelativeLayout
+                android:id="@+id/noHaveInternetLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
-                <LinearLayout
+                android:visibility="invisible"
+                android:layout_centerInParent="true">
+                <ImageView
+                    android:id="@+id/errorImage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:src="@drawable/error"/>
+                <TextView
+                    android:id="@+id/noHaveInternetMessage"
+                    android:layout_below="@+id/errorImage"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:layout_gravity="center"
-                        android:src="@drawable/user"
-                        android:layout_marginLeft="16dp"
-                        android:adjustViewBounds="true"
-                        android:scaleType="fitXY"/>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="16dp"
-                        android:text="Thông tin tài khoản"
-                        android:textSize="13dp"
-                        android:layout_gravity="center"/>
-                </LinearLayout>
-                <View
+                    android:layout_height="wrap_content"
+                    android:textSize="20dp"
+                    android:text="Không có kết nối"
+                    android:textAlignment="center"
+                    />
+                <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="15dp"
-                    android:background="@color/grey" />
-            </LinearLayout>
+                    android:layout_height="wrap_content"
+                    android:textSize="20dp"
+                    android:text="Vui lòng kết nối mạng"
+                    android:layout_below="@+id/noHaveInternetMessage"
+                    android:textAlignment="center"/>
+            </RelativeLayout>
 
-            <LinearLayout
-                android:id="@+id/cartLayout"
+            <RelativeLayout
+                android:id="@+id/noLoginLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginTop="16dp">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                android:visibility="invisible"
+                android:layout_centerInParent="true">
 
-                        <ImageView
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:layout_gravity="center"
-                            android:src="@drawable/cart"
-                            android:layout_marginLeft="16dp"
-                            android:adjustViewBounds="true"
-                            android:scaleType="fitXY"/>
+
+                <TextView
+                    android:id="@+id/noLoginMessage2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="20dp"
+                    android:text="Bạn chưa đăng nhập"
+                    android:layout_marginTop="7dp"
+                    android:maxLines="3"
+                    android:textAlignment="center"/>
+                <Button
+                    android:id="@+id/loginBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/login_page_login3SBtn"
+                    android:layout_centerHorizontal="true"
+                    android:layout_below="@+id/noLoginMessage2"
+                    android:background="@drawable/login_button"
+                    android:textColor="@color/colorWhite"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/loginnedLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <android.support.v7.widget.CardView
+                    android:id="@+id/card_view1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+                        <de.hdodenhof.circleimageview.CircleImageView
+                            xmlns:app="http://schemas.android.com/apk/res-auto"
+                            android:id="@+id/profile_image"
+                            android:layout_marginLeft="8dp"
+                            android:layout_width="96dp"
+                            android:layout_height="96dp"
+                            android:src="@drawable/cover"
+                            android:padding="8dp"
+                            app:civ_border_width="2dp"
+                            app:civ_border_color="@color/colorApplication"/>
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="16dp"
-                            android:text="Giỏ hàng"
-                            android:textSize="13dp"
-                            android:layout_gravity="center"/>
-                </LinearLayout>
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="15dp"
-                    android:background="@color/grey" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/orderLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:orientation="vertical">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-                        <ImageView
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
+                            android:text="Xin chào,"
+                            android:textSize="16dp"
+                            android:layout_marginLeft="8dp"
                             android:layout_gravity="center"
-                            android:src="@drawable/pack"
-                            android:adjustViewBounds="true"
-                            android:scaleType="fitXY"
-                            android:layout_marginLeft="16dp"/>
-
+                            android:textColor="@color/colorBlack"/>
                         <TextView
+                            android:id="@+id/tvUserName"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="16dp"
-                            android:text="Đơn hàng của tôi"
-                            android:textSize="13dp"
-                            android:layout_gravity="center"/>
-                </LinearLayout>
-            </LinearLayout>
+                            android:text="Vu Tung"
+                            android:textSize="16dp"
+                            android:layout_gravity="center"
+                            android:textColor="@color/colorBlack"/>
+                    </LinearLayout>
 
-
-        </LinearLayout>
-    </android.support.v7.widget.CardView>
-    <android.support.v7.widget.CardView
-        android:layout_below="@id/card_view2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="16dp">
-            <LinearLayout
-                android:id="@+id/changePasswordLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-                <LinearLayout
+                </android.support.v7.widget.CardView>
+                <android.support.v7.widget.CardView
+                    android:id="@+id/card_view2"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginBottom="16dp">
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:layout_gravity="center"
-                        android:src="@drawable/logout"
-                        android:layout_marginLeft="16dp"
-                        android:adjustViewBounds="true"
-                        android:scaleType="fitXY"/>
-                    <TextView
-                        android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/card_view1"
+                    android:layout_marginTop="32dp">
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="16dp"
-                        android:text="Đổi mật khẩu"
-                        android:textSize="13dp"
-                        android:layout_gravity="center"/>
-                </LinearLayout>
-            </LinearLayout>
-        </LinearLayout>
-    </android.support.v7.widget.CardView>
-    <Button
-        android:id="@+id/btnLogout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/border_button"
-        android:layout_margin="16dp"
-        android:layout_alignParentBottom="true"
-        android:textColor="@color/colorApplication"
-        android:text="Đăng xuất"/>
+                        android:orientation="vertical"
+                        android:layout_centerInParent="true"
+                        android:layout_margin="16dp">
+                        <LinearLayout
+                            android:id="@+id/userInfoLayout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
+
+                                <ImageView
+                                    android:layout_width="24dp"
+                                    android:layout_height="24dp"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/user"
+                                    android:layout_marginLeft="16dp"
+                                    android:adjustViewBounds="true"
+                                    android:scaleType="fitXY"/>
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="16dp"
+                                    android:text="Thông tin tài khoản"
+                                    android:textSize="13dp"
+                                    android:layout_gravity="center"/>
+                            </LinearLayout>
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="1dp"
+                                android:layout_marginTop="15dp"
+                                android:background="@color/grey" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/cartLayout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_marginTop="16dp">
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
+
+                                <ImageView
+                                    android:layout_width="24dp"
+                                    android:layout_height="24dp"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/cart"
+                                    android:layout_marginLeft="16dp"
+                                    android:adjustViewBounds="true"
+                                    android:scaleType="fitXY"/>
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="16dp"
+                                    android:text="Giỏ hàng"
+                                    android:textSize="13dp"
+                                    android:layout_gravity="center"/>
+                            </LinearLayout>
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="1dp"
+                                android:layout_marginTop="15dp"
+                                android:background="@color/grey" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/orderLayout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="15dp"
+                            android:orientation="vertical">
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
+                                <ImageView
+                                    android:layout_width="24dp"
+                                    android:layout_height="24dp"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/pack"
+                                    android:adjustViewBounds="true"
+                                    android:scaleType="fitXY"
+                                    android:layout_marginLeft="16dp"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="16dp"
+                                    android:text="Đơn hàng của tôi"
+                                    android:textSize="13dp"
+                                    android:layout_gravity="center"/>
+                            </LinearLayout>
+                        </LinearLayout>
+
+
+                    </LinearLayout>
+                </android.support.v7.widget.CardView>
+                <android.support.v7.widget.CardView
+                    android:layout_below="@id/card_view2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="16dp">
+                        <LinearLayout
+                            android:id="@+id/changePasswordLayout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_marginTop="16dp"
+                                android:layout_marginBottom="16dp">
+                                <ImageView
+                                    android:layout_width="24dp"
+                                    android:layout_height="24dp"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/logout"
+                                    android:layout_marginLeft="16dp"
+                                    android:adjustViewBounds="true"
+                                    android:scaleType="fitXY"/>
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="16dp"
+                                    android:text="Đổi mật khẩu"
+                                    android:textSize="13dp"
+                                    android:layout_gravity="center"/>
+                            </LinearLayout>
+                        </LinearLayout>
+                    </LinearLayout>
+                </android.support.v7.widget.CardView>
+                <Button
+                    android:id="@+id/btnLogout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/border_button"
+                    android:layout_margin="16dp"
+                    android:layout_alignParentBottom="true"
+                    android:textColor="@color/colorApplication"
+                    android:text="Đăng xuất"/>
+            </RelativeLayout>
+            </RelativeLayout>
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+
 </RelativeLayout>

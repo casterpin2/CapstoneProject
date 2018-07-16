@@ -3,28 +3,22 @@ package project.view.home.Fragment;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.drawable.ColorDrawable;
-import android.os.Build;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import project.view.ChangePassword.ChangePasswordActivity;
-import project.view.EditUserInformation.EditUserInformationPage;
-import project.view.Login.LoginPage;
 import project.view.R;
-import project.view.UserInformation.TweakUI;
 import project.view.UserInformation.UserInformationPage;
 
 /**
@@ -36,7 +30,9 @@ public class UserFragment extends Fragment {
     private Toolbar toolbar;
     private Button btnLogout;
     private LinearLayout changePasswordLayout, userInfoLayout, cartLayout, orderLayout;
-    private int userID;
+    private int userID = 1;
+    private SwipeRefreshLayout userInforLayout;
+    private RelativeLayout loginnedLayout, noLoginLayout, noHaveInternetLayout;
     public UserFragment() {
         // Required empty public constructor
     }
@@ -53,7 +49,18 @@ public class UserFragment extends Fragment {
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
         findView();
 
-        userID = getActivity().getIntent().getIntExtra("userID",-1);
+//        userID = getActivity().getIntent().getIntExtra("userID",0);
+
+        setLayout(userID,loginnedLayout, noLoginLayout, noHaveInternetLayout);
+
+        userInforLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                setLayout(userID,loginnedLayout, noLoginLayout, noHaveInternetLayout);
+                stopRefresh();
+            }
+        });
+        userInforLayout.setColorSchemeResources(R.color.colorPrimary);
 
         changePasswordLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,6 +112,38 @@ public class UserFragment extends Fragment {
         userInfoLayout = view.findViewById(R.id.userInfoLayout);
         cartLayout = view.findViewById(R.id.cartLayout);
         orderLayout = view.findViewById(R.id.orderLayout);
+        userInforLayout = view.findViewById(R.id.userInforLayout);
+        loginnedLayout = view.findViewById(R.id.loginnedLayout);
+        noLoginLayout = view.findViewById(R.id.noLoginLayout);
+        noHaveInternetLayout = view.findViewById(R.id.noHaveInternetLayout);
+    }
+
+    private void stopRefresh(){
+
+        userInforLayout.setRefreshing(false);
+    }
+
+    public void setLayout(int userID, RelativeLayout loginnedLayout, RelativeLayout noLoginLayout, RelativeLayout noHaveInternetLayout){
+        if(isNetworkAvailable() == true && userID == 0) {
+            noLoginLayout.setVisibility(View.VISIBLE);
+            loginnedLayout.setVisibility(View.INVISIBLE);
+            noHaveInternetLayout.setVisibility(View.INVISIBLE);
+        } else if (isNetworkAvailable() == true && userID != 0) {
+            noLoginLayout.setVisibility(View.INVISIBLE);
+            loginnedLayout.setVisibility(View.VISIBLE);
+            noHaveInternetLayout.setVisibility(View.INVISIBLE);
+        } else if (isNetworkAvailable() == false) {
+            noLoginLayout.setVisibility(View.INVISIBLE);
+            loginnedLayout.setVisibility(View.INVISIBLE);
+            noHaveInternetLayout.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
 }

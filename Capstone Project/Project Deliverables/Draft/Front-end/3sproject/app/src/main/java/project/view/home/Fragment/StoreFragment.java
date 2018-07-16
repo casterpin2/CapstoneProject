@@ -36,7 +36,7 @@ public class StoreFragment extends Fragment {
     private TextView storeName, numberOfOrder, numberOfProduct, ownerName, address, registerDate, phoneText;
     private ImageView storeImg, btnEdit;
     private int storeID = 1;
-    private int hasStore = 0;
+    private int hasStore = 1;
     private int userID = 1;
     private StoreInformation storeInformation;
     private View view;
