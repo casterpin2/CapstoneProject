@@ -15,6 +15,8 @@ public class Login {
     private Store store;
 
     public Login() {
+        user = new User();
+        store = new Store();
     }
 
     public User getUser() {

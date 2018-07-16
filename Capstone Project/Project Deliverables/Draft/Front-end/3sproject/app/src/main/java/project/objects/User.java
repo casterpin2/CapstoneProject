@@ -49,6 +49,21 @@ public class User {
     @Expose
     private int hasStore;
 
+    public User() {
+        this.id = 0;
+        this.first_name = "";
+        this.last_name = "";
+        this.phone = "";
+        this.deviceId = "";
+        this.gender = "";
+        this.image_path = "";
+        this.dateOfBirth = "";
+        this.email = "";
+        this.username = "";
+        this.roleId = "";
+        this.hasStore = 0;
+    }
+
     public String getPhone() {
         return phone;
     }
@@ -137,8 +152,6 @@ public class User {
         this.last_name = last_name;
     }
 
-    public User() {
-    }
 
     public void setId(int id) {
         this.id = id;

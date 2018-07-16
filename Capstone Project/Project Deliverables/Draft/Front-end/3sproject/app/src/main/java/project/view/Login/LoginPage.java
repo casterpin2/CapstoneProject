@@ -41,6 +41,7 @@ import project.retrofit.APIService;
 import project.retrofit.ApiUtils;
 import project.view.R;
 import project.view.Register.RegisterActivity;
+import project.view.home.HomeActivity;
 import retrofit2.Call;
 import retrofit2.Response;
 
@@ -50,7 +51,7 @@ public class LoginPage extends AppCompatActivity {
     private Button loginBtn, loginFBBtn, loginGPBtn;
     private TextView toRegisterPage, toForgetPasswordPage, errorMessage, usernameValue, passwordValue ;
     private APIService mAPI;
-    private static Login login;
+    public static Login login = new Login();
     private CallbackManager callbackManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,7 +87,6 @@ public class LoginPage extends AppCompatActivity {
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                login = new Login();
                 String username = usernameValue.getText().toString().trim();
                 String password = MD5Library.md5(passwordValue.getText().toString().trim());
                 Call<Login> call = mAPI.login(username,password);
@@ -98,6 +98,7 @@ public class LoginPage extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 LoginManager.getInstance().logInWithReadPermissions(LoginPage.this, Arrays.asList("public_profile"));
+
             }
         });
 
@@ -105,7 +106,7 @@ public class LoginPage extends AppCompatActivity {
         LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                login = new Login();
+
                 final User user = new User();
                 final Profile profile = Profile.getCurrentProfile();
                 if (profile.getProfilePictureUri(100,100).getPath() != null)
@@ -213,7 +214,9 @@ public class LoginPage extends AppCompatActivity {
             if (login.getUser() == null) {
                 errorMessage.setText("Sai ");
             }else {
-                Toast.makeText(LoginPage.this, LoginPage.login.getUser().toString(), Toast.LENGTH_LONG).show();
+                //Toast.makeText(LoginPage.this, LoginPage.login.getUser().toString(), Toast.LENGTH_LONG).show();
+                Intent toHomePage = new Intent(LoginPage.this, HomeActivity.class);
+                startActivity(toHomePage);
             }
             super.onPostExecute(result);
         }
