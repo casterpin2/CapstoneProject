@@ -16,12 +16,6 @@ public class Store implements Serializable{
 
 
     public Store() {
-        this.name = "";
-        this.user_id = 0;
-        this.phone = "";
-        this.image_path = "";
-        this.id = 0;
-        this.status = 0;
     }
 
     @SerializedName("phone")
