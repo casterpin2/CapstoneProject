@@ -42,6 +42,7 @@ import project.retrofit.ApiUtils;
 import project.view.R;
 import project.view.Register.RegisterActivity;
 import project.view.home.HomeActivity;
+import project.view.util.CustomInterface;
 import retrofit2.Call;
 import retrofit2.Response;
 
@@ -67,9 +68,7 @@ public class LoginPage extends AppCompatActivity {
 
         findView();
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().setStatusBarColor((getResources().getColor(R.color.statusBarColor)));
-        }
+        CustomInterface.setStatusBarColor(this);
 
         scroll.setVerticalScrollBarEnabled(false);
         scroll.setHorizontalScrollBarEnabled(false);

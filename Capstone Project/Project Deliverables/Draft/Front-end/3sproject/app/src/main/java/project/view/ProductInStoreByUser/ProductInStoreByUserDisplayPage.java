@@ -21,6 +21,7 @@ import project.retrofit.ApiUtils;
 import project.view.ProductInStore.ProductInStore;
 import project.view.R;
 import project.view.ProductDetail.ProductDetailPage;
+import project.view.util.CustomInterface;
 import retrofit2.Call;
 import retrofit2.Response;
 
@@ -45,6 +46,8 @@ public class ProductInStoreByUserDisplayPage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_in_store_by_user_display_page);
+
+        CustomInterface.setStatusBarColor(this);
 
         getSupportActionBar().setTitle("Sản phẩm cửa hàng");
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorApplication)));

@@ -12,8 +12,11 @@ public class OrderDetail {
     private String name;
     private String phoneNumber;
     private String address;
+    private Double price;
+    private String storeName;
+    private int storeId;
 
-    public OrderDetail(String orderCode, String productName, int quantity, Date orderDate, String name, String phoneNumber, String address) {
+    public OrderDetail(String orderCode, String productName, int quantity, Date orderDate, String name, String phoneNumber, String address, Double price, String storeName, int storeId) {
         this.orderCode = orderCode;
         this.productName = productName;
         this.quantity = quantity;
@@ -21,6 +24,9 @@ public class OrderDetail {
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.address = address;
+        this.price = price;
+        this.storeName = storeName;
+        this.storeId = storeId;
     }
 
     public String getOrderCode() {
@@ -79,29 +85,38 @@ public class OrderDetail {
         this.address = address;
     }
 
-    public static ArrayList<OrderDetail> getListOrder(){
-        ArrayList<OrderDetail> arrContact = new ArrayList<>();
-        OrderDetail contact1 = new OrderDetail("1111111111","Nước Lavi...",3,new Date(),"Vũ Sỹ Tùng","0988 933 xxx", "Địa chỉ ... ");
-        OrderDetail contact2 = new OrderDetail("2222222222","Bim Bim O...",2,new Date(),"Vũ Sỹ Tùng","0988 933 xxx", "Địa chỉ ... ");
-        OrderDetail contact3 = new OrderDetail("3333333333","Coca cola...",6,new Date(),"Vũ Sỹ Tùng","0988 933 xxx", "Địa chỉ ... ");
-        OrderDetail contact4 = new OrderDetail("3333333554","Nước Lavi...",1,new Date(),"Vũ Sỹ Tùng","0988 933 xxx", "Địa chỉ ... ");
-        OrderDetail contact5 = new OrderDetail("4444444422","Fanta",3,new Date(),"Vũ Sỹ Tùng","0988 933 xxx", "Địa chỉ ... ");
-        OrderDetail contact6 = new OrderDetail("","Pepsi",3,new Date(),"Vũ Sỹ Tùng","0988 933 xxx", "Địa chỉ ... ");
-        OrderDetail contact7 = new OrderDetail("","Nước Lavi...",3,new Date(),"Vũ Sỹ Tùng","0988 933 xxx", "Địa chỉ ... ");
-        OrderDetail contact8 = new OrderDetail("","Nước Lavi...",3,new Date(),"Vũ Sỹ Tùng","0988 933 xxx", "Địa chỉ ... ");
-        OrderDetail contact9 = new OrderDetail("","Nước Lavi...",3,new Date(),"Vũ Sỹ Tùng","0988 933 xxx", "Địa chỉ ... ");
-        OrderDetail contact10 = new OrderDetail("","Nước Lavi...",3,new Date(),"Vũ Sỹ Tùng","0988 933 xxx", "Địa chỉ ... ");
+    public Double getPrice() {
+        return price;
+    }
 
-        arrContact.add(contact1);
-        arrContact.add(contact2);
-        arrContact.add(contact3);
-        arrContact.add(contact4);
-        arrContact.add(contact5);
-        arrContact.add(contact6);
-        arrContact.add(contact7);
-        arrContact.add(contact8);
-        arrContact.add(contact9);
-        arrContact.add(contact10);
+    public void setPrice(Double price) {
+        this.price = price;
+    }
+
+    public String getStoreName() {
+        return storeName;
+    }
+
+    public void setStoreName(String storeName) {
+        this.storeName = storeName;
+    }
+
+    public int getStoreId() {
+        return storeId;
+    }
+
+    public void setStoreId(int storeId) {
+        this.storeId = storeId;
+    }
+
+    public static ArrayList<OrderDetail> dataTest(){
+        ArrayList<OrderDetail> arrContact = new ArrayList<>();
+        OrderDetail orderDetail = new OrderDetail("1111111111","Lavi ....",3,new Date(),"Vũ Sỹ Tùng","0988 933 xxx", "Địa chỉ ... ",100000.0,"Cửa hàng của thằng nào đó",1);
+
+        for (int i = 0; i<20;i++){
+            arrContact.add(orderDetail);
+        }
+
         return  arrContact;
     }
 }
