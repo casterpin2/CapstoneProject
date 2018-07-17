@@ -56,46 +56,43 @@
         </activity>
         <activity
             android:name=".StoreInformation.StoreInformationPage"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
-        <activity android:name=".RegisterStore.RegisterStorePage"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".RegisterStore.RegisterStorePage" />
         <activity
             android:name=".UserInformation.UserInformationPage"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".EditUserInformation.EditUserInformationPage"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".OrderManagerment.OrderManagement"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".OrderManagerment.OrderDetailManagement"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
-        <activity android:name=".NearbyStore.NearbyStorePage" >
-
-
-        </activity>
-        <activity
-            android:name=".ProductDetail.ProductDetailPage">
-
-        </activity>
-        <activity android:name=".ProductInStoreByUser.ProductInStoreByUserDisplayPage"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".NearbyStore.NearbyStorePage"></activity>
+        <activity android:name=".ProductDetail.ProductDetailPage"></activity>
+        <activity android:name=".ProductInStoreByUser.ProductInStoreByUserDisplayPage" />
 
         <!-- Facebook -->
-        <meta-data android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_app_id"/>
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
 
-        <activity android:name="com.facebook.FacebookActivity"
-            android:configChanges=
-                "keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+        <activity
+            android:name="com.facebook.FacebookActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name" />
         <activity
             android:name="com.facebook.CustomTabActivity"
             android:exported="true">
+
+        </activity>
+        <activity android:name=".UserSearchProduct.UserSearchProductPage">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="@string/fb_login_protocol_scheme" />
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
     </application>
