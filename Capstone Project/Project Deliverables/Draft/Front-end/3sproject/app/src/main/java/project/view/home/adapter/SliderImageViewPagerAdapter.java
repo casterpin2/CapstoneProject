@@ -19,7 +19,7 @@ public class SliderImageViewPagerAdapter extends PagerAdapter {
 
     private Context context;
     private LayoutInflater layoutInflater;
-    private Integer [] images = {R.drawable.slide1, R.drawable.slide2, R.drawable.slide3};
+    private Integer [] images = {R.drawable.cover, R.drawable.cover, R.drawable.cover};
 
     public SliderImageViewPagerAdapter(Context context) {
         this.context = context;
