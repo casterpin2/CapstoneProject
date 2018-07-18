@@ -43,7 +43,7 @@
         <activity android:name=".ProductTypeDisplay.ProductTypeDisplay" />
         <activity
             android:name=".Register.RegisterActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".ChangePassword.ChangePasswordActivity"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -51,7 +51,9 @@
         <activity android:name=".EditProductInStore.EditProductInStorePage" />
         <activity
             android:name=".home.HomeActivity"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar">
+
+        </activity>
         <activity
             android:name=".StoreInformation.StoreInformationPage"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -69,11 +71,8 @@
             android:name=".OrderManagerment.OrderDetailManagement"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".NearbyStore.NearbyStorePage"></activity>
-
-        <activity
-            android:name=".ZTest.DescribeProduct"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
+        <activity android:name=".ProductDetail.ProductDetailPage"></activity>
+<activity android:name=".UserOrderFast.OrderFast"></activity>
         <activity android:name=".ProductInStoreByUser.ProductInStoreByUserDisplayPage" />
         <activity android:name=".UserOrderFast.OrderFast"></activity>
         <activity android:name=".ProductDetail.ProductDetailPage"></activity>
