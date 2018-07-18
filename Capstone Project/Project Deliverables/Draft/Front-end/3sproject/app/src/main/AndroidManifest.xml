@@ -37,7 +37,7 @@
         <activity android:name=".ProductTypeDisplay.ProductTypeDisplay" />
         <activity
             android:name=".Register.RegisterActivity"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ChangePassword.ChangePasswordActivity"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -45,39 +45,37 @@
         <activity android:name=".EditProductInStore.EditProductInStorePage" />
         <activity
             android:name=".home.HomeActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".StoreInformation.StoreInformationPage"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
-        <activity android:name=".RegisterStore.RegisterStorePage"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".RegisterStore.RegisterStorePage" />
         <activity
             android:name=".UserInformation.UserInformationPage"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".EditUserInformation.EditUserInformationPage"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".OrderManagerment.OrderManagement"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".OrderManagerment.OrderDetailManagement"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
-        <activity android:name=".NearbyStore.NearbyStorePage" >
-
-
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".NearbyStore.NearbyStorePage"></activity>
         <activity
             android:name=".ZTest.DescribeProduct"
             android:theme="@style/AppTheme.NoActionBar">
+
+        </activity>
+        <activity android:name=".ProductInStoreByUser.ProductInStoreByUserDisplayPage" />
+        <activity android:name=".UserOrderFast.OrderFast">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ProductInStoreByUser.ProductInStoreByUserDisplayPage"></activity>
     </application>
 
 </manifest>
