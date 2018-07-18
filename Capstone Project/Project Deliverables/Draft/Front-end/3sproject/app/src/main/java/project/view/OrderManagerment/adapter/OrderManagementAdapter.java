@@ -1,29 +1,39 @@
 package project.view.OrderManagerment.adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import java.util.ArrayList;
 import java.util.List;
 
+import project.view.OrderManagerment.OrderDetailManagement;
 import project.view.OrderManagerment.model.OrderDetail;
+import project.view.ProductInStore.ProductInStore;
+import project.view.ProductInStoreByUser.ProductInStoreByUserDisplayPage;
 import project.view.R;
+import project.view.util.Formater;
 
 public class OrderManagementAdapter extends ArrayAdapter<OrderDetail> {
     private Context context;
     private int resource;
     private List<OrderDetail> arrContact;
+    private Formater formater;
 
     public OrderManagementAdapter(Context context, int resource, ArrayList<OrderDetail> arrContact) {
         super(context, resource, arrContact);
         this.context = context;
         this.resource = resource;
         this.arrContact = arrContact;
+        formater = new Formater();
     }
 
 
@@ -34,31 +44,44 @@ public class OrderManagementAdapter extends ArrayAdapter<OrderDetail> {
         if (convertView == null) {
             convertView = LayoutInflater.from(context).inflate(R.layout.item_order_management, parent, false);
             viewHolder = new ViewHolder();
-            viewHolder.tvProductName = (TextView) convertView.findViewById(R.id.tvProductName);
-            viewHolder.tvQuantity = (TextView) convertView.findViewById(R.id.tvQuantity);
+            viewHolder.tvStoreName = (TextView) convertView.findViewById(R.id.tvStoreName);
+            viewHolder.tvPrice = (TextView) convertView.findViewById(R.id.tvPrice);
             viewHolder.tvOrderDate = (TextView) convertView.findViewById(R.id.tvOrderDate);
-            viewHolder.tvCusName = (TextView) convertView.findViewById(R.id.tvName);
-            viewHolder.tvNumberPhone = (TextView) convertView.findViewById(R.id.tvPhoneNumber);
-            viewHolder.tvAddress = (TextView) convertView.findViewById(R.id.tvAddress);
-
+            viewHolder.imgInfo = convertView.findViewById(R.id.imgInfo);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-        OrderDetail contact = arrContact.get(position);
+        final OrderDetail order = arrContact.get(position);
 
-        viewHolder.tvProductName.setText(contact.getProductName());
-        viewHolder.tvQuantity.setText(contact.getQuantity()+"");
-        viewHolder.tvOrderDate.setText(contact.getOrderDate().toString());
-        viewHolder.tvCusName.setText(contact.getName());
-        viewHolder.tvNumberPhone.setText(contact.getPhoneNumber());
-        viewHolder.tvAddress.setText(contact.getAddress());
+        viewHolder.tvStoreName.setText(order.getStoreName());
+        viewHolder.tvPrice.setText(formater.formatDoubleToMoney(String.valueOf(order.getPrice().toString())));
+        viewHolder.tvOrderDate.setText(order.getOrderDate().toString());
+
+        viewHolder.tvStoreName.setPaintFlags(viewHolder.tvStoreName.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+        viewHolder.imgInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent goToOrderDetail = new Intent(context, OrderDetailManagement.class);
+                goToOrderDetail.putExtra("orderID",order.getOrderCode());
+                context.startActivity(goToOrderDetail);
+            }
+        });
+        viewHolder.tvStoreName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Toast.makeText(context,"Go to product in store",Toast.LENGTH_SHORT).show();
+                Intent goToProductInStore = new Intent(context, ProductInStoreByUserDisplayPage.class);
+                goToProductInStore.putExtra("storeID",order.getStoreId());
+                context.startActivity(goToProductInStore);
+            }
+        });
 
         return convertView;
     }
 
     public class ViewHolder {
-        TextView tvOrderCode, tvProductName,tvOrderDate, tvCusName, tvNumberPhone, tvQuantity,tvAddress;
-
+        TextView tvStoreName, tvPrice,tvOrderDate;
+        ImageView imgInfo;
     }
 }

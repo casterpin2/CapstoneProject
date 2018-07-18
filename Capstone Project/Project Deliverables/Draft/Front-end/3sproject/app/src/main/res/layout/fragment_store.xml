@@ -1,42 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.SwipeRefreshLayout
+    android:id="@+id/storeFragmentLayout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
     <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
-        <RelativeLayout
-            android:id="@+id/notHaveStoreLayout"
-            android:layout_height="match_parent"
-            android:layout_width="match_parent"
-            android:layout_centerInParent="true"
-            android:visibility="invisible"
-            android:layout_marginRight="16dp"
-            android:layout_marginLeft="16dp">
-
-            <TextView
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:id="@+id/notHaveStoreMessage"
-                android:text="@string/doNotHaveStore"
-                android:textSize="20dp"
-                android:layout_marginBottom="10dp"
-                android:textAlignment="center"
-                />
-            <Button
-                android:id="@+id/registerStoreBtn"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:text="@string/btn_register"
-                android:background="@drawable/login_button"
-                android:layout_centerHorizontal="true"
-                android:layout_below="@id/notHaveStoreMessage"
-                android:textColor="@color/colorWhite"/>
-        </RelativeLayout>
-
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <RelativeLayout
             android:id="@+id/haveStoreLayout"
@@ -339,4 +314,5 @@
             </RelativeLayout>
         </RelativeLayout>
     </RelativeLayout>
-</ScrollView>
+    </ScrollView>
+</android.support.v4.widget.SwipeRefreshLayout>

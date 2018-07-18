@@ -53,6 +53,7 @@ import project.view.ProductInStore.ProductInStore;
 import project.view.ProductInStore.ProductInStoreCustomListViewAdapter;
 import project.view.ProductInStore.ProductInStoreDisplayPage;
 import project.view.R;
+import project.view.Register.Regex;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -369,7 +370,11 @@ public class RegisterStorePage extends AppCompatActivity implements OnMapReadyCa
                     Address a = address.get(i);
                     for (int j = 0; j < a.getTypes().length; j++) {
                         if (a.getTypes()[j].equalsIgnoreCase("street_number")) {
-                            location.setApartment_number(Integer.parseInt(a.getLong_name()));
+                            try {
+                                location.setApartment_number(Integer.parseInt(a.getLong_name()));
+                            }catch (NumberFormatException e){
+                                //location.setApartment_number(Integer.parseInt(a.getLong_name()));
+                            }
                         }
                         if (a.getTypes()[j].equalsIgnoreCase("route")) {
                             location.setStreet(a.getLong_name());

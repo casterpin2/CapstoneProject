@@ -25,21 +25,12 @@ public class WaitingOrder extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_waiting_order,container,false);
-        lvOrder = view.findViewById(R.id.lv_waiting_order);
-        OrderManagementAdapter orderManagementAdapter = new OrderManagementAdapter(getContext(),R.layout.item_order_management, OrderDetail.getListOrder());
+        View view = inflater.inflate(R.layout.fragment_order_management,container,false);
+        lvOrder = view.findViewById(R.id.lv_order);
+        OrderManagementAdapter orderManagementAdapter = new OrderManagementAdapter(getContext(),R.layout.item_order_management, OrderDetail.dataTest());
         lvOrder.setAdapter(orderManagementAdapter);
-        lvOrder.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getContext(),position+"", Toast.LENGTH_SHORT).show();
-                goToOrderDetail();
-            }
-        });
+
         return view;
     }
-    public void goToOrderDetail(){
-        Intent intent = new Intent(getActivity(), OrderDetailManagement.class);
-        startActivity(intent);
-    }
+
 }

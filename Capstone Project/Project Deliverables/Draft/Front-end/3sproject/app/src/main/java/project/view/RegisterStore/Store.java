@@ -13,12 +13,47 @@ public class Store implements Serializable{
     @Expose
     private int user_id;
 
+
+
     public Store() {
     }
 
     @SerializedName("phone")
     @Expose
     private String phone;
+    @SerializedName("image_path")
+    @Expose
+    private String image_path;
+    @SerializedName("id")
+    @Expose
+    private int id;
+    @SerializedName("status")
+    @Expose
+    private int status;
+
+    public String getImage_path() {
+        return image_path;
+    }
+
+    public void setImage_path(String image_path) {
+        this.image_path = image_path;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
 
     public Store(String name, int user_id, String phone) {
         this.name = name;

@@ -135,4 +135,9 @@
 
 
     <string name="title_fragment_me">Tài khoản</string>
+
+
+    <!-- TODO: facebook application -->
+    <string name="facebook_app_id">2158107454303596</string>
+    <string name="fb_login_protocol_scheme">fb2158107454303596</string>
 </resources>

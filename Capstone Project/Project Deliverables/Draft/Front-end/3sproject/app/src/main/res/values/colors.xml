@@ -46,4 +46,6 @@
 
     <color name="colorGreen">#00BB00</color>
     <color name="colorGray">#8c8c8c</color>
+
+    <color name="textHintColor">#616161</color>
 </resources>

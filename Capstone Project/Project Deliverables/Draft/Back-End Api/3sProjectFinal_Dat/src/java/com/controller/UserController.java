@@ -10,8 +10,13 @@ import com.entites.UserEntites;
 import com.service.UserService;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import org.codehaus.jackson.JsonFactory;
+import org.codehaus.jackson.JsonParser;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -46,5 +51,20 @@ public class UserController {
     public Integer vadilatorUser(@RequestParam("username") String username, @RequestParam("email") String email, @RequestParam("phone") String phone, @RequestParam("typeSearch") String typeSearch) throws SQLException, ClassNotFoundException, IOException {
 
         return user.userHasExists(username, email, phone, typeSearch);
+    }
+    
+    @RequestMapping(value = "/login", method = RequestMethod.GET, produces = "application/json")
+    public HashMap<String,Object> login(@RequestParam("username") String username, @RequestParam("password") String password) throws SQLException {
+
+        return user.login(username,password);
+    }
+    
+    @RequestMapping(value = "/loginFB", method = RequestMethod.POST, produces = "application/json")
+    public HashMap<String,Object> loginFB(@RequestBody String userJSON, @RequestParam("FBId") String FBid) throws SQLException, IOException {
+        JsonFactory factory = new JsonFactory();
+        factory.enable(JsonParser.Feature.ALLOW_SINGLE_QUOTES);
+        ObjectMapper mapper = new ObjectMapper(factory);
+        UserEntites us = mapper.readValue(userJSON, UserEntites.class);
+        return user.loginFB(us,FBid);
     }
 }

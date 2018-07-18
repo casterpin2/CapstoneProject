@@ -14,11 +14,49 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class StoreEntites implements Serializable {
-
+    private int id;
     private String name;
     private int user_id;
     private String phone;
+    private String image_path;
+    private int status;
 
+    public StoreEntites(int id, String name, int user_id, String phone, String image_path, int status) {
+        this.id = id;
+        this.name = name;
+        this.user_id = user_id;
+        this.phone = phone;
+        this.image_path = image_path;
+        this.status = status;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+    
+    
+    public String getImage_path() {
+        return image_path;
+    }
+
+    public void setImage_path(String image_path) {
+        this.image_path = image_path;
+    }
+    
+    
     public int getUser_id() {
         return user_id;
     }
@@ -59,7 +97,9 @@ public class StoreEntites implements Serializable {
 
     @Override
     public String toString() {
-        return "StoreEntites{" + "name=" + name + ", user_id=" + user_id + ", phone=" + phone + '}';
+        return "Store{" + "id=" + id + ", name=" + name + ", user_id=" + user_id + ", phone=" + phone + ", image_path=" + image_path + ", status=" + status + '}';
     }
+
+   
     
 }

@@ -7,6 +7,7 @@ package com.dao;
 
 import com.entites.UserEntites;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -19,4 +20,7 @@ public interface UserDao {
     public int userHasExists( String username, String email, String phone,String typeSearch) throws SQLException;
     //danh ky
     public Boolean registerUser(UserEntites us) throws SQLException;
+    //Đăng nhập
+    public HashMap<String,Object> login(String username,String password) throws SQLException;
+    public HashMap<String,Object> loginFB(UserEntites user,String FBId) throws SQLException;
 }

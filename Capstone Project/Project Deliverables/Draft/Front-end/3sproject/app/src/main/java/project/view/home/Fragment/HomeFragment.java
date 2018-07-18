@@ -6,23 +6,28 @@ import android.content.res.Resources;
 import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
+import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
@@ -69,6 +74,11 @@ public class HomeFragment extends Fragment {
     private int dotscount;
     private ImageView[] dots;
     private LinearLayoutManager linearLayoutManagerBrand;
+    private CoordinatorLayout coordinatorLayout;
+    private SearchView searchView;
+    private ImageButton imgBarCode;
+
+
     public HomeFragment() {
         // Required empty public constructor
     }
@@ -80,12 +90,20 @@ public class HomeFragment extends Fragment {
 
        // TweakUI.makeTransparent(this.getActivity());
         view = inflater.inflate(R.layout.fragment_home,container,false);
-        NestedScrollView scroll = view.findViewById(R.id.scroll_view);
+        Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
+        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
+        setHasOptionsMenu(true);
+
+        NestedScrollView scroll = view.findViewById(R.id.scrollView);
 
         scroll.setVerticalScrollBarEnabled(false);
         scroll.setHorizontalScrollBarEnabled(false);
 
+        searchView = view.findViewById(R.id.searchViewQuery);
+        imgBarCode = view.findViewById(R.id.imgBarCode);
+
         viewPager =view.findViewById(R.id.img_slider);
+        viewPager.requestFocus();
 
         sliderDotspanel = view.findViewById(R.id.slider_dots);
 
@@ -138,6 +156,12 @@ public class HomeFragment extends Fragment {
         timer.scheduleAtFixedRate(new MyTimerTask(), 2000, 4000);
 */
 
+       imgBarCode.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View v) {
+               Toast.makeText(getContext(),"Go to Bar code screen",Toast.LENGTH_SHORT).show();
+           }
+       });
 
         tv_more_category = view.findViewById(R.id.tv_more_category);
         tv_more_category.setOnClickListener(new View.OnClickListener() {
@@ -157,31 +181,11 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        List<Category> categories = new ArrayList<>();
-//        categories.add(new Category(1,"Đồ uống có ga","",1));
-//        categories.add(new Category(2,"Bột giặt","",1));
-//        categories.add(new Category(3,"Đồ ăn vặt","",1));
-//        categories.add(new Category(4,"Bột giặt","",1));
-//        categories.add(new Category(5,"Nước ngọt","",1));
-//        categories.add(new Category(6,"Nước ngọt","",1));
-//        categories.add(new Category(7,"Nước ngọt","",1));
         apiService = APIService.retrofit.create(APIService.class);
         final Call<List<Category>> callCategory = apiService.getCategory();
         new CategoryData().execute(callCategory);
         //categorié
 
-
-
-        List<Brand> brands = new ArrayList<>();
-//        brands.add(new Brand(1,"Samsung","",111));
-//        brands.add(new Brand(2,"Apple","",111));
-//        brands.add(new Brand(3,"Oppo","",111));
-//        brands.add(new Brand(4,"Sony","",111));
-//        brands.add(new Brand(5,"Lg","",111));
-//        brands.add(new Brand(6,"Bosch","",111));
-//        brands.add(new Brand(7,"Makita","",111));
-//        brands.add(new Brand(8,"Miwauki","",111));
-//        brands.add(new Brand(9,"Philip","",111));
 
         //brand
         apiService = APIService.retrofit.create(APIService.class);
@@ -198,22 +202,39 @@ public class HomeFragment extends Fragment {
 
 
 
-        swipeRefreshLayout = view.findViewById(R.id.main_layout);
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                refreshContent();
-            }
-        });
-        swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
+//        swipeRefreshLayout = view.findViewById(R.id.main_layout);
+//        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+//            @Override
+//            public void onRefresh() {
+//                refreshContent();
+//            }
+//        });
+//        swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
 
-        return view;
+      return view;
     }
 
-    private void refreshContent(){
 
-             swipeRefreshLayout.setRefreshing(false);
-    }
+//    @Override
+//    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+//        inflater.inflate(R.menu.search_view, menu);
+//        super.onCreateOptionsMenu(menu, inflater);
+//    }
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//
+//        int id = item.getItemId();
+//        if (id == R.id.search_with_barcode) {
+//            return true;
+//        }
+//        return super.onOptionsItemSelected(item);
+//    }
+
+//
+//    private void refreshContent(){
+//
+//             swipeRefreshLayout.setRefreshing(false);
+//    }
     private int dpToPx(int dp) {
         Resources r = getResources();
         return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics()));
