@@ -1,10 +1,14 @@
 package project.view.ProductInStoreByUser;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.SearchView;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +37,9 @@ public class ProductInStoreByUserDisplayPage extends AppCompatActivity {
     private ViewGroup context;
     private int storeID;
     private TextView nullMessage;
+
+    private SearchView searchView;
+    List<ProductInStore> list = new ArrayList<>();
 
 
     public ProductInStoreByUserDisplayPage() {
@@ -87,7 +94,6 @@ public class ProductInStoreByUserDisplayPage extends AppCompatActivity {
             try {
                 Call<List<ProductInStore>> call = calls[0];
                 final Response<List<ProductInStore>> response = call.execute();
-                final List<ProductInStore> list = new ArrayList<>();
                 for (int i = 0; i < response.body().size(); i++) {
                     list.add(response.body().get(i));
                 }
@@ -142,5 +148,51 @@ public class ProductInStoreByUserDisplayPage extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.search_view_with_find_icon, menu);
+        MenuItem itemSearch = menu.findItem(R.id.search_view);
+        final List<ProductInStore> searchedProduct = new ArrayList<>();
+        searchView = (SearchView) itemSearch.getActionView();
+
+//        searchView.setLayoutParams(new ActionBar.LayoutParams(Gravity.LEFT));
+//        searchView.setSearchableInfo(true);
+        searchView.clearFocus();
+        searchView.setQueryHint("Tìm trong cửa hàng");
+
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+//        productList
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+
+
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                searchedProduct.clear();
+                if(newText.equals("") || newText == null){
+                    adapter = new ProductInStoreByUserCustomListViewAdapter(ProductInStoreByUserDisplayPage.this, R.layout.search_product_page_custom_list_view, list);
+
+                } else {
+                    for (int i = 0; i < list.size(); i++) {
+                        if(list.get(i).getProductName().toLowerCase().contains(newText.toLowerCase())) {
+                            searchedProduct.add(list.get(i));
+                        }
+                    }
+                    adapter = new ProductInStoreByUserCustomListViewAdapter(ProductInStoreByUserDisplayPage.this, R.layout.search_product_page_custom_list_view, searchedProduct);
+                }
+                adapter.notifyDataSetChanged();
+                theListView.setAdapter(adapter);
+                return true;
+            }
+        });
+
+        return true;
     }
 }

@@ -1,11 +1,14 @@
 package project.view.ProductBrandDisplay;
 
-import android.app.ActionBar;
 import android.app.ProgressDialog;
+import android.app.SearchManager;
+import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.SearchView;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -16,7 +19,6 @@ import java.util.List;
 
 import project.retrofit.APIService;
 import project.retrofit.ApiUtils;
-import project.view.Category.Category;
 import project.view.R;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -24,23 +26,23 @@ import retrofit2.Response;
 
 public class ProductBrandDisplay extends AppCompatActivity {
 
-    public List<ProductBrand> productList;
     private ListView theListView;
     private ProductBrandDisplayListViewAdapter adapter;
     private APIService apiService;
     private int brandID;
+    private SearchView searchView;
+    List<ProductBrand> list = new ArrayList<>();
+    String brandName = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_brand_display);
+
+        theListView = (ListView) findViewById(R.id.mainListView);
         apiService = ApiUtils.getAPIService();
         brandID = getIntent().getIntExtra("brandID", -1);
-        String brandName = getIntent().getStringExtra("brandName");
-//        listProduct(brandID);
-//
-//        // get our list view
-//        theListView = (ListView) findViewById(R.id.mainListView);
+        brandName = getIntent().getStringExtra("brandName");
         apiService = APIService.retrofit.create(APIService.class);
         final Call<List<ProductBrand>> call = apiService.getProductBrand(brandID);
         new NetworkCall().execute(call);
@@ -48,12 +50,7 @@ public class ProductBrandDisplay extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
-
-
-//        int brandID = getIntent().getIntExtra("brandID", -1);
-//        String brandName = getIntent().getStringExtra("brandName");
         getSupportActionBar().setTitle(brandName);
-        Toast.makeText(this, brandID + " brand", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -69,7 +66,7 @@ public class ProductBrandDisplay extends AppCompatActivity {
     }
 
     public List<ProductBrand> listProduct(int brandId) {
-        productList = new ArrayList<>();
+        final List<ProductBrand> productList = new ArrayList<>();
         apiService.getProductBrand(brandId).enqueue(new Callback<List<ProductBrand>>() {
             @Override
             public void onResponse(Call<List<ProductBrand>> call, Response<List<ProductBrand>> response) {
@@ -160,7 +157,7 @@ public class ProductBrandDisplay extends AppCompatActivity {
             try {
                 Call<List<ProductBrand>> call = calls[0];
                 Response<List<ProductBrand>> response = call.execute();
-                 List<ProductBrand> list = new ArrayList<>();
+
                 for (int i = 0; i < response.body().size(); i++) {
                     list.add(response.body().get(i));
                 }
@@ -168,7 +165,6 @@ public class ProductBrandDisplay extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        theListView = (ListView) findViewById(R.id.mainListView);
                         theListView.setAdapter(adapter);
                     }});
             } catch (IOException e) {
@@ -176,4 +172,51 @@ public class ProductBrandDisplay extends AppCompatActivity {
             return null;
         }
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.search_view_with_find_icon, menu);
+        MenuItem itemSearch = menu.findItem(R.id.search_view);
+        final List<ProductBrand> searchedProduct = new ArrayList<>();
+        searchView = (SearchView) itemSearch.getActionView();
+
+//        searchView.setLayoutParams(new ActionBar.LayoutParams(Gravity.LEFT));
+//        searchView.setSearchableInfo(true);
+        searchView.clearFocus();
+        searchView.setQueryHint("Tìm trong "+brandName);
+
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+//        productList
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+
+
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                searchedProduct.clear();
+                if(newText.equals("") || newText == null){
+                    adapter = new ProductBrandDisplayListViewAdapter(ProductBrandDisplay.this, R.layout.product_brand_display_custom_listview, list);
+
+                } else {
+                    for (int i = 0; i < list.size(); i++) {
+                        if(list.get(i).getProductName().toLowerCase().contains(newText.toLowerCase())) {
+                            searchedProduct.add(list.get(i));
+                        }
+                    }
+                    adapter = new ProductBrandDisplayListViewAdapter(ProductBrandDisplay.this, R.layout.product_brand_display_custom_listview, searchedProduct);
+                }
+                adapter.notifyDataSetChanged();
+                theListView.setAdapter(adapter);
+                return true;
+            }
+        });
+
+        return true;
+    }
+
 }
