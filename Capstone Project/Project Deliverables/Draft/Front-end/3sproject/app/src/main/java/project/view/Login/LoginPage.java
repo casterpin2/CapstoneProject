@@ -19,6 +19,7 @@ import android.widget.TextView;
 import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookAuthorizationException;
@@ -29,6 +30,7 @@ import com.facebook.GraphResponse;
 import com.facebook.Profile;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
+import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -41,6 +43,7 @@ import project.retrofit.APIService;
 import project.retrofit.ApiUtils;
 import project.view.R;
 import project.view.Register.RegisterActivity;
+import project.view.RegisterStore.Store;
 import project.view.home.HomeActivity;
 import project.view.util.CustomInterface;
 import retrofit2.Call;
@@ -89,7 +92,9 @@ public class LoginPage extends AppCompatActivity {
                 String username = usernameValue.getText().toString().trim();
                 String password = MD5Library.md5(passwordValue.getText().toString().trim());
                 Call<Login> call = mAPI.login(username,password);
+
                 new CallAPI().execute(call);
+
 
             }
         });
@@ -209,12 +214,21 @@ public class LoginPage extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Login result) {
-            LoginPage.login = result;
-            if (login.getUser() == null) {
+            if (result == null){
+                errorMessage.setText("Không có mạng ");
+            }
+            if (result.getUser().getId() == 0) {
                 errorMessage.setText("Sai ");
             }else {
                 //Toast.makeText(LoginPage.this, LoginPage.login.getUser().toString(), Toast.LENGTH_LONG).show();
+                User user = result.getUser();
+                Store store = result.getStore();
                 Intent toHomePage = new Intent(LoginPage.this, HomeActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("user",new Gson().toJson(user));
+                bundle.putString("store",new Gson().toJson(store));
+                toHomePage.putExtras(bundle);
+                //Glide.get(LoginPage.this).clearDiskCache();
                 startActivity(toHomePage);
             }
             super.onPostExecute(result);
@@ -233,9 +247,41 @@ public class LoginPage extends AppCompatActivity {
                 Call<Login> call = calls[0];
                 Response<Login> response = call.execute();
                 result = response.body();
+                Glide.get(LoginPage.this).clearDiskCache();
             } catch (IOException e) {
             }
             return result;
         }
+    }
+
+    public class clearCache extends AsyncTask<Void,Void,Void> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            super.onProgressUpdate(values);
+        }
+
+        @Override
+        protected Void doInBackground(Void... Void) {
+
+            Glide.get(LoginPage.this).clearDiskCache();
+
+            return null;
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Glide.get(this).clearMemory();
     }
 }

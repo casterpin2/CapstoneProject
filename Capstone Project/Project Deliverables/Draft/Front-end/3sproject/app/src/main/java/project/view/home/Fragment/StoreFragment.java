@@ -4,6 +4,7 @@ package project.view.home.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -19,12 +20,22 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DecodeFormat;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
+import com.google.firebase.storage.StorageReference;
+import com.google.gson.Gson;
+
+import project.firebase.Firebase;
+import project.objects.User;
 import project.view.Login.Login;
 import project.view.Login.LoginPage;
 import project.view.OrderManagerment.OrderManagement;
 import project.view.ProductInStore.ProductInStoreDisplayPage;
 import project.view.R;
 import project.view.RegisterStore.RegisterStorePage;
+import project.view.RegisterStore.Store;
 import project.view.StoreInformation.StoreInformation;
 
 
@@ -40,25 +51,32 @@ public class StoreFragment extends Fragment {
     private int userID = 1;
     private StoreInformation storeInformation;
     private View view;
+    private Store store;
+    private User user;
     private Button btnManagermentProduct,btnManagermentOrder, loginBtn, registerStoreBtn;
+    private StorageReference storageReference = Firebase.getFirebase();
     private SwipeRefreshLayout mainLayout;
-
     public StoreFragment() {
         // Required empty public constructor
     }
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        storeInformation = new StoreInformation();
-
-        storeID = LoginPage.login.getStore().getId();
-        if(LoginPage.login.getUser() != null) {
-            hasStore = LoginPage.login.getUser().getHasStore();
+        String userJSON = getArguments().getString("userJSON");
+        String storeJSON = getArguments().getString("storeJSON");
+        if (userJSON .isEmpty()){
+            user = new User();
+            store = new Store();
+        } else {
+            user = new Gson().fromJson(userJSON,User.class);
+            store = new Gson().fromJson(storeJSON,Store.class);
         }
-        userID = LoginPage.login.getUser().getId();
-
+        storeID = store.getId();
+        hasStore = user.getHasStore();
+        userID = user.getId();
+        Toast.makeText(getActivity(),""+storeID+"",Toast.LENGTH_LONG).show();
 
         if (isNetworkAvailable() == true && hasStore == 1 && userID != 0 && storeID != 0) {
             view = inflater.inflate(R.layout.fragment_store,container,false);
@@ -91,8 +109,6 @@ public class StoreFragment extends Fragment {
                     getActivity().startActivity(toOrderManagement);
                 }
             });
-
-            // click on to choose image from gallery
             btnEdit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -123,23 +139,6 @@ public class StoreFragment extends Fragment {
         else if (isNetworkAvailable() == false){
             view = inflater.inflate(R.layout.no_have_internet_store_fragment_home_page_layout,container,false);
         }
-
-
-
-
-
-
-
-
-
-//        int storeID = getActivity().getIntent().getIntExtra("storeID", -1);
-//        String nameStoree = storeName.getText().toString();
-//        String ownerNameStoree = ownerName.getText().toString();
-//        String addressStoree = address.getText().toString();
-//        String registerDateStoree = registerDate.getText().toString();
-//        String phoneTextStoree = phoneText.getText().toString();
-//
-//        savingPreferences(storeID, nameStoree, ownerNameStoree, addressStoree, registerDateStoree, phoneTextStoree);
         return view;
     }
 
@@ -155,7 +154,17 @@ public class StoreFragment extends Fragment {
         btnManagermentProduct = view.findViewById(R.id.btnManagerProduct);
 
         mainLayout = view.findViewById(R.id.storeFragmentLayout);
+        Glide.with(getContext() /* context */)
+                .using(new FirebaseImageLoader())
+                .load(storageReference.child(store.getImage_path()))
+                //.asBitmap()
+                //.toBytes(Bitmap.CompressFormat.PNG, 100)
+                //.format(DecodeFormat.PREFER_ARGB_8888)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                //.asBitmap()
 
+                .skipMemoryCache(true)
+                .into(storeImg);
     }
 
     private void findViewInNoLoginnedLayout(){
@@ -168,47 +177,18 @@ public class StoreFragment extends Fragment {
 
     @Override
     public void onResume() {
-        // TODO Auto-generated method stub
         super.onResume();
-        //gọi hàm đọc trạng thái ở đây
-        restoringPreferences();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-
-        int storeID = getActivity().getIntent().getIntExtra("storeID", -1);
-
-        savingPreferences();
     }
 
-
-    public void savingPreferences(){
-        //tạo đối tượng getSharedPreferences
-        SharedPreferences pre=this.getActivity().getSharedPreferences("storeInformation", Context.MODE_PRIVATE);
-        //tạo đối tượng Editor để lưu thay đổi
-        SharedPreferences.Editor editor=pre.edit();
-        //lưu vào editor
-        editor.putInt("storeID", storeID);
-
-        //chấp nhận lưu xuống file
-        editor.commit();
-    }
-
-    public void restoringPreferences(){
-        SharedPreferences pre=this.getActivity().getSharedPreferences("storeInformation", Context.MODE_PRIVATE);
-        //lấy giá trị checked ra, nếu không thấy thì giá trị mặc định là false
-
-        //lấy user, pwd, nếu không thấy giá trị mặc định là rỗng
-        int storeID = pre.getInt("storeID", -1);
-        String nameStoree = pre.getString("name", "");
-        String ownerNameStoree = pre.getString("ownerName", "");
-        String addressStoree = pre.getString("address", "");
-        String registerDateStoree = pre.getString("registerDate", "");
-        String phoneTextStoree = pre.getString("phoneText", "");
-
-
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Glide.get(getContext()).clearMemory();
     }
 
     private void stopRefresh(){

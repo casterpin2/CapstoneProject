@@ -61,6 +61,10 @@ public class Store implements Serializable{
         this.phone = phone;
     }
 
+    public Store(int id) {
+        this.id = id;
+    }
+
     public String getName() {
         return name;
     }

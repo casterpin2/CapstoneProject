@@ -360,6 +360,12 @@ public class HomeFragment extends Fragment {
             return null;
         }
     }
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Glide.get(getContext()).clearMemory();
+
+    }
     public class SaleData extends AsyncTask<Call,List<SaleProduct>,Void>{
         @Override
         protected void onPreExecute() {
