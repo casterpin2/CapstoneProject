@@ -19,6 +19,33 @@ public class StoreEntites implements Serializable {
     private int user_id;
     private String phone;
     private String image_path;
+    private String address;
+    private String longtitude;
+    private String latitude;
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getLongtitude() {
+        return longtitude;
+    }
+
+    public void setLongtitude(String longtitude) {
+        this.longtitude = longtitude;
+    }
+
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
     private int status;
 
     public StoreEntites(int id, String name, int user_id, String phone, String image_path, int status) {
