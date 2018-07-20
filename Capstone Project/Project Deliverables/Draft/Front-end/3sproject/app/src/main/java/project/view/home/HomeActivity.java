@@ -2,7 +2,6 @@ package project.view.home;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,12 +12,8 @@ import android.util.Log;
 import android.view.MenuItem;
 
 import com.bumptech.glide.Glide;
-import com.google.gson.Gson;
 
-import project.objects.User;
 import project.view.R;
-import project.view.RegisterStore.Store;
-import project.view.UserInformation.TweakUI;
 import project.view.home.Fragment.HomeFragment;
 import project.view.home.Fragment.StoreFragment;
 import project.view.home.Fragment.UserFragment;
@@ -96,17 +91,11 @@ public class HomeActivity extends AppCompatActivity{
             }
         });
 
-        setupViewPager(viewPager);
+        setupViewPager(viewPager,storeJSON,userJSON);
     }
 
-    private void setupViewPager(ViewPager viewPager) {
-        adapter = new ViewPagerAdapter(getSupportFragmentManager(),userJSON,storeJSON);
-//        callsFragment=new HomeFragment();
-//        chatFragment=new StoreFragment();
-//        contactsFragment=new UserFragment();
-//        adapter.addFragment(callsFragment);
-//        adapter.addFragment(chatFragment);
-//        adapter.addFragment(contactsFragment);
+    private void setupViewPager(ViewPager viewPager, String storeJSON, String userJSON) {
+        adapter = new ViewPagerAdapter(getSupportFragmentManager(),storeJSON,userJSON);
         viewPager.setAdapter(adapter);
         viewPager.setOffscreenPageLimit(2);
     }

@@ -21,8 +21,9 @@
             app:queryHint="Tìm mua ngay ..."
             app:iconifiedByDefault="false"
             android:focusable="false"
-            android:focusableInTouchMode="true"
-            app:closeIcon="@drawable/ic_close"/>
+            android:focusableInTouchMode="false"
+            app:closeIcon="@drawable/ic_close"
+            />
 
         <ImageButton
             android:id="@+id/imgBarCode"

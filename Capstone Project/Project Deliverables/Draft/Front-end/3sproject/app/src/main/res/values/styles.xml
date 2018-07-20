@@ -53,6 +53,8 @@
               even if we define popupTheme for our <Toolbar> -->
         <!-- <item name="android:background">@color/color_primary</item> -->
     </style>
-
+<style name="noAnimTheme" parent="android:Theme">
+    <item name="android:windowAnimationStyle">@null</item>
+</style>
 </resources>
 
