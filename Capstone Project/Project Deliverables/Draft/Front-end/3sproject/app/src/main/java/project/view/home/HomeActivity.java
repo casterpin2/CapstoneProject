@@ -10,6 +10,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
@@ -91,11 +92,11 @@ public class HomeActivity extends AppCompatActivity{
             }
         });
 
-        setupViewPager(viewPager,storeJSON,userJSON);
+        setupViewPager(viewPager,userJSON,storeJSON);
     }
 
-    private void setupViewPager(ViewPager viewPager, String storeJSON, String userJSON) {
-        adapter = new ViewPagerAdapter(getSupportFragmentManager(),storeJSON,userJSON);
+    private void setupViewPager(ViewPager viewPager, String userJSON, String storeJSON) {
+        adapter = new ViewPagerAdapter(getSupportFragmentManager(),userJSON,storeJSON);
         viewPager.setAdapter(adapter);
         viewPager.setOffscreenPageLimit(2);
     }
@@ -108,6 +109,8 @@ public class HomeActivity extends AppCompatActivity{
         Bundle bundle = getIntent().getExtras();
         if (bundle.getString("user") != null) {
             userJSON = bundle.getString("user");
+            Toast.makeText(HomeActivity.this,userJSON,Toast.LENGTH_LONG).show();
+            Log.d("user",userJSON);
             storeJSON = bundle.getString("store");
             //tạo đối tượng getSharedPreferences
             SharedPreferences pre = getSharedPreferences("authentication", Context.MODE_PRIVATE);

@@ -83,7 +83,6 @@ public class StoreFragment extends Fragment {
         hasStore = user.getHasStore();
         userID = user.getId();
 
-
         if (isNetworkAvailable() == true && hasStore == 1 && userID != 0 && storeID != 0) {
             view = inflater.inflate(R.layout.fragment_store,container,false);
             findViewInStoreFragment();
@@ -138,7 +137,6 @@ public class StoreFragment extends Fragment {
                     toEditStoreInformation.putExtra("longtitude", longtitude);
                     toEditStoreInformation.putExtra("latitude", latitude);
                     getActivity().startActivity(toEditStoreInformation);
-//                    Toast.makeText(getContext(),"dsfsdfs",Toast.LENGTH_SHORT).show();
                 }
             });
         } else if (isNetworkAvailable() == true && hasStore == 0 && userID != 0){
