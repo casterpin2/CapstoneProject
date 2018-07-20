@@ -20,11 +20,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-<<<<<<< HEAD
+
 import project.view.EditStoreInformation.EditStoreInformationPage;
-=======
+
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.storage.StorageReference;
@@ -32,8 +31,6 @@ import com.google.gson.Gson;
 
 import project.firebase.Firebase;
 import project.objects.User;
->>>>>>> master
-import project.view.Login.Login;
 import project.view.Login.LoginPage;
 import project.view.OrderManagerment.OrderManagement;
 import project.view.ProductInStore.ProductInStoreDisplayPage;
@@ -62,12 +59,7 @@ public class StoreFragment extends Fragment {
     private Button btnManagermentProduct,btnManagermentOrder, loginBtn, registerStoreBtn;
     private StorageReference storageReference = Firebase.getFirebase();
     private SwipeRefreshLayout mainLayout;
-<<<<<<< HEAD
 
-
-
-=======
->>>>>>> master
     public StoreFragment() {
         // Required empty public constructor
     }
