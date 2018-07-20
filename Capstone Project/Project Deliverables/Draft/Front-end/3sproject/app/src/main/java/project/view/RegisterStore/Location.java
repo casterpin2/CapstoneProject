@@ -4,6 +4,9 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class Location {
+    @SerializedName("id")
+    @Expose
+    private int id;
     @SerializedName("apartment_number")
     @Expose
     private int apartment_number;

@@ -39,6 +39,7 @@ import java.util.Arrays;
 import project.objects.User;
 import project.retrofit.APIService;
 import project.retrofit.ApiUtils;
+import project.view.MainActivity;
 import project.view.R;
 import project.view.Register.RegisterActivity;
 import project.view.home.HomeActivity;
@@ -97,7 +98,6 @@ public class LoginPage extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 LoginManager.getInstance().logInWithReadPermissions(LoginPage.this, Arrays.asList("public_profile"));
-
             }
         });
 

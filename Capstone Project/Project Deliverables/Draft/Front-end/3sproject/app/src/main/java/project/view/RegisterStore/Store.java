@@ -12,7 +12,9 @@ public class Store implements Serializable{
     @SerializedName("user_id")
     @Expose
     private int user_id;
-
+    @SerializedName("location_id")
+    @Expose
+    private int location_id;
 
 
     public Store() {

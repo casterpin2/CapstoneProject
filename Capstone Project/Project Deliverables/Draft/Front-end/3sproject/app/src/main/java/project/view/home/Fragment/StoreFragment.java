@@ -19,6 +19,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import project.view.EditStoreInformation.EditStoreInformationPage;
 import project.view.Login.Login;
 import project.view.Login.LoginPage;
 import project.view.OrderManagerment.OrderManagement;
@@ -38,10 +39,14 @@ public class StoreFragment extends Fragment {
     private int storeID = 1;
     private int hasStore = 0;
     private int userID = 1;
+    private double latitude = 0.0;
+    private double longtitude = 0.0;
     private StoreInformation storeInformation;
     private View view;
     private Button btnManagermentProduct,btnManagermentOrder, loginBtn, registerStoreBtn;
     private SwipeRefreshLayout mainLayout;
+
+
 
     public StoreFragment() {
         // Required empty public constructor
@@ -64,6 +69,14 @@ public class StoreFragment extends Fragment {
             view = inflater.inflate(R.layout.fragment_store,container,false);
             findViewInStoreFragment();
 //        setLayout(hasStore,userID,haveStoreLayout, notHaveStoreLayout, noHaveInternet,noLoginLayout);
+            ownerName.setText(storeInformation.getOwnerName());
+            storeName.setText(storeInformation.getStoreName());
+            registerDate.setText(storeInformation.getRegisterDate());
+            address.setText(storeInformation.getAddress());
+            phoneText.setText(storeInformation.getPhone());
+
+            latitude = getActivity().getIntent().getDoubleExtra("latitude", 0.0);
+            longtitude = getActivity().getIntent().getDoubleExtra("longtitude", 0.0);
 
             mainLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
@@ -96,7 +109,17 @@ public class StoreFragment extends Fragment {
             btnEdit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(getContext(),"dsfsdfs",Toast.LENGTH_SHORT).show();
+                    Intent toEditStoreInformation = new Intent(getContext(), EditStoreInformationPage.class);
+                    toEditStoreInformation.putExtra("storeID", storeID);
+                    toEditStoreInformation.putExtra("storeName", storeName.getText().toString());
+                    toEditStoreInformation.putExtra("ownerName", ownerName.getText().toString());
+                    toEditStoreInformation.putExtra("address", address.getText().toString());
+                    toEditStoreInformation.putExtra("phone", phoneText.getText().toString());
+                    toEditStoreInformation.putExtra("registerDate", registerDate.getText().toString());
+                    toEditStoreInformation.putExtra("longtitude", longtitude);
+                    toEditStoreInformation.putExtra("latitude", latitude);
+                    getActivity().startActivity(toEditStoreInformation);
+//                    Toast.makeText(getContext(),"dsfsdfs",Toast.LENGTH_SHORT).show();
                 }
             });
         } else if (isNetworkAvailable() == true && hasStore == 0 && userID != 0){

@@ -3,8 +3,6 @@ package project.view.StoreInformation;
 public class StoreInformation {
     public int storeID;
     public String storeName;
-    public int productNumber;
-    public int orderNumber;
     public String ownerName;
     public String address;
     public String registerDate;
@@ -12,11 +10,9 @@ public class StoreInformation {
 
     public StoreInformation(){}
 
-    public StoreInformation(int storeID, String storeName, int productNumber, int orderNumber, String ownerName, String address, String registerDate, String phone) {
+    public StoreInformation(int storeID, String storeName, String ownerName, String address, String registerDate, String phone) {
         this.storeID = storeID;
         this.storeName = storeName;
-        this.productNumber = productNumber;
-        this.orderNumber = orderNumber;
         this.ownerName = ownerName;
         this.address = address;
         this.registerDate = registerDate;
@@ -37,22 +33,6 @@ public class StoreInformation {
 
     public void setStoreName(String storeName) {
         this.storeName = storeName;
-    }
-
-    public int getProductNumber() {
-        return productNumber;
-    }
-
-    public void setProductNumber(int productNumber) {
-        this.productNumber = productNumber;
-    }
-
-    public int getOrderNumber() {
-        return orderNumber;
-    }
-
-    public void setOrderNumber(int orderNumber) {
-        this.orderNumber = orderNumber;
     }
 
     public String getOwnerName() {
