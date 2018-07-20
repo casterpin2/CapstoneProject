@@ -14,7 +14,8 @@
 
 <RelativeLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="10dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -27,7 +28,7 @@
             >
 
             <ImageView
-                android:id="@+id/orderFastImage"
+                android:id="@+id/productImage"
                 android:layout_width="130dp"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
@@ -52,27 +53,25 @@
 
 
                 <LinearLayout
-                    android:id="@+id/userOrderCategoryLinearLayout"
                     android:layout_width="fill_parent"
                     android:layout_height="30dp"
                   >
 
 
                     <TextView
-                        android:id="@+id/nameOrderFast"
+                        android:id="@+id/productName"
                         android:layout_height="wrap_content"
                         android:layout_width="0dp"
                         android:singleLine="true"
                         android:ellipsize="marquee"
                         android:text="Sextoyyyyy1111"
-                        android:textSize="25dp"
+                        android:textSize="17dp"
                         android:textColor="@color/colorBlack"
                         android:layout_weight="3"
                         />
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/salePriceFastLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
@@ -92,14 +91,14 @@
                         android:orientation="horizontal">
 
                         <TextView
-                            android:id="@+id/saleProductPrice"
+                            android:id="@+id/productPrice"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="2500000"
-                            android:textSize="20dp" />
+                            android:textSize="15dp" />
 
                         <TextView
-                            android:id="@+id/promotionPercent1"
+                            android:id="@+id/promotionPercent"
                             android:layout_width="40dp"
                             android:layout_height="40dp"
                             android:layout_centerHorizontal="true"
@@ -112,29 +111,6 @@
                             android:textSize="10dp" />
                     </LinearLayout>
                 </LinearLayout>
-                <!--<LinearLayout-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:orientation="vertical"-->
-                    <!--android:layout_marginTop="60dp"-->
-                  <!--&gt;-->
-                    <!--<TextView-->
-                        <!--android:id="@+id/nameStore"-->
-                        <!--android:layout_width="40dp"-->
-                        <!--android:layout_height="40dp"-->
-                        <!--android:text="Sản phầm của"-->
-                        <!--android:textSize="17dp"-->
-                        <!--android:textColor="@color/colorBlack"-->
-                        <!--/>-->
-                    <!--<TextView-->
-                        <!--android:layout_width="40dp"-->
-                        <!--android:layout_height="40dp"-->
-                        <!--android:text="Cửa hàng 1"-->
-                        <!--android:textColor="@color/colorGray"-->
-                        <!--android:textSize="20dp" />-->
-
-                <!--</LinearLayout>-->
-
             </RelativeLayout>
         </RelativeLayout>
     </LinearLayout>
@@ -161,7 +137,7 @@
 
 
                 <Button
-                    android:id="@+id/decrease"
+                    android:id="@+id/decreaseBtn"
                     style="?android:attr/borderlessButtonStyle"
                     android:layout_width="78dp"
                     android:layout_height="wrap_content"
@@ -171,7 +147,7 @@
                     android:textSize="30dp" />
 
                 <EditText
-                    android:id="@+id/integer_number"
+                    android:id="@+id/productQuantity"
                     android:layout_width="220dp"
                     android:layout_height="40dp"
                     android:layout_marginBottom="16dp"
@@ -187,7 +163,7 @@
                   />
 
                 <Button
-                    android:id="@+id/increase"
+                    android:id="@+id/increaseBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:onClick="increaseInteger"
@@ -242,13 +218,15 @@
                 >
 
                 <android.support.design.widget.TextInputLayout
-                    android:id="@+id/etStoreNameLayout"
+                    android:id="@+id/etBuyerNameLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="2dp">
+                    android:layout_marginLeft="2dp"
+                    android:focusableInTouchMode="true"
+                    android:focusable="true">
 
                     <android.support.design.widget.TextInputEditText
-                        android:id="@+id/etStoreName"
+                        android:id="@+id/etBuyerName"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:focusedByDefault="false"
@@ -258,7 +236,7 @@
                         android:textSize="13dp" />
 
                     <TextView
-                        android:id="@+id/tvStoreNameError"
+                        android:id="@+id/tvBuyerNameError"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
@@ -270,10 +248,12 @@
                     android:id="@+id/etPhoneLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/etStoreNameLayout"
+                    android:layout_below="@id/etBuyerNameLayout"
                     android:layout_marginTop="5dp"
                     app:passwordToggleEnabled="true"
-                    android:layout_marginLeft="2dp">
+                    android:layout_marginLeft="2dp"
+                    android:focusableInTouchMode="true"
+                    android:focusable="true">
 
                     <android.support.design.widget.TextInputEditText
                         android:id="@+id/etPhone"
@@ -285,15 +265,63 @@
                         android:textSize="13dp" />
                 </android.support.design.widget.TextInputLayout>
 
+                <LinearLayout
+                    android:id="@+id/orderDateTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/etPhoneLayout"
+                    android:orientation="vertical"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Thời gian giao hàng"
+                        android:textSize="11dp"
+                        />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <RelativeLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="2"
+                            android:layout_height="wrap_content">
+                            <EditText
+                                android:id="@+id/orderDate"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:hint="Chọn ngày"
+                                android:layout_marginRight="20dp"
+                                android:focusable="false"
+                                android:focusableInTouchMode="false"/>
+                        </RelativeLayout>
+                        <RelativeLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content">
+                            <EditText
+                                android:id="@+id/orderTime"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:hint="Chọn giờ"
+                                android:focusable="false"
+                                android:focusableInTouchMode="false"/>
+                        </RelativeLayout>
+
+
+                    </LinearLayout>
+                </LinearLayout>
 
                 <RelativeLayout
                     android:id="@+id/handleAddressLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/etPhoneLayout"
+                    android:layout_below="@+id/orderDateTime"
                     android:layout_marginTop="10dp"
                     android:background="@color/colorWhite"
-                    android:padding="10dp">
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp">
 
                     <TextView
                         android:id="@+id/handleAddress"
@@ -313,13 +341,14 @@
                         android:text=""
                         android:textColor="@color/colorBlack"
                         android:textSize="14dp" />
-                    <!--<ImageView-->
-                    <!--android:id="@+id/rightArrowHandleLocation"-->
-                    <!--android:layout_width="20dp"-->
-                    <!--android:layout_height="20dp"-->
-                    <!--android:layout_alignParentRight="true"-->
-                    <!--android:layout_centerVertical="true"-->
-                    <!--android:src="@drawable/right_arrow"/>-->
+
+                    <ImageView
+                    android:id="@+id/rightArrowHandleLocation"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/right_arrow"/>
 
                 </RelativeLayout>
 
@@ -330,7 +359,8 @@
                     android:layout_below="@+id/handleAddressLayout"
                     android:layout_marginTop="10dp"
                     android:background="@color/colorWhite"
-                    android:padding="10dp">
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp">
 
                     <TextView
                         android:id="@+id/townText"
@@ -360,16 +390,25 @@
 
                 </RelativeLayout>
 
+                <fragment
+                    android:id="@+id/map"
+                    android:name="com.google.android.gms.maps.SupportMapFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp"
+                    android:layout_below="@+id/autoAddressLayout"
+                    tools:context=".TestMap"
+                    android:layout_marginTop="5dp"/>
+
 
                 <Button
-                    android:id="@+id/registerBtn"
+                    android:id="@+id/orderBtn"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/map"
-                    android:layout_marginTop="285dp"
+                    android:layout_marginTop="10dp"
                     android:layout_marginLeft="5dp"
                     android:background="@drawable/login_button"
-                    android:text="Gửi đơn hàng"
+                    android:text="Đặt hàng"
                     android:textColor="@color/colorWhite" />
 
             </RelativeLayout>

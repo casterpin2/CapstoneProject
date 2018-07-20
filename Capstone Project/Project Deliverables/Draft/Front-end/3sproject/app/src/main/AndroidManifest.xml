@@ -19,11 +19,7 @@
 
         <activity android:name=".MainActivity" />
         <activity android:name=".Login.LoginPage">
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
 
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
         </activity>
         <activity android:name=".AddProductToStore.SearchProductAddToStore" />
         <activity android:name=".Cart.CartProductToStore" />
@@ -52,7 +48,11 @@
         <activity
             android:name=".home.HomeActivity"
             android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".StoreInformation.StoreInformationPage"
@@ -72,10 +72,10 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".NearbyStore.NearbyStorePage"></activity>
         <activity android:name=".ProductDetail.ProductDetailPage"></activity>
-<activity android:name=".UserOrderFast.OrderFast"></activity>
+        <activity android:name=".UserOrderFast.OrderFast">
+
+        </activity>
         <activity android:name=".ProductInStoreByUser.ProductInStoreByUserDisplayPage" />
-        <activity android:name=".UserOrderFast.OrderFast"></activity>
-        <activity android:name=".ProductDetail.ProductDetailPage"></activity>
 
         <!-- Facebook -->
         <meta-data
@@ -90,11 +90,7 @@
             android:exported="true">
         </activity>
         <activity android:name=".UserSearchProduct.UserSearchProductPage">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
     </application>
 

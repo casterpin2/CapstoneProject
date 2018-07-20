@@ -3,99 +3,82 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 public class OrderDetail {
 
-    private int orderID;
-    private String productName;
-    private String productImage;
-    private String salePrice;
-    private String SalePriceInstore;
-    private String totalOrder;
-    private long productPrice;
-    private double promotionPercent;
-    private String productDesc;
-    private String nameStore;
+    private int userID;
+    private String userName;
+    private int productID;
+    private int storeID;
+    private long finalPrice;
+    private int productQuantity;
     private String phone;
+    private String orderDateTime;
+    private double longtitude;
+    private double latitude;
+    private String address;
+
 
     public OrderDetail() {
     }
 
-    public int getOrderID() {
-        return orderID;
+    public OrderDetail(int userID, String userName, int productID, int storeID, long finalPrice, int productQuantity, String phone, String orderDateTime, double longtitude, double latitude, String address) {
+        this.userID = userID;
+        this.userName = userName;
+        this.productID = productID;
+        this.storeID = storeID;
+        this.finalPrice = finalPrice;
+        this.productQuantity = productQuantity;
+        this.phone = phone;
+        this.orderDateTime = orderDateTime;
+        this.longtitude = longtitude;
+        this.latitude = latitude;
+        this.address = address;
     }
 
-    public void setOrderID(int orderID) {
-        this.orderID = orderID;
+    public int getUserID() {
+        return userID;
     }
 
-    public String getProductName() {
-        return productName;
+    public void setUserID(int userID) {
+        this.userID = userID;
     }
 
-    public void setProductName(String productName) {
-        this.productName = productName;
+    public String getUserName() {
+        return userName;
     }
 
-    public String getProductImage() {
-        return productImage;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
-    public void setProductImage(String productImage) {
-        this.productImage = productImage;
+    public int getProductID() {
+        return productID;
     }
 
-    public String getSalePrice() {
-        return salePrice;
+    public void setProductID(int productID) {
+        this.productID = productID;
     }
 
-    public void setSalePrice(String salePrice) {
-        this.salePrice = salePrice;
+    public int getStoreID() {
+        return storeID;
     }
 
-    public String getSalePriceInstore() {
-        return SalePriceInstore;
+    public void setStoreID(int storeID) {
+        this.storeID = storeID;
     }
 
-    public void setSalePriceInstore(String salePriceInstore) {
-        SalePriceInstore = salePriceInstore;
+    public long getFinalPrice() {
+        return finalPrice;
     }
 
-    public String getTotalOrder() {
-        return totalOrder;
+    public void setFinalPrice(long finalPrice) {
+        this.finalPrice = finalPrice;
     }
 
-    public void setTotalOrder(String totalOrder) {
-        this.totalOrder = totalOrder;
+    public int getProductQuantity() {
+        return productQuantity;
     }
 
-    public long getProductPrice() {
-        return productPrice;
-    }
-
-    public void setProductPrice(long productPrice) {
-        this.productPrice = productPrice;
-    }
-
-    public double getPromotionPercent() {
-        return promotionPercent;
-    }
-
-    public void setPromotionPercent(double promotionPercent) {
-        this.promotionPercent = promotionPercent;
-    }
-
-    public String getProductDesc() {
-        return productDesc;
-    }
-
-    public void setProductDesc(String productDesc) {
-        this.productDesc = productDesc;
-    }
-
-    public String getNameStore() {
-        return nameStore;
-    }
-
-    public void setNameStore(String nameStore) {
-        this.nameStore = nameStore;
+    public void setProductQuantity(int productQuantity) {
+        this.productQuantity = productQuantity;
     }
 
     public String getPhone() {
@@ -104,6 +87,38 @@ public class OrderDetail {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public String getOrderDateTime() {
+        return orderDateTime;
+    }
+
+    public void setOrderDateTime(String orderDateTime) {
+        this.orderDateTime = orderDateTime;
+    }
+
+    public double getLongtitude() {
+        return longtitude;
+    }
+
+    public void setLongtitude(double longtitude) {
+        this.longtitude = longtitude;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 }
 
