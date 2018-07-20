@@ -255,35 +255,4 @@ public class LoginPage extends AppCompatActivity {
             return result;
         }
     }
-
-    public class clearCache extends AsyncTask<Void,Void,Void> {
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-        }
-
-        @Override
-        protected void onProgressUpdate(Void... values) {
-            super.onProgressUpdate(values);
-        }
-
-        @Override
-        protected Void doInBackground(Void... Void) {
-
-            //Glide.get(LoginPage.this).clearDiskCache();
-
-            return null;
-        }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        //Glide.get(this).clearMemory();
-    }
 }

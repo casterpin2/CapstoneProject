@@ -36,6 +36,7 @@ public class HomeActivity extends AppCompatActivity{
     MenuItem prevMenuItem;
     private String userJSON;
     private String storeJSON;
+    private ViewPagerAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,7 +100,7 @@ public class HomeActivity extends AppCompatActivity{
     }
 
     private void setupViewPager(ViewPager viewPager) {
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager(),userJSON,storeJSON);
+        adapter = new ViewPagerAdapter(getSupportFragmentManager(),userJSON,storeJSON);
 //        callsFragment=new HomeFragment();
 //        chatFragment=new StoreFragment();
 //        contactsFragment=new UserFragment();
@@ -137,12 +138,6 @@ public class HomeActivity extends AppCompatActivity{
             userJSON = pre.getString("user", "");
             storeJSON = pre.getString("store", "");
         }
-    }
-    public void selectFragment(int position){
-        viewPager.setCurrentItem(position, true);
-        getAuthen();
-        setupViewPager(viewPager);
-// true is to animate the transaction
     }
     @Override
     public void onDestroy() {

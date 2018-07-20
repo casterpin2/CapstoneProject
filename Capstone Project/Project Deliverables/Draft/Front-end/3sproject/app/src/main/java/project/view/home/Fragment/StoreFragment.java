@@ -91,6 +91,7 @@ public class StoreFragment extends Fragment {
 //            SimpleDateFormat timeFormat= new SimpleDateFormat("dd/MM/yyyy");
 //            String s=timeFormat.format(store.getRegisterLog());
 //            registerDate.setText(s);
+            registerDate.setText(store.getRegisterLog());
             storeName.setText(store.getName());
             phoneText.setText(store.getPhone());
             address.setText(store.getAddress().replaceAll("null","").replaceAll("\\s+"," "));

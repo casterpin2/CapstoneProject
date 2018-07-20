@@ -30,6 +30,22 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
         this.storeJSON = storeJSON;
     }
 
+    public String getUserJSON() {
+        return userJSON;
+    }
+
+    public void setUserJSON(String userJSON) {
+        this.userJSON = userJSON;
+    }
+
+    public String getStoreJSON() {
+        return storeJSON;
+    }
+
+    public void setStoreJSON(String storeJSON) {
+        this.storeJSON = storeJSON;
+    }
+
     @Override
     public Fragment getItem(int position) {
         switch (position) {

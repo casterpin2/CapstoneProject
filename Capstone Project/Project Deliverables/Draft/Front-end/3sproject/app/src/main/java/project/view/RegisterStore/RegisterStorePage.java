@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
@@ -47,6 +48,7 @@ import java.util.List;
 import project.googleMapAPI.Address;
 import project.googleMapAPI.Address_Component;
 import project.googleMapAPI.GoogleMapJSON;
+import project.objects.User;
 import project.retrofit.APIService;
 import project.retrofit.ApiUtils;
 import project.view.AddProductToStore.SearchProductAddToStore;
@@ -400,7 +402,7 @@ public class RegisterStorePage extends AppCompatActivity implements OnMapReadyCa
             return location;
         }
     }
-    private class CallAPI extends AsyncTask<Call, Void, String> {
+    private class CallAPI extends AsyncTask<Call, Void, Store> {
 
 
         @Override
@@ -409,11 +411,22 @@ public class RegisterStorePage extends AppCompatActivity implements OnMapReadyCa
         }
 
         @Override
-        protected void onPostExecute(String result) {
+        protected void onPostExecute(Store result) {
             super.onPostExecute(result);
-            if (!result.equals("SOMETHING WRONG")) {
+            if (result != null) {
                 Toast.makeText(RegisterStorePage.this, "Đăng kí cửa hàng thành công", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(RegisterStorePage.this, HomeActivity.class);
+                SharedPreferences preferences = getSharedPreferences("authentication", Context.MODE_PRIVATE);
+                User user = new Gson().fromJson(preferences.getString("user",""),User.class);
+                user.setHasStore(1);
+                Log.d("",user.toString());
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putString("store", new Gson().toJson(result));
+                editor.putString("user", new Gson().toJson(user));
+                //chấp nhận lưu xuống file
+                editor.commit();
+                finishAffinity();
+                finish();
                 startActivity(intent);
             } else {
                 Toast.makeText(RegisterStorePage.this, "Có lỗi xảy ra", Toast.LENGTH_LONG).show();
@@ -428,14 +441,14 @@ public class RegisterStorePage extends AppCompatActivity implements OnMapReadyCa
         }
 
         @Override
-        protected String doInBackground(Call... calls) {
-            String result = "";
+        protected Store doInBackground(Call... calls) {
+            Store result = null;
             try {
-                Call<Result> call = calls[0];
-                Response<Result> response = call.execute();
+                Call<Store> call = calls[0];
+                Response<Store> response = call.execute();
                 if (response != null) {
-                    result = response.body().getResult();
-                }else {result = "SOMETHING WRONG";}
+                    result = response.body();
+                }
             } catch (IOException e) {
             }
             return result;
@@ -451,7 +464,7 @@ public class RegisterStorePage extends AppCompatActivity implements OnMapReadyCa
         Log.d("location",jSon2);
         Log.d("location",map.toString());
         mAPI = ApiUtils.getAPIService();
-        final Call<Result> call = mAPI.registerStore(map);
+        final Call<Store> call = mAPI.registerStore(map);
         new CallAPI().execute(call);
     }
 }

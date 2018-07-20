@@ -11,9 +11,8 @@ import project.view.Category.Category;
 import project.view.Login.Login;
 import project.view.ProductBrandDisplay.ProductBrand;
 import project.view.ProductInStore.ProductInStore;
-import project.view.RegisterStore.Result;
+import project.view.RegisterStore.Store;
 import project.view.SaleProduct.SaleProduct;
-import project.view.UserInformation.UserInformation;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -35,7 +34,7 @@ public interface APIService {
     ////////////////////////////////////////////////
 
     @POST("registerStore")
-    Call<Result> registerStore(@Body HashMap<String,String> map);
+    Call<Store> registerStore(@Body HashMap<String,String> map);
 
     @GET("getProductForAdd")
     Call<List<Item>> getProducts(@Query("query") String query,@Query("page") int page);

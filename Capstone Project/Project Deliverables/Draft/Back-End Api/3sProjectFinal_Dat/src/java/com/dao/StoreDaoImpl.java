@@ -21,15 +21,18 @@ import org.springframework.stereotype.Repository;
 @Repository("storeDao")
 public class StoreDaoImpl extends BaseDao implements StoreDao {
 
-    private final static String REGISTER_STORE_INSERT = "update Store set name = ? , location_id = ? , phone = ? , status = 1 where user_id = ?";
-    private final static String UPDATE_HAS_STORE_USER = "update User set hasStore = 1 where id = ?";
-    private final static String REGISTER_LOCATION_INSERT = "insert into Location(apartment_number,street,county,district,city,longitude,latitude) values (?,?,?,?,?,?,?)";
-    private final static String GET_LAST_LOCATION_ID = "select MAX(id) as id from Location";
-    private final static String GET_LOCATION_ID = "select * from Location where latitude = ? and longitude = ?";
-
+    private final String REGISTER_STORE_INSERT = "update Store set name = ? , location_id = ? , phone = ? , status = 1 where user_id = ?";
+    private final String UPDATE_HAS_STORE_USER = "update User set hasStore = 1 where id = ?";
+    private final String REGISTER_LOCATION_INSERT = "insert into Location(apartment_number,street,county,district,city,longitude,latitude) values (?,?,?,?,?,?,?)";
+    private final String GET_LAST_LOCATION_ID = "select MAX(id) as id from Location";
+    private final String GET_LOCATION_ID = "select * from Location where latitude = ? and longitude = ?";
+    private final String GET_STORE_WITH_USER_ID = "select a.id,a.name,location_id,user_id,phone,status,registerLogFormat,b.path from\n" +
+                                                  "(select a.*,b.image_id from\n" +
+                                                  "(select *, DATE_FORMAT(registerLog,\"%d/%m/%Y\")  as registerLogFormat from Store where user_id = ?) a , Image_Store b where a.id = b.store_id) a , Image b where a.image_id = b.id";
+    private final String QUERY_LOCATION = "SELECT * FROM Location WHERE id = ?";
     @Override
-    public String registerStore(StoreEntites store, LocationEntites location) throws SQLException {
-        String result = "";
+    public StoreEntites registerStore(StoreEntites store, LocationEntites location) throws SQLException {
+        StoreEntites result = new StoreEntites();
         Connection conn = null;
         PreparedStatement pre = null;
         int count = 0;
@@ -50,18 +53,14 @@ public class StoreDaoImpl extends BaseDao implements StoreDao {
                 if (count == 0) {
                     conn.setAutoCommit(false);
                     conn.rollback();
-                    return "FAILED REGISTER_LOCATION_INSERT";
+                    return null;
                 }
                 locationId = getLocationId();
-                result = "LOCATION NOT EXSIST";
                 if (locationId == -1) {
-                    return "FAILED";
+                    return null;
                 }
-            } else {
-                result = "LOCATION EXSIST";
             }
             pre = conn.prepareStatement(REGISTER_STORE_INSERT);
-
             pre.setString(1, store.getName());
             pre.setInt(2, locationId);
             pre.setInt(4, store.getUser_id());
@@ -70,7 +69,7 @@ public class StoreDaoImpl extends BaseDao implements StoreDao {
             if (count == 0) {
                 conn.setAutoCommit(false);
                 conn.rollback();
-                return "FAILED";
+                return null;
             }
                pre = conn.prepareStatement(UPDATE_HAS_STORE_USER);
                pre.setInt(1, store.getUser_id());
@@ -78,13 +77,14 @@ public class StoreDaoImpl extends BaseDao implements StoreDao {
                if (count == 0) {
                 conn.setAutoCommit(false);
                 conn.rollback();
-                return "FAILED";
+                return null;
             }
         } catch (Exception e) {
             conn.setAutoCommit(false);
             conn.rollback();
-            return "FAILED";
+            return null;
         } finally {
+            result = getStore(store.getUser_id());
             closeConnect(conn, pre, null);
         }
         return result;
@@ -130,5 +130,42 @@ public class StoreDaoImpl extends BaseDao implements StoreDao {
             closeConnect(conn, pre, null);
         }
         return -1;
+    }
+    
+    private StoreEntites getStore(int userId){
+        Connection conn = null;
+        PreparedStatement pre = null;
+        StoreEntites se = null;
+        try {
+            se = new StoreEntites();
+            conn = getConnection();
+            pre = conn.prepareStatement(GET_STORE_WITH_USER_ID);
+            pre.setInt(1, userId);
+            ResultSet rs = pre.executeQuery();
+            if (rs.next()) {
+                se.setId(rs.getInt("id"));
+                se.setName(rs.getString("name"));
+                se.setLocation_id(rs.getInt("location_id"));
+                se.setUser_id(rs.getInt("user_id"));
+                se.setPhone(rs.getString("phone"));
+                se.setImage_path(rs.getString("path"));
+                se.setRegisterLog(rs.getString("registerLogFormat"));
+                pre = conn.prepareStatement(QUERY_LOCATION);
+                pre.setInt(1, se.getLocation_id());
+                rs = pre.executeQuery();
+                rs.next();
+                se.setAddress(rs.getString("apartment_number") + " " + rs.getString("street") + " " + rs.getString("county") + " " + rs.getString("district") + " " + rs.getString("city"));
+                se.setLatitude(rs.getString("latitude"));
+                se.setLongtitude(rs.getString("longitude"));
+                return se;
+            }
+        }
+        catch (SQLException e) {
+            closeConnect(conn, pre, null);
+            return null;
+        } finally {
+            closeConnect(conn, pre, null);
+        }
+        return null;
     }
 }
