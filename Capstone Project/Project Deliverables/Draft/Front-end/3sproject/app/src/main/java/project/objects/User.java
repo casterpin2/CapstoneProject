@@ -51,7 +51,10 @@ public class User {
 
     public User() {
     }
+    public User (int userId){
+        this.id = userId;
 
+    }
     public String getPhone() {
         return phone;
     }

@@ -24,14 +24,14 @@ import org.springframework.stereotype.Repository;
 @Repository("userDao")
 public class UserDaoImpl extends BaseDao implements UserDao {
     
-    private String QUERY_LOGIN = "SELECT a.*,b.path as store_image_path FROM\n"
+    private String QUERY_LOGIN = "SELECT a.*,b.* FROM (SELECT a.*,b.path as store_image_path FROM\n"
             + "(SELECT a.*,b.image_id as store_image_id FROM\n"
             + "(SELECT a.*,b.path as user_image_path FROM \n"
-            + "(SELECT a.id as user_id,username,a.password,first_name,last_name,email,device_id,role_id,a.phone as user_phone,dateOfBirth,hasStore,gender,a.image_id as user_image_id,b.`location_id`, b.`phone` as store_phone, `status`,b.name,b.id as store_id FROM (SELECT * FROM User WHERE username = ? AND password = ?) as a , Store b WHERE a.id = b.user_id) a , Image b WHERE a.user_image_id = b.id) a , Image_Store b WHERE a.store_id = b.store_id) a , Image b WHERE a.store_image_id = b.id";
-    private String QUERY_LOGIN_FB = "SELECT a.*,b.path as store_image_path FROM\n"
+            + "(SELECT a.id as user_id,username,a.password,first_name,last_name,email,device_id,role_id,a.phone as user_phone,dateOfBirth,hasStore,gender,a.image_id as user_image_id,b.`location_id`, b.`phone` as store_phone, `status`,b.name,b.id as store_id FROM (SELECT * FROM User WHERE username = ? AND password = ?) as a , Store b WHERE a.id = b.user_id) a , Image b WHERE a.user_image_id = b.id) a , Image_Store b WHERE a.store_id = b.store_id) a , Image b WHERE a.store_image_id = b.id) a,Location b WHERE a.location_id = b.id";
+    private String QUERY_LOGIN_FB = "SELECT a.*,b.* FROM (SELECT a.*,b.path as store_image_path FROM\n"
             + "(SELECT a.*,b.image_id as store_image_id FROM\n"
             + "(SELECT a.*,b.path as user_image_path FROM \n"
-            + "(SELECT a.id as user_id,username,a.password,first_name,last_name,email,device_id,role_id,a.phone as user_phone,dateOfBirth,hasStore,gender,a.image_id as user_image_id,b.`location_id`, b.`phone` as store_phone, `status`,b.name,b.id as store_id FROM (SELECT * FROM User WHERE facebook_id = ?) as a , Store b WHERE a.id = b.user_id) a , Image b WHERE a.user_image_id = b.id) a , Image_Store b WHERE a.store_id = b.store_id) a , Image b WHERE a.store_image_id = b.id";
+            + "(SELECT a.id as user_id,username,a.password,first_name,last_name,email,device_id,role_id,a.phone as user_phone,dateOfBirth,hasStore,gender,a.image_id as user_image_id,b.`location_id`, b.`phone` as store_phone, `status`,b.name,b.id as store_id FROM (SELECT * FROM User WHERE facebook_id = ?) as a , Store b WHERE a.id = b.user_id) a , Image b WHERE a.user_image_id = b.id) a , Image_Store b WHERE a.store_id = b.store_id) a , Image b WHERE a.store_image_id = b.id) a , Location b WHERE a.location_id = b.id";
 
     private String INSERT_ACCOUNT_FB = "INSERT INTO User(first_name,last_name,email,hasStore,role_id,facebook_id,image_id) VALUES (?,?,?,0,2,?,?)";
 
@@ -206,6 +206,9 @@ public class UserDaoImpl extends BaseDao implements UserDao {
                 store.setPhone(rs.getString("store_phone"));
                 store.setStatus(rs.getInt("status"));
                 store.setUser_id(rs.getInt("user_id"));
+                store.setAddress(rs.getString("apartment_number")+ " " + rs.getString("street") + " " + rs.getString("county") + " " + rs.getString("district")+ " " + rs.getString("city"));
+                store.setLatitude(rs.getString("latitude"));
+                store.setLongtitude(rs.getString("longitude"));
                 hashMap.put("store", store);
             }
         } finally {
@@ -248,6 +251,9 @@ public class UserDaoImpl extends BaseDao implements UserDao {
                 store.setPhone(rs.getString("store_phone"));
                 store.setStatus(rs.getInt("status"));
                 store.setUser_id(rs.getInt("user_id"));
+                store.setAddress(rs.getString("apartment_number")+ " " + rs.getString("street") + " " + rs.getString("county") + " " + rs.getString("district")+ " " + rs.getString("city"));
+                store.setLatitude(rs.getString("latitude"));
+                store.setLongtitude(rs.getString("longitude"));
                 hashMap.put("store", store);
             } else {
                 int user_id = 0;

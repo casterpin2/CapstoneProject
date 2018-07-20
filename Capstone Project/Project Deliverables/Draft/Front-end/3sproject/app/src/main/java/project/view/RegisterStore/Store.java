@@ -19,6 +19,39 @@ public class Store implements Serializable{
 
     public Store() {
     }
+    @SerializedName("address")
+    @Expose
+    private String address;
+    @SerializedName("longtitude")
+    @Expose
+    private String longtitude;
+    @SerializedName("latitude")
+    @Expose
+    private String latitude;
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getLongtitude() {
+        return longtitude;
+    }
+
+    public void setLongtitude(String longtitude) {
+        this.longtitude = longtitude;
+    }
+
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
 
     @SerializedName("phone")
     @Expose
@@ -61,6 +94,10 @@ public class Store implements Serializable{
         this.name = name;
         this.user_id = user_id;
         this.phone = phone;
+    }
+
+    public Store(int id) {
+        this.id = id;
     }
 
     public String getName() {

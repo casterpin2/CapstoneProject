@@ -1,5 +1,7 @@
 package project.view.home;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -10,7 +12,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 
+import com.bumptech.glide.Glide;
+import com.google.gson.Gson;
+
+import project.objects.User;
 import project.view.R;
+import project.view.RegisterStore.Store;
 import project.view.UserInformation.TweakUI;
 import project.view.home.Fragment.HomeFragment;
 import project.view.home.Fragment.StoreFragment;
@@ -18,7 +25,7 @@ import project.view.home.Fragment.UserFragment;
 import project.view.home.adapter.ViewPagerAdapter;
 
 
-public class HomeActivity extends AppCompatActivity {
+public class HomeActivity extends AppCompatActivity{
 
     BottomNavigationView bottomNavigationView;
     private ViewPager viewPager;
@@ -27,12 +34,13 @@ public class HomeActivity extends AppCompatActivity {
     HomeFragment callsFragment;
     UserFragment contactsFragment;
     MenuItem prevMenuItem;
-
+    private String userJSON;
+    private String storeJSON;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
+        getAuthen();
         //Initializing viewPager
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -91,14 +99,55 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void setupViewPager(ViewPager viewPager) {
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        callsFragment=new HomeFragment();
-        chatFragment=new StoreFragment();
-        contactsFragment=new UserFragment();
-        adapter.addFragment(callsFragment);
-        adapter.addFragment(chatFragment);
-        adapter.addFragment(contactsFragment);
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager(),userJSON,storeJSON);
+//        callsFragment=new HomeFragment();
+//        chatFragment=new StoreFragment();
+//        contactsFragment=new UserFragment();
+//        adapter.addFragment(callsFragment);
+//        adapter.addFragment(chatFragment);
+//        adapter.addFragment(contactsFragment);
         viewPager.setAdapter(adapter);
+        viewPager.setOffscreenPageLimit(2);
     }
 
+    private void getAuthen(){
+        savingPreferences();
+        restoringPreferences();
+    }
+    private void savingPreferences(){
+        Bundle bundle = getIntent().getExtras();
+        if (bundle.getString("user") != null) {
+            userJSON = bundle.getString("user");
+            storeJSON = bundle.getString("store");
+            //tạo đối tượng getSharedPreferences
+            SharedPreferences pre = getSharedPreferences("authentication", Context.MODE_PRIVATE);
+            //tạo đối tượng Editor để lưu thay đổi
+            SharedPreferences.Editor editor = pre.edit();
+            //lưu vào editor
+            editor.putString("user", bundle.getString("user"));
+            editor.putString("store", bundle.getString("store"));
+            //chấp nhận lưu xuống file
+            editor.commit();
+        }
+    }
+
+    private void restoringPreferences(){
+        if (userJSON == null) {
+            SharedPreferences pre = getSharedPreferences("authentication", Context.MODE_PRIVATE);
+            userJSON = pre.getString("user", "");
+            storeJSON = pre.getString("store", "");
+        }
+    }
+    public void selectFragment(int position){
+        viewPager.setCurrentItem(position, true);
+        getAuthen();
+        setupViewPager(viewPager);
+// true is to animate the transaction
+    }
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Glide.get(this).clearMemory();
+
+    }
 }
