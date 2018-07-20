@@ -9,6 +9,9 @@ public class Result {
     @Expose
     private String result;
 
+    public Result() {
+    }
+
     public Result(String result) {
         this.result = result;
     }

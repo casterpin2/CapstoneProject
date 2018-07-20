@@ -29,6 +29,8 @@ import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.storage.StorageReference;
 import com.google.gson.Gson;
 
+import java.text.SimpleDateFormat;
+
 import project.firebase.Firebase;
 import project.objects.User;
 import project.view.Login.LoginPage;
@@ -80,18 +82,19 @@ public class StoreFragment extends Fragment {
         storeID = store.getId();
         hasStore = user.getHasStore();
         userID = user.getId();
-        Toast.makeText(getActivity(),""+storeID+"",Toast.LENGTH_LONG).show();
+
 
         if (isNetworkAvailable() == true && hasStore == 1 && userID != 0 && storeID != 0) {
             view = inflater.inflate(R.layout.fragment_store,container,false);
             findViewInStoreFragment();
 //        setLayout(hasStore,userID,haveStoreLayout, notHaveStoreLayout, noHaveInternet,noLoginLayout);
-            ownerName.setText(storeInformation.getOwnerName());
-            storeName.setText(storeInformation.getStoreName());
-            registerDate.setText(storeInformation.getRegisterDate());
-            address.setText(storeInformation.getAddress());
-            phoneText.setText(storeInformation.getPhone());
-
+//            SimpleDateFormat timeFormat= new SimpleDateFormat("dd/MM/yyyy");
+//            String s=timeFormat.format(store.getRegisterLog());
+//            registerDate.setText(s);
+            storeName.setText(store.getName());
+            phoneText.setText(store.getPhone());
+            address.setText(store.getAddress().replaceAll("null","").replaceAll("\\s+"," "));
+            ownerName.setText(user.getFirst_name() + " " + user.getLast_name());
             latitude = getActivity().getIntent().getDoubleExtra("latitude", 0.0);
             longtitude = getActivity().getIntent().getDoubleExtra("longtitude", 0.0);
 
@@ -144,6 +147,7 @@ public class StoreFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     Intent toRegisterStorePage = new Intent(getContext(), RegisterStorePage.class);
+                    toRegisterStorePage.putExtra("user_id",user.getId());
                     startActivity(toRegisterStorePage);
                 }
             });
@@ -210,7 +214,7 @@ public class StoreFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Glide.get(getContext()).clearMemory();
+
     }
 
     private void stopRefresh(){

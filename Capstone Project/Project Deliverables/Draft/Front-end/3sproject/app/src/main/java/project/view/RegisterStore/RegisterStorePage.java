@@ -13,6 +13,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
@@ -54,6 +55,7 @@ import project.view.ProductInStore.ProductInStoreCustomListViewAdapter;
 import project.view.ProductInStore.ProductInStoreDisplayPage;
 import project.view.R;
 import project.view.Register.Regex;
+import project.view.home.HomeActivity;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -181,8 +183,11 @@ public class RegisterStorePage extends AppCompatActivity implements OnMapReadyCa
             public void onClick(View v) {
                 String storeName = etStoreName.getText().toString().trim();
                 String phone = etPhone.getText().toString().trim();
-                project.view.RegisterStore.Location l = new project.view.RegisterStore.Location(1,"a","b","c","d","e","f");
-                callAPIRegisterStore(new Store (storeName,2,phone),location);
+                //project.view.RegisterStore.Location l = new project.view.RegisterStore.Location(1,"a","b","c","d","e","f");
+                int user_id = getIntent().getIntExtra("user_id",0);
+                if (user_id != 0) {
+                    callAPIRegisterStore(new Store(storeName, user_id, phone), location);
+                }
             }
         });
 
@@ -405,8 +410,15 @@ public class RegisterStorePage extends AppCompatActivity implements OnMapReadyCa
 
         @Override
         protected void onPostExecute(String result) {
-            Toast.makeText(RegisterStorePage.this, result, Toast.LENGTH_LONG).show();
             super.onPostExecute(result);
+            if (!result.equals("SOMETHING WRONG")) {
+                Toast.makeText(RegisterStorePage.this, "Đăng kí cửa hàng thành công", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(RegisterStorePage.this, HomeActivity.class);
+                startActivity(intent);
+            } else {
+                Toast.makeText(RegisterStorePage.this, "Có lỗi xảy ra", Toast.LENGTH_LONG).show();
+            }
+
         }
 
         @Override
@@ -421,7 +433,9 @@ public class RegisterStorePage extends AppCompatActivity implements OnMapReadyCa
             try {
                 Call<Result> call = calls[0];
                 Response<Result> response = call.execute();
-                result = response.body().getResult();
+                if (response != null) {
+                    result = response.body().getResult();
+                }else {result = "SOMETHING WRONG";}
             } catch (IOException e) {
             }
             return result;
@@ -433,6 +447,9 @@ public class RegisterStorePage extends AppCompatActivity implements OnMapReadyCa
         HashMap<String, String> map = new HashMap<>();
         map.put("store",jSon1);
         map.put("location",jSon2);
+        Log.d("store",jSon1);
+        Log.d("location",jSon2);
+        Log.d("location",map.toString());
         mAPI = ApiUtils.getAPIService();
         final Call<Result> call = mAPI.registerStore(map);
         new CallAPI().execute(call);

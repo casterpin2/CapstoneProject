@@ -230,6 +230,8 @@ public class LoginPage extends AppCompatActivity {
                 toHomePage.putExtras(bundle);
                 //Glide.get(LoginPage.this).clearDiskCache();
                 startActivity(toHomePage);
+                finishAffinity();
+                finish();
             }
             super.onPostExecute(result);
         }
@@ -247,7 +249,7 @@ public class LoginPage extends AppCompatActivity {
                 Call<Login> call = calls[0];
                 Response<Login> response = call.execute();
                 result = response.body();
-                Glide.get(LoginPage.this).clearDiskCache();
+                //Glide.get(LoginPage.this).clearDiskCache();
             } catch (IOException e) {
             }
             return result;
@@ -273,7 +275,7 @@ public class LoginPage extends AppCompatActivity {
         @Override
         protected Void doInBackground(Void... Void) {
 
-            Glide.get(LoginPage.this).clearDiskCache();
+            //Glide.get(LoginPage.this).clearDiskCache();
 
             return null;
         }
@@ -282,6 +284,6 @@ public class LoginPage extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Glide.get(this).clearMemory();
+        //Glide.get(this).clearMemory();
     }
 }

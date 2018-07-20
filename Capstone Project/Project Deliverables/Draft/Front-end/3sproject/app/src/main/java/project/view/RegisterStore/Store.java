@@ -65,6 +65,27 @@ public class Store implements Serializable{
     @SerializedName("status")
     @Expose
     private int status;
+    @SerializedName("registerLog")
+    @Expose
+    private String registerLog;
+
+    public String getRegisterLog() {
+        return registerLog;
+    }
+
+    public void setRegisterLog(String registerLog) {
+        this.registerLog = registerLog;
+    }
+
+    public int getLocation_id() {
+        return location_id;
+    }
+
+    public void setLocation_id(int location_id) {
+        this.location_id = location_id;
+    }
+
+
 
     public String getImage_path() {
         return image_path;

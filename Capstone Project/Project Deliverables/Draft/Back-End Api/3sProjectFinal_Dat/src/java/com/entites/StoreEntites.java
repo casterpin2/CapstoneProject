@@ -16,13 +16,30 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 public class StoreEntites implements Serializable {
     private int id;
     private String name;
+    private int location_id;
+    
+    public int getLocation_id() {
+        return location_id;
+    }
+
+    public void setLocation_id(int location_id) {
+        this.location_id = location_id;
+    }
     private int user_id;
     private String phone;
     private String image_path;
     private String address;
     private String longtitude;
     private String latitude;
+    private String registerLog;
 
+    public String getRegisterLog() {
+        return registerLog;
+    }
+
+    public void setRegisterLog(String registerLog) {
+        this.registerLog = registerLog;
+    }
     public String getAddress() {
         return address;
     }

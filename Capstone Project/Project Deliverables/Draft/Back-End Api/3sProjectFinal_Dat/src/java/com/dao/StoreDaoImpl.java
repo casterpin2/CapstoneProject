@@ -22,6 +22,7 @@ import org.springframework.stereotype.Repository;
 public class StoreDaoImpl extends BaseDao implements StoreDao {
 
     private final static String REGISTER_STORE_INSERT = "update Store set name = ? , location_id = ? , phone = ? , status = 1 where user_id = ?";
+    private final static String UPDATE_HAS_STORE_USER = "update User set hasStore = 1 where id = ?";
     private final static String REGISTER_LOCATION_INSERT = "insert into Location(apartment_number,street,county,district,city,longitude,latitude) values (?,?,?,?,?,?,?)";
     private final static String GET_LAST_LOCATION_ID = "select MAX(id) as id from Location";
     private final static String GET_LOCATION_ID = "select * from Location where latitude = ? and longitude = ?";
@@ -47,12 +48,10 @@ public class StoreDaoImpl extends BaseDao implements StoreDao {
                 pre.setString(7, location.getLatitude());
                 count = pre.executeUpdate();
                 if (count == 0) {
+                    conn.setAutoCommit(false);
                     conn.rollback();
-                    conn.setAutoCommit(true);
-                    return "FAILED";
+                    return "FAILED REGISTER_LOCATION_INSERT";
                 }
-
-                //conn.setAutoCommit(false);
                 locationId = getLocationId();
                 result = "LOCATION NOT EXSIST";
                 if (locationId == -1) {
@@ -64,19 +63,26 @@ public class StoreDaoImpl extends BaseDao implements StoreDao {
             pre = conn.prepareStatement(REGISTER_STORE_INSERT);
 
             pre.setString(1, store.getName());
-            pre.setString(2, String.valueOf(locationId));
-            pre.setInt(3, store.getUser_id());
-            pre.setString(4, store.getPhone());
+            pre.setInt(2, locationId);
+            pre.setInt(4, store.getUser_id());
+            pre.setString(3, store.getPhone());
             count = pre.executeUpdate();
             if (count == 0) {
+                conn.setAutoCommit(false);
                 conn.rollback();
-                conn.setAutoCommit(true);
                 return "FAILED";
             }
-
+               pre = conn.prepareStatement(UPDATE_HAS_STORE_USER);
+               pre.setInt(1, store.getUser_id());
+               count = pre.executeUpdate();
+               if (count == 0) {
+                conn.setAutoCommit(false);
+                conn.rollback();
+                return "FAILED";
+            }
         } catch (Exception e) {
+            conn.setAutoCommit(false);
             conn.rollback();
-            conn.setAutoCommit(true);
             return "FAILED";
         } finally {
             closeConnect(conn, pre, null);

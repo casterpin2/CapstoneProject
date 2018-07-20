@@ -19,7 +19,15 @@ public class LocationEntites implements Serializable{
     private String city;
     private String latitude;
     private String longitude;
+    private int id ;
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
     public LocationEntites() {
     }
 

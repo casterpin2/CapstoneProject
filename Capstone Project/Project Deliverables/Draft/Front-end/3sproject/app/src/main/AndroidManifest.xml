@@ -19,12 +19,9 @@
             android:value="@string/google_maps_key" />
 
         <activity android:name=".MainActivity" />
-        <activity android:name=".Login.LoginPage">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+        <activity android:name=".Login.LoginPage"
+            android:noHistory="true">
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity android:name=".AddProductToStore.SearchProductAddToStore" />
         <activity android:name=".Cart.CartProductToStore" />
@@ -52,7 +49,13 @@
         <activity android:name=".EditProductInStore.EditProductInStorePage" />
         <activity
             android:name=".home.HomeActivity"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".StoreInformation.StoreInformationPage"
             android:theme="@style/AppTheme.NoActionBar" />
