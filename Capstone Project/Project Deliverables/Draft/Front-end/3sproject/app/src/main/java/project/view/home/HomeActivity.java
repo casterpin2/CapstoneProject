@@ -30,9 +30,9 @@ public class HomeActivity extends AppCompatActivity{
     BottomNavigationView bottomNavigationView;
     private ViewPager viewPager;
 
-    StoreFragment chatFragment;
-    HomeFragment callsFragment;
-    UserFragment contactsFragment;
+    StoreFragment storeFragment;
+    HomeFragment homeFragment;
+    UserFragment userFragment;
     MenuItem prevMenuItem;
     private String userJSON;
     private String storeJSON;
@@ -100,12 +100,12 @@ public class HomeActivity extends AppCompatActivity{
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager(),userJSON,storeJSON);
-//        callsFragment=new HomeFragment();
-//        chatFragment=new StoreFragment();
-//        contactsFragment=new UserFragment();
-//        adapter.addFragment(callsFragment);
-//        adapter.addFragment(chatFragment);
-//        adapter.addFragment(contactsFragment);
+//        homeFragment=new HomeFragment();
+//        storeFragment=new StoreFragment();
+//        userFragment=new UserFragment();
+//        adapter.addFragment(homeFragment);
+//        adapter.addFragment(storeFragment);
+//        adapter.addFragment(userFragment);
         viewPager.setAdapter(adapter);
         viewPager.setOffscreenPageLimit(2);
     }

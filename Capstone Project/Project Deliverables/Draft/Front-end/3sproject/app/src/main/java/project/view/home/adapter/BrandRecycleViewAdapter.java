@@ -58,7 +58,8 @@ public class BrandRecycleViewAdapter extends RecyclerView.Adapter<BrandRecycleVi
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         Brand brand = brands.get(position);
-        holder.tvBrandName.setText(brand.getBrandName());
+       // holder.tvBrandName.setText(brand.getBrandName());
+        holder.tvBrandName.setVisibility(View.INVISIBLE);
         Glide.with(context /* context */)
                 .using(new FirebaseImageLoader())
                 .load(storageReference.child(brand.getBrandImageLink()))

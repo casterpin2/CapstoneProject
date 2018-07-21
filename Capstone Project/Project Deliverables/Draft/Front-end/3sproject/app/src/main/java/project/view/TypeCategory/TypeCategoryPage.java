@@ -54,15 +54,18 @@ public class TypeCategoryPage extends AppCompatActivity {
 
         initCollapsingToolbar();
 
+        setCoverImg();
+
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
         typeList = new ArrayList<>();
-        prepareAlbums();
-        try {
-            Glide.with(this).load(R.drawable.cover).into((ImageView) findViewById(R.id.backdrop));
-        } catch (Exception e) {
-            e.printStackTrace();
+
+        Type type = new Type(1,"sdfs",4,"");
+        for(int i=0;i<10;i++){
+            typeList.add(type);
         }
+
+
         adapter = new TypePageListViewAdapter(this, typeList);
 
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 2);
@@ -73,11 +76,18 @@ public class TypeCategoryPage extends AppCompatActivity {
 
     }
 
+    private void setCoverImg(){
+        try {
+            Glide.with(this).load(R.drawable.cover).into((ImageView) findViewById(R.id.backdrop));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private void initCollapsingToolbar() {
-        final CollapsingToolbarLayout collapsingToolbar =
-                (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-        collapsingToolbar.setTitle(" ");
-        AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appbar);
+        final CollapsingToolbarLayout collapsingToolbar = findViewById(R.id.collapsing_toolbar);
+        collapsingToolbar.setTitle("");
+        AppBarLayout appBarLayout = findViewById(R.id.appbar);
         appBarLayout.setExpanded(true);
 
         // hiding & showing the title when toolbar expanded & collapsed
@@ -101,33 +111,6 @@ public class TypeCategoryPage extends AppCompatActivity {
                 }
             }
         });
-    }
-
-    /**
-     * Adding few albums for testing
-     */
-    private void prepareAlbums() {
-        //Call API
-//        apiService.getBrands().enqueue(new Callback<List<Brand>>() {
-//            @Override
-//            public void onResponse(Call<List<Brand>> call, Response<List<Brand>> response) {
-//                for(int i =0;i<response.body().size();i++){
-//
-//                    brandList.add(response.body().get(i));
-//
-//                }
-//                if(brandList.isEmpty()){
-//                    Toast.makeText(BrandDisplayPage.this, "SomeThing Wrong", Toast.LENGTH_LONG).show();
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<List<Brand>> call, Throwable t) {
-//
-//            }
-//        });
-
-
     }
 
     /**
@@ -180,18 +163,11 @@ public class TypeCategoryPage extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                // app icon in action bar clicked; go home
-                Intent intent = new Intent(this, MainActivity.class);
-                startActivity(intent);
+               onBackPressed();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
-    private boolean checkID(int productID){
-        for (Item item: SearchProductAddToStore.addedProductList) {
-            if (item.getProduct_id() == productID) return false;
-        }
-        return true;
-    }
+
 }
