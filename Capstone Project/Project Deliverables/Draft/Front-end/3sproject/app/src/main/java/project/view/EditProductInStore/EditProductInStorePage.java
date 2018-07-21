@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,6 +27,7 @@ import java.util.Locale;
 
 import project.firebase.Firebase;
 import project.view.R;
+import project.view.util.CustomInterface;
 
 public class EditProductInStorePage extends AppCompatActivity {
 
@@ -35,15 +37,20 @@ public class EditProductInStorePage extends AppCompatActivity {
     private Button saveBtn;
     private ImageView imageView;
     private ScrollView scroll;
+    private ProgressBar loadingBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_product_in_store_page);
 
+        CustomInterface.setStatusBarColor(this);
+
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorApplication)));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        loadingBar = (ProgressBar) findViewById(R.id.loadingBar);
+        loadingBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorApplication), android.graphics.PorterDuff.Mode.MULTIPLY);
 
         productName = (TextView) findViewById(R.id.productName);
         categoryName = (TextView) findViewById(R.id.categoryName);
@@ -125,28 +132,29 @@ public class EditProductInStorePage extends AppCompatActivity {
                 if (productPrice.getText().toString().length() > 0 ) {
                     productPriceErrorMessage.setText("");
                 } else {
-                    productPriceErrorMessage.setText("Trường này không thể để trống");
+                    productPriceErrorMessage.setText(getResources().getString(R.string.error_empty));
                 }
                 if(promotionPercent.getText().toString().length() > 0) {
                     promotionPercentErrorMessage.setText("");
                 } else {
-                    promotionPercentErrorMessage.setText("Trường này không thể để trống");
+                    promotionPercentErrorMessage.setText(getResources().getString(R.string.promotionOption));
                 }
                 if(promotionPercent.getText().toString().length() > 0 && productPrice.getText().toString().length() > 0) {
 
                     if (Double.parseDouble(promotionPercent.getText().toString()) > 100.00 || Double.parseDouble(promotionPercent.getText().toString()) < 0.00) {
-                        promotionPercentErrorMessage.setText("Chiết khấu phải ở trong khoảng từ 0% tới 100%!!");
+                        promotionPercentErrorMessage.setText(getResources().getString(R.string.promotionOption));
 
                     } else {
                         long priceLong = Long.parseLong(productPrice.getText().toString().replaceAll(",", ""));
                         double promotionValue = Double.parseDouble(promotionPercent.getText().toString());
                         promotionPercentErrorMessage.setText("");
                         if (productPriceValue == priceLong && promotionPercentValue == promotionValue ) {
-                            Toast.makeText(EditProductInStorePage.this, "Thông tin không thay đổi", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(EditProductInStorePage.this, getResources().getString(R.string.unchange), Toast.LENGTH_SHORT).show();
 
                         } else {
 
-                            Toast.makeText(EditProductInStorePage.this, productIDValue + " id - " + productNameValue + " name - " + productImageLink + " - " + categoryNameValue + " - " + brandNameValue + " - " + priceLong + " - " + promotionValue, Toast.LENGTH_SHORT).show();
+                            // call API here
+
                         }
 
                     }
@@ -163,11 +171,18 @@ public class EditProductInStorePage extends AppCompatActivity {
                 promotionPercent = (EditText) findViewById(R.id.promotionPercent);
                 final long productPriceValue = getIntent().getLongExtra("productPrice",-1);
                 final double promotionPercentValue = getIntent().getDoubleExtra("promotionPercent",-1.0);
-                long priceLong = Long.parseLong(productPrice.getText().toString().replaceAll(",", ""));
-                double promotionValue = Double.parseDouble(promotionPercent.getText().toString());
+                long priceLong = 0;
+                if (productPrice.getText().toString().length() != 0){
+                    priceLong= Long.parseLong(productPrice.getText().toString().replaceAll(",", ""));
+                }
+                double promotionValue = 0.0;
+                if(promotionPercent.getText().toString().length() != 0){
+                    promotionValue = Double.parseDouble(promotionPercent.getText().toString());
+                }
+
                 if (productPriceValue == priceLong && promotionPercentValue == promotionValue ) {
                     finish();
-                } else {
+                } else if (productPriceValue != priceLong || promotionPercentValue != promotionValue || (productPrice.getText().toString().length() != 0 && promotionPercent.getText().toString().length() != 0 )) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(EditProductInStorePage.this);
                     builder.setTitle(R.string.back_alertdialog_title);
                     builder.setMessage(R.string.back_alertdialog_content);
@@ -195,12 +210,6 @@ public class EditProductInStorePage extends AppCompatActivity {
     public String convertLongToString (long needConvert) {
         String formattedString = null;
         try {
-//            String originalString = s.toString();
-//            Long longval;
-//            if (originalString.contains(",")) {
-//                originalString = originalString.replaceAll(",", "");
-//            }
-//            longval = Long.parseLong(originalString);
 
             DecimalFormat formatter = (DecimalFormat) NumberFormat.getInstance(Locale.US);
             formatter.applyPattern("#,###,###,###");

@@ -9,32 +9,32 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import project.view.R;
+import project.view.util.CustomInterface;
 import project.view.util.Regex;
 
 public class ChangePasswordActivity extends AppCompatActivity{
     private  Button btnChangePass;
     private TextView tvOldPass, tvConfirmPass,tvNewPass;
     private TextInputEditText oldPass, newPass, confirmPass;
-    private Toolbar toolbar;
+    private ProgressBar loadingBar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_password);
         findView();
-        toolbar.setTitle(R.string.title_change_password);
 
-        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(R.string.title_change_password);
         if (getSupportActionBar() != null){
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().setStatusBarColor((getResources().getColor(R.color.colorApplication)));
-        }
+        loadingBar = (ProgressBar) findViewById(R.id.loadingBar);
+        loadingBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorApplication), android.graphics.PorterDuff.Mode.MULTIPLY);
 
 
         newPass.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -65,7 +65,6 @@ public class ChangePasswordActivity extends AppCompatActivity{
     }
 
     private void findView(){
-        toolbar = findViewById(R.id.toolbar);
 
         tvOldPass = findViewById(R.id.tvOldPass);
         tvNewPass = findViewById(R.id.tvNewPassword);

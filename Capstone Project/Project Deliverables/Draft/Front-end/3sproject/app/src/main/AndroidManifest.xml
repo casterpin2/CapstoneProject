@@ -23,7 +23,9 @@
             android:noHistory="true">
 
         </activity>
-        <activity android:name=".AddProductToStore.SearchProductAddToStore" />
+        <activity android:name=".AddProductToStore.SearchProductAddToStore" >
+
+        </activity>
         <activity android:name=".Cart.CartProductToStore" />
         <activity
             android:name=".SaleProduct.SaleProductDisplayPage"
@@ -42,8 +44,7 @@
         <activity
             android:name=".Register.RegisterActivity" />
         <activity
-            android:name=".ChangePassword.ChangePasswordActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:name=".ChangePassword.ChangePasswordActivity" />
         <activity android:name=".ProductInStore.ProductInStoreDisplayPage" />
         <activity android:name=".EditProductInStore.EditProductInStorePage" />
         <activity

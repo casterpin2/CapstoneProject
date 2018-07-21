@@ -99,6 +99,7 @@
     <string name="edit_alertdialog_content">Bạn có muốn chỉnh sửa thông tin sản phẩm này ?</string>
     <string name="alertdialog_acceptButton">Đồng ý</string>
     <string name="alertdialog_cancelButton">Hủy</string>
+    <string name="unchange">Thông tin không thay đổi</string>
 
     <!-- TODO: placeholder text in edit product infor in store page -->
     <string name="back_alertdialog_title">Quay lại </string>
