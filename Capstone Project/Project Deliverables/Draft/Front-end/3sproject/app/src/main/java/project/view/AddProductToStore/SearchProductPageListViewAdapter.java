@@ -79,6 +79,7 @@ public class SearchProductPageListViewAdapter extends BaseAdapter {
             Glide.with(context /* context */)
                     .using(new FirebaseImageLoader())
                     .load(storageReference.child(productList.get(position).getImage_path()))
+                    .skipMemoryCache(true)
                     .into(holder.productImage);
         }
 
