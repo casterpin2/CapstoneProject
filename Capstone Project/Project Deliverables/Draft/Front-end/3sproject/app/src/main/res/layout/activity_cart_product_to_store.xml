@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    android:id="@+id/search_page"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:fab="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -7,7 +9,13 @@
     android:layout_height="match_parent"
     tools:context=".Cart.CartProductToStore">
 
-
+    <ProgressBar
+        android:id="@+id/loadingBar"
+        style="?android:attr/progressBarStyleInverse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="invisible"/>
     <ListView
         android:id="@+id/productListView"
         android:layout_width="match_parent"
@@ -18,7 +26,8 @@
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin"
-        android:scrollbars="none"/>
+        android:scrollbars="none">
+    </ListView>
 
     <com.github.clans.fab.FloatingActionMenu
         android:id="@+id/material_design_android_floating_action_menu"
@@ -32,9 +41,9 @@
         fab:menu_animationDelayPerItem="55"
         fab:menu_backgroundColor="@android:color/transparent"
         fab:menu_buttonSpacing="0dp"
-        fab:menu_colorNormal="@color/colorApplication"
-        fab:menu_colorPressed="#f03090"
-        fab:menu_colorRipple="#99d4d4d4"
+        fab:menu_colorNormal="@color/white"
+        fab:menu_colorPressed="@color/white"
+        fab:menu_colorRipple="@color/white"
         fab:menu_fab_size="normal"
         fab:menu_icon="@drawable/menu"
         fab:menu_labels_colorNormal="#333"
@@ -65,21 +74,15 @@
             android:layout_height="wrap_content"
             android:src="@drawable/delete"
             fab:fab_label=""
-            fab:fab_size="mini" />
+            fab:fab_size="mini"/>
+
 
         <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/fab_back"
+            android:id="@+id/fab_add"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/back"
-            fab:fab_size="mini" />
-
-        <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/fab_success"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/success"
-            fab:fab_size="mini" />
+            android:src="@drawable/plus"
+            fab:fab_size="mini"/>
     </com.github.clans.fab.FloatingActionMenu>
     <TextView
         android:layout_width="wrap_content"

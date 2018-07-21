@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">3sproject</string>
+    <string name="somethingWrong">Xảy ra lỗi. Vui lòng thử lại</string>
 
     <!-- TODO: placeholder text in register and login page -->
     <string name="login_page_username_placeholder">Tên đăng nhập</string>
@@ -30,7 +31,7 @@
     <string name="search_product_page_title">Danh sách sản phẩm</string>
     <string name="search_product_searchbar_hint">Nhập sản phẩm bạn muốn tìm...</string>
     <string name="search_product_cell_content_title">Thông tin sản phẩm</string>
-    <string name="search_product_cell_content_brand">Nhãn hiệu</string>
+    <string name="search_product_cell_content_brand">Thương hiệu</string>
     <string name="search_product_cell_content_category">Danh mục sản phẩm</string>
     <string name="search_product_cell_content_desc">Mô tả sản phẩm</string>
     <string name="search_product_cell_content_addBtn">Thêm sản phẩm</string>
@@ -51,6 +52,10 @@
     <string name="confirm_delete_all">Bạn có muốn xóa tất cả sản phẩm vừa thêm không?</string>
     <string name="btn_delete">Xóa</string>
     <string name="btn_cancel">Hủy</string>
+    <string name="storeCartTitle">Thêm sản phẩm</string>
+    <string name="noProduct">Không có sản phẩm nào</string>
+    <string name="noProductToDel">Không có sản phẩm để xóa</string>
+    <string name="deletedAllProduct">Đã xóa hết sản phẩm trong giỏ</string>
 
     <!-- TODO: placeholder text in sale product display page -->
     <string name="action_settings">Settings</string>
