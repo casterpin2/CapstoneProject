@@ -18,6 +18,7 @@ import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -31,6 +32,7 @@ import project.view.AddProductToStore.Item;
 import project.view.AddProductToStore.SearchProductAddToStore;
 import project.view.MainActivity;
 import project.view.R;
+import project.view.util.CustomInterface;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -41,16 +43,20 @@ public class CategoryDisplayPage extends AppCompatActivity {
     private CategoryCustomCardviewAdapter adapter;
     private List<Category> categoryList;
     private APIService apiService;
+    private ProgressBar loadingBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_category_display_page);
+        CustomInterface.setStatusBarColor(this);
+
+        loadingBar = (ProgressBar) findViewById(R.id.loadingBar);
+        loadingBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorApplication), android.graphics.PorterDuff.Mode.MULTIPLY);
+        loadingBar.setVisibility(View.VISIBLE);
+
         apiService = ApiUtils.getAPIService();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().setStatusBarColor(getResources().getColor(R.color.colorApplication));
-        }
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -98,7 +104,7 @@ public class CategoryDisplayPage extends AppCompatActivity {
                 if (scrollRange + verticalOffset == 0) {
                     collapsingToolbar.setTitle(getString(R.string.category_display_title));
                     isShow = true;
-                    getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#F50057")));
+                    getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorApplication)));
                 } else if (isShow) {
                     collapsingToolbar.setTitle(" ");
                     isShow = false;
@@ -120,7 +126,7 @@ public class CategoryDisplayPage extends AppCompatActivity {
                     categoryList.add(response.body().get(i));
                 }
                 if (categoryList.isEmpty()) {
-                    Toast.makeText(CategoryDisplayPage.this, "SomeThing Wrong", Toast.LENGTH_LONG).show();
+                    Toast.makeText(CategoryDisplayPage.this, getResources().getString(R.string.somethingWrong), Toast.LENGTH_LONG).show();
                 }
             }
 
@@ -183,7 +189,7 @@ public class CategoryDisplayPage extends AppCompatActivity {
         switch (item.getItemId()) {
             case android.R.id.home:
                 // app icon in action bar clicked; go home
-                onBackPressed();
+                finish();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

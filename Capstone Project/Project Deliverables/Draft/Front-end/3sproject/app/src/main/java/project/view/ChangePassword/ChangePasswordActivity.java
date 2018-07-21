@@ -12,7 +12,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import project.view.R;
-import project.view.Register.Regex;
+import project.view.util.Regex;
 
 public class ChangePasswordActivity extends AppCompatActivity{
     private  Button btnChangePass;

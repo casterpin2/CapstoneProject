@@ -40,8 +40,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".ProductTypeDisplay.ProductTypeDisplay" />
         <activity
-            android:name=".Register.RegisterActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:name=".Register.RegisterActivity" />
         <activity
             android:name=".ChangePassword.ChangePasswordActivity"
             android:theme="@style/AppTheme.NoActionBar" />

@@ -3,7 +3,6 @@ package project.view.Register;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
@@ -11,7 +10,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -28,6 +26,8 @@ import project.retrofit.ApiUtils;
 import project.view.Login.LoginPage;
 import project.view.R;
 import project.view.UserInformation.UserInformation;
+import project.view.util.CustomInterface;
+import project.view.util.Regex;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -48,17 +48,13 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        getSupportActionBar().setTitle(getResources().getString(R.string.register_page_registerTitle));
+        getSupportActionBar().setTitle(R.string.register_page_registerTitle);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorApplication)));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         findView();
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().setStatusBarColor((getResources().getColor(R.color.statusBarColor)));
-        }
+        CustomInterface.setStatusBarColor(this);
 
         apiUserService = ApiUtils.getAPIService();
 
@@ -114,7 +110,6 @@ public class RegisterActivity extends AppCompatActivity {
                     final Call<Integer> call = apiUserService.vadilator(etUserName.getText().toString(), etEmail.getText().toString(), etPhoneNumber.getText().toString(), "email");
                     new ValidatorUser().execute(call);
                     checkEmail(etEmail.getText().toString());
-                    Toast.makeText(getBaseContext(), isEmail + " a", Toast.LENGTH_SHORT);
                 }
             }
         });
@@ -221,7 +216,7 @@ public class RegisterActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         // handle arrow click here
         if (item.getItemId() == android.R.id.home) {
-           onBackPressed();
+           finish();
         }
         return super.onOptionsItemSelected(item);
     }

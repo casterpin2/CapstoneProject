@@ -20,7 +20,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,7 +27,6 @@ import android.widget.Toast;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.common.api.internal.GoogleApiManager;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -41,7 +39,6 @@ import com.google.gson.Gson;
 import com.suke.widget.SwitchButton;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -51,15 +48,10 @@ import project.googleMapAPI.GoogleMapJSON;
 import project.objects.User;
 import project.retrofit.APIService;
 import project.retrofit.ApiUtils;
-import project.view.AddProductToStore.SearchProductAddToStore;
-import project.view.ProductInStore.ProductInStore;
-import project.view.ProductInStore.ProductInStoreCustomListViewAdapter;
-import project.view.ProductInStore.ProductInStoreDisplayPage;
 import project.view.R;
-import project.view.Register.Regex;
+import project.view.util.Regex;
 import project.view.home.HomeActivity;
 import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
 
 public class RegisterStorePage extends AppCompatActivity implements OnMapReadyCallback {
