@@ -62,6 +62,8 @@ dependencies {
 
     //shineButton
     implementation 'com.sackcentury:shinebutton:0.2.0'
+    //barcode
+    implementation 'me.dm7.barcodescanner:zxing:1.9.8'
 }
 //fire base
 apply plugin: 'com.google.gms.google-services'

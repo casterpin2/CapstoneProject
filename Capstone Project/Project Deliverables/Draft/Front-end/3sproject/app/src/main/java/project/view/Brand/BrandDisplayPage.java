@@ -5,6 +5,7 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -12,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
@@ -22,10 +24,13 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.storage.StorageReference;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import project.firebase.Firebase;
 import project.retrofit.APIService;
 import project.retrofit.ApiUtils;
 import project.view.AddProductToStore.Item;
@@ -36,6 +41,7 @@ import project.view.Category.CategoryDisplayPage;
 import project.view.MainActivity;
 import project.view.R;
 import project.view.UserInformation.TweakUI;
+import project.view.home.adapter.BrandRecycleViewAdapter;
 import project.view.util.CustomInterface;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -66,21 +72,10 @@ public class BrandDisplayPage extends AppCompatActivity {
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
         brandList = new ArrayList<>();
-        prepareAlbums();
-        adapter = new BrandCustomCardviewAdapter(this, brandList);
-
-        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 2);
-        recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.addItemDecoration(new BrandDisplayPage.GridSpacingItemDecoration(2, dpToPx(10), true));
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(adapter);
-
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        adapter.notifyDataSetChanged();
+   //     prepareAlbums();
+        apiService = APIService.retrofit.create(APIService.class);
+        final Call<List<Brand>> callBrand = apiService.getBrands();
+        new BrandDisplayData().execute(callBrand);
 
         try {
             Glide.with(this).load(R.drawable.cover).into((ImageView) findViewById(R.id.backdrop));
@@ -208,5 +203,52 @@ public class BrandDisplayPage extends AppCompatActivity {
             if (item.getProduct_id() == productID) return false;
         }
         return true;
+    }
+    private class BrandDisplayData extends AsyncTask<Call, List<Brand>, Void> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            loadingBar.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+        }
+
+        @Override
+        protected void onProgressUpdate(List<Brand>... values) {
+            super.onProgressUpdate(values);
+            StorageReference storageReference = Firebase.getFirebase();
+            List<Brand> brandList = values[0];
+
+
+            adapter = new BrandCustomCardviewAdapter(BrandDisplayPage.this, brandList);
+
+            RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(BrandDisplayPage.this, 2);
+            recyclerView.setLayoutManager(mLayoutManager);
+            recyclerView.addItemDecoration(new BrandDisplayPage.GridSpacingItemDecoration(2, dpToPx(10), true));
+            recyclerView.setItemAnimator(new DefaultItemAnimator());
+            recyclerView.setAdapter(adapter);
+            loadingBar.setVisibility(View.INVISIBLE);
+        }
+
+        @Override
+        protected Void doInBackground(Call... calls) {
+
+            try {
+                Call<List<Brand>> call = calls[0];
+                Response<List<Brand>> response = call.execute();
+                List<Brand> list = new ArrayList<>();
+                for(int i =0;i< response.body().size();i++){
+                    list.add(response.body().get(i));
+                }
+                publishProgress(list);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
     }
 }

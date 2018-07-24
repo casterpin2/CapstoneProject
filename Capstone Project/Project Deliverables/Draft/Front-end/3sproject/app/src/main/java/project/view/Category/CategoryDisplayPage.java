@@ -5,6 +5,7 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -22,10 +23,13 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.storage.StorageReference;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import project.firebase.Firebase;
 import project.retrofit.APIService;
 import project.retrofit.ApiUtils;
 import project.view.AddProductToStore.Item;
@@ -66,15 +70,12 @@ public class CategoryDisplayPage extends AppCompatActivity {
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
         categoryList = new ArrayList<>();
-        prepareAlbums();
+       // prepareAlbums();
+        apiService = APIService.retrofit.create(APIService.class);
+        final Call<List<Category>> callCategory = apiService.getCategory();
+        new CategoryDisplayData().execute(callCategory);
         //Toast.makeText(this, categoryList.size()+ " ", Toast.LENGTH_SHORT).show();
-        adapter = new CategoryCustomCardviewAdapter(this, categoryList);
 
-        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 2);
-        recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(10), true));
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(adapter);
 
 
         try {
@@ -200,5 +201,52 @@ public class CategoryDisplayPage extends AppCompatActivity {
             if (item.getProduct_id() == productID) return false;
         }
         return true;
+    }
+    private class CategoryDisplayData extends AsyncTask<Call, List<Category>, Void> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            loadingBar.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+        }
+
+        @Override
+        protected void onProgressUpdate(List<Category>... values) {
+            super.onProgressUpdate(values);
+            StorageReference storageReference = Firebase.getFirebase();
+            List<Category> categoryList = values[0];
+
+
+            adapter = new CategoryCustomCardviewAdapter(CategoryDisplayPage.this, categoryList);
+
+            RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(CategoryDisplayPage.this, 2);
+            recyclerView.setLayoutManager(mLayoutManager);
+            recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(10), true));
+            recyclerView.setItemAnimator(new DefaultItemAnimator());
+            recyclerView.setAdapter(adapter);
+            loadingBar.setVisibility(View.INVISIBLE);
+        }
+
+        @Override
+        protected Void doInBackground(Call... calls) {
+
+            try {
+                Call<List<Category>> call = calls[0];
+                Response<List<Category>> response = call.execute();
+                List<Category> list = new ArrayList<>();
+                for(int i =0;i< response.body().size();i++){
+                    list.add(response.body().get(i));
+                }
+                publishProgress(list);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
     }
 }

@@ -53,7 +53,7 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     public List<ProductAddEntites> getProductWithBarCode(String query, int storeId) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return dao.getProductWithBarCode(query, storeId);
     }
 
 

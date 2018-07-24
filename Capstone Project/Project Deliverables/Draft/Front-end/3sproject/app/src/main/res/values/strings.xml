@@ -150,4 +150,11 @@
     <!-- TODO: facebook application -->
     <string name="facebook_app_id">2158107454303596</string>
     <string name="fb_login_protocol_scheme">fb2158107454303596</string>
+
+    <!---->
+    <!--barcode-->
+    <string name="error_camera">Bạn chưa cấp quyền cho ứng dụng truy cập vào máy ảnh</string>
+    <string name="barcode_accpet">Cho phép ứng dụng truy cập vào máy ảnh của bạn</string>
+    <string name="ok_barcode">Đồng ý</string>
+    <string name="cancel_barcode">Từ chối</string>
 </resources>
