@@ -6,6 +6,8 @@
 package com.controller;
 
 import com.entites.JsonUtil;
+import com.entites.NearByStore;
+import com.entites.ProductAddEntites;
 import com.entites.UserEntites;
 import com.service.UserService;
 import java.io.IOException;
@@ -41,10 +43,14 @@ public class UserController {
         return user.getAllUserForAdmin();
     }
 
-    @RequestMapping(value = "/registerUser", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
-    public Boolean registerUser(@RequestParam("jsonString") String jsonString) throws SQLException, ClassNotFoundException, IOException {
-        List<UserEntites> list = JsonUtil.converJsonToJava(jsonString, UserEntites.class);    
-        return user.registerUser(list.get(0));
+    @RequestMapping(value = "/registerUser", method = RequestMethod.POST, produces = "application/json")
+    public String registerUser(@RequestBody String jsonString) throws SQLException, ClassNotFoundException, IOException {
+        JsonFactory factory = new JsonFactory();
+        factory.enable(JsonParser.Feature.ALLOW_SINGLE_QUOTES);
+        ObjectMapper mapper = new ObjectMapper(factory);
+        UserEntites us = mapper.readValue(jsonString, UserEntites.class);
+        //String result = 
+        return "{\"result\":"+"\""+user.registerUser(us)+"\"}";
     }
 
     @RequestMapping(value = "/vadilateRegisterUser", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
@@ -66,5 +72,15 @@ public class UserController {
         ObjectMapper mapper = new ObjectMapper(factory);
         UserEntites us = mapper.readValue(userJSON, UserEntites.class);
         return user.loginFB(us,FBid);
+    }
+    
+    @RequestMapping(value = "/userSearchProduct", method = RequestMethod.GET, produces = "application/json")
+    public List<ProductAddEntites> userSearchProduct(@RequestParam("productName") String productName) throws SQLException, IOException {
+        return user.userSearchProduct(productName);
+    }
+    
+    @RequestMapping(value = "/findStore", method = RequestMethod.GET, produces = "application/json")
+    public List<NearByStore> nearByStore(@RequestParam("productId") int productId,@RequestParam("latitude") String latitude,@RequestParam("longitude") String longitude) throws SQLException, IOException {
+        return user.nearByStore(productId, latitude, longitude);
     }
 }

@@ -6,6 +6,8 @@
 package com.dao;
 
 import static com.dao.BaseDao.closeConnect;
+import com.entites.NearByStore;
+import com.entites.ProductAddEntites;
 import com.entites.StoreEntites;
 import com.entites.UserEntites;
 import java.sql.Connection;
@@ -47,6 +49,17 @@ public class UserDaoImpl extends BaseDao implements UserDao {
     private String INSERT_IMAGE = "INSERT INTO Image(name,path) VALUES (?,?)";
 
     private String INSERT_IMAGE_STORE = "INSERT INTO Image_Store(image_id,store_id) VALUES (53,?)";
+
+    private String QUERY_USER_SEARCH_PRODUCT = "SELECT a.*,b.path FROM \n"
+            + "            (SELECT a.*,b.image_id FROM \n"
+            + "            (SELECT a.id,a.name,b.name as brand_name FROM\n"
+            + "            (SELECT a.id,name,b.brand_id FROM Product a , Type_Brand b WHERE a.type_brand_id = b.id AND MATCH(name) AGAINST (? IN NATURAL LANGUAGE MODE)) a,Brand b WHERE a.brand_id = b.id) a , Image_Product b WHERE a.id = b.product_id) a , Image b WHERE a.image_id = b.id";
+
+    private String BUSINESS_CORE = "SELECT a.*,b.promotion,b.price FROM \n"
+            + "(SELECT a.apartment_number,a.street,a.county,a.district,a.city,a.longitude,a.latitude,b.* FROM\n"
+            + "(SELECT *, ( 6371 * acos( cos( radians(?) ) * cos( radians(latitude) ) * cos( radians(longitude) - radians(?) ) + \n"
+            + "sin( radians(?) ) * sin( radians(latitude) ) ) )\n"
+            + "AS distance FROM Location HAVING distance < 5 ORDER BY distance LIMIT 0 , 20) a, Store b WHERE a.id = b.location_id AND b.status = 1) a, (SELECT store_id,promotion,price FROM Product_Store WHERE product_id = ?) b WHERE a.id = b.store_id";
 
     @Override
     public List<UserEntites> getAllUserForAdmin() throws SQLException {
@@ -139,33 +152,71 @@ public class UserDaoImpl extends BaseDao implements UserDao {
     }
 
     @Override
-    public Boolean registerUser(UserEntites us) throws SQLException {
+    public String registerUser(UserEntites us) throws SQLException {
         Connection conn = null;
         PreparedStatement pre = null;
-        String message;
+        String result = "";
         try {
-            String sql = "INSERT INTO User (username, password, first_name, last_name, email, location_id, role_id, phone, hasStore, gender) VALUES (?,?,?,?,?,?,?,?,?,?)";
+            String sql = "INSERT INTO User (username, password, first_name, last_name, email, location_id, role_id, phone, hasStore,image_id) VALUES (?,?,?,?,?,?,?,?,?,?)";
             conn = getConnection();
             conn.setAutoCommit(false);
             pre = conn.prepareStatement(sql);
             pre.setString(1, us.getUserName());
             pre.setString(2, us.getPassword());
-            pre.setString(3, "Tuyen");
-            pre.setString(4, "Ngo");
+            pre.setString(3, us.getFirstName());
+            pre.setString(4, us.getLastName());
             pre.setString(5, us.getEmail());
             pre.setInt(6, 1);
             pre.setInt(7, 1);
             pre.setString(8, us.getPhone());
-            pre.setInt(9, 1);
-            pre.setString(10, "Name");
+            pre.setInt(9, 0);
+            pre.setInt(10, 51);
             int countInsert = pre.executeUpdate();
             if (countInsert > 0) {
-                conn.commit();
-                return true;
+
+                pre = conn.prepareStatement(QUERY_GET_MAX_USER_ID);
+                ResultSet rs = pre.executeQuery();
+                if (rs.next()) {
+                    int user_id = rs.getInt("MAX(id)");
+                    pre = conn.prepareStatement(INSERT_STORE);
+                    pre.setInt(1, user_id);
+                    int count = pre.executeUpdate();
+                    if (count == 0) {
+                        conn.rollback();
+                        conn.setAutoCommit(true);
+                        return result;
+                    } else {
+                        pre = conn.prepareStatement(QUERY_GET_MAX_STORE_ID);
+                        rs = pre.executeQuery();
+                        if (rs.next()) {
+                            int store_id = rs.getInt("MAX(id)");
+                            pre = conn.prepareStatement(INSERT_IMAGE_STORE);
+                            pre.setInt(1, store_id);
+                            count = pre.executeUpdate();
+                            if (count == 0) {
+                                conn.rollback();
+                                conn.setAutoCommit(true);
+                                return result;
+                            } else {
+                                conn.commit();
+                                result = us.getUserName();
+                                return result;
+                            }
+                        } else {
+                            conn.rollback();
+                            conn.setAutoCommit(true);
+                            return result;
+                        }
+                    }
+                } else {
+                    conn.rollback();
+                    conn.setAutoCommit(true);
+                    return result;
+                }
             } else {
                 conn.rollback();
                 conn.setAutoCommit(true);
-                return false;
+                return result;
             }
         } finally {
             closeConnect(conn, pre, null);
@@ -338,4 +389,73 @@ public class UserDaoImpl extends BaseDao implements UserDao {
         }
         return hashMap;
     }
+
+    @Override
+    public List<ProductAddEntites> userSearchProduct(String productName) throws SQLException {
+        Connection conn = null;
+        PreparedStatement pre = null;
+        ResultSet rs = null;
+        List<ProductAddEntites> list = new ArrayList<>();
+        ProductAddEntites entites = null;
+        try {
+            conn = getConnection();
+            pre = conn.prepareStatement(QUERY_USER_SEARCH_PRODUCT);
+            pre.setString(1, productName);
+            rs = pre.executeQuery();
+            while (rs.next()) {
+                entites = new ProductAddEntites();
+                entites.setProduct_id(rs.getInt("id"));
+                entites.setProduct_name(rs.getString("name"));
+                entites.setBrand_name(rs.getString("brand_name"));
+                entites.setImage_path(rs.getString("path"));
+                list.add(entites);
+            }
+            return list;
+        } catch (Exception e) {
+
+        } finally {
+            closeConnect(conn, pre, rs);
+        }
+        return null;
+    }
+
+    @Override
+    public List<NearByStore> nearByStore(int productId, String latitude, String longitude) throws SQLException {
+        Connection conn = null;
+        PreparedStatement pre = null;
+        ResultSet rs = null;
+        List<NearByStore> list = new ArrayList<>();
+        NearByStore entites = null;
+         try {
+            conn = getConnection();
+            pre = conn.prepareStatement(BUSINESS_CORE);
+            pre.setDouble(1, Double.parseDouble(latitude));
+            pre.setDouble(2, Double.parseDouble(longitude));
+            pre.setDouble(3, Double.parseDouble(latitude));
+            pre.setInt(4, productId);
+            rs = pre.executeQuery();
+            while (rs.next()) {
+                entites = new NearByStore();
+                entites.setId(rs.getInt("id"));
+                entites.setAddress(rs.getString("apartment_number")+" "+rs.getString("street")+" "+rs.getString("county")+" "+rs.getString("district")+" "+rs.getString("city"));
+                entites.setLatitude(rs.getDouble("latitude"));
+                entites.setLongitude(rs.getDouble("longitude"));
+                entites.setName(rs.getString("name"));
+                entites.setUser_id(rs.getInt("user_id"));
+                entites.setPromotion(rs.getDouble("promotion"));
+                entites.setPrice(rs.getDouble("price"));
+                entites.setLocation_id(rs.getInt("location_id"));
+                entites.setPhone(rs.getString("phone"));
+                entites.setRegisterLog(rs.getString("registerLog"));
+                list.add(entites);
+            }
+            return list;
+        } catch (Exception e) {
+
+        } finally {
+            closeConnect(conn, pre, rs);
+        }
+        return null;
+    }
+
 }

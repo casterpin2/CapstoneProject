@@ -6,6 +6,8 @@
 package com.service;
 
 import com.dao.UserDao;
+import com.entites.NearByStore;
+import com.entites.ProductAddEntites;
 import com.entites.UserEntites;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -34,7 +36,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public Boolean registerUser(UserEntites us) throws SQLException {
+    public String registerUser(UserEntites us) throws SQLException {
      return  dao.registerUser(us);
     }
     
@@ -47,4 +49,15 @@ public class UserServiceImpl implements UserService{
     public HashMap<String, Object> loginFB(UserEntites user, String FBId) throws SQLException {
         return dao.loginFB(user, FBId);
     }
+
+    @Override
+    public List<ProductAddEntites> userSearchProduct(String productName) throws SQLException {
+        return dao.userSearchProduct(productName);
+    }
+
+    @Override
+    public List<NearByStore> nearByStore(int productId, String latitude, String longitude) throws SQLException {
+        return dao.nearByStore(productId, latitude, longitude);
+    }
+    
 }
