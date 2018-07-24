@@ -1,31 +1,47 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package com.entites;
+package project.view.UserSearchProduct;
+
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-/**
- *
- * @author AHBP
- */
-public class NearByStore implements Serializable{
+public class NearByStore implements Serializable {
+    @SerializedName("id")
+    @Expose
     private int id;
+    @SerializedName("name")
+    @Expose
     private String name;
+    @SerializedName("address")
+    @Expose
     private String address;
+    @SerializedName("latitude")
+    @Expose
     private double latitude;
+    @SerializedName("longitude")
+    @Expose
     private double longitude;
+    @SerializedName("location_id")
+    @Expose
     private int location_id;
+    @SerializedName("user_id")
+    @Expose
     private int user_id;
+    @SerializedName("phone")
+    @Expose
     private String phone;
+    @SerializedName("registerLog")
+    @Expose
     private String registerLog;
+    @SerializedName("promotion")
+    @Expose
     private double promotion;
+    @SerializedName("price")
+    @Expose
     private double price;
+    @SerializedName("distance")
+    @Expose
     private double distance;
-    public NearByStore() {
-    }
 
     public double getDistance() {
         return distance;
@@ -34,7 +50,10 @@ public class NearByStore implements Serializable{
     public void setDistance(double distance) {
         this.distance = distance;
     }
-    
+
+    public NearByStore() {
+    }
+
     public int getId() {
         return id;
     }
@@ -122,6 +141,22 @@ public class NearByStore implements Serializable{
     public void setPrice(double price) {
         this.price = price;
     }
-    
-    
+
+    @Override
+    public String toString() {
+        return "NearByStore{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", address='" + address + '\'' +
+                ", latitude=" + latitude +
+                ", longitude=" + longitude +
+                ", location_id=" + location_id +
+                ", user_id=" + user_id +
+                ", phone='" + phone + '\'' +
+                ", registerLog='" + registerLog + '\'' +
+                ", promotion=" + promotion +
+                ", price=" + price +
+                '}';
+    }
 }
+

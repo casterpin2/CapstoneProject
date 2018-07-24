@@ -84,12 +84,12 @@ public interface APIService {
     @GET("json")
     Call<GoogleMapJSON> getLocation(@Query("latlng") String latlng,
                                     @Query("key") String key);
-<<<<<<< HEAD
+
 
     @GET("findStore")
     Call<List<NearByStore>> nearByStore(@Query("productId") int productId,@Query("latitude") String latitude,@Query("longitude") String longitude);
-=======
+
     @GET("getProductWithBarcode")
     Call<List<Item>> getProductWithBarcode(@Query("barcode") String barcode,@Query("store") int storeId);
->>>>>>> 779dcd27cbae54c6e0de4af3c8030f54f1bbe67c
+
 }

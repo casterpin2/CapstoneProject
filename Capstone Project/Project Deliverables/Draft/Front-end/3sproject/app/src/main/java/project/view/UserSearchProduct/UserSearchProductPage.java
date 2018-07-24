@@ -3,12 +3,12 @@ package project.view.UserSearchProduct;
 import android.app.ActionBar;
 import android.app.SearchManager;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.MatrixCursor;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.provider.BaseColumns;
 import android.support.v4.app.ActivityCompat;
@@ -20,22 +20,27 @@ import android.support.v7.widget.SearchView;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import project.view.MainActivity;
+import project.retrofit.APIService;
+import project.retrofit.ApiUtils;
+import project.view.Cart.Product;
 import project.view.R;
+import retrofit2.Call;
+import retrofit2.Response;
 
 public class UserSearchProductPage extends AppCompatActivity {
 
     private SearchView searchView;
     private ListView productListView;
     private UserSearchProductListViewCustomAdapter adapter;
-    List<ProductInfor> productList = new ArrayList<>();
+    List<Product> productList = new ArrayList<>();
+    private APIService mAPI;
     private LocationManager locationManager;
     final static int REQUEST_LOCATION = 1;
     private double currentLatitude = 0.0;
@@ -48,15 +53,9 @@ public class UserSearchProductPage extends AppCompatActivity {
         getSupportActionBar().setTitle("");
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorApplication)));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mAPI = ApiUtils.getAPIService();
 
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         turnOnLocation();
-
-        productList.add(new ProductInfor(1,"Bột giặt Tide 3kg có khuyến mại cái đũa cái đĩa gì đó àm đến chính tôi còn không biết","Hello","Tide"));
-        productList.add(new ProductInfor(2,"Bột giặt Omo - Omo","Hello","Omo"));
-        productList.add(new ProductInfor(3,"Bột giặt Suft - Surf","Hello","Suft"));
-        productList.add(new ProductInfor(4,"Bột giặt Aba - Aba","Hello","Aba"));
-
         productListView = (ListView) findViewById(R.id.productListView);
 
         productListView.setVerticalScrollBarEnabled(false);
@@ -135,11 +134,16 @@ public class UserSearchProductPage extends AppCompatActivity {
 //                if(!query.isEmpty()) {
 //                    callAPI(query,page);
 //                }
-                Toast.makeText(UserSearchProductPage.this, "onQueryTextSubmit : "+ query, Toast.LENGTH_SHORT).show();
-                int index = productListView.getFirstVisiblePosition();
-                View v = productListView.getChildAt(0);
-                int top = (v == null) ? 0 : v.getTop();
-                productListView.setSelectionFromTop(index, top);
+
+//                int index = productListView.getFirstVisiblePosition();
+//                View v = productListView.getChildAt(0);
+//                int top = (v == null) ? 0 : v.getTop();
+//                productListView.setSelectionFromTop(index, top);
+                final Call<List<Product>> call =  mAPI.userSearchProduct(query);
+                new UserSearchProductAsyncTask1().execute(call);
+                //adapter = new UserSearchProductListViewCustomAdapter(UserSearchProductPage.this,R.layout.user_search_product_page_custom_list_view, asyncTask.getList());
+                //Toast.makeText(UserSearchProductPage.this, "onQueryTextSubmit : "+  productList.size(), Toast.LENGTH_SHORT).show();
+
                 return false;
             }
 
@@ -195,6 +199,7 @@ public class UserSearchProductPage extends AppCompatActivity {
     }
 
     private void turnOnLocation(){
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
@@ -203,10 +208,53 @@ public class UserSearchProductPage extends AppCompatActivity {
 //            googleMap.clear();
             if (location != null) {
                 currentLatitude = location.getLatitude();
-                currentLongtitude = location.getLatitude();
+                currentLongtitude = location.getLongitude();
             } else {
                 Toast.makeText(this, "Bạn chưa bật định vị. Chưa thể tìm cửa hàng!!!!!", Toast.LENGTH_SHORT).show();
             }
         }
     }
+
+    public class UserSearchProductAsyncTask1 extends AsyncTask<Call, Void, List<Product>> {
+
+        private List<Product> list;
+
+        public UserSearchProductAsyncTask1() {
+            list = new ArrayList<>();
+        }
+
+        @Override
+        protected List<Product> doInBackground(Call... calls) {
+            try {
+                Call<List<Product>> call = calls[0];
+                Response<List<Product>> re = call.execute();
+//            if (re.body() != null) {
+                return re.body();
+//            } else {
+//                return null;
+//            }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(List<Product> list) {
+            super.onPostExecute(list);
+            if (list != null) {
+                productList.clear();
+                for (int i = 0; i < list.size(); i++) {
+                    productList.add(list.get(i));
+                }
+                adapter.notifyDataSetChanged();
+        } else {Toast.makeText(UserSearchProductPage.this,"Có lỗi xảy ra!!!",Toast.LENGTH_LONG).show();}
+        }
+
+        public List<Product> getList() {
+            return list;
+        }
+    }
+
+
 }

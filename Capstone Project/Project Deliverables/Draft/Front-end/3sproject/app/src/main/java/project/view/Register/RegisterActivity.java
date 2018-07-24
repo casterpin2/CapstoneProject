@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -21,6 +22,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import project.objects.User;
 import project.retrofit.APIService;
 import project.retrofit.ApiUtils;
 import project.view.Login.LoginPage;
@@ -39,7 +41,7 @@ public class RegisterActivity extends AppCompatActivity {
     private boolean isUserName,isName, isPassword, confirm, isEmail, isPhone = true;
     private ScrollView scroll;
     private APIService apiUserService;
-    private UserInformation us;
+    private User us;
     private Gson gson;
     private Toolbar toolbar;
 
@@ -61,7 +63,7 @@ public class RegisterActivity extends AppCompatActivity {
         scroll.setVerticalScrollBarEnabled(false);
         scroll.setHorizontalScrollBarEnabled(false);
 
-        us = new UserInformation();
+        us = new User();
 
         etUserName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -167,31 +169,31 @@ public class RegisterActivity extends AppCompatActivity {
 
 
 
-                if (isUserName&&isName && isPassword && confirm && isEmail && isPhone ) {
-                    us.setUserName(etUserName.getText().toString());
+                if (isUserName /*&& !isName && !isPassword && confirm*/&& isEmail && isPhone ) {
+                    us.setUsername(etUserName.getText().toString());
                     us.setPhone(etPhoneNumber.getText().toString());
                     us.setEmail(etEmail.getText().toString());
                     us.setPassword(etPassword.getText().toString());
                     gson = new Gson();
-                    List<UserInformation> list = new ArrayList<>();
-                    list.add(us);
-                    String test = gson.toJson(list);
-                    //Toast.makeText(RegisterActivity.this, test+"", Toast.LENGTH_LONG).show();
-                    apiUserService.registerUserNew(test).enqueue(new Callback<Boolean>() {
-                        @Override
-                        public void onResponse(Call<Boolean> call, Response<Boolean> response) {
-//                            String inta = response.body();
-//                            Toast.makeText(RegisterActivity.this, inta+"", Toast.LENGTH_SHORT).show();
-                            if (response.isSuccessful()) {
-                                Toast.makeText(RegisterActivity.this, "OK", Toast.LENGTH_LONG).show();
-                            }
-                        }
+                    final Call<ResultRegister> call = apiUserService.registerUserNew(us);
+                    RegisterUserAsyncTask1 asyncTask = new RegisterUserAsyncTask1();
+                    asyncTask.execute(call);
 
-                        @Override
-                        public void onFailure(Call<Boolean> call, Throwable t) {
-
-                        }
-                    });
+//                    apiUserService.registerUserNew(test).enqueue(new Callback<Boolean>() {
+//                        @Override
+//                        public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+////                            String inta = response.body();
+////                            Toast.makeText(RegisterActivity.this, inta+"", Toast.LENGTH_SHORT).show();
+//                            if (response.isSuccessful()) {
+//                                Toast.makeText(RegisterActivity.this, "OK", Toast.LENGTH_LONG).show();
+//                            }
+//                        }
+//
+//                        @Override
+//                        public void onFailure(Call<Boolean> call, Throwable t) {
+//
+//                        }
+//                    });
 
 
                 } else {
@@ -216,7 +218,7 @@ public class RegisterActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         // handle arrow click here
         if (item.getItemId() == android.R.id.home) {
-           finish();
+            finish();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -305,14 +307,14 @@ public class RegisterActivity extends AppCompatActivity {
             switch (nameCheck){
                 case "1":
                     tvUserName.setText(R.string.duplicate_username);
-                    isUserName = true;
+                    isUserName = false;
                     break;
                 case "2":
                     tvEmail.setText(R.string.duplicate_email);
-                    isEmail = true;
+                    isEmail = false;
                     break;
                 case "3":
-                    isPhone = true;
+                    isPhone = false;
                     tvPhoneNumber.setText(R.string.duplicate_phone);
                     break;
             }
@@ -332,6 +334,32 @@ public class RegisterActivity extends AppCompatActivity {
             return null;
         }
     }
+    public class RegisterUserAsyncTask1 extends AsyncTask<Call, Void, String> {
 
+        @Override
+        protected String doInBackground(Call... calls) {
+            try {
+                Call<ResultRegister> call = calls[0];
+                Response<ResultRegister> re = call.execute();
+//            if (re.body() != null) {
+                return re.body().getResult();
+//            } else {
+//                return null;
+//            }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String aVoid) {
+            super.onPostExecute(aVoid);
+            //if (aVoid == null) return;
+            Intent intent = new Intent(RegisterActivity.this,LoginPage.class);
+            intent.putExtra("username",aVoid);
+            startActivity(intent);
+        }
+    }
 
 }
