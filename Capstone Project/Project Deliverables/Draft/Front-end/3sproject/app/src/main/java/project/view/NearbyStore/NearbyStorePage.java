@@ -93,7 +93,6 @@ public class NearbyStorePage extends AppCompatActivity implements OnMapReadyCall
                 list.add(store);
             }
         }
-        Toast.makeText(this, "Size: " + list.size(), Toast.LENGTH_SHORT).show();
         productName = getIntent().getStringExtra("productName");
 
 
@@ -102,7 +101,7 @@ public class NearbyStorePage extends AppCompatActivity implements OnMapReadyCall
         storeListView.setVerticalScrollBarEnabled(false);
         storeListView.setHorizontalScrollBarEnabled(false);
 
-        adapter = new ListViewAdapter(this, R.layout.nearby_store_page_custom_list_view, list);
+        adapter = new ListViewAdapter(NearbyStorePage.this, R.layout.nearby_store_page_custom_list_view, list);
         storeListView.setAdapter(adapter);
 
 
@@ -238,7 +237,7 @@ public class NearbyStorePage extends AppCompatActivity implements OnMapReadyCall
 
             Toast.makeText(NearbyStorePage.this, "onQueryTextSubmit : "+ searchView.getQuery(), Toast.LENGTH_SHORT).show();
             Toast.makeText(NearbyStorePage.this, "Submit  : "+ productName, Toast.LENGTH_SHORT).show();
-            list.clear();
+            //list.clear();
             int index = storeListView.getFirstVisiblePosition();
             View v = storeListView.getChildAt(0);
             int top = (v == null) ? 0 : v.getTop();
