@@ -46,5 +46,15 @@ public class ProductServiceImpl implements ProductService{
         return dao.getProductInStore(storeID);
     }
 
+    @Override
+    public boolean insertData(String name, String brand, String barcode) throws SQLException {
+        return dao.insertData(name, brand, barcode);
+    }
+
+    @Override
+    public List<ProductAddEntites> getProductWithBarCode(String query, int storeId) throws SQLException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 
 }
