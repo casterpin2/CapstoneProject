@@ -17,22 +17,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginEnd="32dp"
-            app:searchIcon="@drawable/search_icon"
+            app:searchIcon="@drawable/icon_search"
             app:queryHint="Tìm mua ngay ..."
             app:iconifiedByDefault="false"
             android:focusable="false"
             android:focusableInTouchMode="false"
-            app:closeIcon="@drawable/ic_close"
-            />
-
+            app:closeIcon="@drawable/ic_close" />
         <ImageButton
             android:id="@+id/imgBarCode"
             android:layout_marginRight="8dp"
-            android:layout_width="24dp"
+            android:layout_width="32dp"
             android:layout_height="24dp"
             android:layout_gravity="end|center_vertical"
             style="@style/Widget.AppCompat.Button.Borderless"
             android:src="@drawable/barcode_icon"/>
-
     </android.support.v7.widget.CardView>
 </RelativeLayout>

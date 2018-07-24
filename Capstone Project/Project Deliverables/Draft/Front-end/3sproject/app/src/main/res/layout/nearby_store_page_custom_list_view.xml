@@ -14,7 +14,7 @@
         android:layout_height="wrap_content">
 
         <LinearLayout
-            android:id="@+id/test"
+            android:id="@+id/test1"
             android:layout_width="0dp"
             android:layout_height="45dp"
             android:layout_weight="6"
@@ -25,7 +25,7 @@
             android:layout_weight="8"
             android:layout_height="wrap_content">
             <TextView
-                android:id="@+id/storeName"
+                android:id="@+id/storeName1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/colorWhite"
@@ -53,7 +53,7 @@
                 android:layout_weight="2"
                 android:layout_height="wrap_content">
                 <TextView
-                    android:id="@+id/promotionPercent"
+                    android:id="@+id/promotionPercent1"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_marginLeft="10dp"
@@ -78,7 +78,7 @@
             android:layout_weight="3">
 
             <TextView
-                android:id="@+id/productPrice"
+                android:id="@+id/productPrice1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
@@ -149,7 +149,7 @@
             android:layout_weight="3">
 
             <Button
-                android:id="@+id/orderBtn"
+                android:id="@+id/orderBtn1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"

@@ -89,6 +89,7 @@ public interface APIService {
     @GET("findStore")
     Call<List<NearByStore>> nearByStore(@Query("productId") int productId,@Query("latitude") String latitude,@Query("longitude") String longitude);
 
+
     @GET("getProductWithBarcode")
     Call<List<Item>> getProductWithBarcode(@Query("barcode") String barcode,@Query("store") int storeId);
 

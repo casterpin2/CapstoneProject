@@ -11,6 +11,8 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.google.firebase.storage.StorageReference;
 
 import java.text.DecimalFormat;
@@ -64,13 +66,13 @@ public class ListViewAdapter extends BaseAdapter {
             li = LayoutInflater.from(getContext());
             view = li.inflate(R.layout.nearby_store_page_custom_list_view, null);
             holder = new ViewHolder();
-            holder.storeName = (TextView) view.findViewById(R.id.storeName);
+            holder.storeName = (TextView) view.findViewById(R.id.storeName1);
             holder.storeAddress = (TextView) view.findViewById(R.id.storeAddress);
             holder.distance =(TextView) view.findViewById(R.id.distance);
-            holder.productPrice =(TextView) view.findViewById(R.id.productPrice);
-            holder.promotionPercent = (TextView) view.findViewById(R.id.promotionPercent);
-            holder.test = (LinearLayout) view.findViewById(R.id.test);
-            holder.orderBtn = (Button) view.findViewById(R.id.orderBtn);
+            holder.productPrice =(TextView) view.findViewById(R.id.productPrice1);
+            holder.promotionPercent = (TextView) view.findViewById(R.id.promotionPercent1);
+            holder.test = (LinearLayout) view.findViewById(R.id.test1);
+            holder.orderBtn = (Button) view.findViewById(R.id.orderBtn1);
 
             view.setTag(holder);
         }else{
@@ -78,6 +80,7 @@ public class ListViewAdapter extends BaseAdapter {
         }
 
         if(store != null) {
+            Toast.makeText(context, "Đã vào đây", Toast.LENGTH_SHORT).show();
             holder.storeName.setText(store.getName());
             holder.storeAddress.setText(store.getAddress());
             holder.distance.setText(String.valueOf(store.getDistance())+ " km");
@@ -87,8 +90,8 @@ public class ListViewAdapter extends BaseAdapter {
                 holder.promotionPercent.setVisibility(View.VISIBLE);
                 holder.promotionPercent.setText(formatDoubleToString(context, String.valueOf(store.getPromotion())));
                 double salePriceDouble = store.getPrice() * store.getPromotion() / 100;
-                long salePriceLong = (long) salePriceDouble;
-                long displayPrice = (long)store.getPrice() - salePriceLong ;
+                long salePriceLong = 0;
+                long displayPrice = 0 ;
                 holder.productPrice.setText(formatLongToMoney(context, String.valueOf(displayPrice)));
             } else if (store.getPromotion() == 0.0){
                 holder.promotionPercent.setVisibility(View.INVISIBLE);

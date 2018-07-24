@@ -18,9 +18,10 @@ import project.view.OrderManagerment.model.OrderDetail;
 import project.view.R;
 
 
-public class DoneOrder extends Fragment {
+public class WaitingOrderUser extends Fragment {
 
     private ListView lvOrder;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -28,6 +29,7 @@ public class DoneOrder extends Fragment {
         lvOrder = view.findViewById(R.id.lv_order);
         OrderManagementAdapter orderManagementAdapter = new OrderManagementAdapter(getContext(),R.layout.item_order_management, OrderDetail.dataTest());
         lvOrder.setAdapter(orderManagementAdapter);
+
         return view;
     }
 

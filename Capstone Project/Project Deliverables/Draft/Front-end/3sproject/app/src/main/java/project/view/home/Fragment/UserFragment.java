@@ -4,19 +4,13 @@ package project.view.home.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,34 +19,23 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.gson.Gson;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import project.firebase.Firebase;
 import project.objects.User;
 import project.view.ChangePassword.ChangePasswordActivity;
 import project.view.Login.LoginPage;
+import project.view.OrderManagerment.UserManagementOrder;
 import project.view.R;
 import project.view.RegisterStore.Store;
-import project.view.SaleProduct.SaleProduct;
-import project.view.SaleProduct.SaleProductCustomCardviewAdapter;
 import project.view.UserInformation.UserInformationPage;
 import project.view.home.HomeActivity;
-import retrofit2.Call;
-import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -198,7 +181,9 @@ public class UserFragment extends Fragment {
             orderLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    Intent toUserOrderManagement = new Intent(getContext(), UserManagementOrder.class);
+                    toUserOrderManagement.putExtra("userID",userID);
+                    getContext().startActivity(toUserOrderManagement);
                 }
             });
         } else if (isNetworkAvailable() == false){

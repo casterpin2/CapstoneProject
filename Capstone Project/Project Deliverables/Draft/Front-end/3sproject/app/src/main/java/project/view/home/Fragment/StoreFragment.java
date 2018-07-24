@@ -3,12 +3,9 @@ package project.view.home.Fragment;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
@@ -16,9 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 import project.view.EditStoreInformation.EditStoreInformationPage;
@@ -29,12 +24,11 @@ import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.storage.StorageReference;
 import com.google.gson.Gson;
 
-import java.text.SimpleDateFormat;
-
 import project.firebase.Firebase;
 import project.objects.User;
 import project.view.Login.LoginPage;
-import project.view.OrderManagerment.OrderManagement;
+import project.view.OrderManagerment.StoreManagementOrder;
+import project.view.OrderManagerment.UserManagementOrder;
 import project.view.ProductInStore.ProductInStoreDisplayPage;
 import project.view.R;
 import project.view.RegisterStore.RegisterStorePage;
@@ -119,9 +113,9 @@ public class StoreFragment extends Fragment {
             btnManagermentOrder.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent toOrderManagement = new Intent(getContext(), OrderManagement.class);
-                    toOrderManagement.putExtra("storeID", storeID);
-                    getActivity().startActivity(toOrderManagement);
+                    Intent toStoreManagementOrder = new Intent(getContext(), StoreManagementOrder.class);
+                    toStoreManagementOrder.putExtra("storeID", storeID);
+                    getActivity().startActivity(toStoreManagementOrder);
                 }
             });
             btnEdit.setOnClickListener(new View.OnClickListener() {

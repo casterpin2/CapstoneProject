@@ -40,6 +40,7 @@ import java.util.List;
 
 import project.firebase.Firebase;
 import project.retrofit.APIService;
+import project.view.AddProductToStore.BarcodeActivity;
 import project.view.Brand.Brand;
 import project.view.Brand.BrandDisplayPage;
 import project.view.Category.Category;
@@ -50,6 +51,7 @@ import project.view.SaleProduct.SaleProduct;
 import project.view.SaleProduct.SaleProductCustomCardviewAdapter;
 import project.view.SaleProduct.SaleProductDisplayPage;
 import project.view.UserInformation.TweakUI;
+import project.view.UserSearchProduct.UserSearchProductPage;
 import project.view.home.adapter.BrandRecycleViewAdapter;
 import project.view.home.adapter.CategoryRecycleViewAdapter;
 import project.view.home.adapter.SliderImageViewPagerAdapter;
@@ -75,13 +77,12 @@ public class HomeFragment extends Fragment {
     private int dotscount;
     private ImageView[] dots;
     private LinearLayoutManager linearLayoutManagerBrand;
-    private CoordinatorLayout coordinatorLayout;
-    private SearchView searchView;
     private ImageButton imgBarCode;
+    private CardView searchLayout;
 
 
     public HomeFragment() {
-        // Required empty public constructor
+
     }
 
 
@@ -100,12 +101,11 @@ public class HomeFragment extends Fragment {
         scroll.setVerticalScrollBarEnabled(false);
         scroll.setHorizontalScrollBarEnabled(false);
 
-        searchView = view.findViewById(R.id.searchViewQuery);
         imgBarCode = view.findViewById(R.id.imgBarCode);
 
         viewPager =view.findViewById(R.id.img_slider);
         viewPager.requestFocus();
-
+        searchLayout = view.findViewById(R.id.searchLayout);
         sliderDotspanel = view.findViewById(R.id.slider_dots);
 
         SliderImageViewPagerAdapter viewPagerAdapter = new SliderImageViewPagerAdapter(getContext());
@@ -157,10 +157,19 @@ public class HomeFragment extends Fragment {
         timer.scheduleAtFixedRate(new MyTimerTask(), 2000, 4000);
 */
 
+       searchLayout.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View view) {
+               Intent toUserSearchProduct = new Intent(getContext(), UserSearchProductPage.class);
+               startActivity(toUserSearchProduct);
+           }
+       });
+
        imgBarCode.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View v) {
-               Toast.makeText(getContext(),"Go to Bar code screen",Toast.LENGTH_SHORT).show();
+               Intent toBarCode = new Intent(getContext(), BarcodeActivity.class);
+               startActivity(toBarCode);
            }
        });
 
@@ -216,20 +225,6 @@ public class HomeFragment extends Fragment {
     }
 
 
-//    @Override
-//    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-//        inflater.inflate(R.menu.search_view, menu);
-//        super.onCreateOptionsMenu(menu, inflater);
-//    }
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//
-//        int id = item.getItemId();
-//        if (id == R.id.search_with_barcode) {
-//            return true;
-//        }
-//        return super.onOptionsItemSelected(item);
-//    }
 
 //
 //    private void refreshContent(){

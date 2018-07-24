@@ -15,12 +15,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
-import project.view.OrderManagerment.fragment.DoingOrder;
-import project.view.OrderManagerment.fragment.DoneOrder;
-import project.view.OrderManagerment.fragment.WaitingOrder;
+import project.view.OrderManagerment.fragment.DoingOrderStore;
+import project.view.OrderManagerment.fragment.DoneOrderStore;
+import project.view.OrderManagerment.fragment.WaitingOrderStore;
 import project.view.R;
+import project.view.util.CustomInterface;
 
-public class OrderManagement extends AppCompatActivity {
+public class StoreManagementOrder extends AppCompatActivity {
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
@@ -35,10 +36,7 @@ public class OrderManagement extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle(R.string.title_order_management);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().setStatusBarColor(((ColorDrawable) toolbar.getBackground()).getColor());
-        }
-
+        CustomInterface.setStatusBarColor(this);
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null){
@@ -100,13 +98,13 @@ public class OrderManagement extends AppCompatActivity {
         public Fragment getItem(int position) {
             switch(position){
                 case 0:
-                    WaitingOrder waitingOrder = new WaitingOrder();
+                    WaitingOrderStore waitingOrder = new WaitingOrderStore();
                     return waitingOrder;
                 case 1:
-                    DoingOrder doing = new DoingOrder();
+                    DoingOrderStore doing = new DoingOrderStore();
                     return doing;
                 case 2:
-                    DoneOrder done = new DoneOrder();
+                    DoneOrderStore done = new DoneOrderStore();
                     return done;
             }
             return null;
@@ -133,3 +131,4 @@ public class OrderManagement extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 }
+
