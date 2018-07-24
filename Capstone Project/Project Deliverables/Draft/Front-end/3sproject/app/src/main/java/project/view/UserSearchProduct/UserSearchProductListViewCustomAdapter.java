@@ -33,6 +33,25 @@ public class UserSearchProductListViewCustomAdapter extends BaseAdapter {
     private int layout;
     private StorageReference storageReference = Firebase.getFirebase();
     final static int REQUEST_LOCATION = 1;
+    private double longtitude = 0.0;
+    private double latitude = 0.0;
+
+    public double getLongtitude() {
+        return longtitude;
+    }
+
+    public void setLongtitude(double longtitude) {
+        this.longtitude = longtitude;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
     @Override
     public int getCount() {
         return productList.size();
@@ -48,10 +67,12 @@ public class UserSearchProductListViewCustomAdapter extends BaseAdapter {
         return 0;
     }
 
-    public UserSearchProductListViewCustomAdapter(Context context, int layout, List<ProductInfor> productList) {
+    public UserSearchProductListViewCustomAdapter(Context context, int layout, List<ProductInfor> productList, double latitude, double longtitude) {
         this.context = context;
         this.layout = layout;
         this.productList = productList;
+        this.latitude = latitude;
+        this.longtitude = longtitude;
     }
 
     @SuppressLint("ResourceAsColor")
@@ -87,11 +108,9 @@ public class UserSearchProductListViewCustomAdapter extends BaseAdapter {
             holder.findNearByBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(context, "Clicked!!!!", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(context, "Clicked!!!!", Toast.LENGTH_SHORT).show();
                     String productName = product.getProductName();
-                    Intent toNearbyStorePage = new Intent(getContext(), NearbyStorePage.class);
-                    toNearbyStorePage.putExtra("productName",productName);
-                    getContext().startActivity(toNearbyStorePage);
+                    Toast.makeText(context, "Longtitude : "+ getLongtitude()+"---- latitude: "+getLatitude(), Toast.LENGTH_SHORT).show();
                 }
             });
 

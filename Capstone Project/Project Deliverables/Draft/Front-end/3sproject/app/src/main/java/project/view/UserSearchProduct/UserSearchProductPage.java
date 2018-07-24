@@ -4,10 +4,14 @@ import android.app.ActionBar;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.MatrixCursor;
 import android.graphics.drawable.ColorDrawable;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Build;
 import android.provider.BaseColumns;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.widget.CursorAdapter;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.AppCompatActivity;
@@ -32,6 +36,10 @@ public class UserSearchProductPage extends AppCompatActivity {
     private ListView productListView;
     private UserSearchProductListViewCustomAdapter adapter;
     List<ProductInfor> productList = new ArrayList<>();
+    private LocationManager locationManager;
+    final static int REQUEST_LOCATION = 1;
+    private double currentLatitude = 0.0;
+    private double currentLongtitude = 0.0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +48,9 @@ public class UserSearchProductPage extends AppCompatActivity {
         getSupportActionBar().setTitle("");
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorApplication)));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        turnOnLocation();
 
         productList.add(new ProductInfor(1,"Bột giặt Tide 3kg có khuyến mại cái đũa cái đĩa gì đó àm đến chính tôi còn không biết","Hello","Tide"));
         productList.add(new ProductInfor(2,"Bột giặt Omo - Omo","Hello","Omo"));
@@ -51,7 +62,8 @@ public class UserSearchProductPage extends AppCompatActivity {
         productListView.setVerticalScrollBarEnabled(false);
         productListView.setHorizontalScrollBarEnabled(false);
 
-        adapter = new UserSearchProductListViewCustomAdapter(this,R.layout.user_search_product_page_custom_list_view, productList);
+        adapter = new UserSearchProductListViewCustomAdapter(this,R.layout.user_search_product_page_custom_list_view, productList, currentLatitude, currentLongtitude);
+
         productListView.setAdapter(adapter);
     }
 
@@ -180,5 +192,21 @@ public class UserSearchProductPage extends AppCompatActivity {
 //        });
 
         return true;
+    }
+
+    private void turnOnLocation(){
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
+        } else {
+            Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+//            googleMap.clear();
+            if (location != null) {
+                currentLatitude = location.getLatitude();
+                currentLongtitude = location.getLatitude();
+            } else {
+                Toast.makeText(this, "Bạn chưa bật định vị. Chưa thể tìm cửa hàng!!!!!", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 }
