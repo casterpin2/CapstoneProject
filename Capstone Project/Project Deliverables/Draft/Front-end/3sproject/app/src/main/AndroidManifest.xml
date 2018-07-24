@@ -7,10 +7,10 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
-        android:largeHeap="true"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:largeHeap="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
@@ -19,13 +19,10 @@
             android:value="@string/google_maps_key" />
 
         <activity android:name=".MainActivity" />
-        <activity android:name=".Login.LoginPage"
-            android:noHistory="true">
-
-        </activity>
-        <activity android:name=".AddProductToStore.SearchProductAddToStore" >
-
-        </activity>
+        <activity
+            android:name=".Login.LoginPage"
+            android:noHistory="true"></activity>
+        <activity android:name=".AddProductToStore.SearchProductAddToStore"></activity>
         <activity android:name=".Cart.CartProductToStore" />
         <activity
             android:name=".SaleProduct.SaleProductDisplayPage"
@@ -41,20 +38,14 @@
             android:name=".TypeCategory.TypeCategoryPage"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".ProductTypeDisplay.ProductTypeDisplay" />
-        <activity
-            android:name=".Register.RegisterActivity" />
-        <activity
-            android:name=".ChangePassword.ChangePasswordActivity" />
+        <activity android:name=".Register.RegisterActivity" />
+        <activity android:name=".ChangePassword.ChangePasswordActivity" />
         <activity android:name=".ProductInStore.ProductInStoreDisplayPage" />
         <activity android:name=".EditProductInStore.EditProductInStorePage" />
         <activity
             android:name=".home.HomeActivity"
             android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".StoreInformation.StoreInformationPage"
@@ -72,11 +63,9 @@
         <activity
             android:name=".OrderManagerment.OrderDetailManagement"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".NearbyStore.NearbyStorePage">
-
-        </activity>
+        <activity android:name=".NearbyStore.NearbyStorePage"></activity>
         <activity android:name=".ProductDetail.ProductDetailPage" />
-        <activity android:name=".UserOrderFast.OrderFast"></activity>
+        <activity android:name=".UserOrderFast.OrderFast" />
         <activity android:name=".ProductInStoreByUser.ProductInStoreByUserDisplayPage" />
 
         <!-- Facebook -->
@@ -90,9 +79,16 @@
             android:label="@string/app_name" />
         <activity
             android:name="com.facebook.CustomTabActivity"
-            android:exported="true"></activity>
-        <activity android:name=".UserSearchProduct.UserSearchProductPage"></activity>
-        <activity android:name=".EditStoreInformation.EditStoreInformationPage">
+            android:exported="true" />
+        <activity android:name=".UserSearchProduct.UserSearchProductPage" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".EditStoreInformation.EditStoreInformationPage"></activity>
+        <activity android:name=".Feedback.FeedbackPage">
 
         </activity>
     </application>

@@ -70,7 +70,7 @@ public class UserSearchProductPage extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         // thêm search vào vào action bar
-        getMenuInflater().inflate(R.menu.search_view, menu);
+        getMenuInflater().inflate(R.menu.search_view_with_find_icon, menu);
         MenuItem itemSearch = menu.findItem(R.id.search_view);
         searchView = (SearchView) itemSearch.getActionView();
 //        MenuItem itemSearchWithBarcode = menu.findItem(R.id.search_with_barcode);

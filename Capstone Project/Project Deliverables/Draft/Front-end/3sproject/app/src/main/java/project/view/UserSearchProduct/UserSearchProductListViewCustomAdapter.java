@@ -66,7 +66,7 @@ public class UserSearchProductListViewCustomAdapter extends BaseAdapter {
             view = li.inflate(R.layout.user_search_product_page_custom_list_view, null);
             holder = new ViewHolder();
             holder.productName = (TextView) view.findViewById(R.id.productName);
-            holder.brandName = (TextView) view.findViewById(R.id.brandName);
+            holder.productBrand = (TextView) view.findViewById(R.id.productBrand);
             holder.productImage =(ImageView) view.findViewById(R.id.productImage);
             holder.findNearByBtn = (Button) view.findViewById(R.id.findNearByBtn);
 
@@ -77,7 +77,7 @@ public class UserSearchProductListViewCustomAdapter extends BaseAdapter {
 
         if(product != null) {
             holder.productName.setText(product.getProductName());
-            holder.brandName.setText(product.getBrandName());
+            holder.productBrand.setText(product.getBrandName());
             Glide.with(getContext() /* context */)
                     .using(new FirebaseImageLoader())
                     .load(storageReference.child(productList.get(position).getProductImagePath()))
@@ -120,7 +120,7 @@ public class UserSearchProductListViewCustomAdapter extends BaseAdapter {
 
     public class ViewHolder{
         TextView productName;
-        TextView brandName;
+        TextView productBrand;
         ImageView productImage;
         Button findNearByBtn;
 

@@ -59,6 +59,9 @@ dependencies {
     implementation 'de.hdodenhof:circleimageview:2.2.0'
     implementation 'com.facebook.android:facebook-login:[4,5)'
     implementation 'com.github.andremion:counterfab:1.0.1'
+
+    //shineButton
+    implementation 'com.sackcentury:shinebutton:0.2.0'
 }
 //fire base
 apply plugin: 'com.google.gms.google-services'
