@@ -3,6 +3,7 @@ package project.view.UserSearchProduct;
 import android.app.ActionBar;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.MatrixCursor;
 import android.graphics.drawable.ColorDrawable;
@@ -30,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 import project.retrofit.APIService;
 import project.retrofit.ApiUtils;
+import project.view.AddProductToStore.BarcodeActivity;
 import project.view.Cart.Product;
 import project.view.R;
 import retrofit2.Call;
@@ -39,7 +41,7 @@ public class UserSearchProductPage extends AppCompatActivity {
 
     private SearchView searchView;
     private ListView productListView;
-    private ImageView imgBack;
+    private ImageView imgBack, imgBarCode;
     private UserSearchProductListViewCustomAdapter adapter;
 
 
@@ -58,10 +60,6 @@ public class UserSearchProductPage extends AppCompatActivity {
 
         findView();
 
-
-        getSupportActionBar().setTitle("");
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorApplication)));
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mAPI = ApiUtils.getAPIService();
 
         turnOnLocation();
@@ -169,6 +167,14 @@ public class UserSearchProductPage extends AppCompatActivity {
                 return true;
             }
         });
+
+        imgBarCode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent toBarCode = new Intent(UserSearchProductPage.this, BarcodeActivity.class);
+                startActivity(toBarCode);
+            }
+        });
     }
     private void turnOnLocation(){
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -192,6 +198,7 @@ public class UserSearchProductPage extends AppCompatActivity {
     private void findView(){
         searchView = findViewById(R.id.searchViewQuery);
         imgBack = findViewById(R.id.backBtn);
+        imgBarCode = findViewById(R.id.imgBarCode);
         productListView = (ListView) findViewById(R.id.productListView);
     }
 

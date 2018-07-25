@@ -26,7 +26,7 @@
         <ImageButton
             android:id="@+id/imgBarCode"
             android:layout_marginRight="8dp"
-            android:layout_width="24dp"
+            android:layout_width="32dp"
             android:layout_height="24dp"
             android:layout_gravity="end|center_vertical"
             style="@style/Widget.AppCompat.Button.Borderless"

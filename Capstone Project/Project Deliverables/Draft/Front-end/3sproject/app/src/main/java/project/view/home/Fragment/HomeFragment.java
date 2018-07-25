@@ -40,6 +40,7 @@ import java.util.List;
 
 import project.firebase.Firebase;
 import project.retrofit.APIService;
+import project.view.AddProductToStore.BarcodeActivity;
 import project.view.Brand.Brand;
 import project.view.Brand.BrandDisplayPage;
 import project.view.Category.Category;
@@ -167,7 +168,8 @@ public class HomeFragment extends Fragment {
        imgBarCode.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View v) {
-               Toast.makeText(getContext(),"Go to Bar code screen",Toast.LENGTH_SHORT).show();
+               Intent toBarCode = new Intent(getContext(), BarcodeActivity.class);
+               startActivity(toBarCode);
            }
        });
 
