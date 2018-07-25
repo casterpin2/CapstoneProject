@@ -83,7 +83,7 @@ public class ListViewAdapter extends BaseAdapter {
 
                 if (store.getPromotion() > 0.0) {
                     holder.promotionPercent.setVisibility(View.VISIBLE);
-                    holder.promotionPercent.setText(Formater.formatDoubleToMoney(String.valueOf(store.getPromotion())));
+                    holder.promotionPercent.setText(Formater.formatDoubleToInt(String.valueOf(store.getPromotion())));
                     double salePriceDouble = store.getPrice() * store.getPromotion() / 100;
                     long salePriceLong = (long) salePriceDouble;
                     long displayPrice = (long) store.getPrice();

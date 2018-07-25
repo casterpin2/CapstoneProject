@@ -1,5 +1,7 @@
 package project.view.gui;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -50,6 +52,7 @@ public class CategoryDisplayPage extends AppCompatActivity {
     private ProgressBar loadingBar;
     private SearchView searchView;
     private ImageButton imgBack,imgBarCode;
+    private List<Category> searchedProduct = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +65,38 @@ public class CategoryDisplayPage extends AppCompatActivity {
         loadingBar.setVisibility(View.VISIBLE);
 
         searchView.setQueryHint("Tìm trong danh mục ...");
+
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+//        productList
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+
+
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                searchedProduct.clear();
+                if(newText.equals("") || newText == null){
+                    adapter = new CategoryCustomCardviewAdapter(CategoryDisplayPage.this, categoryList);
+
+                } else {
+                    for (int i = 0; i < categoryList.size(); i++) {
+                        if(categoryList.get(i).getCategoryName().toLowerCase().contains(newText.toLowerCase())) {
+                            searchedProduct.add(categoryList.get(i));
+                        }
+                    }
+                    adapter = new CategoryCustomCardviewAdapter(CategoryDisplayPage.this, searchedProduct);
+                }
+                RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(CategoryDisplayPage.this, 2);
+                recyclerView.setLayoutManager(mLayoutManager);
+                recyclerView.setAdapter(adapter);
+                return true;
+            }
+        });
 
         imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -134,7 +169,7 @@ public class CategoryDisplayPage extends AppCompatActivity {
         protected void onProgressUpdate(List<Category>... values) {
             super.onProgressUpdate(values);
             StorageReference storageReference = Firebase.getFirebase();
-            List<Category> categoryList = values[0];
+            categoryList = values[0];
 
 
             adapter = new CategoryCustomCardviewAdapter(CategoryDisplayPage.this, categoryList);

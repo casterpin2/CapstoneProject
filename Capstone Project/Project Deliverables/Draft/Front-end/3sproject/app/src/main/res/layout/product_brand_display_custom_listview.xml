@@ -26,13 +26,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <RelativeLayout
-            android:layout_width="130dp"
-            android:layout_height="130dp">
+            android:layout_width="140dp"
+            android:layout_height="140dp">
 
             <ImageView
                 android:id="@+id/productImage"
-                android:layout_width="120dp"
-                android:layout_height="120dp"
+                android:layout_width="130dp"
+                android:layout_height="130dp"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
 
@@ -42,13 +42,13 @@
         <!--product information-->
         <RelativeLayout
             android:layout_width="fill_parent"
-            android:layout_height="120dp"
+            android:layout_height="140dp"
             android:layout_gravity="center"
             android:layout_marginLeft="20dp">
 
             <RelativeLayout
                 android:layout_width="wrap_content"
-                android:layout_height="110dp"
+                android:layout_height="140dp"
                 android:layout_centerVertical="true">
 
 
@@ -58,13 +58,39 @@
                     android:layout_height="wrap_content"
                     android:layout_marginRight="10dp"
                     android:orientation="vertical">
-                    <TextView
-                        android:layout_height="wrap_content"
-                        android:layout_width="wrap_content"
-                        android:text="Mô tả"
-                        android:textSize="13dp"
-                        android:layout_marginBottom="7dp"
-                        />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
+                        android:layout_marginBottom="5dp"
+                        >
+                        <TextView
+                            android:layout_height="wrap_content"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:text="Mô tả"
+                            android:textSize="13dp"
+                            android:layout_gravity="center"
+                            />
+                        <RelativeLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="2">
+                            <Button
+                                android:id="@+id/findNearByBtn"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/border_button"
+                                android:text="Tìm cửa hàng"
+                                android:textColor="@color/colorApplication"
+                                android:layout_alignParentRight="true"
+                                android:layout_alignParentTop="true"
+                                android:includeFontPadding="false"
+                                android:paddingLeft="5dp"
+                                android:paddingRight="5dp"
+                                android:textSize="10dp"/>
+                        </RelativeLayout>
+                    </LinearLayout>
+
                     <ScrollView
                         android:layout_width="match_parent"
                         android:layout_height="110dp"

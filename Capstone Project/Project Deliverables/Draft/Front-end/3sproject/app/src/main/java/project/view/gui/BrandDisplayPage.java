@@ -1,5 +1,7 @@
 package project.view.gui;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -34,6 +36,7 @@ import project.view.adapter.BrandCustomCardviewAdapter;
 import project.view.R;
 import project.view.model.Brand;
 import project.view.model.Item;
+import project.view.model.ProductBrand;
 import project.view.util.CustomInterface;
 import project.view.util.GridSpacingItemDecoration;
 import retrofit2.Call;
@@ -48,6 +51,7 @@ public class BrandDisplayPage extends AppCompatActivity {
     private ProgressBar loadingBar;
     private SearchView searchView;
     private ImageButton imgBack,imgBarCode;
+    private List<Brand> searchedProduct = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +64,38 @@ public class BrandDisplayPage extends AppCompatActivity {
         apiService = ApiUtils.getAPIService();
         loadingBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorApplication), android.graphics.PorterDuff.Mode.MULTIPLY);
         searchView.setQueryHint("Tìm trong thương hiệu ...");
+
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+//        productList
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+
+
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                searchedProduct.clear();
+                if(newText.equals("") || newText == null){
+                    adapter = new BrandCustomCardviewAdapter(BrandDisplayPage.this, brandList);
+
+                } else {
+                    for (int i = 0; i < brandList.size(); i++) {
+                        if(brandList.get(i).getBrandName().toLowerCase().contains(newText.toLowerCase())) {
+                            searchedProduct.add(brandList.get(i));
+                        }
+                    }
+                    adapter = new BrandCustomCardviewAdapter(BrandDisplayPage.this, searchedProduct);
+                }
+                RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(BrandDisplayPage.this, 2);
+                recyclerView.setLayoutManager(mLayoutManager);
+                recyclerView.setAdapter(adapter);
+                return true;
+            }
+        });
 
         imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,8 +162,7 @@ public class BrandDisplayPage extends AppCompatActivity {
         protected void onProgressUpdate(List<Brand>... values) {
             super.onProgressUpdate(values);
             StorageReference storageReference = Firebase.getFirebase();
-            List<Brand> brandList = values[0];
-
+            brandList = values[0];
 
             adapter = new BrandCustomCardviewAdapter(BrandDisplayPage.this, brandList);
 
