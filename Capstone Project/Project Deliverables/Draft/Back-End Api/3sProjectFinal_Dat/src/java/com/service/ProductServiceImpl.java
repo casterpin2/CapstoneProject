@@ -53,7 +53,7 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     public List<ProductAddEntites> getProductWithBarCode(String query, int storeId) throws SQLException {
-        return getProductWithBarCode(query, storeId);
+        return dao.getProductWithBarCode(query, storeId);
     }
 
 
