@@ -1,6 +1,7 @@
 package project.view.SaleProduct;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Paint;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -21,16 +22,17 @@ import java.util.List;
 import java.util.Locale;
 
 import project.firebase.Firebase;
+import project.view.ProductBrandDisplay.ProductBrandDisplay;
+import project.view.ProductDetail.ProductDetailPage;
 import project.view.R;
+import project.view.util.Formater;
 
-/**
- * Created by Ravi Tamada on 18/05/16.
- */
 public class SaleProductCustomCardviewAdapter extends RecyclerView.Adapter<SaleProductCustomCardviewAdapter.MyViewHolder>  {
 
     private Context mContext;
     private List<SaleProduct> saleProductList;
     private StorageReference storageReference = Firebase.getFirebase();
+    private Formater formater;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView promotionPercent, productName, storeName, originalPrice, promotionPrice;
@@ -51,6 +53,7 @@ public class SaleProductCustomCardviewAdapter extends RecyclerView.Adapter<SaleP
     public SaleProductCustomCardviewAdapter(Context mContext, List<SaleProduct> saleProductList) {
         this.mContext = mContext;
         this.saleProductList = saleProductList;
+        formater = new Formater();
     }
 
     @Override
@@ -61,78 +64,32 @@ public class SaleProductCustomCardviewAdapter extends RecyclerView.Adapter<SaleP
         return new MyViewHolder(itemView);
     }
 
-
     @Override
     public void onBindViewHolder(final MyViewHolder holder,  int position) {
-        SaleProduct saleProduct = saleProductList.get(position);
+        final SaleProduct saleProduct = saleProductList.get(position);
         holder.productName.setText(saleProduct.getProductName());
         holder.storeName.setText(saleProduct.getStoreName());
-        holder.originalPrice.setText(formatDoubleToMoney(mContext, String.valueOf(saleProduct.getProductPrice())));
+        holder.originalPrice.setText(formater.formatDoubleToMoney( String.valueOf(saleProduct.getProductPrice())));
         holder.originalPrice.setPaintFlags(holder.originalPrice.getPaintFlags()| Paint.STRIKE_THRU_TEXT_FLAG);
-        holder.promotionPrice.setText(formatDoubleToMoney(mContext, String.valueOf(saleProduct.getProductPrice() - (saleProduct.getProductPrice()* saleProduct.getProducrPromotionPercent()/100))));
-        holder.promotionPercent.setText(formatDoubleToInt(mContext, "-"+String.valueOf(saleProduct.getProducrPromotionPercent())));
+        holder.promotionPrice.setText(formater.formatDoubleToMoney( String.valueOf(saleProduct.getProductPrice() - (saleProduct.getProductPrice()* saleProduct.getProducrPromotionPercent()/100))));
+        holder.promotionPercent.setText(formater.formatDoubleToInt( "-"+String.valueOf(saleProduct.getProducrPromotionPercent())));
         Glide.with(mContext /* context */)
                 .using(new FirebaseImageLoader())
                 .load(storageReference.child(saleProduct.getImgProductSale()))
                 .into(holder.productImage);
 
-
-        // loading album cover using Glide library
-//        Glide.with(mContext).load(album.getThumbnail()).into(holder.thumbnail);
-//
-//        holder.overflow.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//             //   listener.onAlbumsSelected(albumList.get(position));
-//            }
-//        });
+        holder.productImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(mContext, ProductDetailPage.class);
+                intent.putExtra("productName", saleProduct.getProductName());
+                intent.putExtra("storeName", saleProduct.getStoreName());
+                mContext.startActivity(intent);
+            }
+        });
     }
-
-
     @Override
     public int getItemCount() {
         return saleProductList.size();
-    }
-
-    public static String formatDoubleToMoney(Context context, String price) {
-
-        NumberFormat format =
-                new DecimalFormat("#,##0.00");// #,##0.00 ¤ (¤:// Currency symbol)
-        format.setCurrency(Currency.getInstance(Locale.US));//Or default locale
-
-        price = (!TextUtils.isEmpty(price)) ? price : "0";
-        price = price.trim();
-        price = format.format(Double.parseDouble(price));
-        price = price.replaceAll(",", "\\.");
-
-        if (price.endsWith(".00")) {
-            int centsIndex = price.lastIndexOf(".00");
-            if (centsIndex != -1) {
-                price = price.substring(0, centsIndex);
-            }
-        }
-        price = String.format("%s đ", price);
-        return price;
-    }
-
-    public static String formatDoubleToInt(Context context, String price) {
-
-        NumberFormat format =
-                new DecimalFormat("#,##0.00");// #,##0.00 ¤ (¤:// Currency symbol)
-        format.setCurrency(Currency.getInstance(Locale.US));//Or default locale
-
-        price = (!TextUtils.isEmpty(price)) ? price : "0";
-        price = price.trim();
-        price = format.format(Double.parseDouble(price));
-        price = price.replaceAll(",", "\\.");
-
-        if (price.endsWith(".00")) {
-            int centsIndex = price.lastIndexOf(".00");
-            if (centsIndex != -1) {
-                price = price.substring(0, centsIndex);
-            }
-        }
-        price = String.format("%s%%", price);
-        return price;
     }
 }

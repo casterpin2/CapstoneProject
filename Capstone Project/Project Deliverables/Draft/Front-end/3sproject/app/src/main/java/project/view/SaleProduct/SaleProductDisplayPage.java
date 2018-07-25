@@ -172,53 +172,10 @@ public class SaleProductDisplayPage extends AppCompatActivity {
         }
     }
 
-
-    /**
-     * Converting dp to pixel
-     */
     private int dpToPx(int dp) {
         Resources r = getResources();
         return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics()));
     }
-
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        MenuInflater inflater = getMenuInflater();
-//
-//       // SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-//        searchView = (SearchView) menu.findItem(R.id.action_search)
-//                .getActionView();
-////        searchView.setSearchableInfo(searchManager
-////                .getSearchableInfo(getComponentName()));
-////        searchView.setMaxWidth(Integer.MAX_VALUE);
-//
-//        // listening to search query text change
-////        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-////            @Override
-////            public boolean onQueryTextSubmit(String query) {
-////                // filter recycler view when query submitted
-////                adapter.getFilter().filter(query);
-////                return false;
-////            }
-////
-////            @Override
-////            public boolean onQueryTextChange(String query) {
-////                // filter recycler view when text is changed
-////                adapter.getFilter().filter(query);
-////                return false;
-////            }
-////        });
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        int id = item.getItemId();
-//        if(id == R.id.action_search){
-//            return true;
-//        }
-//        return super.onOptionsItemSelected(item);
-//    }
 
     @Override
     public void onBackPressed() {
@@ -233,9 +190,7 @@ public class SaleProductDisplayPage extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                // app icon in action bar clicked; go home
-//                Intent intent = new Intent(this, MainActivity.class);
-//                startActivity(intent);
+            finish();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
