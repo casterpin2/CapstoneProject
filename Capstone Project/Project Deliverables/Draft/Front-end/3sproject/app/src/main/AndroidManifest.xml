@@ -58,7 +58,10 @@
             android:name=".EditUserInformation.EditUserInformationPage"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".OrderManagerment.OrderManagement"
+            android:name=".OrderManagerment.StoreManagementOrder"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".OrderManagerment.UserManagementOrder"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".OrderManagerment.OrderDetailManagement"

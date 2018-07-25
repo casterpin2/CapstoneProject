@@ -39,6 +39,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.gson.Gson;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -47,12 +48,13 @@ import java.util.List;
 import project.view.AddProductToStore.SearchProductAddToStore;
 import project.view.MainActivity;
 import project.view.R;
+import project.view.UserSearchProduct.NearByStore;
 
 public class NearbyStorePage extends AppCompatActivity implements OnMapReadyCallback {
     ListView storeListView;
     ListViewAdapter adapter;
-    List<NearbyStore> nearbyStoreList = new ArrayList<>();
-
+    List<NearbyStorePage> nearbyStoreList = new ArrayList<>();
+    List<NearByStore> nearByStore = new ArrayList<>();
     private GoogleMap mMap;
 
     private LocationManager locationManager;
@@ -81,7 +83,12 @@ public class NearbyStorePage extends AppCompatActivity implements OnMapReadyCall
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorApplication)));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("");
+        String listStore = getIntent().getStringExtra("listStore");
+        if (listStore != null){
+            this.nearByStore = new Gson().fromJson(listStore,List.class);
+            Toast.makeText(NearbyStorePage.this,"Size: "+this.nearByStore.size(),Toast.LENGTH_SHORT).show();
 
+        }
         productName = getIntent().getStringExtra("productName");
 
 //        nearbyStoreList.add(new NearbyStore(1, "Cửa hàng số 1 2 3 4 5 6 7 8 9 10 11 12", "Hà Nội1 2 3 4 5 6 7 8 9 10", 0.5, 12000000, 0.0, 11.323, 12.554));
@@ -91,8 +98,8 @@ public class NearbyStorePage extends AppCompatActivity implements OnMapReadyCall
         storeListView.setVerticalScrollBarEnabled(false);
         storeListView.setHorizontalScrollBarEnabled(false);
 
-        adapter = new ListViewAdapter(this, R.layout.nearby_store_page_custom_list_view, nearbyStoreList);
-        storeListView.setAdapter(adapter);
+//        adapter = new ListViewAdapter(this, R.layout.nearby_store_page_custom_list_view, nearbyStoreList);
+//        storeListView.setAdapter(adapter);
 
 
 //        adapter.notifyDataSetChanged();
@@ -115,11 +122,11 @@ public class NearbyStorePage extends AppCompatActivity implements OnMapReadyCall
         storeListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                double storeLat = nearbyStoreList.get(position).getLatitude();
-                double storeLng = nearbyStoreList.get(position).getLongtitude();
-                Toast.makeText(NearbyStorePage.this, "Lat: " + storeLat + "----- Lng: " + storeLng + "----- id: " + id, Toast.LENGTH_SHORT).show();
-                LatLng chosenStore = new LatLng(storeLat, storeLng);
-                mMap.moveCamera(CameraUpdateFactory.newLatLng(chosenStore));
+//                double storeLat = nearbyStoreList.get(position).getLatitude();
+//                double storeLng = nearbyStoreList.get(position).getLongtitude();
+//                Toast.makeText(NearbyStorePage.this, "Lat: " + storeLat + "----- Lng: " + storeLng + "----- id: " + id, Toast.LENGTH_SHORT).show();
+//                LatLng chosenStore = new LatLng(storeLat, storeLng);
+//                mMap.moveCamera(CameraUpdateFactory.newLatLng(chosenStore));
 //                Toast.makeText(NearbyStorePage.this, "Done!", Toast.LENGTH_SHORT).show();
             }
         });
@@ -233,12 +240,12 @@ public class NearbyStorePage extends AppCompatActivity implements OnMapReadyCall
             Toast.makeText(NearbyStorePage.this, "onQueryTextSubmit : "+ searchView.getQuery(), Toast.LENGTH_SHORT).show();
             Toast.makeText(NearbyStorePage.this, "Submit  : "+ productName, Toast.LENGTH_SHORT).show();
             nearbyStoreList.clear();
-            nearbyStoreList.add(new NearbyStore(1,"Cửa hàng số 1 2 3 4 5 6 7 8 9 10 11 12","Hà Nội",0.6,12000,2,11.329,12.555));
-            nearbyStoreList.add(new NearbyStore(3,"Cửa hàng số 4","Hà Nội",1.3,10000,12.2,11.326,12.557));
-            nearbyStoreList.add(new NearbyStore(4,"Cửa hàng số 6","Hà Nội",2.1,1120000,99.9,11.319,12.560));
-            nearbyStoreList.add(new NearbyStore(5,"Cửa hàng số 8","Hà Nội",3,1120000,99.9,11.319,12.560));
-            nearbyStoreList.add(new NearbyStore(6,"Cửa hàng số 10","Hà Nội",1.2,1120000,99.9,11.300,12.301));
-            nearbyStoreList.add(new NearbyStore(7,"Cửa hàng số 12","Hà Nội",1.6,1120000,99.9,11.304,12.554));
+//            nearbyStoreList.add(new NearbyStore(1,"Cửa hàng số 1 2 3 4 5 6 7 8 9 10 11 12","Hà Nội",0.6,12000,2,11.329,12.555));
+//            nearbyStoreList.add(new NearbyStore(3,"Cửa hàng số 4","Hà Nội",1.3,10000,12.2,11.326,12.557));
+//            nearbyStoreList.add(new NearbyStore(4,"Cửa hàng số 6","Hà Nội",2.1,1120000,99.9,11.319,12.560));
+//            nearbyStoreList.add(new NearbyStore(5,"Cửa hàng số 8","Hà Nội",3,1120000,99.9,11.319,12.560));
+//            nearbyStoreList.add(new NearbyStore(6,"Cửa hàng số 10","Hà Nội",1.2,1120000,99.9,11.300,12.301));
+//            nearbyStoreList.add(new NearbyStore(7,"Cửa hàng số 12","Hà Nội",1.6,1120000,99.9,11.304,12.554));
             int index = storeListView.getFirstVisiblePosition();
             View v = storeListView.getChildAt(0);
             int top = (v == null) ? 0 : v.getTop();
@@ -300,8 +307,8 @@ public class NearbyStorePage extends AppCompatActivity implements OnMapReadyCall
                 Toast.makeText(NearbyStorePage.this, "onQueryTextSubmit : "+ query, Toast.LENGTH_SHORT).show();
                 Toast.makeText(NearbyStorePage.this, "Submit  : "+ productName, Toast.LENGTH_SHORT).show();
                 nearbyStoreList.clear();
-                nearbyStoreList.add(new NearbyStore(2,"Cửa hàng số 1 2 3 4 5 6 7 8 9 10 11 12","Hà Nội",0.6,12000,2,21.1,21.1));
-                nearbyStoreList.add(new NearbyStore(3,"Cửa hàng số 4","Hà Nội",1.3,10000,12.2,21.11,21.12));
+//                nearbyStoreList.add(new NearbyStore(2,"Cửa hàng số 1 2 3 4 5 6 7 8 9 10 11 12","Hà Nội",0.6,12000,2,21.1,21.1));
+//                nearbyStoreList.add(new NearbyStore(3,"Cửa hàng số 4","Hà Nội",1.3,10000,12.2,21.11,21.12));
 
 
                 int index = storeListView.getFirstVisiblePosition();
@@ -418,17 +425,17 @@ public class NearbyStorePage extends AppCompatActivity implements OnMapReadyCall
                 longtitude = location.getLongitude();
                 LatLng myLocation = new LatLng(latitude, longtitude);
                 for (int i = 0; i < nearbyStoreList.size(); i++) {
-                    double newLng = nearbyStoreList.get(i).getLongtitude();
-                    double newLat = nearbyStoreList.get(i).getLatitude();
-                    LatLng storeLocation = new LatLng(newLat, newLng);
-                    nearbyStoreList.get(i).setDistance(CalculationByDistance(myLocation, storeLocation));
+//                    double newLng = nearbyStoreList.get(i).getLongtitude();
+//                    double newLat = nearbyStoreList.get(i).getLatitude();
+//                    LatLng storeLocation = new LatLng(newLat, newLng);
+//                    nearbyStoreList.get(i).setDistance(CalculationByDistance(myLocation, storeLocation));
 
 //                    canvas1.drawBitmap(BitmapFactory.decodeResource(getResources(),
 //                            R.drawable.store), 0,0, color);
 
-                    googleMap.addMarker(new MarkerOptions().position(storeLocation).title(nearbyStoreList.get(i).getStoreName()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
-//                    mMap.addMarker(new MarkerOptions().position(storeLocation).title(nearbyStoreList.get(i).getStoreName()).icon(BitmapDescriptorFactory.fromBitmap(bmp)));
-                    googleMap.moveCamera(CameraUpdateFactory.newLatLng(storeLocation));
+//                    googleMap.addMarker(new MarkerOptions().position(storeLocation).title(nearbyStoreList.get(i).getStoreName()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+////                    mMap.addMarker(new MarkerOptions().position(storeLocation).title(nearbyStoreList.get(i).getStoreName()).icon(BitmapDescriptorFactory.fromBitmap(bmp)));
+//                    googleMap.moveCamera(CameraUpdateFactory.newLatLng(storeLocation));
                     googleMap.getUiSettings().setCompassEnabled(false);
                     googleMap.getUiSettings().setRotateGesturesEnabled(false);
                 }

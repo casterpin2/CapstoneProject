@@ -5,8 +5,40 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".UserSearchProduct.UserSearchProductPage">
-<ListView
-    android:id="@+id/productListView"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"></ListView>
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:layout_collapseMode="pin"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        android:background="@color/colorApplication">
+        <ImageButton
+            android:id="@+id/backBtn"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginLeft="-8dp"
+            android:layout_marginRight="8dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:adjustViewBounds="true"
+            android:background="@null"
+            android:scaleType="fitXY"
+            android:src="@drawable/btn_back" />
+        <include layout="@layout/search_view_custom" />
+    </android.support.v7.widget.Toolbar>
+    <TextView
+        android:id="@+id/tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="Danh sách sản phẩm"
+        android:textSize="16dp"
+        android:padding="8dp"
+        android:textColor="@color/colorBlack"
+        android:layout_below="@id/toolbar"/>
+    <ListView
+        android:id="@+id/productListView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/tv"/>
 </RelativeLayout>

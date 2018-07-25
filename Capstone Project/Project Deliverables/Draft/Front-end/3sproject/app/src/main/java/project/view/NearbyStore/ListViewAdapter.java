@@ -23,12 +23,13 @@ import project.firebase.Firebase;
 import project.view.MainActivity;
 import project.view.R;
 import project.view.StoreInformation.StoreInformationPage;
+import project.view.UserSearchProduct.NearByStore;
 
 public class ListViewAdapter extends BaseAdapter {
 
 
     private Context context;
-    private List<NearbyStore> storeList;
+    private List<NearByStore> storeList;
     private int layout;
     private StorageReference storageReference = Firebase.getFirebase();
     @Override
@@ -46,7 +47,7 @@ public class ListViewAdapter extends BaseAdapter {
         return 0;
     }
 
-    public ListViewAdapter(Context context, int layout, List<NearbyStore> storeList) {
+    public ListViewAdapter(Context context, int layout, List<NearByStore> storeList) {
         this.context = context;
         this.layout = layout;
         this.storeList = storeList;
@@ -57,7 +58,7 @@ public class ListViewAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         View view = convertView;
         ViewHolder holder;
-        final NearbyStore store = storeList.get(position);
+        final NearByStore store = storeList.get(position);
         if (view  == null){
             LayoutInflater li;
             li = LayoutInflater.from(getContext());
@@ -77,21 +78,21 @@ public class ListViewAdapter extends BaseAdapter {
         }
 
         if(store != null) {
-            holder.storeName.setText(store.getStoreName());
-            holder.storeAddress.setText(store.getStoreAddress());
+            holder.storeName.setText(store.getName());
+            holder.storeAddress.setText(store.getAddress());
             holder.distance.setText(String.valueOf(store.getDistance())+ " km");
 
 
-            if(store.getPromotionPercent() > 0.0){
+            if(store.getPromotion() > 0.0){
                 holder.promotionPercent.setVisibility(View.VISIBLE);
-                holder.promotionPercent.setText(formatDoubleToString(context, String.valueOf(store.getPromotionPercent())));
-                double salePriceDouble = store.getProductPrice() * store.getPromotionPercent() / 100;
+                holder.promotionPercent.setText(formatDoubleToString(context, String.valueOf(store.getPromotion())));
+                double salePriceDouble = store.getPrice() * store.getPromotion() / 100;
                 long salePriceLong = (long) salePriceDouble;
-                long displayPrice = store.getProductPrice() - salePriceLong ;
+                long displayPrice = (long)store.getPrice() - salePriceLong ;
                 holder.productPrice.setText(formatLongToMoney(context, String.valueOf(displayPrice)));
-            } else if (store.getPromotionPercent() == 0.0){
+            } else if (store.getPromotion() == 0.0){
                 holder.promotionPercent.setVisibility(View.INVISIBLE);
-                holder.productPrice.setText(formatLongToMoney(context, String.valueOf(store.getProductPrice())));
+                holder.productPrice.setText(formatLongToMoney(context, String.valueOf(store.getPrice())));
 //                holder.promotionPercent.setText(formatDoubleToInt(context, String.valueOf(store.getPromotionPercent())));
             }
 
@@ -100,7 +101,7 @@ public class ListViewAdapter extends BaseAdapter {
                 public void onClick(View v) {
 
                     Intent intent = new Intent(getContext(), MainActivity.class);
-                    intent.putExtra("storeName", store.getStoreName());
+                    intent.putExtra("storeName", store.getName());
                     getContext().startActivity(intent);
                 }
             });
@@ -109,7 +110,7 @@ public class ListViewAdapter extends BaseAdapter {
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int storeID = store.getStoreID();
+                int storeID = store.getId();
                 Intent toStoreInformation = new Intent(getContext(), StoreInformationPage.class);
                 toStoreInformation.putExtra("storeID", storeID);
                 getContext().startActivity(toStoreInformation);

@@ -56,7 +56,7 @@ public class UserDaoImpl extends BaseDao implements UserDao {
             + "            (SELECT a.id,name,b.brand_id FROM Product a , Type_Brand b WHERE a.type_brand_id = b.id AND MATCH(name) AGAINST (? IN NATURAL LANGUAGE MODE)) a,Brand b WHERE a.brand_id = b.id) a , Image_Product b WHERE a.id = b.product_id) a , Image b WHERE a.image_id = b.id";
 
     private String BUSINESS_CORE = "SELECT a.*,b.promotion,b.price FROM \n"
-            + "(SELECT a.apartment_number,a.street,a.county,a.district,a.city,a.longitude,a.latitude,b.* FROM\n"
+            + "(SELECT a.apartment_number,a.street,a.county,a.district,a.city,a.longitude,a.latitude,a.distance,b.* FROM\n"
             + "(SELECT *, ( 6371 * acos( cos( radians(?) ) * cos( radians(latitude) ) * cos( radians(longitude) - radians(?) ) + \n"
             + "sin( radians(?) ) * sin( radians(latitude) ) ) )\n"
             + "AS distance FROM Location HAVING distance < 5 ORDER BY distance LIMIT 0 , 20) a, Store b WHERE a.id = b.location_id AND b.status = 1) a, (SELECT store_id,promotion,price FROM Product_Store WHERE product_id = ?) b WHERE a.id = b.store_id";
@@ -447,6 +447,7 @@ public class UserDaoImpl extends BaseDao implements UserDao {
                 entites.setLocation_id(rs.getInt("location_id"));
                 entites.setPhone(rs.getString("phone"));
                 entites.setRegisterLog(rs.getString("registerLog"));
+                entites.setDistance(rs.getDouble("distance"));
                 list.add(entites);
             }
             return list;

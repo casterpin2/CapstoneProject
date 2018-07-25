@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:weightSum="3"
+    android:layout_margin="8dp"
+    android:orientation="horizontal"
+    android:gravity="center"
+    android:padding="8dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/tvCusName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Vu Sỹ Tùng"
+            android:textColor="@color/lb_more"
+            android:textSize="16sp" />
+        <TextView
+            android:id="@+id/tvAddress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="3"
+            android:text="Hà Nội, Việt Nam"
+            android:ellipsize="marquee"
+            android:textSize="13sp" />
+        <TextView
+            android:id="@+id/tvOrderDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="3"
+            android:text="13:04, 28/07/2018"
+            android:ellipsize="marquee"
+            android:textSize="13sp" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/tvPrice"
+            android:textColor="@color/colorApplication"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:ellipsize="marquee"
+            android:layout_gravity="center"
+            android:text="100.000"
+            android:textSize="16sp" />
+        <Button
+            android:id="@+id/btnDetail"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Chi Tiết"/>
+    </LinearLayout>
+
+</LinearLayout>

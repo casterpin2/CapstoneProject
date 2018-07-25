@@ -40,7 +40,9 @@ public class Product implements Serializable{
     @SerializedName("promotion")
     @Expose
     private Double promotion;
-    private View.OnClickListener requestBtnClickListener;
+    @SerializedName("storeName")
+    @Expose
+    private String storeName;
 
     public Product() {
     }
@@ -57,13 +59,6 @@ public class Product implements Serializable{
         this.promotion = promotion;
     }
 
-    public View.OnClickListener getRequestBtnClickListener() {
-        return requestBtnClickListener;
-    }
-
-    public void setRequestBtnClickListener(View.OnClickListener requestBtnClickListener) {
-        this.requestBtnClickListener = requestBtnClickListener;
-    }
 
     public int getProduct_id() {
         return product_id;
@@ -129,9 +124,19 @@ public class Product implements Serializable{
 
     public void setPromotion(Double promotion) {this.promotion = promotion;}
 
-    /**
-     * @return List of elements prepared for tests
-     */
-
-
+    @Override
+    public String toString() {
+        return "Product{" +
+                "product_id=" + product_id +
+                ", product_name='" + product_name + '\'' +
+                ", brand_name='" + brand_name + '\'' +
+                ", description='" + description + '\'' +
+                ", category_name='" + category_name + '\'' +
+                ", type_name='" + type_name + '\'' +
+                ", image_path='" + image_path + '\'' +
+                ", price=" + price +
+                ", promotion=" + promotion +
+                ", storeName='" + storeName + '\'' +
+                '}';
+    }
 }

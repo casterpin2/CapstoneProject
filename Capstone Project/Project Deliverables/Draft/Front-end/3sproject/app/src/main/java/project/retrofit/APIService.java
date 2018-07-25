@@ -86,8 +86,11 @@ public interface APIService {
     Call<GoogleMapJSON> getLocation(@Query("latlng") String latlng,
                                     @Query("key") String key);
 
+
     @GET("findStore")
-    Call<List<NearbyStore>> nearByStore(@Query("productId") int productId, @Query("latitude") String latitude, @Query("longitude") String longitude);
+    Call<List<NearByStore>> nearByStore(@Query("productId") int productId,@Query("latitude") String latitude,@Query("longitude") String longitude);
+
+
     @GET("getProductWithBarcode")
     Call<List<Item>> getProductWithBarcode(@Query("barcode") String barcode,@Query("store") int storeId);
 

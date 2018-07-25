@@ -111,7 +111,7 @@ public class OrderDetail {
 
     public static ArrayList<OrderDetail> dataTest(){
         ArrayList<OrderDetail> arrContact = new ArrayList<>();
-        OrderDetail orderDetail = new OrderDetail("1111111111","Lavi ....",3,new Date(),"Vũ Sỹ Tùng","0988 933 xxx", "Địa chỉ ... ",100000.0,"Cửa hàng của thằng nào đó",1);
+        OrderDetail orderDetail = new OrderDetail("1111111111","Nước khoáng lavi 500ml",3,new Date(),"Vũ Sỹ Tùng","0988 933 xxx", "Hà Nội, Việt Nam",100000.0,"Cửa hàng của thằng nào đó",1);
 
         for (int i = 0; i<20;i++){
             arrContact.add(orderDetail);

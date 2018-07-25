@@ -1,21 +1,15 @@
 package project.view.StoreInformation;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import project.view.OrderManagerment.OrderManagement;
-import project.view.ProductInStore.ProductInStore;
-import project.view.ProductInStore.ProductInStoreDisplayPage;
 import project.view.ProductInStoreByUser.ProductInStoreByUserDisplayPage;
 import project.view.R;
 
