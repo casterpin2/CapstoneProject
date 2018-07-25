@@ -16,6 +16,7 @@ import project.view.model.ResultRegister;
 import project.view.model.Store;
 import project.view.model.SaleProduct;
 import project.view.model.NearByStore;
+import project.view.model.Type;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -89,6 +90,8 @@ public interface APIService {
     @GET("findStore")
     Call<List<NearByStore>> nearByStore(@Query("productId") int productId,@Query("latitude") String latitude,@Query("longitude") String longitude);
 
+    @GET("getType")
+    Call<List<Type>> getType(@Query("categoryId") int procategoryId);
 
     @GET("getProductWithBarcode")
     Call<List<Item>> getProductWithBarcode(@Query("barcode") String barcode,@Query("store") int storeId);

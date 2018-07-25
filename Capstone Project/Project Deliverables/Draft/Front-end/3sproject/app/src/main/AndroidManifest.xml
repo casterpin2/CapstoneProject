@@ -21,7 +21,13 @@
         <activity android:name=".gui.MainActivity" />
         <activity
             android:name=".gui.LoginPage"
-            android:noHistory="true"></activity>
+            android:noHistory="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity android:name=".gui.SearchProductAddToStore"></activity>
         <activity android:name=".gui.CartProductToStore" />
         <activity
@@ -45,11 +51,7 @@
         <activity
             android:name=".gui.HomeActivity"
             android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".gui.StoreInformationPage"

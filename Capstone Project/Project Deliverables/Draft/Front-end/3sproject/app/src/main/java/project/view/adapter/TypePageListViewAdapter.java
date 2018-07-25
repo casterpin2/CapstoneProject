@@ -9,8 +9,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
+import com.google.firebase.storage.StorageReference;
+
 import java.util.List;
 
+import project.firebase.Firebase;
 import project.view.R;
 import project.view.model.Type;
 
@@ -18,7 +23,7 @@ public class TypePageListViewAdapter extends RecyclerView.Adapter<TypePageListVi
     private Context context;
     private List<Type> typeList;
 
-
+    private StorageReference storageReference = Firebase.getFirebase();
     public TypePageListViewAdapter(Context context, List<Type> typeList) {
         this.context = context;
         this.typeList = typeList;
@@ -36,8 +41,16 @@ public class TypePageListViewAdapter extends RecyclerView.Adapter<TypePageListVi
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         Type type = typeList.get(position);
         holder.tvTypeName.setText(type.getTypeName());
-        holder.numberOfRecord.setText(type.getNumberOfRecord()+"");
-        holder.subCategoryImg.setImageResource(R.drawable.avatar);
+        holder.numberOfRecord.setText(type.getNumberOfProduct()+" sản phẩm hiện có");
+        try {
+            Glide.with(context /* context */)
+                    .using(new FirebaseImageLoader())
+                    .load(storageReference.child(typeList.get(position).getPath()))
+                    .skipMemoryCache(true)
+                    .into(holder.subCategoryImg);
+        } catch (Exception e) {
+
+        }
     }
 
     @Override

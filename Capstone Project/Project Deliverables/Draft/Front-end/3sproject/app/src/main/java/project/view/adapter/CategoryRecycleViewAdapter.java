@@ -1,6 +1,7 @@
 package project.view.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,7 @@ import com.google.firebase.storage.StorageReference;
 import java.util.List;
 
 import project.firebase.Firebase;
+import project.view.gui.TypeCategoryPage;
 import project.view.model.Category;
 import project.view.R;
 
@@ -88,7 +90,10 @@ public class CategoryRecycleViewAdapter extends RecyclerView.Adapter<CategoryRec
                 @Override
                 public void onClick(View v) {
                     Category category = categories.get(getAdapterPosition());
-                    Toast.makeText(context, category.getCategoryName(), Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(context, TypeCategoryPage.class);
+                    intent.putExtra("categoryId",category.getCategoryID());
+                    intent.putExtra("categoryName",category.getCategoryName());
+                    context.startActivity(intent);
                 }
             });
         }
