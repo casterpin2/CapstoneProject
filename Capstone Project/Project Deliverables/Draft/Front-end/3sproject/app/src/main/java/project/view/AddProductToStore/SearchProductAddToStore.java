@@ -58,7 +58,8 @@ import retrofit2.Response;
 public class SearchProductAddToStore extends AppCompatActivity {
 
 
-
+    private static final int RESULT_CODE_SCAN=220;
+    private static final int REQUEST_CODE_SCAN=120;
     private APIService mAPI;
     public static List<Item> searchedProductList;
     private Context context;
@@ -82,7 +83,7 @@ public class SearchProductAddToStore extends AppCompatActivity {
     public boolean isLoading;
     boolean limitData = false;
     int page =1;
-
+    private  String barcode;
 
     public Context getContext() {
         return context;
@@ -569,8 +570,8 @@ public class SearchProductAddToStore extends AppCompatActivity {
         itemSearchWithBarcode.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                Intent toBarCodeScanPage = new Intent(SearchProductAddToStore.this, MainActivity.class);
-                startActivity(toBarCodeScanPage);
+                Intent toBarCodeScanPage = new Intent(SearchProductAddToStore.this, BarcodeActivity.class);
+                startActivityForResult(toBarCodeScanPage,REQUEST_CODE_SCAN);
                 return false;
             }
         });
@@ -628,7 +629,6 @@ public class SearchProductAddToStore extends AppCompatActivity {
 
         @Override
         protected Void doInBackground(Call... calls) {
-
             try {
                 Call<List<Item>> call = calls[0];
                 Response<List<Item>> response = call.execute();
@@ -644,4 +644,75 @@ public class SearchProductAddToStore extends AppCompatActivity {
             return null;
         }
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == REQUEST_CODE_SCAN &&  resultCode == RESULT_CODE_SCAN){
+             barcode = data.getStringExtra("code");
+            Call<List<Item>> call = mAPI.getProductWithBarcode(barcode,1);
+            new GetProductWithBarcode().execute(call);
+        }
+    }
+    public class GetProductWithBarcode extends AsyncTask<Call,List<Item>,Void>{
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            loadingBar.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+
+        }
+
+        @Override
+        protected void onProgressUpdate(List<Item>... values) {
+            super.onProgressUpdate(values);
+            List<Item> listProduct = values[0];
+            if (listProduct != null && listProduct.size() != 0 ) {
+                //theListView.removeFooterView(footerView);
+                searchedProductList.clear();
+                for (int i = 0; i < listProduct.size(); i++) {
+                    Item item = listProduct.get(i);
+                    if (checkID(item.getProduct_id()))
+                        searchedProductList.add(item);
+                }
+            } else {
+                //theListView.removeFooterView(footerView);
+                limitData = true;
+            }
+            //searchedProductList = response.body();
+            if(searchedProductList.isEmpty()) {
+                TextView nullMessage = findViewById(R.id.nullMessage);
+                nullMessage.setText("Không có sản phẩm nào phù hợp!");
+                theListView.setVisibility(View.INVISIBLE);
+            } else {
+                TextView nullMessage = findViewById(R.id.nullMessage);
+                nullMessage.setText("");
+                adapter = new SearchProductPageListViewAdapter(SearchProductAddToStore.this, R.layout.search_product_page_custom_list_view, searchedProductList);
+                theListView.setAdapter(adapter);
+                theListView.setVisibility(View.VISIBLE);
+            }
+            loadingBar.setVisibility(View.INVISIBLE);
+        }
+
+        @Override
+        protected Void doInBackground(Call... calls) {
+            try {
+                Call<List<Item>> call = calls[0];
+                Response<List<Item>> response = call.execute();
+                List<Item> list = new ArrayList<>();
+                for(int i =0 ; i< response.body().size();i++){
+                    list.add(response.body().get(i));
+                }
+                publishProgress(list);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
+
 }

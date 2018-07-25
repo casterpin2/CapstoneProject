@@ -226,7 +226,7 @@ public class ProductDaoImpl extends BaseDao implements ProductDao {
         ResultSet rs = null;
         List<ProductAddEntites> list = null ;
         try {
-            String sql = "select p.id,p.name,b.name as brand_name,c.name as category_name,p.description,i.path from Product p \n"
+            String sql = "select p.id,p.name,b.name as brand_name,c.name as category_name,p.description,i.path ,t.name as type_name from Product p \n"
                     + "				   join(Image_Product ip  join Image i on i.id = ip.image_id) on p.id = ip.product_id\n"
                     + "       			   join(Type_Brand  tb join (Type t join Category c on t.category_id = c.id) on tb.type_id = t.id\n"
                     + "           					   join Brand b on b.id = tb.brand_id)  on p.type_brand_id = tb.id \n"

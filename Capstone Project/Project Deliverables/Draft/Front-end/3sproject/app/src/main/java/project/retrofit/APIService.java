@@ -77,4 +77,6 @@ public interface APIService {
     @GET("json")
     Call<GoogleMapJSON> getLocation(@Query("latlng") String latlng,
                                     @Query("key") String key);
+    @GET("getProductWithBarcode")
+    Call<List<Item>> getProductWithBarcode(@Query("barcode") String barcode,@Query("store") int storeId);
 }

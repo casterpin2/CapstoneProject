@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.AsyncTask;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -114,25 +115,12 @@ public class CartProductToStore extends AppCompatActivity {
                 StringBuilder str = new StringBuilder();
                 str.append(jsonString);
                 //Call API
-                apiService.insertProduct(str,storeId).enqueue(new Callback<Boolean>(){
-
-                    @Override
-                    public void onResponse(Call<Boolean> call, Response<Boolean> response) {
-
-                        if(response.isSuccessful()){
-                            Toast.makeText(CartProductToStore.this, getResources().getString(R.string.addSuccessful), Toast.LENGTH_SHORT).show();
-
-                        }else{
-                            Toast.makeText(CartProductToStore.this, getResources().getString(R.string.somethingWrong), Toast.LENGTH_SHORT).show();
-                        }
-
-                    }
-
-                    @Override
-                    public void onFailure(Call<Boolean> call, Throwable t) {
-                        Log.d("MainActivity", "error loading from API");
-                    }
-                });
+                if(productList.size()>0){
+                    Call<Boolean> call = apiService.insertProduct(str,1);
+                    new ProductData().execute(call);
+                }else{
+                    Toast.makeText(CartProductToStore.this, "Hiện tại đang không có sản phẩm nào!", Toast.LENGTH_SHORT).show();
+                }
 
             }
         });
@@ -221,5 +209,44 @@ public class CartProductToStore extends AppCompatActivity {
 
         snackbar.show();
     }
+    public class ProductData extends AsyncTask<Call,Boolean,Void> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
 
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+        }
+
+        @Override
+        protected void onProgressUpdate(Boolean... values) {
+            super.onProgressUpdate(values);
+            boolean checkSubmit = values[0];
+            if(checkSubmit){
+                Toast.makeText(CartProductToStore.this, "Thêm sản phẩm thành công", Toast.LENGTH_SHORT).show();
+                productList.clear();
+                adapter = new CartProductToStorePageListViewAdapter(CartProductToStore.this, R.layout.cart_product_to_store_page_custom_listview, productList);
+                productListView.setAdapter(adapter);
+            }else{
+                Toast.makeText(CartProductToStore.this, "Đã xảy ra lỗi", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        @Override
+        protected Void doInBackground(Call... calls) {
+            try{
+                Call<Boolean> call = calls[0];
+                Response<Boolean> response = call.execute();
+                boolean checkSubmit = response.isSuccessful();
+
+                publishProgress(checkSubmit);
+            }catch (Exception e){
+                Log.d("ERROR",e.getMessage());
+            }
+
+            return null;
+        }
+    }
 }
