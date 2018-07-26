@@ -23,7 +23,7 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
                 android:src="@drawable/images"
-                android:scaleType="center"
+                android:scaleType="centerInside"
                 />
             <LinearLayout
                 android:layout_height="wrap_content"
