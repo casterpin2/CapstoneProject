@@ -5,7 +5,8 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.CAMERA" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -21,8 +22,8 @@
         <activity android:name=".gui.MainActivity" />
         <activity
             android:name=".gui.LoginPage"
-            android:noHistory="true"></activity>
-        <activity android:name=".gui.SearchProductAddToStore"></activity>
+            android:noHistory="true" />
+        <activity android:name=".gui.SearchProductAddToStore" />
         <activity android:name=".gui.CartProductToStore" />
         <activity
             android:name=".gui.SaleProductDisplayPage"
@@ -45,11 +46,7 @@
         <activity
             android:name=".gui.HomeActivity"
             android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".gui.StoreInformationPage"
@@ -70,7 +67,7 @@
         <activity
             android:name=".gui.OrderDetailManagement"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".gui.NearbyStorePage"></activity>
+        <activity android:name=".gui.NearbyStorePage" />
         <activity android:name=".gui.ProductDetailPage" />
         <activity android:name=".gui.OrderFast" />
         <activity android:name=".gui.ProductInStoreByUserDisplayPage" />
@@ -87,14 +84,20 @@
         <activity
             android:name="com.facebook.CustomTabActivity"
             android:exported="true" />
-        <activity android:name=".gui.UserSearchProductPage"
+        <activity
+            android:name=".gui.UserSearchProductPage"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity android:name=".gui.EditStoreInformationPage" />
+        <activity android:name=".gui.FeedbackPage"></activity>
+        <activity android:name=".gui.BarcodeActivity" />
+        <activity android:name=".gui.WellcomeActivity"
             android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
-        <activity android:name=".gui.EditStoreInformationPage"></activity>
-        <activity android:name=".gui.FeedbackPage">
-        </activity>
-        <activity android:name=".gui.BarcodeActivity"></activity>
     </application>
 
 </manifest>
