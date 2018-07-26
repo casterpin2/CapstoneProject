@@ -128,9 +128,7 @@ public class UserSearchProductListViewCustomAdapter extends BaseAdapter {
                 boolean isStoreProduct = false;
                 int productID = product.getProduct_id();
                 Intent toProductDetail = new Intent(getContext(), ProductDetailPage.class);
-                toProductDetail.putExtra("isStoreProduct",isStoreProduct);
-                toProductDetail.putExtra("productID",productID);
-                toProductDetail.putExtra("productName",product.getProduct_name());
+                toProductDetail.putExtra("product",new Gson().toJson(product));
                 getContext().startActivity(toProductDetail);
 
             }
@@ -185,10 +183,5 @@ public class UserSearchProductListViewCustomAdapter extends BaseAdapter {
             }
 
         }
-
-        public List<NearByStore> getList() {
-            return list;
-        }
-
     }
 }

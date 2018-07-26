@@ -159,6 +159,7 @@ public class UserFragment extends Fragment {
                     editor.commit();
                     Intent intent = new Intent(getActivity(),HomeActivity.class);
                     startActivity(intent);
+                    getActivity().finishAffinity();
                 }
             });
             userInfoLayout.setOnClickListener(new View.OnClickListener() {

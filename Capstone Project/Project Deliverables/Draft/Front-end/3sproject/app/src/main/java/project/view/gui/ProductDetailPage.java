@@ -5,6 +5,9 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
+import android.location.Location;
+import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,14 +17,27 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.storage.StorageReference;
+import com.google.gson.Gson;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import project.firebase.Firebase;
+import project.retrofit.ApiUtils;
 import project.view.R;
-import project.view.model.ProductDetail;
+import project.view.adapter.UserSearchProductListViewCustomAdapter;
+import project.view.model.NearByStore;
+import project.view.model.Product;
 import project.view.model.ProductInStoreDetail;
 import project.view.util.Formater;
+import retrofit2.Call;
+import retrofit2.Response;
 
 public class ProductDetailPage extends AppCompatActivity {
     private ImageView productImage;
@@ -30,9 +46,8 @@ public class ProductDetailPage extends AppCompatActivity {
     private Button addToCartBtn, findStoreBtn;
     private LinearLayout isNotProductInStoreLayout, isProductInStoreLayout, productDetailLayout;
     private ProductInStoreDetail productInStore;
-    private ProductDetail product;
     private Context context;
-
+    private Product product;
     private String productName ;
     private int storeID;
     private boolean isStoreProduct;
@@ -52,8 +67,8 @@ public class ProductDetailPage extends AppCompatActivity {
 
         mapping();
 
+        product = new Gson().fromJson(getIntent().getStringExtra("product"),Product.class);
 
-        productName = getIntent().getStringExtra("productName");
         getSupportActionBar().setTitle(productName);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorApplication)));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -61,10 +76,11 @@ public class ProductDetailPage extends AppCompatActivity {
         storeID = getIntent().getIntExtra("storeID", -1);
         isStoreProduct = getIntent().getBooleanExtra("isStoreProduct", false);
         setLayout(isStoreProduct,isNotProductInStoreLayout,isProductInStoreLayout, productDetailLayout, findStoreBtn);
-//        Glide.with(context /* context */)
-//                .using(new FirebaseImageLoader())
-//                .load(storageReference.child(product.getProductImage()))
-//                .into(productImage);
+        Glide.with(ProductDetailPage.this /* context */)
+                .using(new FirebaseImageLoader())
+                .load(storageReference.child(product.getImage_path()))
+                .skipMemoryCache(true)
+                .into(productImage);
 
         if (isStoreProduct == true){
             productInStore = new ProductInStoreDetail(1,"Samsung Galaxy Note 8","123","Điện thoại", "Samsung",20000000,1,"Dây là mô tả");
@@ -86,23 +102,33 @@ public class ProductDetailPage extends AppCompatActivity {
 
             productDescText.setText(productInStore.getProductDesc());
         } else {
-            product = new ProductDetail(1,"Samsung Galaxy S9 Plus","Hello", "Điện thoại","Samsung","Đây là sản phẩm không trong cửa hàng");
-
-            productNotInStoreName.setText(product.getProductName());
-            productNotInStoreCategoryName.setText(product.getCategoryName());
-            productNotInStoreBrandName.setText(product.getBrandName());
-            productNotInStoreDesc.setText(product.getProductDesc());
+            productNotInStoreName.setText(product.getProduct_name());
+            productNotInStoreCategoryName.setText(product.getType_name());
+            productNotInStoreBrandName.setText(product.getBrand_name());
+            productNotInStoreDesc.setText(product.getDescription());
             findStoreBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String productName = product.getProductName();
+                    LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                    String productName = product.getProduct_name();
                     Intent toNearbyStorePage = new Intent(ProductDetailPage.this, NearbyStorePage.class);
                     toNearbyStorePage.putExtra("productName",productName);
                     if (ActivityCompat.checkSelfPermission(ProductDetailPage.this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                             && ActivityCompat.checkSelfPermission(ProductDetailPage.this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                         ActivityCompat.requestPermissions(ProductDetailPage.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
                     } else {
-                        startActivity(toNearbyStorePage);
+                        Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+//            googleMap.clear();
+                        if (location != null) {
+                           double latitude = location.getLatitude();
+                           double longtitude = location.getLongitude();
+                            NearByStoreAsynTask1 synTask = new NearByStoreAsynTask1();
+                            Call<List<NearByStore>> call = ApiUtils.getAPIService().nearByStore(product.getProduct_id(),String.valueOf(latitude),String.valueOf(longtitude));
+                            synTask.execute(call);
+                        }else {
+                            Toast.makeText(ProductDetailPage.this, "Bạn chưa bật định vị. Chưa thể tìm cửa hàng!!!!!", Toast.LENGTH_SHORT).show();
+                        }
+
                     }
 
 
@@ -156,6 +182,41 @@ public class ProductDetailPage extends AppCompatActivity {
                 finish();
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public class NearByStoreAsynTask1 extends AsyncTask<Call, Void, List<NearByStore>> {
+        @Override
+        protected List<NearByStore> doInBackground(Call... calls) {
+            try {
+                Call<List<NearByStore>> call = calls[0];
+                Response<List<NearByStore>> re = call.execute();
+//            if (re.body() != null) {
+
+                return re.body();
+//            } else {
+//                return null;
+//            }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(List<NearByStore> list) {
+            super.onPostExecute(list);
+            ArrayList<String> listStore = new ArrayList<>();
+            if (list != null) {
+                Intent toNearByStore = new Intent(ProductDetailPage.this,NearbyStorePage.class);
+                for (int i = 0 ; i< list.size();i++){
+                    String storeJSON = new Gson().toJson(list.get(i),NearByStore.class);
+                    listStore.add(storeJSON);
+                }
+                toNearByStore.putExtra("listStore",listStore);
+                startActivity(toNearByStore);
+            }
+
         }
     }
 }

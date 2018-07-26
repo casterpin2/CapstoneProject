@@ -128,7 +128,7 @@ public class UserSearchProductPage extends AppCompatActivity {
 //                productListView.setSelectionFromTop(index, top);
                 final Call<List<Product>> call =  mAPI.userSearchProduct(query);
                 new UserSearchProductAsyncTask1().execute(call);
-                setLayout(noHaveProduct, haveProduct);
+
                 //adapter = new UserSearchProductListViewCustomAdapter(UserSearchProductPage.this,R.layout.user_search_product_page_custom_list_view, asyncTask.getList());
                 //Toast.makeText(UserSearchProductPage.this, "onQueryTextSubmit : "+  productList.size(), Toast.LENGTH_SHORT).show();
 
@@ -139,7 +139,6 @@ public class UserSearchProductPage extends AppCompatActivity {
             @Override
             public boolean onQueryTextChange(String newText) {
 
-                setLayout(noHaveProduct, haveProduct);
 
 //                Toast.makeText(SearchProductAddToStore.this, "content : "+ newText, Toast.LENGTH_SHORT).show();
                 String[] columns = { BaseColumns._ID,
@@ -357,6 +356,7 @@ public class UserSearchProductPage extends AppCompatActivity {
                     productList.add(list.get(i));
                 }
                 adapter.notifyDataSetChanged();
+                setLayout(noHaveProduct,haveProduct);
         } else {Toast.makeText(UserSearchProductPage.this,"Có lỗi xảy ra!!!",Toast.LENGTH_LONG).show();}
         }
 
