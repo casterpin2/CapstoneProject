@@ -11,10 +11,12 @@ import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
@@ -44,29 +46,31 @@ public class BrandDisplayPage extends AppCompatActivity {
     private List<Brand> brandList;
     private APIService apiService;
     private ProgressBar loadingBar;
+    private SearchView searchView;
+    private ImageButton imgBack,imgBarCode;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_brand_display_page);
+
+        findView();
+        imgBarCode.setVisibility(View.INVISIBLE);
         CustomInterface.setStatusBarColor(this);
         apiService = ApiUtils.getAPIService();
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        loadingBar = (ProgressBar) findViewById(R.id.loadingBar);
         loadingBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorApplication), android.graphics.PorterDuff.Mode.MULTIPLY);
+        searchView.setQueryHint("Tìm trong thương hiệu ...");
 
-        initCollapsingToolbar();
-
-        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-
+        imgBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
         brandList = new ArrayList<>();
-   //     prepareAlbums();
         apiService = APIService.retrofit.create(APIService.class);
         final Call<List<Brand>> callBrand = apiService.getBrands();
         new BrandDisplayData().execute(callBrand);
-
         try {
             Glide.with(this).load(R.drawable.cover).into((ImageView) findViewById(R.id.backdrop));
         } catch (Exception e) {
@@ -74,60 +78,13 @@ public class BrandDisplayPage extends AppCompatActivity {
         }
     }
 
-    private void initCollapsingToolbar() {
-        final CollapsingToolbarLayout collapsingToolbar =
-                (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-        collapsingToolbar.setTitle(" ");
-        AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appbar);
-        appBarLayout.setExpanded(true);
-
-        // hiding & showing the title when toolbar expanded & collapsed
-        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            boolean isShow = false;
-            int scrollRange = -1;
-
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                if (scrollRange == -1) {
-                    scrollRange = appBarLayout.getTotalScrollRange();
-                }
-                if (scrollRange + verticalOffset == 0) {
-                    collapsingToolbar.setTitle(getString(R.string.brand_display_title));
-                    isShow = true;
-                    getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorApplication)));
-                } else if (isShow) {
-                    collapsingToolbar.setTitle(" ");
-                    isShow = false;
-                    getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#00000000")));
-                }
-            }
-        });
+    private void findView(){
+        searchView = findViewById(R.id.searchViewQuery);
+        loadingBar = (ProgressBar) findViewById(R.id.loadingBar);
+        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        imgBack = findViewById(R.id.backBtn);
+        imgBarCode = findViewById(R.id.imgBarCode);
     }
-
-//    private void prepareAlbums() {
-//        //Call API
-//       apiService.getBrands().enqueue(new Callback<List<Brand>>() {
-//           @Override
-//           public void onResponse(Call<List<Brand>> call, Response<List<Brand>> response) {
-//               for(int i =0;i<response.body().size();i++){
-//
-//                       brandList.add(response.body().get(i));
-//
-//               }
-//               if(brandList.isEmpty()){
-//                   Toast.makeText(BrandDisplayPage.this, R.string.somethingWrong, Toast.LENGTH_LONG).show();
-//               }
-//           }
-//
-//           @Override
-//           public void onFailure(Call<List<Brand>> call, Throwable t) {
-//
-//           }
-//       });
-//
-//
-//    }
-
     /**
      * Converting dp to pixel
      */
@@ -196,7 +153,6 @@ public class BrandDisplayPage extends AppCompatActivity {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
             return null;
         }
     }

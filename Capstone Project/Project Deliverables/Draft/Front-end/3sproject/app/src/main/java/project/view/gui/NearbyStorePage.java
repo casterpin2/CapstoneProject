@@ -44,6 +44,7 @@ import java.util.List;
 import project.view.R;
 import project.view.model.NearByStore;
 import project.view.adapter.ListViewAdapter;
+import project.view.util.CustomInterface;
 
 public class NearbyStorePage extends AppCompatActivity implements OnMapReadyCallback {
     ListView storeListView;
@@ -74,6 +75,7 @@ public class NearbyStorePage extends AppCompatActivity implements OnMapReadyCall
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nearby_store_page);
+        CustomInterface.setStatusBarColor(this);
 
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorApplication)));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -88,12 +90,7 @@ public class NearbyStorePage extends AppCompatActivity implements OnMapReadyCall
         }
         productName = getIntent().getStringExtra("productName");
 
-
-
         storeListView = findViewById(R.id.storeListView);
-        storeListView.setVerticalScrollBarEnabled(false);
-        storeListView.setHorizontalScrollBarEnabled(false);
-
         adapter = new ListViewAdapter(NearbyStorePage.this, R.layout.nearby_store_page_custom_list_view, list);
         storeListView.setAdapter(adapter);
 

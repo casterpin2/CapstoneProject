@@ -28,6 +28,7 @@ import project.retrofit.ApiUtils;
 import project.view.adapter.UserSearchProductListViewCustomAdapter;
 import project.view.model.Product;
 import project.view.R;
+import project.view.util.CustomInterface;
 import retrofit2.Call;
 import retrofit2.Response;
 
@@ -51,7 +52,7 @@ public class UserSearchProductPage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_search_product_page);
-
+        CustomInterface.setStatusBarColor(this);
         findView();
 
         mAPI = ApiUtils.getAPIService();

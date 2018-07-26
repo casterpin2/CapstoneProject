@@ -11,10 +11,12 @@ import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -46,35 +48,37 @@ public class CategoryDisplayPage extends AppCompatActivity {
     private List<Category> categoryList;
     private APIService apiService;
     private ProgressBar loadingBar;
+    private SearchView searchView;
+    private ImageButton imgBack,imgBarCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_category_display_page);
         CustomInterface.setStatusBarColor(this);
-
-        loadingBar = (ProgressBar) findViewById(R.id.loadingBar);
+        findView();
+        imgBarCode.setVisibility(View.INVISIBLE);
         loadingBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorApplication), android.graphics.PorterDuff.Mode.MULTIPLY);
         loadingBar.setVisibility(View.VISIBLE);
 
+        searchView.setQueryHint("Tìm trong danh mục ...");
+
+        imgBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
         apiService = ApiUtils.getAPIService();
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        initCollapsingToolbar();
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
         categoryList = new ArrayList<>();
-       // prepareAlbums();
+
         apiService = APIService.retrofit.create(APIService.class);
         final Call<List<Category>> callCategory = apiService.getCategory();
         new CategoryDisplayData().execute(callCategory);
         //Toast.makeText(this, categoryList.size()+ " ", Toast.LENGTH_SHORT).show();
-
-
 
         try {
             Glide.with(this).load(R.drawable.cover).into((ImageView) findViewById(R.id.backdrop));
@@ -82,59 +86,13 @@ public class CategoryDisplayPage extends AppCompatActivity {
             e.printStackTrace();
         }
     }
-
-    private void initCollapsingToolbar() {
-        final CollapsingToolbarLayout collapsingToolbar =
-                (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-        collapsingToolbar.setTitle(" ");
-        AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appbar);
-        appBarLayout.setExpanded(true);
-
-        // hiding & showing the title when toolbar expanded & collapsed
-        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            boolean isShow = false;
-            int scrollRange = -1;
-
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                if (scrollRange == -1) {
-                    scrollRange = appBarLayout.getTotalScrollRange();
-                }
-                if (scrollRange + verticalOffset == 0) {
-                    collapsingToolbar.setTitle(getString(R.string.category_display_title));
-                    isShow = true;
-                    getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorApplication)));
-                } else if (isShow) {
-                    collapsingToolbar.setTitle(" ");
-                    isShow = false;
-                    getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#00000000")));
-                }
-            }
-        });
+    private void findView(){
+        searchView = findViewById(R.id.searchViewQuery);
+        loadingBar = (ProgressBar) findViewById(R.id.loadingBar);
+        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        imgBack = findViewById(R.id.backBtn);
+        imgBarCode = findViewById(R.id.imgBarCode);
     }
-
-    public void prepareAlbums() {
-
-        apiService.getCategory().enqueue(new Callback<List<Category>>() {
-            @Override
-            public void onResponse(Call<List<Category>> call, Response<List<Category>> response) {
-                for (int i = 0; i < response.body().size(); i++) {
-                    categoryList.add(response.body().get(i));
-                }
-                if (categoryList.isEmpty()) {
-                    Toast.makeText(CategoryDisplayPage.this, getResources().getString(R.string.somethingWrong), Toast.LENGTH_LONG).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<Category>> call, Throwable t) {
-
-            }
-        });
-
-    }
-
-
     /**
      * Converting dp to pixel
      */
