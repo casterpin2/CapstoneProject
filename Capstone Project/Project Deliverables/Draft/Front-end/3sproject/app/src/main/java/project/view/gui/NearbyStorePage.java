@@ -33,6 +33,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
@@ -407,7 +408,7 @@ public class NearbyStorePage extends AppCompatActivity implements OnMapReadyCall
                 double storeLatitude = 0.0;
                 LatLng storeLatLng ;
                 LatLng myLocation = new LatLng(latitude, longtitude);
-//                googleMap.addMarker(new MarkerOptions().position(myLocation).title("Vị trí của bạn"));
+                googleMap.addMarker(new MarkerOptions().position(myLocation).title("Vị trí của bạn"));
                 googleMap.getUiSettings().setCompassEnabled(false);
                 googleMap.getUiSettings().setRotateGesturesEnabled(false);
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(myLocation));
@@ -417,9 +418,8 @@ public class NearbyStorePage extends AppCompatActivity implements OnMapReadyCall
                 for (int i = 0; i < list.size(); i++) {
                     storeLongtitude = list.get(i).getLongitude();
                     storeLatitude = list.get(i).getLatitude();
-                    storeLatLng = new LatLng(21.0124287, 105.5238679);
-                    googleMap.addMarker(new MarkerOptions().position(storeLatLng).title(list.get(i).getName()));
-                    Log.d("thangngu", "Lat: "+ list.get(i).getLatitude() + "--- Long: "+ list.get(i).getLongitude());
+                    storeLatLng = new LatLng(storeLatitude, storeLongtitude);
+                    googleMap.addMarker(new MarkerOptions().position(storeLatLng).title(list.get(i).getName()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
                 }
 
             }
