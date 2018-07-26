@@ -54,18 +54,8 @@ import java.util.Currency;
 import java.util.Locale;
 
 import project.firebase.Firebase;
-
-import project.googleMapAPI.GoogleMapJSON;
 import project.objects.User;
-import project.retrofit.ApiUtils;
-import project.view.EditUserInformation.EditUserInformationPage;
-import project.view.Login.Login;
-import project.view.Login.LoginPage;
-import project.view.NearbyStore.NearbyStorePage;
 import project.view.R;
-import project.view.RegisterStore.RegisterStorePage;
-import project.view.RegisterStore.Store;
-import retrofit2.Call;
 
 
 public class OrderFast extends AppCompatActivity implements OnMapReadyCallback{
@@ -86,7 +76,7 @@ public class OrderFast extends AppCompatActivity implements OnMapReadyCallback{
     private int userID;
 
     //googleMap
-    private final project.view.RegisterStore.Location location = new project.view.RegisterStore.Location();
+    private final project.view.model.Location location = new project.view.model.Location();
     int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
     private LocationManager locationManager;
     double handleLongtitude = 0.0;

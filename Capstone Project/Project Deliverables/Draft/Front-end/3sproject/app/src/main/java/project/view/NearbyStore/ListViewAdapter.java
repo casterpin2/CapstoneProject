@@ -22,10 +22,10 @@ import java.util.List;
 import java.util.Locale;
 
 import project.firebase.Firebase;
-import project.view.MainActivity;
 import project.view.R;
-import project.view.StoreInformation.StoreInformationPage;
-import project.view.UserSearchProduct.NearByStore;
+import project.view.gui.MainActivity;
+import project.view.gui.StoreInformationPage;
+import project.view.model.NearByStore;
 
 public class ListViewAdapter extends BaseAdapter {
 

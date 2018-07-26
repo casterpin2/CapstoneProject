@@ -5,17 +5,17 @@ import java.util.List;
 
 import project.googleMapAPI.GoogleMapJSON;
 import project.objects.User;
-import project.view.AddProductToStore.Item;
-import project.view.Brand.Brand;
-import project.view.Cart.Product;
-import project.view.Category.Category;
-import project.view.Login.Login;
-import project.view.ProductBrandDisplay.ProductBrand;
-import project.view.ProductInStore.ProductInStore;
-import project.view.Register.ResultRegister;
-import project.view.RegisterStore.Store;
-import project.view.SaleProduct.SaleProduct;
-import project.view.UserSearchProduct.NearByStore;
+import project.view.model.Brand;
+import project.view.model.Item;
+import project.view.model.Product;
+import project.view.model.Category;
+import project.view.model.Login;
+import project.view.model.ProductBrand;
+import project.view.model.ProductInStore;
+import project.view.model.ResultRegister;
+import project.view.model.Store;
+import project.view.model.SaleProduct;
+import project.view.model.NearByStore;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -40,7 +40,7 @@ public interface APIService {
     Call<Store> registerStore(@Body HashMap<String,String> map);
 
     @GET("getProductForAdd")
-    Call<List<Item>> getProducts(@Query("query") String query,@Query("page") int page);
+    Call<List<Item>> getProducts(@Query("query") String query, @Query("page") int page);
 
     @POST("posts")
     @FormUrlEncoded

@@ -27,11 +27,11 @@ import java.util.List;
 
 import project.firebase.Firebase;
 import project.retrofit.ApiUtils;
-import project.view.Cart.Product;
-import project.view.MainActivity;
 import project.view.NearbyStore.NearbyStorePage;
-import project.view.ProductDetail.ProductDetailPage;
 import project.view.R;
+import project.view.gui.ProductDetailPage;
+import project.view.model.NearByStore;
+import project.view.model.Product;
 import retrofit2.Call;
 import retrofit2.Response;
 

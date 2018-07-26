@@ -5,7 +5,7 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".home.HomeActivity">
+    tools:context=".gui.HomeActivity">
 
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/bottom_navigation"
@@ -17,7 +17,7 @@
         app:itemTextColor="@drawable/bottom_navigation_color_selector"
         app:menu="@menu/menu_bottom_navigation" />
 
-    <project.view.home.NonSwipeableViewPager
+    <project.view.util.NonSwipeableViewPager
         android:id="@+id/viewpager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

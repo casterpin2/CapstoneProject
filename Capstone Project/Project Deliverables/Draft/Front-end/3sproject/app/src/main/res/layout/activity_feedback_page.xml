@@ -7,7 +7,7 @@
     android:paddingTop="10dp"
     android:paddingRight="10dp"
     android:paddingLeft="10dp"
-    tools:context=".Feedback.FeedbackPage">
+    tools:context=".gui.FeedbackPage">
     <ProgressBar
         android:id="@+id/loadingBar"
         style="?android:attr/progressBarStyleInverse"

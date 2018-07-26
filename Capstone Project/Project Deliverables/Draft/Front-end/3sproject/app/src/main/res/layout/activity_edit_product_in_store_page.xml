@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:layout_marginRight="16dp"
     android:layout_marginLeft="16dp"
-    tools:context=".EditProductInStore.EditProductInStorePage"
+    tools:context=".gui.EditProductInStorePage"
     android:id="@+id/scroll">
 <RelativeLayout
     android:layout_width="match_parent"

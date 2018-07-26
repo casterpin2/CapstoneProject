@@ -44,13 +44,10 @@ import com.google.gson.Gson;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 
-import project.view.AddProductToStore.SearchProductAddToStore;
-import project.view.MainActivity;
 import project.view.R;
-import project.view.UserSearchProduct.NearByStore;
+import project.view.model.NearByStore;
 
 public class NearbyStorePage extends AppCompatActivity implements OnMapReadyCallback {
     ListView storeListView;

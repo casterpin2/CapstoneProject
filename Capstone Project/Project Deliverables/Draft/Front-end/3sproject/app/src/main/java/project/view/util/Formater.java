@@ -1,5 +1,6 @@
 package project.view.util;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.text.TextUtils;
 import android.util.TypedValue;
@@ -11,7 +12,7 @@ import java.util.Locale;
 
 public class Formater {
 
-    public String formatDoubleToMoney(String price) {
+    public static String formatDoubleToMoney(String price) {
 
         NumberFormat format =
                 new DecimalFormat("#,##0.00");// #,##0.00 ¤ (¤:// Currency symbol)
@@ -32,7 +33,23 @@ public class Formater {
         return price;
     }
 
-    public String formatDoubleToInt(String price) {
+//    public static String convertLongToString (long needConvert) {
+//        String formattedString = null;
+//        try {
+//
+//            DecimalFormat formatter = (DecimalFormat) NumberFormat.getInstance(Locale.US);
+//            formatter.applyPattern("#,###,###,###");
+//            formattedString = formatter.format(needConvert);
+//
+//            //setting text after format to EditText
+//
+//        } catch (NumberFormatException nfe) {
+//            nfe.printStackTrace();
+//        }
+//        return formattedString;
+//    }
+
+    public static String formatDoubleToInt(String price) {
 
         NumberFormat format =
                 new DecimalFormat("#,##0.00");// #,##0.00 ¤ (¤:// Currency symbol)
@@ -52,6 +69,7 @@ public class Formater {
         price = String.format("%s%%", price);
         return price;
     }
+
 
     private static int dpToPx(int dp,Resources r) {
      //   Resources r = getResources();
