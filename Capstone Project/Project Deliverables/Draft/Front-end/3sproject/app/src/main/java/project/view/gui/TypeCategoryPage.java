@@ -1,9 +1,11 @@
 package project.view.gui;
 
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
+import android.os.AsyncTask;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -16,22 +18,31 @@ import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import project.retrofit.APIService;
+import project.retrofit.ApiUtils;
 import project.view.R;
 import project.view.adapter.TypePageListViewAdapter;
+import project.view.model.ResultRegister;
 import project.view.model.Type;
+import retrofit2.Call;
+import retrofit2.Response;
 
 public class TypeCategoryPage extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private TypePageListViewAdapter adapter;
     private List<Type> typeList;
-
+    private int categoryId;
+    private APIService mAPI;
+    private TextView love_music;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,29 +53,39 @@ public class TypeCategoryPage extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        String categoryName = getIntent().getStringExtra("categoryName");
+        initCollapsingToolbar(categoryName);
 
-        initCollapsingToolbar();
+        love_music = (TextView) findViewById(R.id.love_music);
+        love_music.setText(categoryName);
 
         setCoverImg();
-
+        mAPI = ApiUtils.getAPIService();
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-
-        typeList = new ArrayList<>();
-
-        Type type = new Type(1,"sdfs",4,"");
-        for(int i=0;i<10;i++){
-            typeList.add(type);
-        }
+        categoryId = getIntent().getIntExtra("categoryId" , 0);
 
 
-        adapter = new TypePageListViewAdapter(this, typeList);
 
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 2);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.addItemDecoration(new TypeCategoryPage.GridSpacingItemDecoration(2, dpToPx(10), true));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
+        if (categoryId != 0){
+            Call<List<Type>> call = mAPI.getType(categoryId);
+            new GetType().execute(call);
+        } else {
+            typeList = new ArrayList<>();
 
+            Type type = new Type(1,"Đây là Type",4,"");
+            for(int i = 0 ;i < 10 ; i++){
+                typeList.add(type);
+            }
+
+
+            adapter = new TypePageListViewAdapter(this, typeList);
+
+        }
     }
 
     private void setCoverImg(){
@@ -75,7 +96,7 @@ public class TypeCategoryPage extends AppCompatActivity {
         }
     }
 
-    private void initCollapsingToolbar() {
+    private void initCollapsingToolbar(final String categoryName) {
         final CollapsingToolbarLayout collapsingToolbar = findViewById(R.id.collapsing_toolbar);
         collapsingToolbar.setTitle("");
         AppBarLayout appBarLayout = findViewById(R.id.appbar);
@@ -92,9 +113,9 @@ public class TypeCategoryPage extends AppCompatActivity {
                     scrollRange = appBarLayout.getTotalScrollRange();
                 }
                 if (scrollRange + verticalOffset == 0) {
-                    collapsingToolbar.setTitle(getString(R.string.type_title));
+                    collapsingToolbar.setTitle(categoryName);
                     isShow = true;
-                    getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#F50057")));
+                    getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorApplication)));
                 } else if (isShow) {
                     collapsingToolbar.setTitle(" ");
                     isShow = false;
@@ -158,6 +179,31 @@ public class TypeCategoryPage extends AppCompatActivity {
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+    public class GetType extends AsyncTask<Call, Void, List<Type>> {
+
+        @Override
+        protected List<Type> doInBackground(Call... calls) {
+            try {
+                Call<List<Type>> call = calls[0];
+                Response<List<Type>> re = call.execute();
+//            if (re.body() != null) {
+                return re.body();
+//            } else {
+//                return null;
+//            }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(List<Type> aVoid) {
+            super.onPostExecute(aVoid);
+            adapter = new TypePageListViewAdapter(TypeCategoryPage.this, aVoid);
+            recyclerView.setAdapter(adapter);
         }
     }
 

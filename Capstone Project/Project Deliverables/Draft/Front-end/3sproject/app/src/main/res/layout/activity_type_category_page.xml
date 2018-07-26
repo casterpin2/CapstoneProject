@@ -19,7 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"
-            app:contentScrim="?attr/colorPrimary"
+            app:contentScrim="@color/colorApplication"
             app:expandedTitleMarginEnd="64dp"
             app:expandedTitleMarginStart="48dp"
             app:expandedTitleTextAppearance="@android:color/transparent"
@@ -52,7 +52,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/type_title"
                         android:textColor="@android:color/white"
-                        android:textSize="@dimen/backdrop_title" />
+                        android:textSize="25dp" />
 
                     <TextView
                         android:layout_width="wrap_content"

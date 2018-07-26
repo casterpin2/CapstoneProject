@@ -1,49 +1,65 @@
 package project.view.model;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 public class Type {
-    private int typeID;
-    private String typeName;
-    private int numberOfRecord;
-    private String typeImage;
+    @SerializedName("id")
+    @Expose
+    private int id;
+    @SerializedName("name")
+    @Expose
+    private String name;
+    @SerializedName("product_count")
+    @Expose
+    private int numberOfProduct;
+    @SerializedName("image_path")
+    @Expose
+    private String path;
 
     public Type() {}
 
-    public Type(int typeID, String typeName, int numberOfRecord, String typeImage) {
-        this.typeID = typeID;
-        this.typeName = typeName;
-        this.numberOfRecord = numberOfRecord;
-        this.typeImage = typeImage;
+    public int getId() {
+        return id;
     }
 
-    public int getTypeID() {
-        return typeID;
+    public Type(int id, String name, int numberOfProduct, String path) {
+        this.id = id;
+        this.name = name;
+        this.numberOfProduct = numberOfProduct;
+        this.path = path;
     }
 
-    public void setTypeID(int typeID) {
-        this.typeID = typeID;
+    public void setId(int id) {
+        this.id = id;
+
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getNumberOfProduct() {
+        return numberOfProduct;
+    }
+
+    public void setNumberOfProduct(int numberOfProduct) {
+        this.numberOfProduct = numberOfProduct;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
     }
 
     public String getTypeName() {
-        return typeName;
-    }
-
-    public void setTypeName(String typeName) {
-        this.typeName = typeName;
-    }
-
-    public int getNumberOfRecord() {
-        return numberOfRecord;
-    }
-
-    public void setNumberOfRecord(int numberOfRecord) {
-        this.numberOfRecord = numberOfRecord;
-    }
-
-    public String getTypeImage() {
-        return typeImage;
-    }
-
-    public void setTypeImage(String typeImage) {
-        this.typeImage = typeImage;
+        return name;
     }
 }
