@@ -17,7 +17,9 @@ import android.os.Bundle;
 import android.support.v7.widget.SearchView;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -37,6 +39,8 @@ public class UserSearchProductPage extends AppCompatActivity {
     private SearchView searchView;
     private ListView productListView;
     private ImageView imgBack, imgBarCode;
+    private TextView noHaveProduct;
+    private LinearLayout haveProduct;
     private UserSearchProductListViewCustomAdapter adapter;
 
 
@@ -59,13 +63,19 @@ public class UserSearchProductPage extends AppCompatActivity {
 
         turnOnLocation();
 
-
         imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
             }
         });
+
+        noHaveProduct = (TextView) findViewById(R.id.noHaveProduct);
+        haveProduct = (LinearLayout) findViewById(R.id.haveProduct);
+        setLayout(noHaveProduct, haveProduct);
+
+        searchView.setFocusable(true);
+        searchView.setFocusableInTouchMode(true);
 
         productListView = (ListView) findViewById(R.id.productListView);
 
@@ -118,6 +128,7 @@ public class UserSearchProductPage extends AppCompatActivity {
 //                productListView.setSelectionFromTop(index, top);
                 final Call<List<Product>> call =  mAPI.userSearchProduct(query);
                 new UserSearchProductAsyncTask1().execute(call);
+                setLayout(noHaveProduct, haveProduct);
                 //adapter = new UserSearchProductListViewCustomAdapter(UserSearchProductPage.this,R.layout.user_search_product_page_custom_list_view, asyncTask.getList());
                 //Toast.makeText(UserSearchProductPage.this, "onQueryTextSubmit : "+  productList.size(), Toast.LENGTH_SHORT).show();
 
@@ -127,6 +138,9 @@ public class UserSearchProductPage extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
+
+                setLayout(noHaveProduct, haveProduct);
+
 //                Toast.makeText(SearchProductAddToStore.this, "content : "+ newText, Toast.LENGTH_SHORT).show();
                 String[] columns = { BaseColumns._ID,
                         SearchManager.SUGGEST_COLUMN_TEXT_1,
@@ -348,6 +362,16 @@ public class UserSearchProductPage extends AppCompatActivity {
 
         public List<Product> getList() {
             return list;
+        }
+    }
+
+    private void setLayout(TextView noHaveProduct, LinearLayout haveProduct) {
+        if (productList.size() == 0) {
+            noHaveProduct.setVisibility(View.VISIBLE);
+            haveProduct.setVisibility(View.INVISIBLE);
+        } else {
+            haveProduct.setVisibility(View.VISIBLE);
+            noHaveProduct.setVisibility(View.INVISIBLE);
         }
     }
 

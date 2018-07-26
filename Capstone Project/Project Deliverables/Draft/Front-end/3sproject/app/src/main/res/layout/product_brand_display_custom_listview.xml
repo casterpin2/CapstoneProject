@@ -35,7 +35,8 @@
                 android:layout_height="130dp"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
-
+                android:src="@drawable/images"
+                android:scaleType="fitCenter"
                 />
         </RelativeLayout>
 

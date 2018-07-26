@@ -26,19 +26,36 @@
             android:src="@drawable/btn_back" />
         <include layout="@layout/search_view_custom" />
     </android.support.v7.widget.Toolbar>
+    <LinearLayout
+        android:id="@+id/haveProduct"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_below="@id/toolbar">
+        <TextView
+            android:id="@+id/tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Danh sách sản phẩm"
+            android:textSize="16dp"
+            android:padding="8dp"
+            android:textColor="@color/colorBlack"
+            android:textStyle="bold"/>
+        <ListView
+            android:id="@+id/productListView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+    </LinearLayout>
     <TextView
-        android:id="@+id/tv"
+        android:id="@+id/noHaveProduct"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:text="Danh sách sản phẩm"
-        android:textSize="16dp"
-        android:padding="8dp"
-        android:textColor="@color/colorBlack"
-        android:layout_below="@id/toolbar"/>
-    <ListView
-        android:id="@+id/productListView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/tv"/>
+        android:textSize="20dp"
+        android:text="Chưa có sản phẩm nào"
+        android:textAlignment="center"
+        android:visibility="invisible"/>
+
 </RelativeLayout>

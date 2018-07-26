@@ -1,5 +1,7 @@
 package project.view.gui;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -29,6 +31,7 @@ import android.support.v7.widget.SearchView;
 import project.retrofit.APIService;
 import project.retrofit.ApiUtils;
 import project.view.R;
+import project.view.adapter.CategoryCustomCardviewAdapter;
 import project.view.adapter.TypePageListViewAdapter;
 import project.view.model.ResultRegister;
 import project.view.model.Type;
@@ -41,51 +44,44 @@ public class TypeCategoryPage extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private TypePageListViewAdapter adapter;
-    private List<Type> typeList;
+    private List<Type> typeList = new ArrayList<>();;
     private int categoryId;
     private APIService mAPI;
-    private TextView love_music;
+    private TextView tv_brand_title;
     private android.widget.ProgressBar loadingBar;
     private SearchView searchView;
     private ImageButton imgBack,imgBarCode;
+    private List<Type> searchedProduct = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_type_category_page);
+
+
+
         findView();
         imgBarCode.setVisibility(View.INVISIBLE);
         project.view.util.CustomInterface.setStatusBarColor(this);
         String categoryName = getIntent().getStringExtra("categoryName");
-        searchView.setQueryHint("Tìm trong chủng loại ...");
+        tv_brand_title.setText(categoryName);
+        searchView.setQueryHint("Tìm trong "+ categoryName);
+
+
 
         setCoverImg();
         mAPI = ApiUtils.getAPIService();
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         categoryId = getIntent().getIntExtra("categoryId" , 0);
 
-
-
-        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 2);
-        recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(10), true));
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(adapter);
         if (categoryId != 0){
             Call<List<Type>> call = mAPI.getType(categoryId);
             new GetType().execute(call);
-        } else {
-            typeList = new ArrayList<>();
-
-            Type type = new Type(1,"Đây là Type",4,"");
-            for(int i = 0 ;i < 10 ; i++){
-                typeList.add(type);
-            }
-
-
-            adapter = new TypePageListViewAdapter(this, typeList);
-
         }
+
+//            adapter = new TypePageListViewAdapter(this, typeList);
+
+
           imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -108,6 +104,7 @@ public class TypeCategoryPage extends AppCompatActivity {
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         imgBack = findViewById(R.id.backBtn);
         imgBarCode = findViewById(R.id.imgBarCode);
+        tv_brand_title = (TextView) findViewById(R.id.tv_brand_title);
     }
       /**
      * Converting dp to pixel
@@ -130,6 +127,12 @@ public class TypeCategoryPage extends AppCompatActivity {
     public class GetType extends AsyncTask<Call, Void, List<Type>> {
 
         @Override
+        protected void onPreExecute() {
+            loadingBar.setVisibility(View.VISIBLE);
+            super.onPreExecute();
+        }
+
+        @Override
         protected List<Type> doInBackground(Call... calls) {
             try {
                 Call<List<Type>> call = calls[0];
@@ -146,10 +149,47 @@ public class TypeCategoryPage extends AppCompatActivity {
         }
 
         @Override
-        protected void onPostExecute(List<Type> aVoid) {
+        protected void onPostExecute(final List<Type> aVoid) {
             super.onPostExecute(aVoid);
             adapter = new TypePageListViewAdapter(TypeCategoryPage.this, aVoid);
+            loadingBar.setVisibility(View.INVISIBLE);
+            RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(TypeCategoryPage.this, 2);
+            recyclerView.setLayoutManager(mLayoutManager);
+            recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(10), true));
+            recyclerView.setItemAnimator(new DefaultItemAnimator());
             recyclerView.setAdapter(adapter);
+            
+            SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+            searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+//        productList
+            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextSubmit(String query) {
+
+
+                    return false;
+                }
+
+                @Override
+                public boolean onQueryTextChange(String newText) {
+                    searchedProduct.clear();
+                    if(newText.equals("") || newText == null){
+                        adapter = new TypePageListViewAdapter(TypeCategoryPage.this, aVoid);
+
+                    } else {
+                        for (int i = 0; i < aVoid.size(); i++) {
+                            if(aVoid.get(i).getTypeName().toLowerCase().contains(newText.toLowerCase())) {
+                                searchedProduct.add(aVoid.get(i));
+                            }
+                        }
+                        adapter = new TypePageListViewAdapter(TypeCategoryPage.this, searchedProduct);
+                    }
+                    RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(TypeCategoryPage.this, 2);
+                    recyclerView.setLayoutManager(mLayoutManager);
+                    recyclerView.setAdapter(adapter);
+                    return true;
+                }
+            });
         }
     }
 
