@@ -25,7 +25,7 @@ import com.bumptech.glide.Glide;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
+import android.support.v7.widget.SearchView;
 import project.retrofit.APIService;
 import project.retrofit.ApiUtils;
 import project.view.R;
@@ -33,7 +33,9 @@ import project.view.adapter.TypePageListViewAdapter;
 import project.view.model.ResultRegister;
 import project.view.model.Type;
 import retrofit2.Call;
+import android.widget.ImageButton;
 import retrofit2.Response;
+import project.view.util.GridSpacingItemDecoration;
 
 public class TypeCategoryPage extends AppCompatActivity {
 
@@ -43,21 +45,19 @@ public class TypeCategoryPage extends AppCompatActivity {
     private int categoryId;
     private APIService mAPI;
     private TextView love_music;
+    private android.widget.ProgressBar loadingBar;
+    private SearchView searchView;
+    private ImageButton imgBack,imgBarCode;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_type_category_page);
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-
-        setSupportActionBar(toolbar);
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        findView();
+        imgBarCode.setVisibility(View.INVISIBLE);
+        project.view.util.CustomInterface.setStatusBarColor(this);
         String categoryName = getIntent().getStringExtra("categoryName");
-        initCollapsingToolbar(categoryName);
-
-        love_music = (TextView) findViewById(R.id.love_music);
-        love_music.setText(categoryName);
+        searchView.setQueryHint("Tìm trong chủng loại ...");
 
         setCoverImg();
         mAPI = ApiUtils.getAPIService();
@@ -68,7 +68,7 @@ public class TypeCategoryPage extends AppCompatActivity {
 
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 2);
         recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.addItemDecoration(new TypeCategoryPage.GridSpacingItemDecoration(2, dpToPx(10), true));
+        recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(10), true));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
         if (categoryId != 0){
@@ -86,6 +86,12 @@ public class TypeCategoryPage extends AppCompatActivity {
             adapter = new TypePageListViewAdapter(this, typeList);
 
         }
+          imgBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
     }
 
     private void setCoverImg(){
@@ -96,74 +102,14 @@ public class TypeCategoryPage extends AppCompatActivity {
         }
     }
 
-    private void initCollapsingToolbar(final String categoryName) {
-        final CollapsingToolbarLayout collapsingToolbar = findViewById(R.id.collapsing_toolbar);
-        collapsingToolbar.setTitle("");
-        AppBarLayout appBarLayout = findViewById(R.id.appbar);
-        appBarLayout.setExpanded(true);
-
-        // hiding & showing the title when toolbar expanded & collapsed
-        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            boolean isShow = false;
-            int scrollRange = -1;
-
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                if (scrollRange == -1) {
-                    scrollRange = appBarLayout.getTotalScrollRange();
-                }
-                if (scrollRange + verticalOffset == 0) {
-                    collapsingToolbar.setTitle(categoryName);
-                    isShow = true;
-                    getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorApplication)));
-                } else if (isShow) {
-                    collapsingToolbar.setTitle(" ");
-                    isShow = false;
-                    getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#00000000")));
-                }
-            }
-        });
+      private void findView(){
+        searchView = findViewById(R.id.searchViewQuery);
+        loadingBar = (android.widget.ProgressBar) findViewById(R.id.loadingBar);
+        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        imgBack = findViewById(R.id.backBtn);
+        imgBarCode = findViewById(R.id.imgBarCode);
     }
-
-    /**
-     * RecyclerView item decoration - give equal margin around grid item
-     */
-    public class GridSpacingItemDecoration extends RecyclerView.ItemDecoration {
-
-        private int spanCount;
-        private int spacing;
-        private boolean includeEdge;
-
-        public GridSpacingItemDecoration(int spanCount, int spacing, boolean includeEdge) {
-            this.spanCount = spanCount;
-            this.spacing = spacing;
-            this.includeEdge = includeEdge;
-        }
-
-        @Override
-        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-            int position = parent.getChildAdapterPosition(view); // item position
-            int column = position % spanCount; // item column
-
-            if (includeEdge) {
-                outRect.left = spacing - column * spacing / spanCount; // spacing - column * ((1f / spanCount) * spacing)
-                outRect.right = (column + 1) * spacing / spanCount; // (column + 1) * ((1f / spanCount) * spacing)
-
-                if (position < spanCount) { // top edge
-                    outRect.top = spacing;
-                }
-                outRect.bottom = spacing; // item bottom
-            } else {
-                outRect.left = column * spacing / spanCount; // column * ((1f / spanCount) * spacing)
-                outRect.right = spacing - (column + 1) * spacing / spanCount; // spacing - (column + 1) * ((1f /    spanCount) * spacing)
-                if (position >= spanCount) {
-                    outRect.top = spacing; // item top
-                }
-            }
-        }
-    }
-
-    /**
+      /**
      * Converting dp to pixel
      */
     private int dpToPx(int dp) {

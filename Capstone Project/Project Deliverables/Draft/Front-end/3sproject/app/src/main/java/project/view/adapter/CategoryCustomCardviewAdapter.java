@@ -1,12 +1,14 @@
 package project.view.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
@@ -16,6 +18,7 @@ import java.util.List;
 
 import project.firebase.Firebase;
 import project.view.R;
+import project.view.gui.TypeCategoryPage;
 import project.view.model.Category;
 
 public class CategoryCustomCardviewAdapter extends RecyclerView.Adapter<CategoryCustomCardviewAdapter.MyViewHolder> {
@@ -51,14 +54,23 @@ public class CategoryCustomCardviewAdapter extends RecyclerView.Adapter<Category
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
-        Category category = categoryList.get(position);
+        final Category category = categoryList.get(position);
         holder.categoryName.setText(category.getCategoryName());
         holder.numberOfRecord.setText(String.valueOf(category.getNumberOfRecord())+" sản phẩm");
         Glide.with(mContext /* context */)
                 .using(new FirebaseImageLoader())
                 .load(storageReference.child(categoryList.get(position).getCategoryImageLink()))
                 .into(holder.categoryImage);
-
+        holder.categoryImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(mContext,category.getCategoryID()+"sad",Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(mContext,TypeCategoryPage.class);
+                intent.putExtra("categoryId",category.getCategoryID());
+                intent.putExtra("categoryName",category.getCategoryName());
+                mContext.startActivity(intent);
+            }
+        });
     }
 
     @Override

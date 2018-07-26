@@ -13,6 +13,7 @@ public class WellcomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wellcome);
+         project.view.util.CustomInterface.setStatusBarColor(this);
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -22,4 +23,5 @@ public class WellcomeActivity extends AppCompatActivity {
             }
         },1500);
     }
+
 }
