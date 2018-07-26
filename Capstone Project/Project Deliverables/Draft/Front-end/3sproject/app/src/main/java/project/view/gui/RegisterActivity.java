@@ -13,10 +13,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 
 import java.io.IOException;
+import java.util.StringTokenizer;
 
 import project.objects.User;
 import project.retrofit.APIService;
@@ -24,6 +26,7 @@ import project.retrofit.ApiUtils;
 import project.view.R;
 import project.view.model.ResultRegister;
 import project.view.util.CustomInterface;
+import project.view.util.MD5Library;
 import project.view.util.Regex;
 import retrofit2.Call;
 import retrofit2.Response;
@@ -165,9 +168,17 @@ public class RegisterActivity extends AppCompatActivity {
 
                 if (isUserName /*&& !isName && !isPassword && confirm*/&& isEmail && isPhone ) {
                     us.setUsername(etUserName.getText().toString());
-                    us.setPhone(etPhoneNumber.getText().toString());
-                    us.setEmail(etEmail.getText().toString());
-                    us.setPassword(etPassword.getText().toString());
+                    us.setPhone(etPhoneNumber.getText().toString().trim().replaceAll("\\s+",""));
+                    StringTokenizer st = new StringTokenizer(etName.getText().toString().trim().replaceAll("\\s+"," ")," ");
+                    if(st.hasMoreTokens())
+                    us.setFirst_name(st.nextToken());
+                    StringBuilder last_name = new StringBuilder();
+                    while (st.hasMoreTokens()){
+                        last_name.append(st.nextToken());
+                    }
+                    us.setLast_name(last_name.toString());
+                    us.setEmail(etEmail.getText().toString().trim().replaceAll("\\s+",""));
+                    us.setPassword(MD5Library.md5(etPassword.getText().toString().trim()));
                     gson = new Gson();
                     final Call<ResultRegister> call = apiUserService.registerUserNew(us);
                     RegisterUserAsyncTask1 asyncTask = new RegisterUserAsyncTask1();
@@ -350,6 +361,7 @@ public class RegisterActivity extends AppCompatActivity {
         protected void onPostExecute(String aVoid) {
             super.onPostExecute(aVoid);
             //if (aVoid == null) return;
+            Toast.makeText(RegisterActivity.this, "Đăng kí thành công", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(RegisterActivity.this,LoginPage.class);
             intent.putExtra("username",aVoid);
             startActivity(intent);

@@ -109,8 +109,6 @@ public class HomeActivity extends AppCompatActivity{
         Bundle bundle = getIntent().getExtras();
         if (bundle.getString("user") != null) {
             userJSON = bundle.getString("user");
-            Toast.makeText(HomeActivity.this,userJSON,Toast.LENGTH_LONG).show();
-            Log.d("user",userJSON);
             storeJSON = bundle.getString("store");
             //tạo đối tượng getSharedPreferences
             SharedPreferences pre = getSharedPreferences("authentication", Context.MODE_PRIVATE);

@@ -175,6 +175,8 @@ public class LoginPage extends AppCompatActivity {
         errorMessage = (TextView) findViewById(R.id.errorMessage);
         usernameValue = (TextView) findViewById(R.id.usernameValue);
         passwordValue = (TextView) findViewById(R.id.passwordValue);
+        String username = getIntent().getStringExtra("username");
+        usernameValue.setText(username);
     }
 
     @Override

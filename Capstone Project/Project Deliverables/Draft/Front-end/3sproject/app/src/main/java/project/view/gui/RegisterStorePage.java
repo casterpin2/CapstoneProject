@@ -369,11 +369,7 @@ public class RegisterStorePage extends AppCompatActivity implements OnMapReadyCa
                     Address a = address.get(i);
                     for (int j = 0; j < a.getTypes().length; j++) {
                         if (a.getTypes()[j].equalsIgnoreCase("street_number")) {
-                            try {
-                                location.setApartment_number(Integer.parseInt(a.getLong_name()));
-                            }catch (NumberFormatException e){
-                                //location.setApartment_number(Integer.parseInt(a.getLong_name()));
-                            }
+                                location.setApartment_number(a.getLong_name());
                         }
                         if (a.getTypes()[j].equalsIgnoreCase("route")) {
                             location.setStreet(a.getLong_name());

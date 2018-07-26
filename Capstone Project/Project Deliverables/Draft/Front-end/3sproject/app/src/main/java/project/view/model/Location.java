@@ -9,7 +9,7 @@ public class Location {
     private int id;
     @SerializedName("apartment_number")
     @Expose
-    private int apartment_number;
+    private String apartment_number;
     @SerializedName("street")
     @Expose
     private String street;
@@ -32,7 +32,7 @@ public class Location {
     public Location() {
     }
 
-    public Location(int apartment_number, String street, String county, String district, String city, String latitude, String longitude) {
+    public Location(String apartment_number, String street, String county, String district, String city, String latitude, String longitude) {
         this.apartment_number = apartment_number;
         this.street = street;
         this.county = county;
@@ -42,11 +42,11 @@ public class Location {
         this.longitude = longitude;
     }
 
-    public int getApartment_number() {
+    public String getApartment_number() {
         return apartment_number;
     }
 
-    public void setApartment_number(int apartment_number) {
+    public void setApartment_number(String apartment_number) {
         this.apartment_number = apartment_number;
     }
 
