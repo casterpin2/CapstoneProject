@@ -18,6 +18,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.gson.Gson;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import project.firebase.Firebase;
@@ -172,9 +173,14 @@ public class UserSearchProductListViewCustomAdapter extends BaseAdapter {
         @Override
         protected void onPostExecute(List<NearByStore> list) {
             super.onPostExecute(list);
+            ArrayList<String> listStore = new ArrayList<>();
             if (list != null) {
                 Intent toNearByStore = new Intent(context,NearbyStorePage.class);
-                toNearByStore.putExtra("listStore",new Gson().toJson(list));
+                for (int i = 0 ; i< list.size();i++){
+                    String storeJSON = new Gson().toJson(list.get(i),NearByStore.class);
+                    listStore.add(storeJSON);
+                }
+                toNearByStore.putExtra("listStore",listStore);
                 context.startActivity(toNearByStore);
             }
 

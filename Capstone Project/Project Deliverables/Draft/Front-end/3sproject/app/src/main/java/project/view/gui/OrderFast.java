@@ -7,6 +7,7 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
@@ -39,12 +40,14 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.storage.StorageReference;
+import com.google.gson.Gson;
 import com.suke.widget.SwitchButton;
 
 import java.util.Calendar;
 
 import project.firebase.Firebase;
 
+import project.objects.User;
 import project.view.UserOrderFast.OrderDetail;
 import project.view.UserOrderFast.ProductDetail;
 import project.view.R;
@@ -52,7 +55,7 @@ import project.view.util.Formater;
 
 
 public class OrderFast extends AppCompatActivity implements OnMapReadyCallback{
-//    int minteger = 1;
+    //    int minteger = 1;
 //    int max = 20000;
     private TextView productName, productPrice, salePrice, promotionPercent, sumOrder;
     private TextView tvBuyerNameError, etPhone, handleAddressText, etBuyerName;
@@ -69,6 +72,7 @@ public class OrderFast extends AppCompatActivity implements OnMapReadyCallback{
     private int userID;
 
     //googleMap
+    private final project.view.model.Location location = new project.view.model.Location();
     int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
     private LocationManager locationManager;
     double handleLongtitude = 0.0;
@@ -79,6 +83,7 @@ public class OrderFast extends AppCompatActivity implements OnMapReadyCallback{
     final static int REQUEST_LOCATION = 1;
     private GoogleMap mMap;
     private String handleLocationPlace = "";
+    private User user;
 
     //Calendar
     private int mYear, mMonth, mDay, mHour, mMinute;
@@ -108,8 +113,26 @@ public class OrderFast extends AppCompatActivity implements OnMapReadyCallback{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_fast);
         mapping();
+        SharedPreferences pre = getSharedPreferences("authentication", Context.MODE_PRIVATE);
+        String userJSON = pre.getString("user", "");
+        Toast.makeText(this,userJSON,Toast.LENGTH_LONG);
+        if (userJSON .isEmpty()){
+            user = new User();
+        } else {
+            user = new Gson().fromJson(userJSON,User.class);
+        }
 
-        userID = LoginPage.login.getUser().getId();
+        userID = user.getId();
+        if (userID != 0) {
+            String buyerName = user.getFirst_name() + " " + user.getLast_name();
+            String buyerPhone = user.getPhone();
+            etBuyerName.setText(buyerName);
+            etPhone.setText(buyerPhone);
+        } else {
+            etBuyerName.setText("");
+            etPhone.setText("");
+        }
+
 
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorApplication)));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -287,26 +310,26 @@ public class OrderFast extends AppCompatActivity implements OnMapReadyCallback{
         return  displayPrice;
     }
 
-        public void mapping(){
-            productImage = (ImageView) findViewById(R.id.productImage);
-            productName = (TextView) findViewById(R.id.productName);
-            productPrice = (TextView) findViewById(R.id.productPrice);
-            salePrice = (TextView) findViewById(R.id.salePrice);
-            promotionPercent = (TextView) findViewById(R.id.promotionPercent);
-            sumOrder = (TextView) findViewById(R.id.sumOrder);
-            etBuyerName = (TextView) findViewById(R.id.etBuyerName);
-            tvBuyerNameError = (TextView) findViewById(R.id.tvBuyerNameError);
-            etPhone = (TextView) findViewById(R.id.etPhone);
-            handleAddressText = (TextView) findViewById(R.id.handleAddressText);
-            decreaseBtn = (Button) findViewById(R.id.decreaseBtn);
-            increaseBtn = (Button) findViewById(R.id.increaseBtn);
-            orderBtn = (Button) findViewById(R.id.orderBtn);
-            productQuantity = (EditText) findViewById(R.id.productQuantity);
-            switch_button = (SwitchButton) findViewById(R.id.switch_button);
-            handleAddressLayout = (RelativeLayout) findViewById(R.id.handleAddressLayout);
-            orderDate = (EditText) findViewById(R.id.orderDate);
-            orderTime = (EditText) findViewById(R.id.orderTime);
-        }
+    public void mapping(){
+        productImage = (ImageView) findViewById(R.id.productImage);
+        productName = (TextView) findViewById(R.id.productName);
+        productPrice = (TextView) findViewById(R.id.productPrice);
+        salePrice = (TextView) findViewById(R.id.salePrice);
+        promotionPercent = (TextView) findViewById(R.id.promotionPercent);
+        sumOrder = (TextView) findViewById(R.id.sumOrder);
+        etBuyerName = (TextView) findViewById(R.id.etBuyerName);
+        tvBuyerNameError = (TextView) findViewById(R.id.tvBuyerNameError);
+        etPhone = (TextView) findViewById(R.id.etPhone);
+        handleAddressText = (TextView) findViewById(R.id.handleAddressText);
+        decreaseBtn = (Button) findViewById(R.id.decreaseBtn);
+        increaseBtn = (Button) findViewById(R.id.increaseBtn);
+        orderBtn = (Button) findViewById(R.id.orderBtn);
+        productQuantity = (EditText) findViewById(R.id.productQuantity);
+        switch_button = (SwitchButton) findViewById(R.id.switch_button);
+        handleAddressLayout = (RelativeLayout) findViewById(R.id.handleAddressLayout);
+        orderDate = (EditText) findViewById(R.id.orderDate);
+        orderTime = (EditText) findViewById(R.id.orderTime);
+    }
 
 
     public void increaseQuantity() {
@@ -344,7 +367,6 @@ public class OrderFast extends AppCompatActivity implements OnMapReadyCallback{
         }
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -365,11 +387,8 @@ public class OrderFast extends AppCompatActivity implements OnMapReadyCallback{
             if (location != null) {
                 autoLatitude = location.getLatitude();
                 autoLongtitude = location.getLongitude();
-//                StringBuilder stringBuilder = new StringBuilder();
-//                stringBuilder.append(autoLatitude).append(",").append(autoLongtitude);
-//                mAPI = ApiUtils.getAPIServiceMap();
-//                final Call<GoogleMapJSON> call = mAPI.getLocation(stringBuilder.toString(),GOOGLE_MAP_KEY);
-//                new RegisterStorePage.CallMapAPI().execute(call);
+                this.location.setLatitude(String.valueOf(autoLatitude));
+                this.location.setLongitude(String.valueOf(autoLongtitude));
                 markerToMap(autoLongtitude, autoLatitude, mMap, "Ví trí của bạn");
             } else {
                 Toast.makeText(this, "Chưa có vị trí định vị!!", Toast.LENGTH_SHORT).show();
@@ -382,13 +401,6 @@ public class OrderFast extends AppCompatActivity implements OnMapReadyCallback{
 
         if (requestCode == 1) {
             if (resultCode == Activity.RESULT_OK) {
-//                cityID = data.getIntExtra("cityID", cityID);
-//                townID = data.getIntExtra("townID", townID);
-//                communeID = data.getIntExtra("communeID", communeID);
-
-//                city.setText(String.valueOf(cityID));
-//                town.setText(String.valueOf(townID));
-//                commune.setText(String.valueOf(communeID));
 
             }
             if (resultCode == Activity.RESULT_CANCELED) {
@@ -402,6 +414,8 @@ public class OrderFast extends AppCompatActivity implements OnMapReadyCallback{
                     handleAddressText.setText(handleLocationPlace);
                     handleLongtitude = place.getLatLng().longitude;
                     handleLatitude = place.getLatLng().latitude;
+                    this.location.setLatitude(String.valueOf(handleLatitude));
+                    this.location.setLongitude(String.valueOf(handleLongtitude));
 //                    StringBuilder stringBuilder = new StringBuilder();
 //                    stringBuilder.append(handleLatitude).append(",").append(handleLongtitude);
 //                    mAPI = ApiUtils.getAPIServiceMap();

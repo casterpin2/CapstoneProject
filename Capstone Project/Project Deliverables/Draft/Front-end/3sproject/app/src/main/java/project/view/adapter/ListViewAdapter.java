@@ -48,73 +48,75 @@ public class ListViewAdapter extends BaseAdapter {
         this.layout = layout;
         this.storeList = storeList;
     }
-
     @SuppressLint("ResourceAsColor")
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View view = convertView;
         ViewHolder holder;
         final NearByStore store = storeList.get(position);
-        if (view  == null){
-            LayoutInflater li;
-            li = LayoutInflater.from(getContext());
-            view = li.inflate(R.layout.nearby_store_page_custom_list_view, null);
-            holder = new ViewHolder();
-            holder.storeName = (TextView) view.findViewById(R.id.storeName);
-            holder.storeAddress = (TextView) view.findViewById(R.id.storeAddress);
-            holder.distance =(TextView) view.findViewById(R.id.distance);
-            holder.productPrice =(TextView) view.findViewById(R.id.productPrice);
-            holder.promotionPercent = (TextView) view.findViewById(R.id.promotionPercent);
-            holder.test = (LinearLayout) view.findViewById(R.id.test);
-            holder.orderBtn = (Button) view.findViewById(R.id.orderBtn);
+        if (convertView != null)
+            return convertView;
+        else {
+            if (view == null) {
+                LayoutInflater li;
+                li = LayoutInflater.from(getContext());
+                view = li.inflate(R.layout.nearby_store_page_custom_list_view, null);
+                holder = new ViewHolder();
+                holder.storeName = (TextView) view.findViewById(R.id.storeName1);
+                holder.storeAddress = (TextView) view.findViewById(R.id.storeAddress);
+                holder.distance = (TextView) view.findViewById(R.id.distance);
+                holder.productPrice = (TextView) view.findViewById(R.id.productPrice1);
+                holder.promotionPercent = (TextView) view.findViewById(R.id.promotionPercent1);
+                holder.test = (LinearLayout) view.findViewById(R.id.test1);
+                holder.orderBtn = (Button) view.findViewById(R.id.orderBtn1);
 
-            view.setTag(holder);
-        }else{
-            holder = (ViewHolder) view.getTag();
-        }
-
-        if(store != null) {
-            holder.storeName.setText(store.getName());
-            holder.storeAddress.setText(store.getAddress());
-            holder.distance.setText(String.valueOf(store.getDistance())+ " km");
-
-
-            if(store.getPromotion() > 0.0){
-                holder.promotionPercent.setVisibility(View.VISIBLE);
-                holder.promotionPercent.setText(Formater.formatDoubleToInt(String.valueOf(store.getPromotion())));
-                double salePriceDouble = store.getPrice() * store.getPromotion() / 100;
-                long salePriceLong = (long) salePriceDouble;
-                long displayPrice = (long)store.getPrice() - salePriceLong ;
-                holder.productPrice.setText(Formater.formatDoubleToMoney(String.valueOf(displayPrice)));
-            } else if (store.getPromotion() == 0.0){
-                holder.promotionPercent.setVisibility(View.INVISIBLE);
-                holder.productPrice.setText(Formater.formatDoubleToMoney(String.valueOf(store.getPrice())));
-//                holder.promotionPercent.setText(formatDoubleToInt(context, String.valueOf(store.getPromotionPercent())));
+                view.setTag(holder);
+            } else {
+                holder = (ViewHolder) view.getTag();
             }
 
-            holder.orderBtn.setOnClickListener(new View.OnClickListener() {
+            if (store != null) {
+                holder.storeName.setText(store.getName());
+                holder.storeAddress.setText(store.getAddress());
+                holder.distance.setText(String.valueOf(store.getDistance()) + " km");
+
+
+                if (store.getPromotion() > 0.0) {
+                    holder.promotionPercent.setVisibility(View.VISIBLE);
+                    holder.promotionPercent.setText(Formater.formatDoubleToMoney(String.valueOf(store.getPromotion())));
+                    double salePriceDouble = store.getPrice() * store.getPromotion() / 100;
+                    long salePriceLong = (long) salePriceDouble;
+                    long displayPrice = (long) store.getPrice();
+                    holder.productPrice.setText(Formater.formatDoubleToMoney(String.valueOf(displayPrice)));
+                } else if (store.getPromotion() == 0.0) {
+                    holder.promotionPercent.setVisibility(View.INVISIBLE);
+                    holder.productPrice.setText(Formater.formatDoubleToMoney(String.valueOf(store.getPrice())));
+//                holder.promotionPercent.setText(formatDoubleToInt(context, String.valueOf(store.getPromotionPercent())));
+                }
+
+                holder.orderBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        Intent intent = new Intent(getContext(), MainActivity.class);
+                        intent.putExtra("storeName", store.getName());
+                        getContext().startActivity(intent);
+                    }
+                });
+            }
+
+            view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    int storeID = store.getId();
+                    Intent toStoreInformation = new Intent(getContext(), StoreInformationPage.class);
+                    toStoreInformation.putExtra("storeID", storeID);
+                    getContext().startActivity(toStoreInformation);
+//                    Toast.makeText(context, "Nhảy vào màn thông tin cửa hàng", Toast.LENGTH_SHORT).show();
 
-                    Intent intent = new Intent(getContext(), MainActivity.class);
-                    intent.putExtra("storeName", store.getName());
-                    getContext().startActivity(intent);
                 }
             });
         }
-
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int storeID = store.getId();
-                Intent toStoreInformation = new Intent(getContext(), StoreInformationPage.class);
-                toStoreInformation.putExtra("storeID", storeID);
-                getContext().startActivity(toStoreInformation);
-//                    Toast.makeText(context, "Nhảy vào màn thông tin cửa hàng", Toast.LENGTH_SHORT).show();
-
-            }
-        });
-
         return view;
     }
 
@@ -132,8 +134,5 @@ public class ListViewAdapter extends BaseAdapter {
         Button orderBtn;
 
     }
-
-
-
 
 }
