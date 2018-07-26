@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @author DatNQ
  */
 public class LocationEntites implements Serializable{
-    private int apartment_number;
+    private String apartment_number;
     private String street;
     private String county;
     private String district;
@@ -31,7 +31,7 @@ public class LocationEntites implements Serializable{
     public LocationEntites() {
     }
 
-    public LocationEntites(int apartment_number, String street, String county, String district, String city, String latitude, String longitude) {
+    public LocationEntites(String apartment_number, String street, String county, String district, String city, String latitude, String longitude) {
         this.apartment_number = apartment_number;
         this.street = street;
         this.county = county;
@@ -41,11 +41,11 @@ public class LocationEntites implements Serializable{
         this.longitude = longitude;
     }
 
-    public int getApartment_number() {
+    public String getApartment_number() {
         return apartment_number;
     }
 
-    public void setApartment_number(int apartment_number) {
+    public void setApartment_number(String apartment_number) {
         this.apartment_number = apartment_number;
     }
 

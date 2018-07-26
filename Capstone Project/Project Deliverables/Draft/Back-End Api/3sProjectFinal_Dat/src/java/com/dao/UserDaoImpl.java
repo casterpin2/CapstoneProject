@@ -50,10 +50,11 @@ public class UserDaoImpl extends BaseDao implements UserDao {
 
     private String INSERT_IMAGE_STORE = "INSERT INTO Image_Store(image_id,store_id) VALUES (53,?)";
 
-    private String QUERY_USER_SEARCH_PRODUCT = "SELECT a.*,b.path FROM \n"
-            + "            (SELECT a.*,b.image_id FROM \n"
-            + "            (SELECT a.id,a.name,b.name as brand_name FROM\n"
-            + "            (SELECT a.id,name,b.brand_id FROM Product a , Type_Brand b WHERE a.type_brand_id = b.id AND MATCH(name) AGAINST (? IN NATURAL LANGUAGE MODE)) a,Brand b WHERE a.brand_id = b.id) a , Image_Product b WHERE a.id = b.product_id) a , Image b WHERE a.image_id = b.id";
+    private String QUERY_USER_SEARCH_PRODUCT = "SELECT a.id,a.name,a.description,a.brand_name,a.path,b.name as type_name FROM\n" +
+"(SELECT a.*,b.path FROM\n" +
+"(SELECT a.*,b.image_id FROM\n" +
+"(SELECT a.id,a.name,a.description,a.type_id,b.name as brand_name FROM\n" +
+"(SELECT a.id,name,description,b.brand_id,b.type_id FROM Product a , Type_Brand b WHERE a.type_brand_id = b.id AND MATCH(name) AGAINST (? IN NATURAL LANGUAGE MODE)) a,Brand b WHERE a.brand_id =b.id) a , Image_Product b WHERE a.id = b.product_id) a , Image b WHERE a.image_id = b.id) a, Type b WHERE a.type_id = b.id";
 
     private String BUSINESS_CORE = "SELECT a.*,b.promotion,b.price FROM \n"
             + "(SELECT a.apartment_number,a.street,a.county,a.district,a.city,a.longitude,a.latitude,a.distance,b.* FROM\n"
@@ -405,6 +406,8 @@ public class UserDaoImpl extends BaseDao implements UserDao {
             while (rs.next()) {
                 entites = new ProductAddEntites();
                 entites.setProduct_id(rs.getInt("id"));
+                entites.setType_name(rs.getString("type_name"));
+                entites.setDescription(rs.getString("description"));
                 entites.setProduct_name(rs.getString("name"));
                 entites.setBrand_name(rs.getString("brand_name"));
                 entites.setImage_path(rs.getString("path"));

@@ -42,7 +42,7 @@ public class StoreDaoImpl extends BaseDao implements StoreDao {
             locationId = getLocaionIdIfExist(location.getLatitude(), location.getLongitude());
             if (locationId == -1) {
                 pre = conn.prepareStatement(REGISTER_LOCATION_INSERT);
-                pre.setInt(1, location.getApartment_number());
+                pre.setString(1, location.getApartment_number());
                 pre.setString(2, location.getStreet());
                 pre.setString(3, location.getCounty());
                 pre.setString(4, location.getDistrict());
