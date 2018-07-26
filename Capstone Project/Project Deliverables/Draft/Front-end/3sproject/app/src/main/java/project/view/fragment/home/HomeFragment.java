@@ -37,6 +37,7 @@ import java.util.List;
 import project.firebase.Firebase;
 import project.retrofit.APIService;
 import project.view.gui.BarcodeActivity;
+import project.view.gui.SaleProductDisplayPage;
 import project.view.model.Brand;
 import project.view.gui.BrandDisplayPage;
 import project.view.model.Category;
@@ -48,6 +49,7 @@ import project.view.gui.UserSearchProductPage;
 import project.view.adapter.BrandRecycleViewAdapter;
 import project.view.adapter.CategoryRecycleViewAdapter;
 import project.view.adapter.SliderImageViewPagerAdapter;
+import project.view.util.GridSpacingItemDecoration;
 import retrofit2.Call;
 import retrofit2.Response;
 
@@ -63,7 +65,7 @@ public class HomeFragment extends Fragment {
     private APIService apiService;
     private SwipeRefreshLayout swipeRefreshLayout;
     private LinearLayoutManager linearLayoutManagerCategory;
-    private TextView tv_more_category,tv_more_brand;
+    private TextView tv_more_category,tv_more_brand,tv_more_sale;
     private View view;
     ViewPager viewPager;
     LinearLayout sliderDotspanel;
@@ -72,7 +74,8 @@ public class HomeFragment extends Fragment {
     private LinearLayoutManager linearLayoutManagerBrand;
     private ImageButton imgBarCode;
     private CardView searchLayout;
-
+    private Toolbar toolbar;
+    private NestedScrollView  scroll;
 
     public HomeFragment() {
 
@@ -85,21 +88,12 @@ public class HomeFragment extends Fragment {
 
        // TweakUI.makeTransparent(this.getActivity());
         view = inflater.inflate(R.layout.fragment_home,container,false);
-        Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
+        findView();
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
         setHasOptionsMenu(true);
-
-        NestedScrollView scroll = view.findViewById(R.id.scrollView);
-
         scroll.setVerticalScrollBarEnabled(false);
         scroll.setHorizontalScrollBarEnabled(false);
-
-        imgBarCode = view.findViewById(R.id.imgBarCode);
-
-        viewPager =view.findViewById(R.id.img_slider);
         viewPager.requestFocus();
-        searchLayout = view.findViewById(R.id.searchLayout);
-        sliderDotspanel = view.findViewById(R.id.slider_dots);
 
         SliderImageViewPagerAdapter viewPagerAdapter = new SliderImageViewPagerAdapter(getContext());
 
@@ -166,7 +160,6 @@ public class HomeFragment extends Fragment {
            }
        });
 
-        tv_more_category = view.findViewById(R.id.tv_more_category);
         tv_more_category.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -175,12 +168,20 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        tv_more_brand = view.findViewById(R.id.tv_more_brand);
         tv_more_brand.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(getContext(), BrandDisplayPage.class);
                 startActivity(i);
+            }
+        });
+
+
+        tv_more_sale.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                Intent i = new Intent(getContext(), SaleProductDisplayPage.class);
+//                startActivity(i);
             }
         });
 
@@ -196,73 +197,30 @@ public class HomeFragment extends Fragment {
         new BrandData().execute(callBrand);
 
         //sale
-        recyclerViewSaleProduct= view.findViewById(R.id.list_sale);
-
         apiService = APIService.retrofit.create(APIService.class);
         final Call<List<SaleProduct>> callSale = apiService.getSaleProduct();
         new SaleData().execute(callSale);
-
-
-
-
-//        swipeRefreshLayout = view.findViewById(R.id.main_layout);
-//        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-//            @Override
-//            public void onRefresh() {
-//                refreshContent();
-//            }
-//        });
-//        swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
-
       return view;
     }
 
+private void findView(){
+    scroll = view.findViewById(R.id.scrollView);
+    imgBarCode = view.findViewById(R.id.imgBarCode);
+    viewPager =view.findViewById(R.id.img_slider);
+    searchLayout = view.findViewById(R.id.searchLayout);
+    sliderDotspanel = view.findViewById(R.id.slider_dots);
+    tv_more_category = view.findViewById(R.id.tv_more_category);
+    tv_more_brand = view.findViewById(R.id.tv_more_brand);
+    tv_more_sale = view.findViewById(R.id.tv_more_sale);
+    recyclerViewSaleProduct= view.findViewById(R.id.list_sale);
+    toolbar = (Toolbar) view.findViewById(R.id.toolbar);
+}
 
-
-//
-//    private void refreshContent(){
-//
-//             swipeRefreshLayout.setRefreshing(false);
-//    }
     private int dpToPx(int dp) {
         Resources r = getResources();
         return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics()));
     }
 
-    public class GridSpacingItemDecoration extends RecyclerView.ItemDecoration {
-
-        private int spanCount;
-        private int spacing;
-        private boolean includeEdge;
-
-        public GridSpacingItemDecoration(int spanCount, int spacing, boolean includeEdge) {
-            this.spanCount = spanCount;
-            this.spacing = spacing;
-            this.includeEdge = includeEdge;
-        }
-
-        @Override
-        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-            int position = parent.getChildAdapterPosition(view); // item position
-            int column = position % spanCount; // item column
-
-            if (includeEdge) {
-                outRect.left = spacing - column * spacing / spanCount; // spacing - column * ((1f / spanCount) * spacing)
-                outRect.right = (column + 1) * spacing / spanCount; // (column + 1) * ((1f / spanCount) * spacing)
-
-                if (position < spanCount) { // top edge
-                    outRect.top = spacing;
-                }
-                outRect.bottom = spacing; // item bottom
-            } else {
-                outRect.left = column * spacing / spanCount; // column * ((1f / spanCount) * spacing)
-                outRect.right = spacing - (column + 1) * spacing / spanCount; // spacing - (column + 1) * ((1f /    spanCount) * spacing)
-                if (position >= spanCount) {
-                    outRect.top = spacing; // item top
-                }
-            }
-        }
-    }
     private class CategoryData extends AsyncTask<Call, List<Category>, Void>{
         @Override
         protected void onPreExecute() {
@@ -381,7 +339,6 @@ public class HomeFragment extends Fragment {
 
         @Override
         protected Void doInBackground(Call... calls) {
-
             try {
                 Call<List<SaleProduct>> call = calls[0];
                 Response<List<SaleProduct>> response = call.execute();

@@ -188,6 +188,17 @@
                         android:layout_height="wrap_content"
                         android:clipToPadding="false"
                         android:scrollbars="vertical" />
+                    <TextView
+                        android:id="@+id/tv_more_sale"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:text="@string/lb_more"
+                        android:gravity="center"
+                        android:textColor="@color/lb_more"
+                        android:textSize="18dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="32dp"/>
                 </LinearLayout>
             </LinearLayout>
         </android.support.v4.widget.NestedScrollView>
