@@ -15,9 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import project.view.gui.OrderDetailManagement;
-import project.view.model.OrderDetail;
 import project.view.gui.ProductInStoreByUserDisplayPage;
 import project.view.R;
+import project.view.model.OrderDetail;
 import project.view.util.Formater;
 
 public class OrderManagementAdapter extends ArrayAdapter<OrderDetail> {
@@ -53,15 +53,16 @@ public class OrderManagementAdapter extends ArrayAdapter<OrderDetail> {
         final OrderDetail order = arrContact.get(position);
 
         viewHolder.tvStoreName.setText(order.getStoreName());
-        viewHolder.tvPrice.setText(formater.formatDoubleToMoney(String.valueOf(order.getPrice().toString())));
-        viewHolder.tvOrderDate.setText(order.getOrderDate().toString());
+        viewHolder.tvPrice.setText(formater.formatDoubleToMoney(String.valueOf(order.getFinalPrice()+"")));
+
+        viewHolder.tvOrderDate.setText(order.getOrderDateTime().toString());
 
         viewHolder.tvStoreName.setPaintFlags(viewHolder.tvStoreName.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         viewHolder.imgInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent goToOrderDetail = new Intent(context, OrderDetailManagement.class);
-                goToOrderDetail.putExtra("orderID",order.getOrderCode());
+                goToOrderDetail.putExtra("orderID",order.getOrderID());
                 context.startActivity(goToOrderDetail);
             }
         });
@@ -70,7 +71,7 @@ public class OrderManagementAdapter extends ArrayAdapter<OrderDetail> {
             public void onClick(View v) {
                 //Toast.makeText(context,"Go to product in store",Toast.LENGTH_SHORT).show();
                 Intent goToProductInStore = new Intent(context, ProductInStoreByUserDisplayPage.class);
-                goToProductInStore.putExtra("storeID",order.getStoreId());
+                goToProductInStore.putExtra("storeID",order.getStoreID());
                 context.startActivity(goToProductInStore);
             }
         });

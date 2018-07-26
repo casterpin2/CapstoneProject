@@ -22,6 +22,16 @@ public class ProductDetail {
     @SerializedName("productDesc")
     @Expose
     private String productDesc;
+    private long productPrice;
+    private double promotionPercent;
+
+    public ProductDetail(int productID, String productName, String productImage, long productPrice, double promotionPercent) {
+        this.productID = productID;
+        this.productName = productName;
+        this.productImage = productImage;
+        this.productPrice = productPrice;
+        this.promotionPercent = promotionPercent;
+    }
 
     public ProductDetail(int productID, String productName, String productImage, String categoryName, String brandName, String productDesc) {
         this.productID = productID;
@@ -30,6 +40,22 @@ public class ProductDetail {
         this.categoryName = categoryName;
         this.brandName = brandName;
         this.productDesc = productDesc;
+    }
+
+    public long getProductPrice() {
+        return productPrice;
+    }
+
+    public void setProductPrice(long productPrice) {
+        this.productPrice = productPrice;
+    }
+
+    public double getPromotionPercent() {
+        return promotionPercent;
+    }
+
+    public void setPromotionPercent(double promotionPercent) {
+        this.promotionPercent = promotionPercent;
     }
 
     public int getProductID() {

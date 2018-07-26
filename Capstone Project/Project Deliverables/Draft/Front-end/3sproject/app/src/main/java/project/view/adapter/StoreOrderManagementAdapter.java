@@ -4,7 +4,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.widget.ArrayAdapter;
 
-import project.view.model.OrderDetail;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -17,6 +16,7 @@ import java.util.List;
 
 import project.view.gui.OrderDetailManagement;
 import project.view.R;
+import project.view.model.OrderDetail;
 import project.view.util.Formater;
 
 
@@ -53,16 +53,16 @@ public class StoreOrderManagementAdapter extends ArrayAdapter<OrderDetail> {
             }
             final OrderDetail order = orderDetails.get(position);
 
-            viewHolder.tvCusName.setText(order.getName());
+            viewHolder.tvCusName.setText(order.getUserName());
             viewHolder.tvAddress.setText(order.getAddress());
-            viewHolder.tvOrderDate.setText(order.getOrderDate().toString());
-            viewHolder.tvPrice.setText(formater.formatDoubleToMoney(order.getPrice().toString()));
+            viewHolder.tvOrderDate.setText(order.getOrderDateTime().toString());
+            viewHolder.tvPrice.setText(formater.formatDoubleToMoney(order.getFinalPrice()+""));
 
             viewHolder.btnDetail.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent goToOrderDetail = new Intent(context, OrderDetailManagement.class);
-                    goToOrderDetail.putExtra("orderID",order.getOrderCode());
+                    goToOrderDetail.putExtra("orderID",order.getOrderID());
                     context.startActivity(goToOrderDetail);
                 }
             });

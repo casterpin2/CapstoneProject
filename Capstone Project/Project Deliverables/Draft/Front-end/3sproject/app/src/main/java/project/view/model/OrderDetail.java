@@ -5,36 +5,82 @@ import java.util.Date;
 
 public class OrderDetail {
 
-    private String orderCode;
+    private String orderID;
+    private int userID;
+    private String userName;
+    private int productID;
     private String productName;
-    private int quantity;
-    private Date orderDate;
-    private String name;
-    private String phoneNumber;
-    private String address;
-    private Double price;
+    private int storeID;
     private String storeName;
-    private int storeId;
+    private long finalPrice;
+    private int productQuantity;
+    private String phone;
+    private String orderDateTime;
+    private double longtitude;
+    private double latitude;
+    private String address;
 
-    public OrderDetail(String orderCode, String productName, int quantity, Date orderDate, String name, String phoneNumber, String address, Double price, String storeName, int storeId) {
-        this.orderCode = orderCode;
+    public OrderDetail() {
+    }
+
+
+    public OrderDetail(String orderID, String userName, String productName, int storeID, String storeName, long finalPrice, int productQuantity, String phone, String orderDateTime, String address) {
+        this.orderID = orderID;
+        this.userName = userName;
         this.productName = productName;
-        this.quantity = quantity;
-        this.orderDate = orderDate;
-        this.name = name;
-        this.phoneNumber = phoneNumber;
-        this.address = address;
-        this.price = price;
+        this.storeID = storeID;
         this.storeName = storeName;
-        this.storeId = storeId;
+        this.finalPrice = finalPrice;
+        this.productQuantity = productQuantity;
+        this.phone = phone;
+        this.orderDateTime = orderDateTime;
+        this.address = address;
     }
 
-    public String getOrderCode() {
-        return orderCode;
+    public OrderDetail(int userID, String userName, int productID, int storeID, long finalPrice, int productQuantity, String phone, String orderDateTime, double longtitude, double latitude, String address) {
+        this.userID = userID;
+        this.userName = userName;
+        this.productID = productID;
+        this.storeID = storeID;
+        this.finalPrice = finalPrice;
+        this.productQuantity = productQuantity;
+        this.phone = phone;
+        this.orderDateTime = orderDateTime;
+        this.longtitude = longtitude;
+        this.latitude = latitude;
+        this.address = address;
     }
 
-    public void setOrderCode(String orderCode) {
-        this.orderCode = orderCode;
+    public String getOrderID() {
+        return orderID;
+    }
+
+    public void setOrderID(String orderID) {
+        this.orderID = orderID;
+    }
+
+    public int getUserID() {
+        return userID;
+    }
+
+    public void setUserID(int userID) {
+        this.userID = userID;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public int getProductID() {
+        return productID;
+    }
+
+    public void setProductID(int productID) {
+        this.productID = productID;
     }
 
     public String getProductName() {
@@ -45,52 +91,12 @@ public class OrderDetail {
         this.productName = productName;
     }
 
-    public int getQuantity() {
-        return quantity;
+    public int getStoreID() {
+        return storeID;
     }
 
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
-
-    public Date getOrderDate() {
-        return orderDate;
-    }
-
-    public void setOrderDate(Date orderDate) {
-        this.orderDate = orderDate;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public Double getPrice() {
-        return price;
-    }
-
-    public void setPrice(Double price) {
-        this.price = price;
+    public void setStoreID(int storeID) {
+        this.storeID = storeID;
     }
 
     public String getStoreName() {
@@ -101,17 +107,64 @@ public class OrderDetail {
         this.storeName = storeName;
     }
 
-    public int getStoreId() {
-        return storeId;
+    public long getFinalPrice() {
+        return finalPrice;
     }
 
-    public void setStoreId(int storeId) {
-        this.storeId = storeId;
+    public void setFinalPrice(long finalPrice) {
+        this.finalPrice = finalPrice;
     }
 
+    public int getProductQuantity() {
+        return productQuantity;
+    }
+
+    public void setProductQuantity(int productQuantity) {
+        this.productQuantity = productQuantity;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getOrderDateTime() {
+        return orderDateTime;
+    }
+
+    public void setOrderDateTime(String orderDateTime) {
+        this.orderDateTime = orderDateTime;
+    }
+
+    public double getLongtitude() {
+        return longtitude;
+    }
+
+    public void setLongtitude(double longtitude) {
+        this.longtitude = longtitude;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
     public static ArrayList<OrderDetail> dataTest(){
         ArrayList<OrderDetail> arrContact = new ArrayList<>();
-        OrderDetail orderDetail = new OrderDetail("1111111111","Nước khoáng lavi 500ml",3,new Date(),"Vũ Sỹ Tùng","0988 933 xxx", "Hà Nội, Việt Nam",100000.0,"Cửa hàng của thằng nào đó",1);
+        OrderDetail orderDetail = new OrderDetail("1111111111","Nước khoáng lavi 500ml","Nước lavi 500ml",1,"Cửa hàng của tôi",22222, 2,"0916606094",new Date().toString(),"Thạch thất, Hà nội");
 
         for (int i = 0; i<20;i++){
             arrContact.add(orderDetail);
@@ -120,3 +173,6 @@ public class OrderDetail {
         return  arrContact;
     }
 }
+
+
+

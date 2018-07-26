@@ -11,8 +11,8 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import project.view.adapter.OrderManagementAdapter;
-import project.view.model.OrderDetail;
 import project.view.R;
+import project.view.model.OrderDetail;
 
 
 public class DoingOrderUser extends Fragment {

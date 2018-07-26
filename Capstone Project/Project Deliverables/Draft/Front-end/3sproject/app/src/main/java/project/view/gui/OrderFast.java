@@ -48,9 +48,9 @@ import java.util.Calendar;
 import project.firebase.Firebase;
 
 import project.objects.User;
-import project.view.UserOrderFast.OrderDetail;
-import project.view.UserOrderFast.ProductDetail;
+import project.view.model.OrderDetail;
 import project.view.R;
+import project.view.model.ProductDetail;
 import project.view.util.Formater;
 
 
