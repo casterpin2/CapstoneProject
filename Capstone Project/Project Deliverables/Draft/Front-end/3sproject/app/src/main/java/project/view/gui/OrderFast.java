@@ -50,7 +50,7 @@ import project.firebase.Firebase;
 import project.objects.User;
 import project.view.model.OrderDetail;
 import project.view.R;
-import project.view.model.ProductDetail;
+import project.view.model.ProductInStoreDetail;
 import project.view.util.Formater;
 
 
@@ -67,7 +67,7 @@ public class OrderFast extends AppCompatActivity implements OnMapReadyCallback{
     private RelativeLayout handleAddressLayout;
 
     private OrderDetail order;
-    private ProductDetail productDetail;
+    private ProductInStoreDetail productDetail;
 
     private int userID;
 
@@ -146,7 +146,7 @@ public class OrderFast extends AppCompatActivity implements OnMapReadyCallback{
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         order = new OrderDetail();
-        productDetail = new ProductDetail(1,"Samsung Galaxy Note 8 64Gb màu xám","",20000,10);
+        productDetail = new ProductInStoreDetail(1,"Samsung Galaxy Note 8 64Gb màu xám","","","",20000,10,"");
 
         productName.setText(productDetail.getProductName());
 

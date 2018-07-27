@@ -16,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -50,6 +51,7 @@ import project.retrofit.APIService;
 import project.retrofit.ApiUtils;
 import project.view.R;
 import project.view.model.Store;
+import project.view.util.CustomInterface;
 import project.view.util.Regex;
 import retrofit2.Call;
 import retrofit2.Response;
@@ -73,6 +75,7 @@ public class RegisterStorePage extends AppCompatActivity implements OnMapReadyCa
     double autoLatitude = 0.0;
     double autoLongtitude = 0.0;
     private String result = "";
+    private RelativeLayout main_layout;
     public void setAutoLatitude(double autoLatitude) {
         this.autoLatitude = autoLatitude;
     }
@@ -85,6 +88,14 @@ public class RegisterStorePage extends AppCompatActivity implements OnMapReadyCa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register_store_page);
+        findView();
+        main_layout.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                CustomInterface.hideKeyboard(view,getBaseContext());
+                return false;
+            }
+        });
         //mAPI = ApiUtils.getAPIServiceMap();
         //mAPI1 = ApiUtils.getAPIService();
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
@@ -100,17 +111,6 @@ public class RegisterStorePage extends AppCompatActivity implements OnMapReadyCa
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-
-        handleAddressLayout = (RelativeLayout) findViewById(R.id.handleAddressLayout);
-
-        handleAddressText = (TextView) findViewById(R.id.handleAddressText);
-        tvStoreNameError = (TextView) findViewById(R.id.tvStoreNameError);
-        etPhone = (EditText) findViewById(R.id.etPhone);
-        etStoreName = (EditText) findViewById(R.id.etStoreName);
-
-        iconSwitch = findViewById(R.id.switch_button);
-
-        registerBtn = (Button) findViewById(R.id.registerBtn);
 
 
         etStoreName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -187,6 +187,20 @@ public class RegisterStorePage extends AppCompatActivity implements OnMapReadyCa
 
     }
 
+    private void findView(){
+
+        handleAddressLayout = (RelativeLayout) findViewById(R.id.handleAddressLayout);
+        main_layout = findViewById(R.id.main_layout);
+        handleAddressText = (TextView) findViewById(R.id.handleAddressText);
+        tvStoreNameError = (TextView) findViewById(R.id.tvStoreNameError);
+        etPhone = (EditText) findViewById(R.id.etPhone);
+        etStoreName = (EditText) findViewById(R.id.etStoreName);
+        main_layout = findViewById(R.id.main_layout);
+        iconSwitch = findViewById(R.id.switch_button);
+
+        registerBtn = (Button) findViewById(R.id.registerBtn);
+
+    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 

@@ -36,30 +36,17 @@ public class RegisterActivity extends AppCompatActivity {
     private TextView tvUserName,tvName, tvPassword, tvConfirmPassword, tvEmail, tvPhoneNumber, toLoginPageBtn;
     private Button btnRegister;
     private boolean isUserName,isName, isPassword, confirm, isEmail, isPhone = true;
-    private ScrollView scroll;
     private APIService apiUserService;
     private User us;
     private Gson gson;
-    private Toolbar toolbar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-
-        getSupportActionBar().setTitle(R.string.register_page_registerTitle);
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorApplication)));
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-
         findView();
         CustomInterface.setStatusBarColor(this);
-
         apiUserService = ApiUtils.getAPIService();
-
-        scroll.setVerticalScrollBarEnabled(false);
-        scroll.setHorizontalScrollBarEnabled(false);
-
         us = new User();
 
         etUserName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -184,36 +171,6 @@ public class RegisterActivity extends AppCompatActivity {
                     RegisterUserAsyncTask1 asyncTask = new RegisterUserAsyncTask1();
                     asyncTask.execute(call);
 
-//                    apiUserService.registerUserNew(test).enqueue(new Callback<Boolean>() {
-//                        @Override
-//                        public void onResponse(Call<Boolean> call, Response<Boolean> response) {
-////                            String inta = response.body();
-////                            Toast.makeText(RegisterActivity.this, inta+"", Toast.LENGTH_SHORT).show();
-//                            if (response.isSuccessful()) {
-//                                Toast.makeText(RegisterActivity.this, "OK", Toast.LENGTH_LONG).show();
-//                            }
-//                        }
-//
-//                        @Override
-//                        public void onFailure(Call<Boolean> call, Throwable t) {
-//
-//                        }
-//                    });
-
-
-                } else {
-//                    apiUserService.getCategory().enqueue(new Callback<List<Category>>() {
-//                        @Override
-//                        public void onResponse(Call<List<Category>> call, Response<List<Category>> response) {
-//                            int i = response.body().size();
-//                            Toast.makeText(RegisterActivity.this, i+"", Toast.LENGTH_SHORT).show();
-//                        }
-//
-//                        @Override
-//                        public void onFailure(Call<List<Category>> call, Throwable t) {
-//
-//                        }
-//                    });
                 }
             }
         });
@@ -229,7 +186,6 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void findView(){
-        toolbar = findViewById(R.id.toolbar);
         btnRegister = findViewById(R.id.btnRegister);
         etUserName = findViewById(R.id.etUserName);
         etName = findViewById(R.id.etName);
@@ -237,9 +193,7 @@ public class RegisterActivity extends AppCompatActivity {
         etConfirmPass = findViewById(R.id.etConfirmPassword);
         etEmail = findViewById(R.id.etEmail);
         etPhoneNumber = findViewById(R.id.etPhoneNumber);
-        scroll = findViewById(R.id.scroll);
         toLoginPageBtn = findViewById(R.id.toLoginPageBtn);
-
         tvUserName = findViewById(R.id.tvUserName);
         tvName = findViewById(R.id.tvName);
         tvPassword = findViewById(R.id.tvPassword);

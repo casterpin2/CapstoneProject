@@ -10,7 +10,10 @@ import android.os.Bundle;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -22,6 +25,7 @@ import project.retrofit.ApiUtils;
 import project.view.adapter.ProductBrandDisplayListViewAdapter;
 import project.view.R;
 import project.view.model.ProductBrand;
+import project.view.util.CustomInterface;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -35,12 +39,13 @@ public class ProductBrandDisplay extends AppCompatActivity {
     private SearchView searchView;
     List<ProductBrand> list = new ArrayList<>();
     String brandName = "";
+    private RelativeLayout main_layout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_brand_display);
-
+        main_layout = findViewById(R.id.main_layout);
         theListView = (ListView) findViewById(R.id.mainListView);
         apiService = ApiUtils.getAPIService();
         brandID = getIntent().getIntExtra("brandID", -1);
@@ -50,9 +55,14 @@ public class ProductBrandDisplay extends AppCompatActivity {
         new NetworkCall().execute(call);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorApplication)));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-
         getSupportActionBar().setTitle(brandName);
+        main_layout.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                CustomInterface.hideKeyboard(view,getBaseContext());
+                return false;
+            }
+        });
     }
 
     @Override

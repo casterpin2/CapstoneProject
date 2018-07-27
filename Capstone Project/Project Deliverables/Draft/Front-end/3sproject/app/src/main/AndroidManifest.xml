@@ -39,8 +39,12 @@
             android:name=".gui.TypeCategoryPage"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".gui.ProductTypeDisplay" />
-        <activity android:name=".gui.RegisterActivity" />
-        <activity android:name=".gui.ChangePasswordActivity" />
+        <activity android:name=".gui.RegisterActivity" >
+
+        </activity>
+        <activity android:name=".gui.ChangePasswordActivity"
+            android:windowSoftInputMode="adjustResize">
+           </activity>
         <activity android:name=".gui.ProductInStoreDisplayPage" />
         <activity android:name=".gui.EditProductInStorePage" />
         <activity
@@ -86,17 +90,21 @@
             android:exported="true" />
         <activity
             android:name=".gui.UserSearchProductPage"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".gui.EditStoreInformationPage" />
-        <activity android:name=".gui.FeedbackPage"></activity>
+        <activity android:name=".gui.FeedbackPage" />
         <activity android:name=".gui.BarcodeActivity" />
-        <activity android:name=".gui.WellcomeActivity"
+        <activity
+            android:name=".gui.WellcomeActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity android:name=".FeedbackActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+
         </activity>
     </application>
 

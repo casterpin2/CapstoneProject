@@ -1,5 +1,6 @@
 package project.view.gui;
 
+import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -7,9 +8,12 @@ import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import project.view.R;
@@ -21,18 +25,26 @@ public class ChangePasswordActivity extends AppCompatActivity{
     private TextView tvOldPass, tvConfirmPass,tvNewPass;
     private TextInputEditText oldPass, newPass, confirmPass;
     private ProgressBar loadingBar;
+    private RelativeLayout main_layout;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_password);
         findView();
-
+        CustomInterface.setStatusBarColor(this);
         getSupportActionBar().setTitle(R.string.title_change_password);
         if (getSupportActionBar() != null){
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
+        main_layout.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                CustomInterface.hideKeyboard(view,getBaseContext());
+                return false;
+            }
+        });
         loadingBar = (ProgressBar) findViewById(R.id.loadingBar);
         loadingBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorApplication), android.graphics.PorterDuff.Mode.MULTIPLY);
 
@@ -65,7 +77,7 @@ public class ChangePasswordActivity extends AppCompatActivity{
     }
 
     private void findView(){
-
+        main_layout = findViewById(R.id.main_layout);
         tvOldPass = findViewById(R.id.tvOldPass);
         tvNewPass = findViewById(R.id.tvNewPassword);
         tvConfirmPass = findViewById(R.id.tvConfirmPass);

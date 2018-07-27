@@ -9,12 +9,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -29,6 +31,7 @@ import java.util.Calendar;
 import java.util.Locale;
 
 import project.view.R;
+import project.view.util.CustomInterface;
 import project.view.util.TweakUI;
 
 public class EditUserInformationPage extends AppCompatActivity {
@@ -41,6 +44,7 @@ public class EditUserInformationPage extends AppCompatActivity {
     Calendar myCalendar ;
     Bundle extras;
     int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
+    private RelativeLayout main_layout;
 
     String[] genderName = {"Chưa xác định", "Nam", "Nữ"};
 
@@ -48,6 +52,14 @@ public class EditUserInformationPage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_user_information_page);
+        main_layout = findViewById(R.id.main_layout);
+        main_layout.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                CustomInterface.hideKeyboard(view,getBaseContext());
+                return false;
+            }
+        });
 
         TweakUI.makeTransparent(this);
         mapping();

@@ -22,6 +22,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AbsListView;
@@ -31,6 +32,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.andremion.counterfab.CounterFab;
@@ -84,7 +86,7 @@ public class SearchProductAddToStore extends AppCompatActivity {
     boolean limitData = false;
     int page =1;
     private  String barcode;
-
+    private RelativeLayout main_layout;
     public Context getContext() {
         return context;
     }
@@ -92,14 +94,22 @@ public class SearchProductAddToStore extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        setContentView(R.layout.activity_search_product_add_to_store);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorApplication)));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(R.string.searhProductAddToStorePageTitle);
         CustomInterface.setStatusBarColor(this);
-        setContentView(R.layout.activity_search_product_add_to_store);
+
 
         loadingBar = (ProgressBar) findViewById(R.id.loadingBar);
+        main_layout = findViewById(R.id.main_layout);
+        main_layout.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                CustomInterface.hideKeyboard(view,getBaseContext());
+                return false;
+            }
+        });
         loadingBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorApplication), android.graphics.PorterDuff.Mode.MULTIPLY);
 
         mAPI = ApiUtils.getAPIService();

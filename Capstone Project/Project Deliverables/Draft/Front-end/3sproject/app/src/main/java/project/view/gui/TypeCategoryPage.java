@@ -10,6 +10,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -18,6 +19,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -35,6 +37,7 @@ import project.view.adapter.CategoryCustomCardviewAdapter;
 import project.view.adapter.TypePageListViewAdapter;
 import project.view.model.ResultRegister;
 import project.view.model.Type;
+import project.view.util.CustomInterface;
 import retrofit2.Call;
 import android.widget.ImageButton;
 import retrofit2.Response;
@@ -52,15 +55,20 @@ public class TypeCategoryPage extends AppCompatActivity {
     private SearchView searchView;
     private ImageButton imgBack,imgBarCode;
     private List<Type> searchedProduct = new ArrayList<>();
+    private CoordinatorLayout main_layout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_type_category_page);
-
-
-
         findView();
+        main_layout.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                CustomInterface.hideKeyboard(view,getBaseContext());
+                return false;
+            }
+        });
         imgBarCode.setVisibility(View.INVISIBLE);
         project.view.util.CustomInterface.setStatusBarColor(this);
         String categoryName = getIntent().getStringExtra("categoryName");
@@ -99,6 +107,7 @@ public class TypeCategoryPage extends AppCompatActivity {
     }
 
       private void findView(){
+        main_layout = findViewById(R.id.main_layout);
         searchView = findViewById(R.id.searchViewQuery);
         loadingBar = (android.widget.ProgressBar) findViewById(R.id.loadingBar);
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);

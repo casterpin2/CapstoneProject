@@ -3,10 +3,13 @@ package project.view.gui;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.ColorDrawable;
 import android.location.LocationManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
@@ -26,11 +29,12 @@ import com.suke.widget.SwitchButton;
 
 import project.view.R;
 import project.view.model.StoreInformation;
+import project.view.util.CustomInterface;
 
 public class EditStoreInformationPage extends AppCompatActivity implements OnMapReadyCallback {
     private EditText etStoreName, etPhone;
     private TextView handleAddressText;
-    private RelativeLayout handleAddressLayout;
+    private RelativeLayout handleAddressLayout,main_layout;
     private SwitchButton switch_button;
 
     //getIntent data
@@ -70,6 +74,16 @@ public class EditStoreInformationPage extends AppCompatActivity implements OnMap
         setContentView(R.layout.activity_edit_store_information_page);
 
         findView();
+        main_layout.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                CustomInterface.hideKeyboard(view,getBaseContext());
+                return false;
+            }
+        });
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorApplication)));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         getIntentFromStoreInformationPage();
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
@@ -129,6 +143,7 @@ public class EditStoreInformationPage extends AppCompatActivity implements OnMap
     }
 
     public void findView(){
+        main_layout = findViewById(R.id.main_layout);
         etStoreName = (EditText) findViewById(R.id.etStoreName);
         etPhone = (EditText) findViewById(R.id.etPhone);
         handleAddressText = (TextView) findViewById(R.id.handleAddressText);
@@ -144,6 +159,15 @@ public class EditStoreInformationPage extends AppCompatActivity implements OnMap
         registedDate = getIntent().getStringExtra("storeName");
         storeLongtitude = getIntent().getDoubleExtra("longtitude", 0.0);
         storeLatitude = getIntent().getDoubleExtra("latitude", 0.0);
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override

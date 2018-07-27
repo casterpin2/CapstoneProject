@@ -22,10 +22,12 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 
@@ -48,10 +50,11 @@ import project.view.adapter.ListViewAdapter;
 import project.view.util.CustomInterface;
 
 public class NearbyStorePage extends AppCompatActivity implements OnMapReadyCallback {
-    ListView storeListView;
-    ListViewAdapter adapter;
-    List<String> nearByStore = new ArrayList<>();
-    List<NearByStore> list = new ArrayList<>();
+    private ListView storeListView;
+    private ListViewAdapter adapter;
+    private List<String> nearByStore = new ArrayList<>();
+    private List<NearByStore> list = new ArrayList<>();
+    private RelativeLayout main_layout;
     private GoogleMap mMap;
 
     private LocationManager locationManager;
@@ -81,6 +84,15 @@ public class NearbyStorePage extends AppCompatActivity implements OnMapReadyCall
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorApplication)));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("");
+
+        main_layout = findViewById(R.id.main_layout);
+        main_layout.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                CustomInterface.hideKeyboard(view,getBaseContext());
+                return false;
+            }
+        });
         nearByStore = getIntent().getStringArrayListExtra("listStore");
 
         if (nearByStore != null){
