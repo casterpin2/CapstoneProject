@@ -5,6 +5,13 @@
     android:layout_marginBottom="15dp"
     android:layout_marginTop="15dp">
     <!--product avatar-->
+    <ProgressBar
+        android:id="@+id/loadingBar"
+        style="?android:attr/progressBarStyleInverse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="invisible"/>
 
     <LinearLayout
         android:id="@+id/productImageLayout"

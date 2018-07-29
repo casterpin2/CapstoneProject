@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -40,6 +41,7 @@ public class ProductBrandDisplay extends AppCompatActivity {
     List<ProductBrand> list = new ArrayList<>();
     String brandName = "";
     private RelativeLayout main_layout;
+    private ProgressBar loadingBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +49,7 @@ public class ProductBrandDisplay extends AppCompatActivity {
         setContentView(R.layout.activity_product_brand_display);
         main_layout = findViewById(R.id.main_layout);
         theListView = (ListView) findViewById(R.id.mainListView);
+        loadingBar = (ProgressBar) findViewById(R.id.loadingBar);
         apiService = ApiUtils.getAPIService();
         brandID = getIntent().getIntExtra("brandID", -1);
         brandName = getIntent().getStringExtra("brandName");
@@ -63,6 +66,8 @@ public class ProductBrandDisplay extends AppCompatActivity {
                 return false;
             }
         });
+        CustomInterface.setStatusBarColor(this);
+        loadingBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorApplication), android.graphics.PorterDuff.Mode.MULTIPLY);
     }
 
     @Override
@@ -149,11 +154,13 @@ public class ProductBrandDisplay extends AppCompatActivity {
 
         @Override
         protected void onPreExecute() {
+            loadingBar.setVisibility(View.VISIBLE);
             super.onPreExecute();
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
+            loadingBar.setVisibility(View.INVISIBLE);
             super.onPostExecute(aVoid);
 
         }

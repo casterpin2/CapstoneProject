@@ -180,8 +180,8 @@ public class HomeFragment extends Fragment {
         tv_more_sale.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Intent i = new Intent(getContext(), SaleProductDisplayPage.class);
-//                startActivity(i);
+                Intent toSaleProductPage = new Intent(getContext(), SaleProductDisplayPage.class);
+                startActivity(toSaleProductPage);
             }
         });
 
