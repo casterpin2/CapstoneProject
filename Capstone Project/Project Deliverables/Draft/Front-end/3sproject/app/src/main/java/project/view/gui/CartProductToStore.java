@@ -208,11 +208,13 @@ public class CartProductToStore extends AppCompatActivity {
     public class ProductData extends AsyncTask<Call,Boolean,Void> {
         @Override
         protected void onPreExecute() {
+            loadingBar.setVisibility(View.VISIBLE);
             super.onPreExecute();
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
+            loadingBar.setVisibility(View.INVISIBLE);
             super.onPostExecute(aVoid);
         }
 
