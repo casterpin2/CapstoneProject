@@ -85,30 +85,10 @@
                 </android.support.design.widget.TextInputLayout>
 
                 <android.support.design.widget.TextInputLayout
-                    android:id="@+id/addressLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/usernameLayout"
-                    android:layout_marginTop="8dp">
-
-                    <android.support.design.widget.TextInputEditText
-                        android:id="@+id/addressText"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:focusable="false"
-                        android:focusedByDefault="false"
-                        android:hint="Địa chỉ"
-                        android:inputType="text"
-                        android:singleLine="true"
-                        android:textSize="13dp" />
-
-                </android.support.design.widget.TextInputLayout>
-
-                <android.support.design.widget.TextInputLayout
                     android:id="@+id/phoneLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/addressLayout"
+                    android:layout_below="@+id/usernameLayout"
                     android:layout_marginTop="8dp">
 
                     <android.support.design.widget.TextInputEditText

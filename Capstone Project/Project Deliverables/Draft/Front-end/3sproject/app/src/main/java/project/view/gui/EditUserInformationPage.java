@@ -37,7 +37,7 @@ import project.view.util.TweakUI;
 public class EditUserInformationPage extends AppCompatActivity {
     private static final String TAG = "EditUserInformationPage";
 
-    private EditText userNameText, addressText, phoneText, emailText, dobText;
+    private EditText userNameText, phoneText, emailText, dobText;
     private Button saveBtn, cancelBtn;
     private ImageButton backBtn;
     private Spinner genderSpinner;
@@ -95,7 +95,6 @@ public class EditUserInformationPage extends AppCompatActivity {
                 String phone = phoneText.getText().toString();
                 String email = emailText.getText().toString();
                 String dob = dobText.getText().toString();
-                String address = addressText.getText().toString();
 
                 String gender = "";
                 if (genderSpinner.getSelectedItemPosition() == 0) {
@@ -109,7 +108,7 @@ public class EditUserInformationPage extends AppCompatActivity {
 
                 if (extras.getString("name").equals(name) && extras.getString("phone").equals(phone)
                         && extras.getString("email").equals(email) && extras.getString("dob").equals(dob)
-                        && extras.getString("address").equals(address) && extras.getString("gender").equals(gender)) {
+                         && extras.getString("gender").equals(gender)) {
 
                     Intent toUserInformationPage = new Intent(EditUserInformationPage.this, UserInformationPage.class);
                     setResult(201, toUserInformationPage);
@@ -129,7 +128,6 @@ public class EditUserInformationPage extends AppCompatActivity {
             public void onClick(View v) {
                 if(extras.getString("name").equals(userNameText.getText().toString())
                         && extras.getString("phone").equals(phoneText.getText().toString())
-                        && extras.getString("address").equals(addressText.getText().toString())
                         && extras.getString("email").equals(emailText.getText().toString())
                         && extras.getString("dob").equals(dobText.getText().toString())) {
                     onBackPressed();
@@ -185,7 +183,6 @@ public class EditUserInformationPage extends AppCompatActivity {
             public void onClick(View v) {
                 if(extras.getString("name").equals(userNameText.getText().toString())
                         && extras.getString("phone").equals(phoneText.getText().toString())
-                        && extras.getString("address").equals(addressText.getText().toString())
                         && extras.getString("email").equals(emailText.getText().toString())
                         && extras.getString("dob").equals(dobText.getText().toString())) {
                     onBackPressed();
@@ -214,27 +211,11 @@ public class EditUserInformationPage extends AppCompatActivity {
             }
         });
 
-        addressText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    Intent intent =
-                            new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_FULLSCREEN)
-                                    .build(EditUserInformationPage.this);
-                    startActivityForResult(intent, PLACE_AUTOCOMPLETE_REQUEST_CODE);
 
-                } catch (GooglePlayServicesRepairableException e) {
-                    // TODO: Handle the error.
-                } catch (GooglePlayServicesNotAvailableException e) {
-                    // TODO: Handle the error.
-                }
-            }
-        });
     }
 
     private void mapping() {
         userNameText = findViewById(R.id.userNameText);
-        addressText = findViewById(R.id.addressText);
         phoneText = findViewById(R.id.phoneText);
         emailText = findViewById(R.id.emailText);
         dobText =  findViewById(R.id.dobText);
@@ -254,7 +235,6 @@ public class EditUserInformationPage extends AppCompatActivity {
             userNameText.setText(extras.getString("name"));
             dobText.setText(extras.getString("dob"));
             emailText.setText(extras.getString("email"));
-            addressText.setText(extras.getString("address"));
             phoneText.setText(extras.getString("phone"));
 
 //            String gender = extras.getString("gender");
@@ -279,7 +259,6 @@ public class EditUserInformationPage extends AppCompatActivity {
         userNameText.setSelection(userNameText.getText().length());
         dobText.setSelection(dobText.getText().length());
         emailText.setSelection(emailText.getText().length());
-        addressText.setSelection(addressText.getText().length());
         phoneText.setSelection(phoneText.getText().length());
 
     }
@@ -288,7 +267,7 @@ public class EditUserInformationPage extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                if(userNameText.getText().toString().equals(extras.getString("name")) && addressText.getText().toString().equals(extras.getString("address"))
+                if(userNameText.getText().toString().equals(extras.getString("name"))
                         && phoneText.getText().toString().equals(extras.getString("phone")) && emailText.getText().toString().equals(extras.getString("email"))){
                     finish();
                     return true;
@@ -334,53 +313,47 @@ public class EditUserInformationPage extends AppCompatActivity {
         extras.putString("phone", phoneText.getText().toString());
         extras.putString("email", emailText.getText().toString());
         extras.putString("dob", dobText.getText().toString());
-        extras.putString("address", addressText.getText().toString());
         extras.putString("gender", gender);
-
-
-
         Intent intent = new Intent(EditUserInformationPage.this, UserInformationPage.class);
         intent.putExtras(extras);
         setResult(200, intent);
         finish();
     }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        if (requestCode == 1) {
-            if (resultCode == Activity.RESULT_OK) {
-//                cityID = data.getIntExtra("cityID", cityID);
-//                townID = data.getIntExtra("townID", townID);
-//                communeID = data.getIntExtra("communeID", communeID);
-
-//                city.setText(String.valueOf(cityID));
-//                town.setText(String.valueOf(townID));
-//                commune.setText(String.valueOf(communeID));
-
-            }
-            if (resultCode == Activity.RESULT_CANCELED) {
-                //Write your code if there's no result
-            }
-
-            if (requestCode == PLACE_AUTOCOMPLETE_REQUEST_CODE) {
-                if (resultCode == RESULT_OK) {
-                    Place place = PlaceAutocomplete.getPlace(this, data);
-                    String placeAddress = place.getAddress().toString();
-                    addressText.setText(placeAddress);
-                    Toast.makeText(EditUserInformationPage.this, "Place : " +placeAddress, Toast.LENGTH_SHORT).show();
-
-                } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
-                    Status status = PlaceAutocomplete.getStatus(this, data);
-                    // TODO: Handle the error.
-                    Toast.makeText(EditUserInformationPage.this, "An error occurred: " + status, Toast.LENGTH_SHORT).show();
-
-                } else if (resultCode == RESULT_CANCELED) {
-                    // The user canceled the operation.
-                }
-            }
-        }
-    }
+//
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//
+//        if (requestCode == 1) {
+//            if (resultCode == Activity.RESULT_OK) {
+////                cityID = data.getIntExtra("cityID", cityID);
+////                townID = data.getIntExtra("townID", townID);
+////                communeID = data.getIntExtra("communeID", communeID);
+//
+////                city.setText(String.valueOf(cityID));
+////                town.setText(String.valueOf(townID));
+////                commune.setText(String.valueOf(communeID));
+//
+//            }
+//            if (resultCode == Activity.RESULT_CANCELED) {
+//                //Write your code if there's no result
+//            }
+//
+//            if (requestCode == PLACE_AUTOCOMPLETE_REQUEST_CODE) {
+//                if (resultCode == RESULT_OK) {
+//                    Place place = PlaceAutocomplete.getPlace(this, data);
+//
+//
+//                } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
+//                    Status status = PlaceAutocomplete.getStatus(this, data);
+//                    // TODO: Handle the error.
+//                    Toast.makeText(EditUserInformationPage.this, "An error occurred: " + status, Toast.LENGTH_SHORT).show();
+//
+//                } else if (resultCode == RESULT_CANCELED) {
+//                    // The user canceled the operation.
+//                }
+//            }
+//        }
+//    }
 
 
 
