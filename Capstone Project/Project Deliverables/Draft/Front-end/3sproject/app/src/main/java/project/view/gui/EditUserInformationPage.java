@@ -18,6 +18,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
@@ -30,6 +31,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import project.view.R;
 import project.view.util.CustomInterface;
 import project.view.util.TweakUI;
@@ -38,9 +40,11 @@ public class EditUserInformationPage extends AppCompatActivity {
     private static final String TAG = "EditUserInformationPage";
 
     private EditText userNameText, phoneText, emailText, dobText;
+    private TextView usernameError, phoneError, emailError, dobError;
     private Button saveBtn, cancelBtn;
     private ImageButton backBtn;
     private Spinner genderSpinner;
+    private CircleImageView profile_image;
     Calendar myCalendar ;
     Bundle extras;
     int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
@@ -66,12 +70,8 @@ public class EditUserInformationPage extends AppCompatActivity {
         getIncomingIntent();
         setLastSelector();
 
-        Log.d(TAG, "onCreate: ");
-
-
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, genderName);
         genderSpinner.setAdapter(adapter);
-
 
         Intent intent = getIntent();
         final Bundle extras = intent.getExtras();
@@ -84,6 +84,13 @@ public class EditUserInformationPage extends AppCompatActivity {
         } else if(gender.equals("Nữ")) {
             genderSpinner.setSelection(2);
         }
+
+        profile_image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(EditUserInformationPage.this, "Hello?", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -219,6 +226,12 @@ public class EditUserInformationPage extends AppCompatActivity {
         phoneText = findViewById(R.id.phoneText);
         emailText = findViewById(R.id.emailText);
         dobText =  findViewById(R.id.dobText);
+        profile_image= findViewById(R.id.profile_image);
+
+        usernameError = findViewById(R.id.usernameError);
+        phoneError = findViewById(R.id.phoneError);
+        emailError = findViewById(R.id.emailError);
+        dobError = findViewById(R.id.dobError);
 
         saveBtn = findViewById(R.id.saveBtn);
         cancelBtn = findViewById(R.id.cancelBtn);

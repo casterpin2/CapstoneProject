@@ -27,6 +27,22 @@
                         android:src="@drawable/cover"
                         app:civ_border_color="#ffffff"
                         app:civ_border_width="2dp" />
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBottom="@+id/profile_image"
+                        android:layout_alignRight="@+id/profile_image"
+                        android:background="#70000000">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/add"
+                            android:text="Thay đổi ảnh đại diện"
+                            android:textColor="@color/white"
+                            android:textSize="11dp"
+                            android:padding="3dp"/>
+                    </LinearLayout>
+
 
                 </RelativeLayout>
 
@@ -39,7 +55,7 @@
                     android:ellipsize="end"
                     android:gravity="center"
                     android:padding="8dp"
-                    android:text="Vu Tung"
+                    android:text="Thay đổi thông tin"
                     android:textColor="@color/colorWhite"
                     android:textSize="21dp" />
 
@@ -58,7 +74,7 @@
             </RelativeLayout>
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="fill_parent"
         android:layout_below="@id/rellay1">
         <RelativeLayout
                 android:layout_width="match_parent"
@@ -81,6 +97,13 @@
                         android:inputType="textCapWords"
                         android:singleLine="true"
                         android:textSize="13dp" />
+                    <TextView
+                        android:id="@+id/usernameError"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:textSize="10dp"
+                        android:textColor="@color/errorMess"/>
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -100,6 +123,13 @@
                         android:inputType="number"
                         android:singleLine="true"
                         android:textSize="13dp" />
+                    <TextView
+                        android:id="@+id/phoneError"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:textSize="10dp"
+                        android:textColor="@color/errorMess"/>
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -119,6 +149,13 @@
                         android:inputType="textEmailAddress"
                         android:singleLine="true"
                         android:textSize="13dp" />
+                    <TextView
+                        android:id="@+id/emailError"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:textSize="10dp"
+                        android:textColor="@color/errorMess"/>
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -127,8 +164,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/emailLayout"
-                    android:layout_marginTop="8dp"
-                    android:focusable="false">
+                    android:layout_marginTop="8dp">
 
                     <android.support.design.widget.TextInputEditText
                         android:id="@+id/dobText"
@@ -138,7 +174,16 @@
                         android:hint="Ngày sinh"
                         android:inputType="textEmailAddress"
                         android:singleLine="true"
-                        android:textSize="13dp" />
+                        android:textSize="13dp"
+                        android:focusableInTouchMode="false"
+                        android:focusable="false"/>
+                    <TextView
+                        android:id="@+id/dobError"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:textSize="10dp"
+                        android:textColor="@color/errorMess"/>
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -147,7 +192,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/dobLayout"
-                    android:layout_marginTop="8dp">
+                    android:layout_marginTop="10dp">
 
                     <TextView
                         android:id="@+id/textView6"

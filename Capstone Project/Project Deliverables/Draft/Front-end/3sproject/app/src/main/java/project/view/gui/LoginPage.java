@@ -52,6 +52,7 @@ public class LoginPage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_page);
+        findView();
         mAPI = ApiUtils.getAPIService();
         callbackManager = CallbackManager.Factory.create();
         getSupportActionBar().setTitle(getResources().getString(R.string.login_page_login3SBtn));
@@ -62,7 +63,7 @@ public class LoginPage extends AppCompatActivity {
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         loadingBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorApplication), android.graphics.PorterDuff.Mode.MULTIPLY);
 
-        findView();
+
 
         CustomInterface.setStatusBarColor(this);
 
