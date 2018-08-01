@@ -19,9 +19,6 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity android:name="project.firebase.Main2Activity">
-
-        </activity>
         <activity android:name=".gui.MainActivity" />
         <activity
             android:name=".gui.LoginPage"
@@ -103,17 +100,8 @@
         <activity android:name=".gui.BarcodeActivity" />
         <activity
             android:name=".gui.WellcomeActivity"
-<<<<<<< HEAD
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity android:name=".gui.Main3Activity">
-
-=======
-            android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
->>>>>>> 16d8067556e323950e4afdd3b9d89df2cbe91c49
         </activity>
     </application>
 
