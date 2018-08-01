@@ -9,9 +9,10 @@
     tools:context=".gui.EditProductInStorePage"
     android:id="@+id/scroll">
 <RelativeLayout
+
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/largeLayout"
+    android:id="@+id/main_layout"
     android:paddingBottom="10dp">
     <ProgressBar
         android:id="@+id/loadingBar"

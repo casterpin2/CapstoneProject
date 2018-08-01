@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -46,19 +47,23 @@ public class LoginPage extends AppCompatActivity {
     private APIService mAPI;
     public static Login login = new Login();
     private CallbackManager callbackManager;
+    private ProgressBar loadingBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_page);
+        findView();
         mAPI = ApiUtils.getAPIService();
         callbackManager = CallbackManager.Factory.create();
         getSupportActionBar().setTitle(getResources().getString(R.string.login_page_login3SBtn));
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorApplication)));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        CustomInterface.setStatusBarColor(this);
 
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        loadingBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorApplication), android.graphics.PorterDuff.Mode.MULTIPLY);
 
-        findView();
+
 
         CustomInterface.setStatusBarColor(this);
 
@@ -177,6 +182,7 @@ public class LoginPage extends AppCompatActivity {
         passwordValue = (TextView) findViewById(R.id.passwordValue);
         String username = getIntent().getStringExtra("username");
         usernameValue.setText(username);
+        loadingBar = (ProgressBar) findViewById(R.id.loadingBar);
     }
 
     @Override
@@ -199,6 +205,7 @@ public class LoginPage extends AppCompatActivity {
     private class CallAPI extends AsyncTask<Call, Void, Login> {
         @Override
         protected void onPreExecute() {
+            loadingBar.setVisibility(View.VISIBLE);
             super.onPreExecute();
         }
 
@@ -242,6 +249,7 @@ public class LoginPage extends AppCompatActivity {
                 //Glide.get(LoginPage.this).clearDiskCache();
             } catch (IOException e) {
             }
+            loadingBar.setVisibility(View.INVISIBLE);
             return result;
         }
     }

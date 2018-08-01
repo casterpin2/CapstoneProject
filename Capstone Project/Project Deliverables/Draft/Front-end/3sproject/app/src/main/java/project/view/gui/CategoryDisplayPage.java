@@ -8,6 +8,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -17,6 +18,7 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -45,6 +47,7 @@ import retrofit2.Response;
 
 public class CategoryDisplayPage extends AppCompatActivity {
 
+    private CoordinatorLayout main_layout;
     private RecyclerView recyclerView;
     private CategoryCustomCardviewAdapter adapter;
     private List<Category> categoryList;
@@ -60,6 +63,13 @@ public class CategoryDisplayPage extends AppCompatActivity {
         setContentView(R.layout.activity_category_display_page);
         CustomInterface.setStatusBarColor(this);
         findView();
+        main_layout.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                CustomInterface.hideKeyboard(view,getBaseContext());
+                return false;
+            }
+        });
         imgBarCode.setVisibility(View.INVISIBLE);
         loadingBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorApplication), android.graphics.PorterDuff.Mode.MULTIPLY);
         loadingBar.setVisibility(View.VISIBLE);
@@ -122,6 +132,7 @@ public class CategoryDisplayPage extends AppCompatActivity {
         }
     }
     private void findView(){
+        main_layout = findViewById(R.id.main_layout);
         searchView = findViewById(R.id.searchViewQuery);
         loadingBar = (ProgressBar) findViewById(R.id.loadingBar);
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);

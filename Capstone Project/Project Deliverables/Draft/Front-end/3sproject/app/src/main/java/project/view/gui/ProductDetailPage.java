@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,6 +36,7 @@ import project.view.adapter.UserSearchProductListViewCustomAdapter;
 import project.view.model.NearByStore;
 import project.view.model.Product;
 import project.view.model.ProductInStoreDetail;
+import project.view.util.CustomInterface;
 import project.view.util.Formater;
 import retrofit2.Call;
 import retrofit2.Response;
@@ -51,6 +53,7 @@ public class ProductDetailPage extends AppCompatActivity {
     private String productName ;
     private int storeID;
     private boolean isStoreProduct;
+    private ProgressBar loadingBar;
 
     final static int REQUEST_LOCATION = 1;
 
@@ -72,6 +75,9 @@ public class ProductDetailPage extends AppCompatActivity {
         getSupportActionBar().setTitle(productName);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorApplication)));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        CustomInterface.setStatusBarColor(this);
+        loadingBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorApplication), android.graphics.PorterDuff.Mode.MULTIPLY);
 
         storeID = getIntent().getIntExtra("storeID", -1);
         isStoreProduct = getIntent().getBooleanExtra("isStoreProduct", false);
@@ -153,6 +159,7 @@ public class ProductDetailPage extends AppCompatActivity {
         isProductInStoreLayout = (LinearLayout) findViewById(R.id.isProductInStoreLayout);
         productDetailLayout = (LinearLayout) findViewById(R.id.productDetailLayout);
         findStoreBtn = (Button) findViewById(R.id.findStoreBtn);
+        loadingBar = (ProgressBar) findViewById(R.id.loadingBar);
 
         productNotInStoreCategoryName = (TextView) findViewById(R.id.productNotInStoreCategoryName);
         productNotInStoreBrandName = (TextView) findViewById(R.id.productNotInStoreBrandName);
@@ -186,6 +193,13 @@ public class ProductDetailPage extends AppCompatActivity {
     }
 
     public class NearByStoreAsynTask1 extends AsyncTask<Call, Void, List<NearByStore>> {
+
+        @Override
+        protected void onPreExecute() {
+            loadingBar.setVisibility(View.VISIBLE);
+            super.onPreExecute();
+        }
+
         @Override
         protected List<NearByStore> doInBackground(Call... calls) {
             try {
@@ -214,6 +228,7 @@ public class ProductDetailPage extends AppCompatActivity {
                     listStore.add(storeJSON);
                 }
                 toNearByStore.putExtra("listStore",listStore);
+                loadingBar.setVisibility(View.VISIBLE);
                 startActivity(toNearByStore);
             }
 

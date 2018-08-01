@@ -16,10 +16,12 @@ import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,7 +45,7 @@ public class UserSearchProductPage extends AppCompatActivity {
     private TextView noHaveProduct;
     private LinearLayout haveProduct;
     private UserSearchProductListViewCustomAdapter adapter;
-
+    RelativeLayout main_layout;
 
     List<Product> productList = new ArrayList<>();
     private APIService mAPI;
@@ -59,7 +61,13 @@ public class UserSearchProductPage extends AppCompatActivity {
         setContentView(R.layout.activity_user_search_product_page);
         CustomInterface.setStatusBarColor(this);
         findView();
-
+        main_layout.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                CustomInterface.hideKeyboard(view,getBaseContext());
+                return false;
+            }
+        });
         mAPI = ApiUtils.getAPIService();
 
         turnOnLocation();
@@ -70,20 +78,11 @@ public class UserSearchProductPage extends AppCompatActivity {
                 finish();
             }
         });
-
-        noHaveProduct = (TextView) findViewById(R.id.noHaveProduct);
-        haveProduct = (LinearLayout) findViewById(R.id.haveProduct);
         setLayout(noHaveProduct, haveProduct);
-
         searchView.setFocusable(true);
         searchView.setFocusableInTouchMode(true);
-
-        productListView = (ListView) findViewById(R.id.productListView);
-
         productListView.setVerticalScrollBarEnabled(false);
         productListView.setHorizontalScrollBarEnabled(false);
-
-
         adapter = new UserSearchProductListViewCustomAdapter(this,R.layout.user_search_product_page_custom_list_view, productList, currentLatitude, currentLongtitude);
         productListView.setAdapter(adapter);
 
@@ -260,6 +259,11 @@ public class UserSearchProductPage extends AppCompatActivity {
 
 
     private void findView(){
+
+        noHaveProduct = (TextView) findViewById(R.id.noHaveProduct);
+        haveProduct = (LinearLayout) findViewById(R.id.haveProduct);
+        main_layout = findViewById(R.id.main_layout);
+        productListView = (ListView) findViewById(R.id.productListView);
         searchView = findViewById(R.id.searchViewQuery);
         imgBack = findViewById(R.id.backBtn);
         imgBarCode = findViewById(R.id.imgBarCode);

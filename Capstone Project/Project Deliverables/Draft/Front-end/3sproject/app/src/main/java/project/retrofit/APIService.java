@@ -41,12 +41,11 @@ public interface APIService {
     Call<Store> registerStore(@Body HashMap<String,String> map);
 
     @GET("getProductForAdd")
-    Call<List<Item>> getProducts(@Query("query") String query, @Query("page") int page);
+    Call<List<Item>> getProducts(@Query("query") String query, @Query("page") int page,@Query("storeId") int storeId);
 
     @POST("posts")
-    @FormUrlEncoded
-    Call<Boolean> insertProduct(@Field("jsonString") StringBuilder stringJson,
-                           @Field("storeId") int storeId);
+    Call<Boolean> insertProduct(@Body Item stringJson,
+                           @Query("storeId") int storeId);
 
     @GET("brands")
     Call<List<Brand>> getBrands();

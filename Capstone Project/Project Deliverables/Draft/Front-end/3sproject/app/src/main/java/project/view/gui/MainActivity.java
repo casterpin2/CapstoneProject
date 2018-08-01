@@ -19,18 +19,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final List<Item> getData = SearchProductAddToStore.addedProductList;
         TextView text = findViewById(R.id.text);
         Button button = findViewById(R.id.button);
 
         String storeName = getIntent().getStringExtra("storeName");
         Toast.makeText(this, "storeName" + storeName, Toast.LENGTH_SHORT).show();
 
-        if(getData.isEmpty()){
-
-        } else {
-            Toast.makeText(getApplicationContext(), getData.get(getData.size()-1).getProduct_name() + "", Toast.LENGTH_SHORT).show();
-        }
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

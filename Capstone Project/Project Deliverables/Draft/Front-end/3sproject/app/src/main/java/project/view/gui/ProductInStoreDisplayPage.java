@@ -30,8 +30,6 @@ import retrofit2.Call;
 import retrofit2.Response;
 
 public class ProductInStoreDisplayPage extends AppCompatActivity {
-
-    private List<ProductInStore> productList;
     private ProductInStoreCustomListViewAdapter adapter;
     private ListView theListView;
     private Button addNewBtn;
@@ -40,13 +38,21 @@ public class ProductInStoreDisplayPage extends AppCompatActivity {
     private int storeID;
     private TextView nullMessage;
     private SearchView searchView;
-    List<ProductInStore> list = new ArrayList<>();
+    private List<ProductInStore> list = new ArrayList<>();
 
     public ProductInStoreDisplayPage() {
     }
 
     public ViewGroup getContext() {
         return context;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        list.clear();
+        final Call<List<ProductInStore>> call = mAPI.getProductInStore(storeID);
+        new NetworkCall().execute(call);
     }
 
     @Override
@@ -59,7 +65,7 @@ public class ProductInStoreDisplayPage extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         storeID = getIntent().getIntExtra("storeID", -1);
         mAPI = ApiUtils.getAPIService();
-        final Call<List<ProductInStore>> call = mAPI.getProductInStore(1);
+        final Call<List<ProductInStore>> call = mAPI.getProductInStore(storeID);
 //        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
 //        getSupportActionBar().setCustomView(R.layout.actionbar_search_product_add_to_store_page);
 
@@ -88,6 +94,7 @@ public class ProductInStoreDisplayPage extends AppCompatActivity {
         @Override
         protected Void doInBackground(Call... calls) {
             try {
+                list.clear();
                 Call<List<ProductInStore>> call = calls[0];
                 final Response<List<ProductInStore>> response = call.execute();
                 for (int i = 0; i < response.body().size(); i++) {
@@ -127,7 +134,7 @@ public class ProductInStoreDisplayPage extends AppCompatActivity {
                             @Override
                             public void onClick(View v) {
                                 Intent toSearchProductToStore = new Intent(ProductInStoreDisplayPage.this, SearchProductAddToStore.class);
-//                toSearchProductToStore.putExtra("storeID",storeID);
+                                toSearchProductToStore.putExtra("storeID",storeID);
                                 startActivity(toSearchProductToStore);
                             }
                         });
@@ -194,4 +201,5 @@ public class ProductInStoreDisplayPage extends AppCompatActivity {
 
         return true;
     }
+
 }

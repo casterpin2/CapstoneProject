@@ -8,6 +8,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -17,10 +18,12 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.storage.StorageReference;
@@ -44,6 +47,7 @@ import retrofit2.Response;
 
 public class BrandDisplayPage extends AppCompatActivity {
 
+    private CoordinatorLayout main_layout;
     private RecyclerView recyclerView;
     private BrandCustomCardviewAdapter adapter;
     private List<Brand> brandList;
@@ -57,8 +61,14 @@ public class BrandDisplayPage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_brand_display_page);
-
         findView();
+        main_layout.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                CustomInterface.hideKeyboard(view,getBaseContext());
+                return false;
+            }
+        });
         imgBarCode.setVisibility(View.INVISIBLE);
         CustomInterface.setStatusBarColor(this);
         apiService = ApiUtils.getAPIService();
@@ -120,6 +130,7 @@ public class BrandDisplayPage extends AppCompatActivity {
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         imgBack = findViewById(R.id.backBtn);
         imgBarCode = findViewById(R.id.imgBarCode);
+        main_layout = findViewById(R.id.main_layout);
     }
     /**
      * Converting dp to pixel

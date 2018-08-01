@@ -137,6 +137,19 @@ public class Item implements Serializable{
         this.promotion = promotion;
     }
 
-
-
+    @Override
+    public String toString() {
+        return "Item{" +
+                "product_id=" + product_id +
+                ", product_name='" + product_name + '\'' +
+                ", brand_name='" + brand_name + '\'' +
+                ", description='" + description + '\'' +
+                ", category_name='" + category_name + '\'' +
+                ", type_name='" + type_name + '\'' +
+                ", image_path='" + image_path + '\'' +
+                ", price=" + price +
+                ", promotion=" + promotion +
+                ", requestBtnClickListener=" + requestBtnClickListener +
+                '}';
+    }
 }

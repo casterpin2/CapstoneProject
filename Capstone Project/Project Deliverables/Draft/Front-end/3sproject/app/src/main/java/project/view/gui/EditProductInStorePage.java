@@ -8,11 +8,13 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,31 +41,25 @@ public class EditProductInStorePage extends AppCompatActivity {
     private ImageView imageView;
     private ScrollView scroll;
     private ProgressBar loadingBar;
+    private RelativeLayout main_layout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_product_in_store_page);
-
+        findView();
         CustomInterface.setStatusBarColor(this);
-
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorApplication)));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        main_layout.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                CustomInterface.hideKeyboard(view,getBaseContext());
+                return false;
+            }
+        });
 
-        loadingBar = (ProgressBar) findViewById(R.id.loadingBar);
         loadingBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorApplication), android.graphics.PorterDuff.Mode.MULTIPLY);
-
-        productName = (TextView) findViewById(R.id.productName);
-        categoryName = (TextView) findViewById(R.id.categoryName);
-        brandName = (TextView) findViewById(R.id.brandName);
-        productPrice = (EditText) findViewById(R.id.productPrice);
-        promotionPercent = (EditText) findViewById(R.id.promotionPercent);
-        promotionPercentErrorMessage = (TextView) findViewById(R.id.promotionPercentErrorMessage);
-        productPriceErrorMessage = (TextView) findViewById(R.id.productPriceErrorMessage);
-        saveBtn = (Button) findViewById(R.id.saveBtn);
-        imageView = (ImageView) findViewById(R.id.productImage);
-        scroll = (ScrollView) findViewById(R.id.scroll);
-
         final String productNameValue = getIntent().getStringExtra("productName");
         final String productImageLink = getIntent().getStringExtra("productImageLink");
         final int productIDValue = getIntent().getIntExtra("productID", -1);
@@ -163,6 +159,22 @@ public class EditProductInStorePage extends AppCompatActivity {
             }
         });
     }
+
+    private void findView(){
+        loadingBar = (ProgressBar) findViewById(R.id.loadingBar);
+        main_layout = findViewById(R.id.main_layout);
+        productName = (TextView) findViewById(R.id.productName);
+        categoryName = (TextView) findViewById(R.id.categoryName);
+        brandName = (TextView) findViewById(R.id.brandName);
+        productPrice = (EditText) findViewById(R.id.productPrice);
+        promotionPercent = (EditText) findViewById(R.id.promotionPercent);
+        promotionPercentErrorMessage = (TextView) findViewById(R.id.promotionPercentErrorMessage);
+        productPriceErrorMessage = (TextView) findViewById(R.id.productPriceErrorMessage);
+        saveBtn = (Button) findViewById(R.id.saveBtn);
+        imageView = (ImageView) findViewById(R.id.productImage);
+        scroll = (ScrollView) findViewById(R.id.scroll);
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {

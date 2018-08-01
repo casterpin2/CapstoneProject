@@ -67,6 +67,7 @@ public class OrderFast extends AppCompatActivity implements OnMapReadyCallback{
 
     private OrderDetail order;
 
+
     private int userID;
 
     //googleMap
@@ -144,7 +145,6 @@ public class OrderFast extends AppCompatActivity implements OnMapReadyCallback{
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         order = new OrderDetail();
-
         productName.setText("");
 
         productPrice.setText(Formater.formatDoubleToMoney(String.valueOf(0.0)));

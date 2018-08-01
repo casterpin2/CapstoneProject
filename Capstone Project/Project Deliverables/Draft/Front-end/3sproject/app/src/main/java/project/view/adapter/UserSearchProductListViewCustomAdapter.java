@@ -120,7 +120,7 @@ public class UserSearchProductListViewCustomAdapter extends BaseAdapter {
                 }
             });
 
-        }
+        } 
 
         view.setOnClickListener(new View.OnClickListener() {
             @Override
