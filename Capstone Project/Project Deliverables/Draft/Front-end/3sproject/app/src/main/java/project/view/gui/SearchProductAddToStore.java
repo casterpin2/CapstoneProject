@@ -18,6 +18,7 @@ import android.os.Bundle;
 import android.support.v7.widget.SearchView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -32,11 +33,13 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.andremion.counterfab.CounterFab;
 import com.bumptech.glide.Glide;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.storage.StorageReference;
+import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -51,6 +54,7 @@ import project.retrofit.ApiUtils;
 import project.view.R;
 import project.view.adapter.SearchProductPageListViewAdapter;
 import project.view.model.Item;
+import project.view.model.Product;
 import project.view.util.CustomInterface;
 import retrofit2.Call;
 import retrofit2.Response;
@@ -61,13 +65,8 @@ public class SearchProductAddToStore extends AppCompatActivity {
     private static final int RESULT_CODE_SCAN=220;
     private static final int REQUEST_CODE_SCAN=120;
     private APIService mAPI;
-    public static List<Item> searchedProductList;
+    public List<Item> searchedProductList;
     private Context context;
-    // get list to display to list view;
-
-    // get button add
-    public static List<Item> addedProductList = new ArrayList<Item>();
-
     private ListView theListView;
     private SearchProductPageListViewAdapter adapter;
     private Dialog informationDialog, optionDialog;
@@ -76,7 +75,7 @@ public class SearchProductAddToStore extends AppCompatActivity {
     private SearchView searchView;
     private CounterFab counter_fab;
     private ProgressBar loadingBar;
-
+    private int storeID;
     //lazy loading
     public Handler mHandle;
     public View footerView;
@@ -98,27 +97,26 @@ public class SearchProductAddToStore extends AppCompatActivity {
         getSupportActionBar().setTitle(R.string.searhProductAddToStorePageTitle);
         CustomInterface.setStatusBarColor(this);
         setContentView(R.layout.activity_search_product_add_to_store);
-
+        storeID = getIntent().getIntExtra("storeID", -1);
         loadingBar = (ProgressBar) findViewById(R.id.loadingBar);
         loadingBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorApplication), android.graphics.PorterDuff.Mode.MULTIPLY);
 
         mAPI = ApiUtils.getAPIService();
         // create custom adapter that holds elements and their state (we need hold a id's of unfolded elements for reusable elements)
 //callAPI(query,page);
-        if (SearchProductAddToStore.searchedProductList == null) {
-            SearchProductAddToStore.searchedProductList = new ArrayList<>();
+        if (searchedProductList == null) {
+            searchedProductList = new ArrayList<>();
         }
         adapter = new SearchProductPageListViewAdapter(this, R.layout.search_product_page_custom_list_view, searchedProductList);
         // get our list view
         theListView = (ListView) findViewById(R.id.mainListView);
 
         counter_fab = (CounterFab) findViewById(R.id.counter_fab);
-        counter_fab.setCount(addedProductList.size());
+        counter_fab.setCount(3);
         counter_fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent toStoreCartPage = new Intent(SearchProductAddToStore.this, CartProductToStore.class);
-                startActivity(toStoreCartPage);
+
             }
         });
         informationDialog = new Dialog(SearchProductAddToStore.this);
@@ -155,7 +153,7 @@ public class SearchProductAddToStore extends AppCompatActivity {
 
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                int count = searchedProductList.size() + addedProductList.size();
+                int count = searchedProductList.size();
                 if (view.getLastVisiblePosition() == totalItemCount - 1 && count == (page * 10) && isLoading == false && (page == 1 || page == 2)) {
                     isLoading = true;
                     Thread thread = new ThreadgetMoreData();
@@ -286,19 +284,16 @@ public class SearchProductAddToStore extends AppCompatActivity {
                                 long priceLong = Long.parseLong(priceValue_optionDialog.getText().toString().replaceAll(",", ""));
                                 double promotionPercent = Double.parseDouble(promotionPercent_optionDialog.getText().toString());
                                 promotionPercentErrorMessage_optionDialog.setText("");
-                                productList.get(position).setPromotion(promotionPercent);
-                                productList.get(position).setPrice(priceLong);
+                                Item p = productList.get(position);
+                                p.setPromotion(promotionPercent);
+                                p.setPrice(priceLong);
+                                //counter_fab.setCount(addedProductList.size());
 
-                                addedProductList.add(productList.get(position));
-
-
-                                String message = getResources().getString(R.string.addSuccessful);
-                                int duration = Snackbar.LENGTH_LONG;
-                                showSnackbar(finalView, message, duration);
-                                counter_fab.setCount(addedProductList.size());
-                                searchedProductList.remove(searchedProductList.get(position));
-                                adapter.notifyDataSetChanged();
-
+                                Call<Boolean> call = mAPI.insertProduct(p,storeID);
+                                new AddProduct(p.getProduct_id(),finalView).execute(call);
+                               // Log.d("Test add product", new Gson().toJson(p));
+//                                searchedProductList.remove(searchedProductList.get(position));
+//                                adapter.notifyDataSetChanged();
                                 optionDialog.dismiss();
                                 informationDialog.dismiss();
 
@@ -340,14 +335,14 @@ public class SearchProductAddToStore extends AppCompatActivity {
 
     public void intentToCartPageFromDialog(View view, int position, Item item){
 
-        addedProductList.add(item);
+        //addedProductList.add(item);
 
         View pageView = findViewById(R.id.search_page);
         String message = getResources().getString(R.string.addSuccessful);
         int duration = Snackbar.LENGTH_LONG;
         showSnackbar(pageView, message, duration);
         informationDialog.dismiss();
-        counter_fab.setCount(addedProductList.size());
+        //counter_fab.setCount(addedProductList.size());
 
     }
     public void intentToCartPageFromListView(View view){
@@ -429,17 +424,11 @@ public class SearchProductAddToStore extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
-    private boolean checkID(int productID){
-        for (Item item:SearchProductAddToStore.addedProductList) {
-            if (item.getProduct_id() == productID) return false;
-        }
-        return true;
-    }
 
     private void callAPI (String query, int page){
         //Call API
-        if (SearchProductAddToStore.searchedProductList == null) {
-            SearchProductAddToStore.searchedProductList = new ArrayList<>();
+        if (searchedProductList == null) {
+            searchedProductList = new ArrayList<>();
             return;
         }
         if (query.isEmpty()) return;
@@ -476,7 +465,7 @@ public class SearchProductAddToStore extends AppCompatActivity {
 //                Toast.makeText(SearchProductAddToStore.this, "Something Wrong", Toast.LENGTH_LONG).show();
 //            }
 //        });
-        Call<List<Item>> call = mAPI.getProducts(query,page);
+        Call<List<Item>> call = mAPI.getProducts(query,page,storeID);
         new GetProduct().execute(call);
     }
 
@@ -604,16 +593,13 @@ public class SearchProductAddToStore extends AppCompatActivity {
             List<Item> listProduct = values[0];
             if (listProduct != null && listProduct.size() != 0 ) {
                 //theListView.removeFooterView(footerView);
-                for (int i = 0; i < listProduct.size(); i++) {
-                    Item item = listProduct.get(i);
-                    if (checkID(item.getProduct_id()))
-                        searchedProductList.add(item);
-                }
             } else {
                 //theListView.removeFooterView(footerView);
                 limitData = true;
             }
-            //searchedProductList = response.body();
+            for (Item item : listProduct) {
+                searchedProductList.add(item);
+            }
             adapter.notifyDataSetChanged();
             if(searchedProductList.isEmpty()) {
                 TextView nullMessage = findViewById(R.id.nullMessage);
@@ -674,11 +660,6 @@ public class SearchProductAddToStore extends AppCompatActivity {
             if (listProduct != null && listProduct.size() != 0 ) {
                 //theListView.removeFooterView(footerView);
                 searchedProductList.clear();
-                for (int i = 0; i < listProduct.size(); i++) {
-                    Item item = listProduct.get(i);
-                    if (checkID(item.getProduct_id()))
-                        searchedProductList.add(item);
-                }
             } else {
                 //theListView.removeFooterView(footerView);
                 limitData = true;
@@ -715,4 +696,63 @@ public class SearchProductAddToStore extends AppCompatActivity {
         }
     }
 
+    public class AddProduct extends AsyncTask<Call,Void,Boolean>{
+        private int productId;
+        private View view;
+        public AddProduct(int productId,View view) {
+            this.productId = productId;
+            this.view = view;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            //loadingBar.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            super.onPostExecute(result);
+            if (result == null) {
+                Toast.makeText(SearchProductAddToStore.this,"Có lỗi xảy ra !!!!",Toast.LENGTH_LONG).show();
+                return;
+            }
+            else if (result) {
+                String message = getResources().getString(R.string.addSuccessful);
+                int duration = Snackbar.LENGTH_LONG;
+                showSnackbar(view, message, duration);
+                for (Item item : searchedProductList){
+                    if (item.getProduct_id() == productId) {
+                        searchedProductList.remove(item);
+                        break;
+                    }
+                }
+                adapter.notifyDataSetChanged();
+
+            } else {
+                Toast.makeText(SearchProductAddToStore.this,"Thêm sản phẩm không thành công do có lỗi xảy ra !!!!",Toast.LENGTH_LONG).show();
+            }
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            super.onProgressUpdate(values);
+
+        }
+
+        @Override
+        protected Boolean doInBackground(Call... calls) {
+            try {
+                Call<Boolean> call = calls[0];
+                Response<Boolean> response = call.execute();
+                boolean result = response.body();
+                return result;
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (Exception e) {
+                Toast.makeText(SearchProductAddToStore.this,"Có lỗi xảy ra !!!!",Toast.LENGTH_LONG).show();
+            }
+            return null;
+        }
+    }
 }

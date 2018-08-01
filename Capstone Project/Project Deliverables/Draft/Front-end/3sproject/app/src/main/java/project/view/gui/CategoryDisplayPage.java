@@ -147,12 +147,6 @@ public class CategoryDisplayPage extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
-    private boolean checkID(int productID){
-        for (Item item: SearchProductAddToStore.addedProductList) {
-            if (item.getProduct_id() == productID) return false;
-        }
-        return true;
-    }
     private class CategoryDisplayData extends AsyncTask<Call, List<Category>, Void> {
         @Override
         protected void onPreExecute() {

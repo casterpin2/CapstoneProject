@@ -50,7 +50,6 @@ import project.firebase.Firebase;
 import project.objects.User;
 import project.view.model.OrderDetail;
 import project.view.R;
-import project.view.model.ProductDetail;
 import project.view.util.Formater;
 
 
@@ -67,7 +66,6 @@ public class OrderFast extends AppCompatActivity implements OnMapReadyCallback{
     private RelativeLayout handleAddressLayout;
 
     private OrderDetail order;
-    private ProductDetail productDetail;
 
     private int userID;
 
@@ -146,18 +144,17 @@ public class OrderFast extends AppCompatActivity implements OnMapReadyCallback{
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         order = new OrderDetail();
-        productDetail = new ProductDetail(1,"Samsung Galaxy Note 8 64Gb màu xám","",20000,10);
 
-        productName.setText(productDetail.getProductName());
+        productName.setText("");
 
-        productPrice.setText(Formater.formatDoubleToMoney(String.valueOf(productDetail.getProductPrice())));
+        productPrice.setText(Formater.formatDoubleToMoney(String.valueOf(0.0)));
         productPrice.setPaintFlags(productPrice.getPaintFlags()| Paint.STRIKE_THRU_TEXT_FLAG);
 
-        promotionPercent.setText(Formater.formatDoubleToInt(String.valueOf(productDetail.getPromotionPercent())));
+        promotionPercent.setText(Formater.formatDoubleToInt(String.valueOf(0.0)));
 
-        salePrice.setText(Formater.formatDoubleToMoney(String.valueOf(getSalesPrice(productDetail.getProductPrice(), productDetail.getPromotionPercent()))));
+        salePrice.setText(Formater.formatDoubleToMoney(String.valueOf(getSalesPrice(0, 1.0))));
 
-        sumOrder.setText(Formater.formatDoubleToMoney(String.valueOf((getSalesPrice(productDetail.getProductPrice(), productDetail.getPromotionPercent()))* Integer.parseInt(productQuantity.getText().toString()))));
+        sumOrder.setText(Formater.formatDoubleToMoney(String.valueOf((getSalesPrice(0, 0.0))* Integer.parseInt(productQuantity.getText().toString()))));
 
         productQuantity.setText(String.valueOf(1));
 
@@ -272,7 +269,7 @@ public class OrderFast extends AppCompatActivity implements OnMapReadyCallback{
                 String userName = etBuyerName.getText().toString();
                 int productID = getIntent().getIntExtra("productID", 0);
                 int storeID = getIntent().getIntExtra("storeID", 0);
-                long finalPrice = getSalesPrice(productDetail.getProductPrice(), productDetail.getPromotionPercent())* Integer.parseInt(productQuantity.getText().toString()) ;
+                //long finalPrice = getSalesPrice(productDetail.getProductPrice(), productDetail.getPromotionPercent())* Integer.parseInt(productQuantity.getText().toString()) ;
                 int quantity = Integer.parseInt(productQuantity.getText().toString());
                 String phone = etPhone.getText().toString();
                 String orderDateTime = orderDate.getText().toString() + " " + orderTime.getText().toString();
@@ -289,7 +286,7 @@ public class OrderFast extends AppCompatActivity implements OnMapReadyCallback{
                     address = handleLocationPlace;
                 }
 
-                order = new OrderDetail(userID, userName, productID, storeID, finalPrice, quantity, phone, orderDateTime, longtitude, latitude, address);
+                order = new OrderDetail(userID, userName, productID, storeID, 0, quantity, phone, orderDateTime, longtitude, latitude, address);
                 Toast.makeText(OrderFast.this, "order: "+ order.getUserID()+"- "+ order.getUserName()+"- "+ order.getProductID()+"- "+ order.getStoreID()+"- "+ order.getFinalPrice()+"- "+ order.getProductQuantity()+"- "+ order.getPhone()+"- "+order.getOrderDateTime()+" - "+ order.getLongtitude()+"- "+ order.getLatitude()+"- "+ order.getAddress(), Toast.LENGTH_LONG).show();
             }
         });
@@ -304,9 +301,9 @@ public class OrderFast extends AppCompatActivity implements OnMapReadyCallback{
 
 
     public long getSalesPrice(long productPrice, double promotionPercent){
-        double salePriceDouble = productDetail.getProductPrice() * productDetail.getPromotionPercent() / 100;
+        double salePriceDouble = 0.0;
         long salePriceLong = (long) salePriceDouble;
-        long displayPrice = productDetail.getProductPrice() - salePriceLong ;
+        long displayPrice = 0;
         return  displayPrice;
     }
 
@@ -336,14 +333,14 @@ public class OrderFast extends AppCompatActivity implements OnMapReadyCallback{
         int quantity = Integer.parseInt(productQuantity.getText().toString());
         quantity = quantity + 1;
         productQuantity.setText(String.valueOf(quantity));
-        sumOrder.setText(Formater.formatDoubleToMoney(String.valueOf((getSalesPrice(productDetail.getProductPrice(), productDetail.getPromotionPercent()))* quantity)));
+        //sumOrder.setText(Formater.formatDoubleToMoney(String.valueOf((getSalesPrice(productDetail.getProductPrice(), productDetail.getPromotionPercent()))* quantity)));
     }
 
     public void decreaseQuantity() {
         int quantity = Integer.parseInt(productQuantity.getText().toString());
         quantity = quantity - 1;
         productQuantity.setText(String.valueOf(quantity));
-        sumOrder.setText(Formater.formatDoubleToMoney(String.valueOf((getSalesPrice(productDetail.getProductPrice(), productDetail.getPromotionPercent()))* quantity)));
+        //sumOrder.setText(Formater.formatDoubleToMoney(String.valueOf((getSalesPrice(productDetail.getProductPrice(), productDetail.getPromotionPercent()))* quantity)));
         if (quantity == 0) {
             AlertDialog.Builder builder = new AlertDialog.Builder(OrderFast.this);
             builder.setTitle("Hủy sản phẩm");

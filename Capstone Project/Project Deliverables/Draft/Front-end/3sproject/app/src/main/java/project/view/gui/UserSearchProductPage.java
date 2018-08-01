@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.MatrixCursor;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.provider.BaseColumns;
@@ -184,22 +185,77 @@ public class UserSearchProductPage extends AppCompatActivity {
             }
         });
     }
+
+    //Đây là hàm do Đạt sửa bá đạo
     private void turnOnLocation(){
+        final LocationListener locationListener = new LocationListener() {
+            public void onLocationChanged(Location location) {
+            }
+
+            public void onProviderDisabled(String provider){
+            }
+
+            public void onProviderEnabled(String provider){ }
+            public void onStatusChanged(String provider, int status,
+                                        Bundle extras){ }
+        };
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        // getting GPS status
+        boolean isGPSEnabled = locationManager
+                .isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+        // getting network status
+        boolean isNetworkEnabled = locationManager
+                .isProviderEnabled(LocationManager.NETWORK_PROVIDER);
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
         } else {
-            Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-//            googleMap.clear();
-            if (location != null) {
-                currentLatitude = location.getLatitude();
-                currentLongtitude = location.getLongitude();
-            } else {
+//            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,1000,1000,locationListener);
+//            Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+////            googleMap.clear();
+//            if (location != null) {
+//                currentLatitude = location.getLatitude();
+//                currentLongtitude = location.getLongitude();
+//            } else {
+//                Toast.makeText(this, "Bạn chưa bật định vị. Chưa thể tìm cửa hàng!!!!!", Toast.LENGTH_SHORT).show();
+//            }
+            if (!isGPSEnabled && !isNetworkEnabled) {
                 Toast.makeText(this, "Bạn chưa bật định vị. Chưa thể tìm cửa hàng!!!!!", Toast.LENGTH_SHORT).show();
+            }
+            if (isNetworkEnabled) {
+                locationManager.requestLocationUpdates(
+                        LocationManager.NETWORK_PROVIDER,
+                        1000,
+                        1000, locationListener);
+                if (locationManager != null) {
+                    Location location = locationManager
+                            .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                    if (location != null) {
+                        currentLatitude = location.getLatitude();
+                        currentLongtitude = location.getLongitude();
+                    }
+                }
+            }
+            if (isGPSEnabled) {
+                    locationManager.requestLocationUpdates(
+                            LocationManager.GPS_PROVIDER,
+                            1000,
+                            1000, locationListener);
+                    if (locationManager != null) {
+                        Location location = locationManager
+                                .getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                        if (location != null) {
+                            currentLatitude = location.getLatitude();
+                            currentLongtitude = location.getLongitude();
+                        }
+                    }
+
             }
         }
     }
+
+
 
 
 
@@ -374,7 +430,6 @@ public class UserSearchProductPage extends AppCompatActivity {
             noHaveProduct.setVisibility(View.INVISIBLE);
         }
     }
-
 }
 
 
