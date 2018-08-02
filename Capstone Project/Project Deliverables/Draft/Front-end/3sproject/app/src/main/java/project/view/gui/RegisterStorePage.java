@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.support.v4.app.ActivityCompat;
@@ -89,13 +90,13 @@ public class RegisterStorePage extends AppCompatActivity implements OnMapReadyCa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register_store_page);
         findView();
-        main_layout.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                CustomInterface.hideKeyboard(view,getBaseContext());
-                return false;
-            }
-        });
+//        main_layout.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View view, MotionEvent motionEvent) {
+//                CustomInterface.hideKeyboard(view,getBaseContext());
+//                return false;
+//            }
+//        });
         //mAPI = ApiUtils.getAPIServiceMap();
         //mAPI1 = ApiUtils.getAPIService();
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
@@ -132,7 +133,7 @@ public class RegisterStorePage extends AppCompatActivity implements OnMapReadyCa
             @Override
             public void onCheckedChanged(SwitchButton view, boolean isChecked) {
                 if(view.isChecked()) {
-                    getLocation();
+                    turnOnLocation();
                     handleAddressLayout.setEnabled(false);
                     handleAddressText.setText("Vị trí hiện tại của bạn");
                 } else {
@@ -247,32 +248,119 @@ public class RegisterStorePage extends AppCompatActivity implements OnMapReadyCa
     }
 
 
-    public void getLocation() {
+//    public void getLocation() {
+//        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+//                && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
+//        } else {
+//            Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+//            if (location != null) {
+//                autoLatitude = location.getLatitude();
+//                autoLongtitude = location.getLongitude();
+//                this.location.setLatitude(String.valueOf(autoLatitude));
+//                this.location.setLongitude(String.valueOf(autoLongtitude));
+//                StringBuilder stringBuilder = new StringBuilder();
+//                stringBuilder.append(autoLatitude).append(",").append(autoLongtitude);
+//                mAPI = ApiUtils.getAPIServiceMap();
+//                final Call<GoogleMapJSON> call = mAPI.getLocation(stringBuilder.toString(),GOOGLE_MAP_KEY);
+//                new CallMapAPI().execute(call);
+//                //Toast.makeText(RegisterStorePage.this, this.location.toString(), Toast.LENGTH_LONG).show();
+//                //Toast.makeText(this, location1.toString(), Toast.LENGTH_SHORT).show();
+//                markerToMap(autoLongtitude, autoLatitude, mMap, "Ví trí của bạn");
+//            } else {
+//                Toast.makeText(this, "Chưa có vị trí định vị!!", Toast.LENGTH_SHORT).show();
+//            }
+//
+//        }
+//    }
+    //Đây là hàm do Đạt sửa bá đạo
+    private void turnOnLocation(){
+        final LocationListener locationListener = new LocationListener() {
+            public void onLocationChanged(Location location) {
+            }
+
+            public void onProviderDisabled(String provider){
+            }
+
+            public void onProviderEnabled(String provider){ }
+            public void onStatusChanged(String provider, int status,
+                                        Bundle extras){ }
+        };
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        // getting GPS status
+        boolean isGPSEnabled = locationManager
+                .isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+        // getting network status
+        boolean isNetworkEnabled = locationManager
+                .isProviderEnabled(LocationManager.NETWORK_PROVIDER);
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
         } else {
-            Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-            if (location != null) {
-                autoLatitude = location.getLatitude();
-                autoLongtitude = location.getLongitude();
-                this.location.setLatitude(String.valueOf(autoLatitude));
-                this.location.setLongitude(String.valueOf(autoLongtitude));
-                StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.append(autoLatitude).append(",").append(autoLongtitude);
-                mAPI = ApiUtils.getAPIServiceMap();
-                final Call<GoogleMapJSON> call = mAPI.getLocation(stringBuilder.toString(),GOOGLE_MAP_KEY);
-                new CallMapAPI().execute(call);
-                //Toast.makeText(RegisterStorePage.this, this.location.toString(), Toast.LENGTH_LONG).show();
-                //Toast.makeText(this, location1.toString(), Toast.LENGTH_SHORT).show();
-                markerToMap(autoLongtitude, autoLatitude, mMap, "Ví trí của bạn");
-            } else {
-                Toast.makeText(this, "Chưa có vị trí định vị!!", Toast.LENGTH_SHORT).show();
+//            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,1000,1000,locationListener);
+//            Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+////            googleMap.clear();
+//            if (location != null) {
+//                currentLatitude = location.getLatitude();
+//                currentLongtitude = location.getLongitude();
+//            } else {
+//                Toast.makeText(this, "Bạn chưa bật định vị. Chưa thể tìm cửa hàng!!!!!", Toast.LENGTH_SHORT).show();
+//            }
+            if (!isGPSEnabled && !isNetworkEnabled) {
+                Toast.makeText(this, "Bạn chưa bật định vị. Chưa thể tìm cửa hàng!!!!!", Toast.LENGTH_SHORT).show();
             }
+            if (isNetworkEnabled) {
+                locationManager.requestLocationUpdates(
+                        LocationManager.NETWORK_PROVIDER,
+                        1000,
+                        1000, locationListener);
+                if (locationManager != null) {
+                    Location location = locationManager
+                            .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                    if (location != null) {
+                        autoLatitude = location.getLatitude();
+                        autoLongtitude = location.getLongitude();
+                        this.location.setLatitude(String.valueOf(autoLatitude));
+                        this.location.setLongitude(String.valueOf(autoLongtitude));
+                        StringBuilder stringBuilder = new StringBuilder();
+                        stringBuilder.append(autoLatitude).append(",").append(autoLongtitude);
+                        mAPI = ApiUtils.getAPIServiceMap();
+                        final Call<GoogleMapJSON> call = mAPI.getLocation(stringBuilder.toString(),GOOGLE_MAP_KEY);
+                        new CallMapAPI().execute(call);
+                        //Toast.makeText(RegisterStorePage.this, this.location.toString(), Toast.LENGTH_LONG).show();
+                        //Toast.makeText(this, location1.toString(), Toast.LENGTH_SHORT).show();
+                        markerToMap(autoLongtitude, autoLatitude, mMap, "Ví trí của bạn");
+                    }
+                }
+            }
+            if (isGPSEnabled) {
+                locationManager.requestLocationUpdates(
+                        LocationManager.GPS_PROVIDER,
+                        1000,
+                        1000, locationListener);
+                if (locationManager != null) {
+                    Location location = locationManager
+                            .getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                    if (location != null) {
+                        autoLatitude = location.getLatitude();
+                        autoLongtitude = location.getLongitude();
+                        this.location.setLatitude(String.valueOf(autoLatitude));
+                        this.location.setLongitude(String.valueOf(autoLongtitude));
+                        StringBuilder stringBuilder = new StringBuilder();
+                        stringBuilder.append(autoLatitude).append(",").append(autoLongtitude);
+                        mAPI = ApiUtils.getAPIServiceMap();
+                        final Call<GoogleMapJSON> call = mAPI.getLocation(stringBuilder.toString(),GOOGLE_MAP_KEY);
+                        new CallMapAPI().execute(call);
+                        //Toast.makeText(RegisterStorePage.this, this.location.toString(), Toast.LENGTH_LONG).show();
+                        //Toast.makeText(this, location1.toString(), Toast.LENGTH_SHORT).show();
+                        markerToMap(autoLongtitude, autoLatitude, mMap, "Ví trí của bạn");
+                    }
+                }
 
+            }
         }
     }
-
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
