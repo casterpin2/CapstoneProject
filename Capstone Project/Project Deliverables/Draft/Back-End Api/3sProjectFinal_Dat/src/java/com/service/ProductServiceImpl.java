@@ -22,13 +22,13 @@ public class ProductServiceImpl implements ProductService{
     ProductDao dao;
 
     @Override
-    public List<ProductAddEntites> getProductForAdd(String query) throws SQLException {
-        return dao.getProductForAdd(query);
+    public List<ProductAddEntites> getProductForAdd(String query,int page,int storeId) throws SQLException {
+        return dao.getProductForAdd(query,page,storeId);
     }
 
     @Override
-    public boolean insertProdcut(List<ProductAddEntites> productList, int storeId) throws SQLException {
-       return dao.insertProdcut(productList, storeId);
+    public boolean insertProdcut(ProductAddEntites p, int storeId) throws SQLException {
+       return dao.insertProdcut(p, storeId);
     }
 
     @Override

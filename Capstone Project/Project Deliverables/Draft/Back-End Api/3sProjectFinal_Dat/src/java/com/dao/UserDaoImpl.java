@@ -29,14 +29,14 @@ public class UserDaoImpl extends BaseDao implements UserDao {
     private String QUERY_LOGIN = "SELECT a.*,b.path as store_image_path FROM\n"
             + "(SELECT a.*,b.image_id as store_image_id FROM\n"
             + "(SELECT a.*,b.path as user_image_path FROM \n"
-            + "(SELECT a.id as user_id,username,a.password,first_name,last_name,email,device_id,role_id,a.phone as user_phone,dateOfBirth,hasStore,gender,a.image_id as user_image_id,b.`location_id`, b.`phone` as store_phone, `status`,b.name,b.id as store_id , DATE_FORMAT(registerLog,\"%d/%m/%Y\")  as registerLogFormat FROM (SELECT * FROM User WHERE username = ? AND password = ?) as a , Store b WHERE a.id = b.user_id) a , Image b WHERE a.user_image_id = b.id) a , Image_Store b WHERE a.store_id = b.store_id) a , Image b WHERE a.store_image_id = b.id";
+            + "(SELECT a.id as user_id,username,a.password,full_name,email,device_id,role_id,a.phone as user_phone,dateOfBirth,hasStore,gender,a.image_id as user_image_id,b.`location_id`, b.`phone` as store_phone, `status`,b.name,b.id as store_id , DATE_FORMAT(registerLog,\"%d/%m/%Y\")  as registerLogFormat FROM (SELECT * FROM User WHERE username = ? AND password = ?) as a , Store b WHERE a.id = b.user_id) a , Image b WHERE a.user_image_id = b.id) a , Image_Store b WHERE a.store_id = b.store_id) a , Image b WHERE a.store_image_id = b.id";
     private String QUERY_LOGIN_FB = "SELECT a.*,b.path as store_image_path FROM\n"
             + "(SELECT a.*,b.image_id as store_image_id FROM\n"
             + "(SELECT a.*,b.path as user_image_path FROM \n"
-            + "(SELECT a.id as user_id,username,a.password,first_name,last_name,email,device_id,role_id,a.phone as user_phone,dateOfBirth,hasStore,gender,a.image_id as user_image_id,b.`location_id`, b.`phone` as store_phone, `status`,b.name,b.id as store_id , DATE_FORMAT(registerLog,\"%d/%m/%Y\")  as registerLogFormat FROM (SELECT * FROM User WHERE facebook_id = ?) as a , Store b WHERE a.id = b.user_id) a , Image b WHERE a.user_image_id = b.id) a , Image_Store b WHERE a.store_id = b.store_id) a , Image b WHERE a.store_image_id = b.id";
+            + "(SELECT a.id as user_id,username,a.password,full_name,email,device_id,role_id,a.phone as user_phone,dateOfBirth,hasStore,gender,a.image_id as user_image_id,b.`location_id`, b.`phone` as store_phone, `status`,b.name,b.id as store_id , DATE_FORMAT(registerLog,\"%d/%m/%Y\")  as registerLogFormat FROM (SELECT * FROM User WHERE facebook_id = ?) as a , Store b WHERE a.id = b.user_id) a , Image b WHERE a.user_image_id = b.id) a , Image_Store b WHERE a.store_id = b.store_id) a , Image b WHERE a.store_image_id = b.id";
     private String QUERY_LOCATION = "SELECT * FROM Location WHERE id = ?";
 
-    private String INSERT_ACCOUNT_FB = "INSERT INTO User(first_name,last_name,email,hasStore,role_id,facebook_id,image_id) VALUES (?,?,?,0,2,?,?)";
+    private String INSERT_ACCOUNT_FB = "INSERT INTO User(full_name,email,hasStore,role_id,facebook_id,image_id) VALUES (?,?,0,2,?,?)";
 
     private String QUERY_GET_MAX_USER_ID = "SELECT MAX(id) FROM User";
 
@@ -72,7 +72,7 @@ public class UserDaoImpl extends BaseDao implements UserDao {
         try {
             listData = new ArrayList();
             conn = getConnection();
-            String sql = "select username, password,device_id,role_id,first_name,last_name,location_id,role_id,dateOfBirth from User";
+            String sql = "select username, password,device_id,role_id,full_name,location_id,role_id,dateOfBirth from User";
             pre = conn.prepareStatement(sql);
             rs = pre.executeQuery();
             while (rs.next()) {
@@ -80,8 +80,8 @@ public class UserDaoImpl extends BaseDao implements UserDao {
                 us.setUserName(rs.getString("username"));
                 us.setPassword(rs.getString("password"));
                 us.setDeviceId(rs.getString("device_id"));
-                us.setFirstName(rs.getString("first_name"));
-                us.setLastName(rs.getString("last_name"));
+                us.setFirstName("");
+                us.setLastName(rs.getString("full_name"));
                 us.setDateOfBirth(rs.getString("dateOfBirth"));
                 listData.add(us);
             }
@@ -158,20 +158,19 @@ public class UserDaoImpl extends BaseDao implements UserDao {
         PreparedStatement pre = null;
         String result = "";
         try {
-            String sql = "INSERT INTO User (username, password, first_name, last_name, email, location_id, role_id, phone, hasStore,image_id) VALUES (?,?,?,?,?,?,?,?,?,?)";
+            String sql = "INSERT INTO User (username, password, full_name, email, location_id, role_id, phone, hasStore,image_id) VALUES (?,?,?,?,?,?,?,?,?)";
             conn = getConnection();
             conn.setAutoCommit(false);
             pre = conn.prepareStatement(sql);
             pre.setString(1, us.getUserName());
             pre.setString(2, us.getPassword());
-            pre.setString(3, us.getFirstName());
-            pre.setString(4, us.getLastName());
-            pre.setString(5, us.getEmail());
+            pre.setString(3, us.getFirstName()+ " " + us.getLastName());
+            pre.setString(4, us.getEmail());
+            pre.setInt(5, 1);
             pre.setInt(6, 1);
-            pre.setInt(7, 1);
-            pre.setString(8, us.getPhone());
-            pre.setInt(9, 0);
-            pre.setInt(10, 51);
+            pre.setString(7, us.getPhone());
+            pre.setInt(8, 0);
+            pre.setInt(9, 51);
             int countInsert = pre.executeUpdate();
             if (countInsert > 0) {
 
@@ -244,8 +243,8 @@ public class UserDaoImpl extends BaseDao implements UserDao {
                 us.setUserID(rs.getInt("user_id"));
                 us.setUserName(rs.getString("username"));
                 us.setDeviceId(rs.getString("device_id"));
-                us.setFirstName(rs.getString("first_name"));
-                us.setLastName(rs.getString("last_name"));
+                us.setFirstName("");
+                us.setLastName(rs.getString("full_name"));
                 us.setEmail(rs.getString("email"));
                 us.setHasStore(rs.getInt("hasStore"));
                 us.setGender(rs.getString("gender"));
@@ -297,8 +296,8 @@ public class UserDaoImpl extends BaseDao implements UserDao {
                 us.setUserID(rs.getInt("user_id"));
                 us.setUserName(rs.getString("username"));
                 us.setDeviceId(rs.getString("device_id"));
-                us.setFirstName(rs.getString("first_name"));
-                us.setLastName(rs.getString("last_name"));
+                us.setFirstName("");
+                us.setLastName(rs.getString("full_name"));
                 us.setEmail(rs.getString("email"));
                 us.setHasStore(rs.getInt("hasStore"));
                 us.setGender(rs.getString("gender"));
@@ -343,8 +342,7 @@ public class UserDaoImpl extends BaseDao implements UserDao {
                     image_id = rs.getInt("MAX(id)");
                 }
                 pre = conn.prepareStatement(INSERT_ACCOUNT_FB);
-                pre.setString(1, user.getFirstName());
-                pre.setString(2, user.getLastName());
+                pre.setString(1, user.getFirstName()+" "+user.getLastName());
                 pre.setString(3, user.getEmail());
                 pre.setString(4, FBId);
                 pre.setInt(5, image_id);

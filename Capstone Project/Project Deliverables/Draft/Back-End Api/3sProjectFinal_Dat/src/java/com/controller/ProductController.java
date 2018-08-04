@@ -31,16 +31,17 @@ public class ProductController {
     ProductService product;
 
     @RequestMapping(value = "/getProductForAdd", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
-    public List<ProductAddEntites> getProductForAdd(@RequestParam("query") String query) throws SQLException {
-        return product.getProductForAdd(query);
+    public List<ProductAddEntites> getProductForAdd(@RequestParam("query") String query, @RequestParam("page") int page,@RequestParam("storeId") int storeId) throws SQLException {
+        return product.getProductForAdd(query,page,storeId);
     }
 
     @RequestMapping(value = "/posts", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
-    public boolean getData(@RequestParam("jsonString") StringBuilder jsonString, @RequestParam("storeId") int storeId) throws SQLException, ClassNotFoundException, IOException {
-        //Chuyển JSON thành Object
-        List<ProductAddEntites> list = JsonUtil.converJsonToJava(jsonString.toString(), ProductAddEntites.class);
-
-        return product.insertProdcut(list, storeId);
+    public boolean getData(@RequestBody String jsonString, @RequestParam("storeId") int storeId) throws SQLException, ClassNotFoundException, IOException {
+        JsonFactory factory = new JsonFactory();
+        factory.enable(JsonParser.Feature.ALLOW_SINGLE_QUOTES);
+        ObjectMapper mapper = new ObjectMapper(factory);
+        ProductAddEntites p = mapper.readValue(jsonString.toString(), ProductAddEntites.class);
+        return product.insertProdcut(p, storeId);
     }
 
     @RequestMapping(value = "/productSales", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
