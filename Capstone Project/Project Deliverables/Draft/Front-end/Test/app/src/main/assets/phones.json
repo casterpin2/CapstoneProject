@@ -1,0 +1,121 @@
+{
+  "companies": [
+    {
+      "name": "Cửa hàng bách hóa Xuân Thủy Cửa hàng bách hóa Xuân Thủy 1 2 3 4 ",
+      "devices": [
+        {
+          "name": "LG V10",
+          "quantity": 5,
+          "price": 1000
+        },
+        {
+          "name": "LG G4 Stylus",
+          "quantity": 5,
+          "price": 1000
+        },
+        {
+          "name": "LG G4",
+          "quantity": 5,
+          "price": 1000
+        },
+        {
+          "name": "LG Magna",
+          "quantity": 1,
+          "price": 100000
+        },
+        {
+          "name": "LG L60",
+          "quantity": 2,
+          "price": 100000
+        },
+        {
+          "name": "LG L Fino",
+          "quantity": 3,
+          "price": 100000
+        },
+        {
+          "name": "LG L80 2 sim",
+          "quantity": 4,
+          "price": 100000
+        }
+      ]
+    },
+    {
+      "name": "Samsung",
+      "total": 100000,
+      "devices": [
+        {
+          "name": "Galaxy Note5",
+          "quantity": 4,
+          "price": 100000
+        },
+        {
+          "name": "Galaxy Note4",
+          "quantity": 4,
+          "price": 100000
+        },
+        {
+          "name": "Galaxy S7 edge - Injustice",
+          "quantity": 4,
+          "price": 100000
+        },
+        {
+          "name": "Galaxy S7 edge",
+          "quantity": 4,
+          "price": 100000
+        },
+        {
+          "name": "Galaxy S7",
+          "quantity": 4,
+          "price": 100000
+        },
+        {
+          "name": "Galaxy S6 edge+",
+          "quantity": 4,
+          "price": 100000
+        },
+        {
+          "name": "Galaxy S6 edge+",
+          "quantity": 4,
+          "price": 100000
+        }
+      ]
+    },
+    {
+      "name": "Sony",
+      "total": 100000,
+      "devices": [
+        {
+          "name": "Xperia XZ",
+          "quantity": 4,
+          "price": 100000
+        },
+        {
+          "name": "Xperis XA Ultra",
+          "quantity": 4,
+          "price": 100000
+        },
+        {
+          "name": "Xperia X",
+          "quantity": 4,
+          "price": 100000
+        },
+        {
+          "name": "Xperia Z5 Premium Dual",
+          "quantity": 4,
+          "price": 100000
+        },
+        {
+          "name": "Xperia Z5 Compact",
+          "quantity": 4,
+          "price": 100000
+        },
+        {
+          "name": "Xperia Z5 Dual",
+          "quantity": 4,
+          "price": 100000
+        }
+      ]
+    }
+  ]
+}
