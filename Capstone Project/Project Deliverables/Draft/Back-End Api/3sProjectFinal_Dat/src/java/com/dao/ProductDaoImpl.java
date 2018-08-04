@@ -83,7 +83,6 @@ public class ProductDaoImpl extends BaseDao implements ProductDao {
                 pre.setInt(4, p.getProduct_id());
                 count++;
                 pre.addBatch();
-            }
             int temp[] = pre.executeBatch();
             if (temp.length == count) {
                 conn.commit();
