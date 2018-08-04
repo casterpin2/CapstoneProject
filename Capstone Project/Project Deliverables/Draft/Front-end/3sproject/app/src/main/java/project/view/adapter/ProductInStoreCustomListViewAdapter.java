@@ -17,12 +17,15 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.storage.StorageReference;
+import com.google.gson.Gson;
 
 import java.util.List;
 
 import project.firebase.Firebase;
 import project.view.gui.EditProductInStorePage;
 import project.view.R;
+import project.view.gui.ProductDetailPage;
+import project.view.model.Product;
 import project.view.model.ProductInStore;
 import project.view.util.Formater;
 
@@ -124,7 +127,19 @@ public class ProductInStoreCustomListViewAdapter extends ArrayAdapter<ProductInS
 
             }
         });
-
+        final ProductInStore productInStore = productList.get(position);
+        final Product p = new Product(productInStore.getProductID(),productInStore.getProductName(),productInStore.getBrandName(),productInStore.getDescription(),"",productInStore.getTypeName(),productInStore.getProductImage(),productInStore.getProductPrice(),productInStore.getPromotionPercent());
+        convertView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean isStoreProduct = true;
+                Intent toProductDetail = new Intent(getContext(), ProductDetailPage.class);
+                toProductDetail.putExtra("product",new Gson().toJson(p));
+                toProductDetail.putExtra("isStoreProduct",isStoreProduct);
+                toProductDetail.putExtra("isStoreSee",true);
+                getContext().startActivity(toProductDetail);
+            }
+        });
         return convertView;
     }
 

@@ -1,6 +1,7 @@
 package project.view.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.storage.StorageReference;
+import com.google.gson.Gson;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -20,6 +22,8 @@ import java.util.List;
 import java.util.Locale;
 
 import project.firebase.Firebase;
+import project.view.gui.ProductDetailPage;
+import project.view.model.Product;
 import project.view.model.ProductInStore;
 import project.view.R;
 
@@ -79,7 +83,18 @@ public class ProductInStoreByUserCustomListViewAdapter extends ArrayAdapter<Prod
                 .load(storageReference.child(productList.get(position).getProductImage()))
                 .into(viewHolder.productImage);
 
-
+        final ProductInStore productInStore = productList.get(position);
+        final Product p = new Product(productInStore.getProductID(),productInStore.getProductName(),productInStore.getBrandName(),productInStore.getDescription(),"",productInStore.getTypeName(),productInStore.getProductImage(),productInStore.getProductPrice(),productInStore.getPromotionPercent());
+        convertView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean isStoreProduct = true;
+                Intent toProductDetail = new Intent(getContext(), ProductDetailPage.class);
+                toProductDetail.putExtra("product",new Gson().toJson(p));
+                toProductDetail.putExtra("isStoreProduct",isStoreProduct);
+                getContext().startActivity(toProductDetail);
+            }
+        });
         return convertView;
     }
 

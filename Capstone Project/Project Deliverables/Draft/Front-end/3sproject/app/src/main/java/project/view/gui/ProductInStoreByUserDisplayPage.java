@@ -116,22 +116,6 @@ public class ProductInStoreByUserDisplayPage extends AppCompatActivity {
                             theListView.setVisibility(View.VISIBLE);
                         }
 
-                        theListView. setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                            @Override
-                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                int productID = list.get(position).getProductID();
-                                String productName = list.get(position).getProductName();
-                                boolean isStoreProduct = true;
-                                Intent toProductDetailPage = new Intent(ProductInStoreByUserDisplayPage.this, ProductDetailPage.class);
-                                toProductDetailPage.putExtra("productName",productName);
-                                toProductDetailPage.putExtra("productID",productID);
-                                toProductDetailPage.putExtra("storeID",storeID);
-                                toProductDetailPage.putExtra("isStoreProduct",isStoreProduct);
-                                startActivity(toProductDetailPage);
-//                                Toast.makeText(ProductInStoreByUserDisplayPage.this, "Vị trí: "+position, Toast.LENGTH_SHORT).show();
-                            }
-                        });
-
                     }});
             } catch (IOException e) {
             }

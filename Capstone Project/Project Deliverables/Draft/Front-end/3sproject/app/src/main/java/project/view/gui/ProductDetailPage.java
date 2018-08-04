@@ -33,10 +33,8 @@ import java.util.List;
 import project.firebase.Firebase;
 import project.retrofit.ApiUtils;
 import project.view.R;
-import project.view.adapter.UserSearchProductListViewCustomAdapter;
 import project.view.model.NearByStore;
 import project.view.model.Product;
-import project.view.model.ProductInStoreDetail;
 import project.view.util.CustomInterface;
 import project.view.util.Formater;
 import retrofit2.Call;
@@ -48,12 +46,12 @@ public class ProductDetailPage extends AppCompatActivity {
     private TextView productNotInStoreName, productNotInStoreCategoryName, productNotInStoreBrandName, productNotInStoreDesc;
     private Button addToCartBtn, findStoreBtn;
     private LinearLayout isNotProductInStoreLayout, isProductInStoreLayout, productDetailLayout;
-    private ProductInStoreDetail productInStore;
     private Context context;
     private Product product;
     private String productName;
     private int storeID;
     private boolean isStoreProduct;
+    private boolean isStoreSee;
     private ProgressBar loadingBar;
     private LocationManager locationManager;
     final static int REQUEST_LOCATION = 1;
@@ -84,6 +82,7 @@ public class ProductDetailPage extends AppCompatActivity {
 
         storeID = getIntent().getIntExtra("storeID", -1);
         isStoreProduct = getIntent().getBooleanExtra("isStoreProduct", false);
+        isStoreSee = getIntent().getBooleanExtra("isStoreSee", false);
         setLayout(isStoreProduct,isNotProductInStoreLayout,isProductInStoreLayout, productDetailLayout, findStoreBtn);
         Glide.with(ProductDetailPage.this /* context */)
                 .using(new FirebaseImageLoader())
@@ -92,25 +91,34 @@ public class ProductDetailPage extends AppCompatActivity {
                 .into(productImage);
 
         if (isStoreProduct == true){
-            productInStore = new ProductInStoreDetail(1,"Samsung Galaxy Note 8","123","Điện thoại", "Samsung",20000000,1,"Dây là mô tả");
-
-            productPriceText.setText(Formater.formatDoubleToMoney(String.valueOf(productInStore.getProductPrice())));
+            if (isStoreSee){
+                addToCartBtn.setVisibility(View.INVISIBLE);
+                addToCartBtn.setClickable(false);
+            }
+            productPriceText.setText(Formater.formatDoubleToMoney(String.valueOf(product.getPrice())));
             productPriceText.setPaintFlags(productPriceText.getPaintFlags()| Paint.STRIKE_THRU_TEXT_FLAG);
 
-            promotionPercentText.setText(Formater.formatDoubleToInt(String.valueOf(productInStore.getPromotionPercent())));
+            promotionPercentText.setText(Formater.formatDoubleToInt(String.valueOf(product.getPromotion())));
 
-            double salePriceDouble = productInStore.getProductPrice() * productInStore.getPromotionPercent() / 100;
+            double salePriceDouble = product.getPrice() * product.getPromotion() / 100;
             long salePriceLong = (long) salePriceDouble;
-            long displayPrice = productInStore.getProductPrice() - salePriceLong ;
+            long displayPrice = product.getPrice() - salePriceLong ;
             salePriceText.setText(Formater.formatDoubleToMoney(String.valueOf(displayPrice)));
 
-            productNameText.setText(productInStore.getProductName());
+            productNameText.setText(product.getProduct_name());
 
-            categoryNameText.setText(productInStore.getCategoryName());
-            brandNameText.setText(productInStore.getBrandName());
+            categoryNameText.setText(product.getType_name());
+            brandNameText.setText(product.getBrand_name());
 
-            productDescText.setText(productInStore.getProductDesc());
-        } else {
+            productDescText.setText(product.getDescription());
+            addToCartBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(ProductDetailPage.this,"aa",Toast.LENGTH_LONG).show();
+                }
+            });
+        }
+        if(isStoreProduct == false) {
             productNotInStoreName.setText(product.getProduct_name());
             productNotInStoreCategoryName.setText(product.getType_name());
             productNotInStoreBrandName.setText(product.getBrand_name());
@@ -231,7 +239,7 @@ public class ProductDetailPage extends AppCompatActivity {
                     listStore.add(storeJSON);
                 }
                 toNearByStore.putExtra("listStore",listStore);
-                loadingBar.setVisibility(View.VISIBLE);
+                loadingBar.setVisibility(View.INVISIBLE);
                 startActivity(toNearByStore);
             }
 

@@ -18,6 +18,29 @@ public class ProductInStore {
     @SerializedName("category_name")
     @Expose
     private String categoryName;
+    @SerializedName("type_name")
+    @Expose
+    private String typeName;
+
+    public String getTypeName() {
+        return typeName;
+    }
+
+    public void setTypeName(String typeName) {
+        this.typeName = typeName;
+    }
+    @SerializedName("description")
+    @Expose
+    private String description;
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     @SerializedName("brand_name")
     @Expose
     private String brandName;
