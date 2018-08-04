@@ -51,7 +51,7 @@ public interface APIService {
     Call<List<Brand>> getBrands();
 
     @GET("brands/productWithBrand")
-    Call<List<ProductBrand>> getProductBrand(@Query("brandId") int brandId);
+    Call<List<Product>> getProductBrand(@Query("brandId") int brandId);
     @GET("category")
     Call<List<Category>> getCategory();
 
