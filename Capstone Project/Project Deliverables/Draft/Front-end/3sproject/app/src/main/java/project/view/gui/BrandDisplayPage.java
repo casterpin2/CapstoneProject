@@ -38,8 +38,6 @@ import project.retrofit.ApiUtils;
 import project.view.adapter.BrandCustomCardviewAdapter;
 import project.view.R;
 import project.view.model.Brand;
-import project.view.model.Item;
-import project.view.model.ProductBrand;
 import project.view.util.CustomInterface;
 import project.view.util.GridSpacingItemDecoration;
 import retrofit2.Call;

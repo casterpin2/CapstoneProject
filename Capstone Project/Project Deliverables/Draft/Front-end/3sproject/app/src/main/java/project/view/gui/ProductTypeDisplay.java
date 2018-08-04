@@ -57,36 +57,4 @@ public class ProductTypeDisplay extends AppCompatActivity {
         }
     }
 
-//    public List<ProductType> listProduct(int typeId) {
-//        productList = new ArrayList<>();
-//        apiService.getProductBrand(typeId).enqueue(new Callback<List<ProductBrand>>() {
-//            @Override
-//            public void onResponse(Call<List<ProductBrand>> call, Response<List<ProductBrand>> response) {
-//                final ProgressDialog progressDoalog;
-//                progressDoalog = new ProgressDialog(ProductTypeDisplay.this);
-//                progressDoalog.setMax(100);
-//                progressDoalog.setMessage("Its loading....");
-//                progressDoalog.setTitle("ProgressDialog bar example");
-//                progressDoalog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-//                // show it
-//                progressDoalog.show();
-//                for (int i = 0; i < response.body().size(); i++) {
-//                    productList.add(response.body().get(i));
-//                }
-//                if(productList.size() == response.body().size()){
-//                    progressDoalog.dismiss();
-//                }
-//                if (productList.isEmpty()) {
-//                    Toast.makeText(ProductTypeDisplay.this, "SomeThing Wrong", Toast.LENGTH_LONG).show();
-//                }
-//
-//            }
-//
-//            @Override
-//            public void onFailure(Call<List<ProductBrand>> call, Throwable t) {
-//
-//            }
-//        });
-//        return productList;
-//    }
 }

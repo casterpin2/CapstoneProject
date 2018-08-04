@@ -22,7 +22,7 @@
                 android:layout_width="300dp"
                 tools:layout_editor_absoluteY="16dp"
                 tools:layout_editor_absoluteX="42dp"
-                app:srcCompat="@drawable/applogo"
+                app:srcCompat="@drawable/chien_test_2"
                 android:layout_centerHorizontal="true"
                 android:layout_alignParentTop="true"
                 android:layout_marginTop="16dp"/>

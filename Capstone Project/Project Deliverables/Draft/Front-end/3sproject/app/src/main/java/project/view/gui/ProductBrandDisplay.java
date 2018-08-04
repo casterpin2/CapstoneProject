@@ -31,7 +31,6 @@ import project.retrofit.ApiUtils;
 import project.view.adapter.ProductBrandDisplayListViewAdapter;
 import project.view.R;
 import project.view.model.Product;
-import project.view.model.ProductBrand;
 import project.view.util.CustomInterface;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -126,42 +125,6 @@ public class ProductBrandDisplay extends AppCompatActivity {
     }
 
     private class NetworkCall extends AsyncTask<Call, Void, Void> {
-
-//        @Override
-//        protected void onPreExecute() {
-//            super.onPreExecute();
-//        }
-//
-//        @Override
-//        protected void onPostExecute(List<ProductBrand> productBrands) {
-//            super.onPostExecute(productBrands);
-//        }
-//
-//        @Override
-//        protected void onProgressUpdate(List<ProductBrand>... values) {
-//            super.onProgressUpdate(values);
-//
-//            adapter = new ProductBrandDisplayListViewAdapter(ProductBrandDisplay.this, R.layout.product_brand_display_custom_listview, values[0]);
-//            theListView.setAdapter(adapter);
-//        }
-//
-//        @Override
-//        protected List<ProductBrand> doInBackground(Call... calls) {
-//            try {
-//                Call<List<ProductBrand>> call = calls[0];
-//                Response<List<ProductBrand>> response = call.execute();
-//                List<ProductBrand> list = new ArrayList<>();
-//                for (int i = 0; i < response.body().size(); i++) {
-//                    list.add(response.body().get(i));
-//                }
-//                publishProgress(list);
-//                return list;
-//            } catch (IOException e) {
-//            }
-//            return null;
-//        }
-
-
         @Override
         protected void onPreExecute() {
             loadingBar.setVisibility(View.VISIBLE);
