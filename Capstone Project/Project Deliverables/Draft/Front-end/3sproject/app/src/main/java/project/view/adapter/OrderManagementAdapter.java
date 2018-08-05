@@ -14,7 +14,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-import project.view.gui.OrderDetailManagement;
+import project.view.gui.OrderDetailManagementPage;
 import project.view.gui.ProductInStoreByUserDisplayPage;
 import project.view.R;
 import project.view.model.OrderDetail;
@@ -61,7 +61,7 @@ public class OrderManagementAdapter extends ArrayAdapter<OrderDetail> {
         viewHolder.imgInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent goToOrderDetail = new Intent(context, OrderDetailManagement.class);
+                Intent goToOrderDetail = new Intent(context, OrderDetailManagementPage.class);
                 goToOrderDetail.putExtra("orderID",order.getOrderID());
                 context.startActivity(goToOrderDetail);
             }

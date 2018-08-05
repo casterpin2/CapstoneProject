@@ -51,6 +51,7 @@ import project.objects.User;
 import project.retrofit.APIService;
 import project.retrofit.ApiUtils;
 import project.view.R;
+import project.view.fragment.home.HomeFragment;
 import project.view.model.Store;
 import project.view.util.CustomInterface;
 import project.view.util.Regex;
@@ -505,7 +506,7 @@ public class RegisterStorePage extends AppCompatActivity implements OnMapReadyCa
             super.onPostExecute(result);
             if (result != null) {
                 Toast.makeText(RegisterStorePage.this, "Đăng kí cửa hàng thành công", Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(RegisterStorePage.this, HomeActivity.class);
+                Intent intent = new Intent(RegisterStorePage.this, HomeFragment.class);
                 SharedPreferences preferences = getSharedPreferences("authentication", Context.MODE_PRIVATE);
                 User user = new Gson().fromJson(preferences.getString("user",""),User.class);
                 user.setHasStore(1);

@@ -17,8 +17,8 @@ package project.view.adapter;
         import java.util.List;
 
         import project.firebase.Firebase;
+        import project.view.gui.ProductBrandDisplayPage;
         import project.view.model.Brand;
-        import project.view.gui.ProductBrandDisplay;
         import project.view.R;
 
 /**
@@ -90,7 +90,7 @@ public class BrandRecycleViewAdapter extends RecyclerView.Adapter<BrandRecycleVi
                 @Override
                 public void onClick(View v) {
                     Brand brand = brands.get(getAdapterPosition());
-                    Intent intent = new Intent(context, ProductBrandDisplay.class);
+                    Intent intent = new Intent(context, ProductBrandDisplayPage.class);
                     intent.putExtra("brandID",brand.getBrandID());
                     intent.putExtra("brandName",brand.getBrandName());
                     context.startActivity(intent);

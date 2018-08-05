@@ -32,6 +32,7 @@ import project.objects.User;
 import project.retrofit.APIService;
 import project.retrofit.ApiUtils;
 import project.view.R;
+import project.view.fragment.home.HomeFragment;
 import project.view.model.Store;
 import project.view.model.Login;
 import project.view.util.CustomInterface;
@@ -73,7 +74,7 @@ public class LoginPage extends AppCompatActivity {
         toRegisterPage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent toRegisterPage = new Intent(LoginPage.this, RegisterActivity.class);
+                Intent toRegisterPage = new Intent(LoginPage.this, RegisterPage.class);
                 startActivity(toRegisterPage);
             }
         });
@@ -111,8 +112,12 @@ public class LoginPage extends AppCompatActivity {
                 else {user.setImage_path("");}
                 user.setFirst_name(profile.getFirstName());
                 user.setLast_name(profile.getLastName());
-                Call<Login> call = mAPI.loginFB(user,profile.getId());
-                new CallAPI().execute(call);
+                try {
+                    Call<Login> call = mAPI.loginFB(user, profile.getId());
+                    new CallAPI().execute(call);
+                } catch(Exception e){
+
+                }
             }
 
             @Override
@@ -197,6 +202,12 @@ public class LoginPage extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        if (requestCode == RC_SIGN_IN) {
+//            // The Task returned from this call is always completed, no need to attach
+//            // a listener.
+//            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+//            handleSignInResult(task);
+//        }
         callbackManager.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -220,7 +231,7 @@ public class LoginPage extends AppCompatActivity {
                 //Toast.makeText(LoginPage.this, LoginPage.login.getUser().toString(), Toast.LENGTH_LONG).show();
                 User user = result.getUser();
                 Store store = result.getStore();
-                Intent toHomePage = new Intent(LoginPage.this, HomeActivity.class);
+                Intent toHomePage = new Intent(LoginPage.this, HomePage.class);
                 Bundle bundle = new Bundle();
                 bundle.putString("user",new Gson().toJson(user));
                 bundle.putString("store",new Gson().toJson(store));
@@ -230,6 +241,7 @@ public class LoginPage extends AppCompatActivity {
                 finishAffinity();
                 finish();
             }
+            loadingBar.setVisibility(View.INVISIBLE);
             super.onPostExecute(result);
         }
 
@@ -249,7 +261,7 @@ public class LoginPage extends AppCompatActivity {
                 //Glide.get(LoginPage.this).clearDiskCache();
             } catch (IOException e) {
             }
-            loadingBar.setVisibility(View.INVISIBLE);
+
             return result;
         }
     }

@@ -1,5 +1,6 @@
 package com.example.chamander.test;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -42,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        stopService();
         button = (Button) findViewById(R.id.registerBtn);
         button.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -178,5 +180,24 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    public void startService(){
+
+        String input  = "FAFSA";
+        Intent intent = new Intent(this,MyService.class);
+        intent.putExtra("inputExtra",input);
+        startService(intent);
+    }
+
+    public void stopService(){
+        Intent intent = new Intent(this,MyService.class);
+        stopService(intent);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        startService();
     }
 }

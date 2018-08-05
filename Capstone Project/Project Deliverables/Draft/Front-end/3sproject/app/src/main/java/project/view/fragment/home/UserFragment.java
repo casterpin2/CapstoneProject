@@ -19,28 +19,26 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.storage.StorageReference;
 import com.google.gson.Gson;
-
 import de.hdodenhof.circleimageview.CircleImageView;
 import project.firebase.Firebase;
 import project.objects.User;
-import project.view.gui.ChangePasswordActivity;
+import project.view.gui.ChangePasswordPage;
 import project.view.gui.LoginPage;
-import project.view.gui.UserManagementOrder;
 import project.view.R;
+import project.view.gui.UserManagementOrderPage;
 import project.view.model.Store;
 import project.view.gui.UserInformationPage;
-import project.view.gui.HomeActivity;
+
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class UserFragment extends Fragment {
+public class     UserFragment extends Fragment {
 
     private View view;
     private Toolbar toolbar;
@@ -139,7 +137,7 @@ public class UserFragment extends Fragment {
             changePasswordLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent toChangePasswordScreen = new Intent(getContext(), ChangePasswordActivity.class);
+                    Intent toChangePasswordScreen = new Intent(getContext(), ChangePasswordPage.class);
                     toChangePasswordScreen.putExtra("userID",userID);
                     getContext().startActivity(toChangePasswordScreen);
                 }
@@ -157,7 +155,7 @@ public class UserFragment extends Fragment {
                     editor.putString("store", "");
                     //chấp nhận lưu xuống file
                     editor.commit();
-                    Intent intent = new Intent(getActivity(),HomeActivity.class);
+                    Intent intent = new Intent(getActivity(),HomeFragment.class);
                     startActivity(intent);
                     getActivity().finishAffinity();
                 }
@@ -182,7 +180,7 @@ public class UserFragment extends Fragment {
             orderLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent toUserOrderManagement = new Intent(getContext(), UserManagementOrder.class);
+                    Intent toUserOrderManagement = new Intent(getContext(), UserManagementOrderPage.class);
                     toUserOrderManagement.putExtra("userID",userID);
                     getContext().startActivity(toUserOrderManagement);
                 }

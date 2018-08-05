@@ -16,8 +16,8 @@ import com.google.firebase.storage.StorageReference;
 import java.util.List;
 
 import project.firebase.Firebase;
-import project.view.gui.ProductBrandDisplay;
 import project.view.R;
+import project.view.gui.ProductBrandDisplayPage;
 import project.view.model.Brand;
 
 public class BrandCustomCardviewAdapter extends RecyclerView.Adapter<BrandCustomCardviewAdapter.MyViewHolder> {
@@ -68,7 +68,7 @@ public class BrandCustomCardviewAdapter extends RecyclerView.Adapter<BrandCustom
         holder.brandImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getmContext(), ProductBrandDisplay.class);
+                Intent intent = new Intent(getmContext(), ProductBrandDisplayPage.class);
                 intent.putExtra("brandID", brand.getBrandID());
                 intent.putExtra("brandName", brand.getBrandName());
                 getmContext().startActivity(intent);

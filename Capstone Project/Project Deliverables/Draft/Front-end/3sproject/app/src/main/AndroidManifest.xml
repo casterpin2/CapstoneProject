@@ -30,24 +30,24 @@
         <activity
             android:name=".gui.CategoryDisplayPage"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".gui.ProductBrandDisplay" />
+        <activity android:name=".gui.ProductBrandDisplayPage" />
         <activity
             android:name=".gui.BrandDisplayPage"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".gui.TypeCategoryPage"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".gui.ProductTypeDisplay" />
-        <activity android:name=".gui.RegisterActivity" >
+        <activity android:name=".gui.ProductTypeDisplayPage" />
+        <activity android:name=".gui.RegisterPage" >
 
         </activity>
-        <activity android:name=".gui.ChangePasswordActivity"
+        <activity android:name=".gui.ChangePasswordPage"
             android:windowSoftInputMode="adjustResize">
            </activity>
         <activity android:name=".gui.ProductInStoreDisplayPage" />
         <activity android:name=".gui.EditProductInStorePage" />
         <activity
-            android:name=".gui.HomeActivity"
+            android:name=".gui.HomePage"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -59,7 +59,9 @@
         <activity
             android:name=".gui.StoreInformationPage"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".gui.RegisterStorePage" />
+        <activity android:name=".gui.RegisterStorePage">
+
+        </activity>
         <activity
             android:name=".gui.UserInformationPage"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -67,17 +69,17 @@
             android:name=".gui.EditUserInformationPage"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".gui.StoreManagementOrder"
+            android:name=".gui.StoreManagementOrderPage"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".gui.UserManagementOrder"
+            android:name=".gui.UserManagementOrderPage"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".gui.OrderDetailManagement"
+            android:name=".gui.OrderDetailManagementPage"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".gui.NearbyStorePage" />
         <activity android:name=".gui.ProductDetailPage" />
-        <activity android:name=".gui.OrderFast" />
+        <activity android:name=".gui.OrderPage" />
         <activity android:name=".gui.ProductInStoreByUserDisplayPage" />
 
         <!-- Facebook -->
@@ -99,9 +101,10 @@
         <activity android:name=".gui.FeedbackPage" />
         <activity android:name=".gui.BarcodeActivity" />
         <activity
-            android:name=".gui.WellcomeActivity"
+            android:name=".gui.WelcomePage"
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity android:name=".gui.Main3Activity">
+
         </activity>
     </application>
 

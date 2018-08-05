@@ -27,10 +27,10 @@ import com.google.gson.Gson;
 import project.firebase.Firebase;
 import project.objects.User;
 import project.view.gui.LoginPage;
-import project.view.gui.StoreManagementOrder;
 import project.view.gui.ProductInStoreDisplayPage;
 import project.view.R;
 import project.view.gui.RegisterStorePage;
+import project.view.gui.StoreManagementOrderPage;
 import project.view.model.Store;
 import project.view.model.StoreInformation;
 
@@ -112,7 +112,7 @@ public class StoreFragment extends Fragment {
             btnManagermentOrder.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent toStoreManagementOrder = new Intent(getContext(), StoreManagementOrder.class);
+                    Intent toStoreManagementOrder = new Intent(getContext(), StoreManagementOrderPage.class);
                     toStoreManagementOrder.putExtra("storeID", storeID);
                     getActivity().startActivity(toStoreManagementOrder);
                 }
