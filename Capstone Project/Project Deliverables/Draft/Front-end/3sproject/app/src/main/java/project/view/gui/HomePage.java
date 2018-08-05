@@ -21,7 +21,7 @@ import project.view.fragment.home.UserFragment;
 import project.view.adapter.ViewPagerAdapter;
 
 
-public class HomeActivity extends AppCompatActivity{
+public class HomePage extends AppCompatActivity{
 
     BottomNavigationView bottomNavigationView;
     private ViewPager viewPager;

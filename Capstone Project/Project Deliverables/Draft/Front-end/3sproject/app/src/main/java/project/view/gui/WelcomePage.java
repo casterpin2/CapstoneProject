@@ -7,7 +7,7 @@ import android.os.Bundle;
 
 import project.view.R;
 
-public class WellcomeActivity extends AppCompatActivity {
+public class WelcomePage extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,7 +17,7 @@ public class WellcomeActivity extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent toHomeActivity = new Intent(WellcomeActivity.this,HomeActivity.class);
+                Intent toHomeActivity = new Intent(WelcomePage.this,HomePage.class);
                 startActivity(toHomeActivity);
                 finish();
             }

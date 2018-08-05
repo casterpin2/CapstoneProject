@@ -36,7 +36,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ProductBrandDisplay extends AppCompatActivity {
+public class ProductBrandDisplayPage extends AppCompatActivity {
 
     private ListView theListView;
     private ProductBrandDisplayListViewAdapter adapter;
@@ -97,7 +97,7 @@ public class ProductBrandDisplay extends AppCompatActivity {
             @Override
             public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
                 final ProgressDialog progressDoalog;
-                progressDoalog = new ProgressDialog(ProductBrandDisplay.this);
+                progressDoalog = new ProgressDialog(ProductBrandDisplayPage.this);
                 progressDoalog.setMax(100);
                 progressDoalog.setMessage("Its loading....");
                 progressDoalog.setTitle("ProgressDialog bar example");
@@ -111,7 +111,7 @@ public class ProductBrandDisplay extends AppCompatActivity {
                     progressDoalog.dismiss();
                 }
                 if (productList.isEmpty()) {
-                    Toast.makeText(ProductBrandDisplay.this, "SomeThing Wrong", Toast.LENGTH_LONG).show();
+                    Toast.makeText(ProductBrandDisplayPage.this, "SomeThing Wrong", Toast.LENGTH_LONG).show();
                 }
 
             }
@@ -153,7 +153,7 @@ public class ProductBrandDisplay extends AppCompatActivity {
                 for (int i = 0; i < response.body().size(); i++) {
                     list.add(response.body().get(i));
                 }
-                adapter = new ProductBrandDisplayListViewAdapter(ProductBrandDisplay.this, R.layout.product_brand_display_custom_listview, list,currentLatitude,currentLongtitude);
+                adapter = new ProductBrandDisplayListViewAdapter(ProductBrandDisplayPage.this, R.layout.product_brand_display_custom_listview, list,currentLatitude,currentLongtitude);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -192,7 +192,7 @@ public class ProductBrandDisplay extends AppCompatActivity {
             public boolean onQueryTextChange(String newText) {
                 searchedProduct.clear();
                 if(newText.equals("") || newText == null){
-                    adapter = new ProductBrandDisplayListViewAdapter(ProductBrandDisplay.this, R.layout.product_brand_display_custom_listview, list,currentLatitude,currentLongtitude);
+                    adapter = new ProductBrandDisplayListViewAdapter(ProductBrandDisplayPage.this, R.layout.product_brand_display_custom_listview, list,currentLatitude,currentLongtitude);
 
                 } else {
                     for (int i = 0; i < list.size(); i++) {
@@ -200,7 +200,7 @@ public class ProductBrandDisplay extends AppCompatActivity {
                             searchedProduct.add(list.get(i));
                         }
                     }
-                    adapter = new ProductBrandDisplayListViewAdapter(ProductBrandDisplay.this, R.layout.product_brand_display_custom_listview, searchedProduct,currentLatitude,currentLongtitude);
+                    adapter = new ProductBrandDisplayListViewAdapter(ProductBrandDisplayPage.this, R.layout.product_brand_display_custom_listview, searchedProduct,currentLatitude,currentLongtitude);
                 }
                 adapter.notifyDataSetChanged();
                 theListView.setAdapter(adapter);

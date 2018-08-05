@@ -15,13 +15,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
-import project.view.fragment.DoingOrderUser;
-import project.view.fragment.DoneOrderUser;
-import project.view.fragment.WaitingOrderUser;
+import project.view.fragment.DoingOrderStore;
+import project.view.fragment.DoneOrderStore;
+import project.view.fragment.WaitingOrderStore;
 import project.view.R;
 import project.view.util.CustomInterface;
 
-public class UserManagementOrder extends AppCompatActivity {
+public class StoreManagementOrderPage extends AppCompatActivity {
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
@@ -98,13 +98,13 @@ public class UserManagementOrder extends AppCompatActivity {
         public Fragment getItem(int position) {
             switch(position){
                 case 0:
-                    WaitingOrderUser waitingOrder = new WaitingOrderUser();
+                    WaitingOrderStore waitingOrder = new WaitingOrderStore();
                     return waitingOrder;
                 case 1:
-                    DoingOrderUser doing = new DoingOrderUser();
+                    DoingOrderStore doing = new DoingOrderStore();
                     return doing;
                 case 2:
-                    DoneOrderUser done = new DoneOrderUser();
+                    DoneOrderStore done = new DoneOrderStore();
                     return done;
             }
             return null;
@@ -131,3 +131,4 @@ public class UserManagementOrder extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 }
+

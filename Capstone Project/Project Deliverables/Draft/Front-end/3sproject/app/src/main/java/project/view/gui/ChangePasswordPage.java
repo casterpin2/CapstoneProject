@@ -20,7 +20,7 @@ import project.view.R;
 import project.view.util.CustomInterface;
 import project.view.util.Regex;
 
-public class ChangePasswordActivity extends AppCompatActivity{
+public class ChangePasswordPage extends AppCompatActivity{
     private  Button btnChangePass;
     private TextView tvOldPass, tvConfirmPass,tvNewPass;
     private TextInputEditText oldPass, newPass, confirmPass;

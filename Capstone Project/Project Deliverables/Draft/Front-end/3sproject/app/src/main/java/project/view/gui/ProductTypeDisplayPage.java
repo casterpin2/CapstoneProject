@@ -15,7 +15,7 @@ import project.view.adapter.ProductTypeDisplayListViewAdapter;
 import project.view.R;
 import project.view.model.ProductType;
 
-public class ProductTypeDisplay extends AppCompatActivity {
+public class ProductTypeDisplayPage extends AppCompatActivity {
 
     public List<ProductType> productList;
     private ListView theListView;

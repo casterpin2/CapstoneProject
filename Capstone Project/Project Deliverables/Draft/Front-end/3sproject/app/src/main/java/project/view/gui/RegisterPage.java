@@ -1,17 +1,14 @@
 package project.view.gui;
 
 import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,7 +28,7 @@ import project.view.util.Regex;
 import retrofit2.Call;
 import retrofit2.Response;
 
-public class RegisterActivity extends AppCompatActivity {
+public class RegisterPage extends AppCompatActivity {
     private TextInputEditText etUserName,etName, etPassword, etConfirmPass, etEmail, etPhoneNumber;
     private TextView tvUserName,tvName, tvPassword, tvConfirmPassword, tvEmail, tvPhoneNumber, toLoginPageBtn;
     private Button btnRegister;
@@ -121,7 +118,7 @@ public class RegisterActivity extends AppCompatActivity {
         toLoginPageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent toLoginPage = new Intent(RegisterActivity.this, LoginPage.class);
+                Intent toLoginPage = new Intent(RegisterPage.this, LoginPage.class);
                 startActivity(toLoginPage);
             }
         });
@@ -315,8 +312,8 @@ public class RegisterActivity extends AppCompatActivity {
         protected void onPostExecute(String aVoid) {
             super.onPostExecute(aVoid);
             //if (aVoid == null) return;
-            Toast.makeText(RegisterActivity.this, "Đăng kí thành công", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(RegisterActivity.this,LoginPage.class);
+            Toast.makeText(RegisterPage.this, "Đăng kí thành công", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(RegisterPage.this,LoginPage.class);
             intent.putExtra("username",aVoid);
             startActivity(intent);
         }

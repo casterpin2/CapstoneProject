@@ -53,7 +53,7 @@ import project.view.R;
 import project.view.util.Formater;
 
 
-public class OrderFast extends AppCompatActivity implements OnMapReadyCallback{
+public class OrderPage extends AppCompatActivity implements OnMapReadyCallback{
     //    int minteger = 1;
 //    int max = 20000;
     private TextView productName, productPrice, salePrice, promotionPercent, sumOrder;
@@ -185,7 +185,7 @@ public class OrderFast extends AppCompatActivity implements OnMapReadyCallback{
                 mYear = calendar.get(Calendar.YEAR);
                 mMonth = calendar.get(Calendar.MONTH);
                 mDay = calendar.get(Calendar.DAY_OF_MONTH);
-                DatePickerDialog datePickerDialog = new DatePickerDialog(OrderFast.this,
+                DatePickerDialog datePickerDialog = new DatePickerDialog(OrderPage.this,
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker view, int year,
@@ -206,7 +206,7 @@ public class OrderFast extends AppCompatActivity implements OnMapReadyCallback{
                 mMinute = calendar.get(Calendar.MINUTE);
 
                 // Launch Time Picker Dialog
-                TimePickerDialog timePickerDialog = new TimePickerDialog(OrderFast.this,
+                TimePickerDialog timePickerDialog = new TimePickerDialog(OrderPage.this,
                         new TimePickerDialog.OnTimeSetListener() {
 
                             @Override
@@ -226,7 +226,7 @@ public class OrderFast extends AppCompatActivity implements OnMapReadyCallback{
                 try {
                     Intent intent =
                             new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_FULLSCREEN)
-                                    .build(OrderFast.this);
+                                    .build(OrderPage.this);
                     startActivityForResult(intent, PLACE_AUTOCOMPLETE_REQUEST_CODE);
 
                 } catch (GooglePlayServicesRepairableException e) {
@@ -287,7 +287,7 @@ public class OrderFast extends AppCompatActivity implements OnMapReadyCallback{
                 }
 
                 order = new OrderDetail(userID, userName, productID, storeID, 0, quantity, phone, orderDateTime, longtitude, latitude, address);
-                Toast.makeText(OrderFast.this, "order: "+ order.getUserID()+"- "+ order.getUserName()+"- "+ order.getProductID()+"- "+ order.getStoreID()+"- "+ order.getFinalPrice()+"- "+ order.getProductQuantity()+"- "+ order.getPhone()+"- "+order.getOrderDateTime()+" - "+ order.getLongtitude()+"- "+ order.getLatitude()+"- "+ order.getAddress(), Toast.LENGTH_LONG).show();
+                Toast.makeText(OrderPage.this, "order: "+ order.getUserID()+"- "+ order.getUserName()+"- "+ order.getProductID()+"- "+ order.getStoreID()+"- "+ order.getFinalPrice()+"- "+ order.getProductQuantity()+"- "+ order.getPhone()+"- "+order.getOrderDateTime()+" - "+ order.getLongtitude()+"- "+ order.getLatitude()+"- "+ order.getAddress(), Toast.LENGTH_LONG).show();
             }
         });
 
@@ -342,7 +342,7 @@ public class OrderFast extends AppCompatActivity implements OnMapReadyCallback{
         productQuantity.setText(String.valueOf(quantity));
         //sumOrder.setText(Formater.formatDoubleToMoney(String.valueOf((getSalesPrice(productDetail.getProductPrice(), productDetail.getPromotionPercent()))* quantity)));
         if (quantity == 0) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(OrderFast.this);
+            AlertDialog.Builder builder = new AlertDialog.Builder(OrderPage.this);
             builder.setTitle("Hủy sản phẩm");
             builder.setMessage("Số lượng sản phẩm bạn chọn là 0. Bạn có muốn dừng việc đặt hàng tại đây?");
 
@@ -422,7 +422,7 @@ public class OrderFast extends AppCompatActivity implements OnMapReadyCallback{
                 } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
                     Status status = PlaceAutocomplete.getStatus(this, data);
                     // TODO: Handle the error.
-                    Toast.makeText(OrderFast.this, "An error occurred: " + status, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(OrderPage.this, "An error occurred: " + status, Toast.LENGTH_SHORT).show();
 
                 } else if (resultCode == RESULT_CANCELED) {
                     // The user canceled the operation.
