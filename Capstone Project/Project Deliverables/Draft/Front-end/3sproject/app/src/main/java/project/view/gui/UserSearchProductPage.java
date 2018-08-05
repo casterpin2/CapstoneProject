@@ -47,7 +47,7 @@ public class UserSearchProductPage extends AppCompatActivity {
     private UserSearchProductListViewCustomAdapter adapter;
     RelativeLayout main_layout;
 
-    List<Product> productList = new ArrayList<>();
+    private List<Product> productList = new ArrayList<>();
     private APIService mAPI;
 
     private LocationManager locationManager;
@@ -384,13 +384,6 @@ public class UserSearchProductPage extends AppCompatActivity {
 //    }
 
     public class UserSearchProductAsyncTask1 extends AsyncTask<Call, Void, List<Product>> {
-
-        private List<Product> list;
-
-        public UserSearchProductAsyncTask1() {
-            list = new ArrayList<>();
-        }
-
         @Override
         protected List<Product> doInBackground(Call... calls) {
             try {
@@ -418,10 +411,6 @@ public class UserSearchProductPage extends AppCompatActivity {
                 adapter.notifyDataSetChanged();
                 setLayout(noHaveProduct,haveProduct);
         } else {Toast.makeText(UserSearchProductPage.this,"Có lỗi xảy ra!!!",Toast.LENGTH_LONG).show();}
-        }
-
-        public List<Product> getList() {
-            return list;
         }
     }
 

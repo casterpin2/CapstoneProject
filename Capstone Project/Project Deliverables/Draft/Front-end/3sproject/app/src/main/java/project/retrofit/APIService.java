@@ -13,15 +13,12 @@ import project.view.model.Login;
 import project.view.model.ProductInStore;
 import project.view.model.ResultRegister;
 import project.view.model.Store;
-import project.view.model.SaleProduct;
 import project.view.model.NearByStore;
 import project.view.model.Type;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.Body;
-import retrofit2.http.Field;
-import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
@@ -49,6 +46,9 @@ public interface APIService {
     @GET("brands")
     Call<List<Brand>> getBrands();
 
+    @GET("brands/top10")
+    Call<List<Brand>> getBrandsTop5();
+
     @GET("brands/productWithBrand")
     Call<List<Product>> getProductBrand(@Query("brandId") int brandId);
     @GET("category")
@@ -75,9 +75,9 @@ public interface APIService {
     Call<List<Product>> userSearchProduct(@Query("productName") String productName);
 
     @GET("productSales/top20")
-    Call<List<SaleProduct>> getSaleProductTop20();
+    Call<List<Product>> getSaleProductTop20();
     @GET("productSales")
-    Call<List<SaleProduct>> getSaleProduct();
+    Call<List<Product>> getSaleProduct();
 
     //Google Map Service
     @GET("json")

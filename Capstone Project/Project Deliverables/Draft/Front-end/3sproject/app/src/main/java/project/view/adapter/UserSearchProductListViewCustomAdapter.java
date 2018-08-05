@@ -112,11 +112,10 @@ public class UserSearchProductListViewCustomAdapter extends BaseAdapter {
             holder.findNearByBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-//                    Toast.makeText(context, "Clicked!!!!", Toast.LENGTH_SHORT).show();
-                    String productName = product.getProduct_name();
-                    NearByStoreAsynTask1 asynTask = new NearByStoreAsynTask1();
-                    Call<List<NearByStore>> call = ApiUtils.getAPIService().nearByStore(product.getProduct_id(),String.valueOf(latitude),String.valueOf(longtitude));
-                    asynTask.execute(call);
+                    int productId = product.getProduct_id();
+                    Intent toNearByStorePage = new Intent(getContext(), NearbyStorePage.class);
+                    toNearByStorePage.putExtra("productId",productId);
+                    getContext().startActivity(toNearByStorePage);
                 }
             });
 
@@ -125,8 +124,6 @@ public class UserSearchProductListViewCustomAdapter extends BaseAdapter {
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                boolean isStoreProduct = false;
-                int productID = product.getProduct_id();
                 Intent toProductDetail = new Intent(getContext(), ProductDetailPage.class);
                 toProductDetail.putExtra("product",new Gson().toJson(product));
                 getContext().startActivity(toProductDetail);

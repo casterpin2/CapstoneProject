@@ -23,14 +23,14 @@ import java.util.List;
 
 import project.view.R;
 import project.view.adapter.SaleProductCustomCardviewAdapter;
-import project.view.model.SaleProduct;
+import project.view.model.Product;
 import project.view.util.GridSpacingItemDecoration;
 
 public class SaleProductDisplayPage extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private SaleProductCustomCardviewAdapter adapter;
-    private List<SaleProduct> saleProductList;
+    private List<Product> saleProductList;
     private SearchView searchView;
 
     @Override
@@ -99,36 +99,6 @@ public class SaleProductDisplayPage extends AppCompatActivity {
         });
     }
     private void prepareAlbums() {
-
-
-        SaleProduct a = new SaleProduct("123","Banh Custard", 120000, 10,"Thang Store");
-        saleProductList.add(a);
-
-        a = new SaleProduct("123","Banh Custard", 120000, 10,"Thang Store");
-        saleProductList.add(a);
-
-        a = new SaleProduct("123","Banh Custard", 120000, 10,"Thang Store");
-        saleProductList.add(a);
-
-        a = new SaleProduct("123","Banhs Custard", 1000000, 20,"Thang Store");
-        saleProductList.add(a);
-
-        a = new SaleProduct("123","Bánh Custard", 200000, 15,"Thang Store");
-        saleProductList.add(a);
-
-        a = new SaleProduct("123","Banh Custard", 120000, 10,"Thang Store");
-        saleProductList.add(a);
-
-        a = new SaleProduct("123","Banh Custard", 120000, 10,"Thang Store");
-        saleProductList.add(a);
-
-        a = new SaleProduct("123","Banh Custard", 120000, 10,"Thang Store");
-        saleProductList.add(a);
-
-        a = new SaleProduct("123","Banh Custard", 120000, 10,"Thang Store");
-        saleProductList.add(a);
-
-
         adapter.notifyDataSetChanged();
     }
 

@@ -101,10 +101,10 @@ public class ProductBrandDisplayListViewAdapter extends BaseAdapter {
             holder.findNearByBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String productName = product.getProduct_name();
-                    NearByStoreAsynTask1 asynTask = new NearByStoreAsynTask1();
-                    Call<List<NearByStore>> call = ApiUtils.getAPIService().nearByStore(product.getProduct_id(),String.valueOf(currentLatitude),String.valueOf(currentLongtitude));
-                    asynTask.execute(call);
+                    int productId = product.getProduct_id();
+                    Intent toNearByStorePage = new Intent(getContext(), NearbyStorePage.class);
+                    toNearByStorePage.putExtra("productId",productId);
+                    getContext().startActivity(toNearByStorePage);
                 }
             });
         }
@@ -133,39 +133,5 @@ public class ProductBrandDisplayListViewAdapter extends BaseAdapter {
         TextView productName;
         TextView productDesc;
         Button findNearByBtn;
-    }
-    public class NearByStoreAsynTask1 extends AsyncTask<Call, Void, List<NearByStore>> {
-        @Override
-        protected List<NearByStore> doInBackground(Call... calls) {
-            try {
-                Call<List<NearByStore>> call = calls[0];
-                Response<List<NearByStore>> re = call.execute();
-//            if (re.body() != null) {
-
-                return re.body();
-//            } else {
-//                return null;
-//            }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(List<NearByStore> list) {
-            super.onPostExecute(list);
-            ArrayList<String> listStore = new ArrayList<>();
-            if (list != null) {
-                Intent toNearByStore = new Intent(context,NearbyStorePage.class);
-                for (int i = 0 ; i< list.size();i++){
-                    String storeJSON = new Gson().toJson(list.get(i),NearByStore.class);
-                    listStore.add(storeJSON);
-                }
-                toNearByStore.putExtra("listStore",listStore);
-                context.startActivity(toNearByStore);
-            }
-
-        }
     }
 }

@@ -3,7 +3,6 @@ package project.view.fragment.home;
 
 import android.content.Intent;
 import android.content.res.Resources;
-import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -43,7 +42,7 @@ import project.view.gui.BrandDisplayPage;
 import project.view.model.Category;
 import project.view.gui.CategoryDisplayPage;
 import project.view.R;
-import project.view.model.SaleProduct;
+import project.view.model.Product;
 import project.view.adapter.SaleProductCustomCardviewAdapter;
 import project.view.gui.UserSearchProductPage;
 import project.view.adapter.BrandRecycleViewAdapter;
@@ -193,12 +192,12 @@ public class HomeFragment extends Fragment {
 
         //brand
         apiService = APIService.retrofit.create(APIService.class);
-        final Call<List<Brand>> callBrand = apiService.getBrands();
+        final Call<List<Brand>> callBrand = apiService.getBrandsTop5();
         new BrandData().execute(callBrand);
 
         //sale
         apiService = APIService.retrofit.create(APIService.class);
-        final Call<List<SaleProduct>> callSale = apiService.getSaleProduct();
+        final Call<List<Product>> callSale = apiService.getSaleProduct();
         new SaleData().execute(callSale);
       return view;
     }
@@ -313,7 +312,7 @@ private void findView(){
         Glide.get(getContext()).clearMemory();
 
     }
-    public class SaleData extends AsyncTask<Call,List<SaleProduct>,Void>{
+    public class SaleData extends AsyncTask<Call,List<Product>,Void>{
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -325,9 +324,9 @@ private void findView(){
         }
 
         @Override
-        protected void onProgressUpdate(List<SaleProduct>... values) {
+        protected void onProgressUpdate(List<Product>... values) {
             super.onProgressUpdate(values);
-            List<SaleProduct> listSale = values[0];
+            List<Product> listSale = values[0];
             saleProductCustomCardviewAdapter = new SaleProductCustomCardviewAdapter(getContext(), listSale);
 
             RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getContext(), 2);
@@ -340,9 +339,9 @@ private void findView(){
         @Override
         protected Void doInBackground(Call... calls) {
             try {
-                Call<List<SaleProduct>> call = calls[0];
-                Response<List<SaleProduct>> response = call.execute();
-                List<SaleProduct> list = new ArrayList<>();
+                Call<List<Product>> call = calls[0];
+                Response<List<Product>> response = call.execute();
+                List<Product> list = new ArrayList<>();
                 for(int i =0 ; i< response.body().size();i++){
                     list.add(response.body().get(i));
                 }

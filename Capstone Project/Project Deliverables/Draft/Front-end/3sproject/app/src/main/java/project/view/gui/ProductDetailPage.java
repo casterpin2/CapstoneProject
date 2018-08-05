@@ -46,7 +46,6 @@ public class ProductDetailPage extends AppCompatActivity {
     private TextView productNotInStoreName, productNotInStoreCategoryName, productNotInStoreBrandName, productNotInStoreDesc;
     private Button addToCartBtn, findStoreBtn;
     private LinearLayout isNotProductInStoreLayout, isProductInStoreLayout, productDetailLayout;
-    private Context context;
     private Product product;
     private String productName;
     private int storeID;
@@ -55,24 +54,13 @@ public class ProductDetailPage extends AppCompatActivity {
     private ProgressBar loadingBar;
     private LocationManager locationManager;
     final static int REQUEST_LOCATION = 1;
-    private double currentLatitude = 0.0;
-    private double currentLongtitude = 0.0;
-
     private StorageReference storageReference = Firebase.getFirebase();
-
-    public Context getContext() {
-        return context;
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_describe_product);
-
         mapping();
-        turnOnLocation();
         product = new Gson().fromJson(getIntent().getStringExtra("product"),Product.class);
-
         getSupportActionBar().setTitle(productName);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorApplication)));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -126,29 +114,10 @@ public class ProductDetailPage extends AppCompatActivity {
             findStoreBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-                    String productName = product.getProduct_name();
-                    Intent toNearbyStorePage = new Intent(ProductDetailPage.this, NearbyStorePage.class);
-                    toNearbyStorePage.putExtra("productName",productName);
-                    if (ActivityCompat.checkSelfPermission(ProductDetailPage.this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                            && ActivityCompat.checkSelfPermission(ProductDetailPage.this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                        ActivityCompat.requestPermissions(ProductDetailPage.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
-                    } else {
-                        Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-//            googleMap.clear();
-                        if (location != null) {
-                           double latitude = location.getLatitude();
-                           double longtitude = location.getLongitude();
-                            NearByStoreAsynTask1 synTask = new NearByStoreAsynTask1();
-                            Call<List<NearByStore>> call = ApiUtils.getAPIService().nearByStore(product.getProduct_id(),String.valueOf(latitude),String.valueOf(longtitude));
-                            synTask.execute(call);
-                        }else {
-                            Toast.makeText(ProductDetailPage.this, "Bạn chưa bật định vị. Chưa thể tìm cửa hàng!!!!!", Toast.LENGTH_SHORT).show();
-                        }
-
-                    }
-
-
+                    int productId = product.getProduct_id();
+                    Intent toNearByStorePage = new Intent(ProductDetailPage.this, NearbyStorePage.class);
+                    toNearByStorePage.putExtra("productId",productId);
+                    startActivity(toNearByStorePage);
                 }
             });
         }
@@ -203,7 +172,7 @@ public class ProductDetailPage extends AppCompatActivity {
         }
     }
 
-    public class NearByStoreAsynTask1 extends AsyncTask<Call, Void, List<NearByStore>> {
+    public class NearByStoreAsynTask extends AsyncTask<Call, Void, List<NearByStore>> {
 
         @Override
         protected void onPreExecute() {
@@ -216,18 +185,12 @@ public class ProductDetailPage extends AppCompatActivity {
             try {
                 Call<List<NearByStore>> call = calls[0];
                 Response<List<NearByStore>> re = call.execute();
-//            if (re.body() != null) {
-
                 return re.body();
-//            } else {
-//                return null;
-//            }
             } catch (IOException e) {
                 e.printStackTrace();
             }
             return null;
         }
-
         @Override
         protected void onPostExecute(List<NearByStore> list) {
             super.onPostExecute(list);
@@ -242,77 +205,6 @@ public class ProductDetailPage extends AppCompatActivity {
                 loadingBar.setVisibility(View.INVISIBLE);
                 startActivity(toNearByStore);
             }
-
         }
     }
-
-    //Đây là hàm do Đạt sửa bá đạo
-    private void turnOnLocation(){
-        final LocationListener locationListener = new LocationListener() {
-            public void onLocationChanged(Location location) {
-            }
-
-            public void onProviderDisabled(String provider){
-            }
-
-            public void onProviderEnabled(String provider){ }
-            public void onStatusChanged(String provider, int status,
-                                        Bundle extras){ }
-        };
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        // getting GPS status
-        boolean isGPSEnabled = locationManager
-                .isProviderEnabled(LocationManager.GPS_PROVIDER);
-
-        // getting network status
-        boolean isNetworkEnabled = locationManager
-                .isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
-        } else {
-//            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,1000,1000,locationListener);
-//            Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-////            googleMap.clear();
-//            if (location != null) {
-//                currentLatitude = location.getLatitude();
-//                currentLongtitude = location.getLongitude();
-//            } else {
-//                Toast.makeText(this, "Bạn chưa bật định vị. Chưa thể tìm cửa hàng!!!!!", Toast.LENGTH_SHORT).show();
-//            }
-            if (!isGPSEnabled && !isNetworkEnabled) {
-                Toast.makeText(this, "Bạn chưa bật định vị. Chưa thể tìm cửa hàng!!!!!", Toast.LENGTH_SHORT).show();
-            }
-            if (isNetworkEnabled) {
-                locationManager.requestLocationUpdates(
-                        LocationManager.NETWORK_PROVIDER,
-                        1000,
-                        1000, locationListener);
-                if (locationManager != null) {
-                    Location location = locationManager
-                            .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-                    if (location != null) {
-                        currentLatitude = location.getLatitude();
-                        currentLongtitude = location.getLongitude();
-                    }
-                }
-            }
-            if (isGPSEnabled) {
-                locationManager.requestLocationUpdates(
-                        LocationManager.GPS_PROVIDER,
-                        1000,
-                        1000, locationListener);
-                if (locationManager != null) {
-                    Location location = locationManager
-                            .getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                    if (location != null) {
-                        currentLatitude = location.getLatitude();
-                        currentLongtitude = location.getLongitude();
-                    }
-                }
-
-            }
-        }
-    }
-
 }

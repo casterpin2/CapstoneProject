@@ -3,11 +3,14 @@ package project.view.gui;
 import android.app.ActionBar;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.MatrixCursor;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.BaseColumns;
@@ -40,14 +43,21 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
 
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import project.googleMapAPI.GoogleMapJSON;
+import project.retrofit.APIService;
+import project.retrofit.ApiUtils;
 import project.view.R;
+import project.view.adapter.UserSearchProductListViewCustomAdapter;
 import project.view.model.NearByStore;
 import project.view.adapter.ListViewAdapter;
 import project.view.util.CustomInterface;
+import retrofit2.Call;
+import retrofit2.Response;
 
 public class NearbyStorePage extends AppCompatActivity implements OnMapReadyCallback {
     private ListView storeListView;
@@ -56,9 +66,8 @@ public class NearbyStorePage extends AppCompatActivity implements OnMapReadyCall
     private List<NearByStore> list = new ArrayList<>();
     private RelativeLayout main_layout;
     private GoogleMap mMap;
-
     private LocationManager locationManager;
-
+    private int productId;
     private SearchView searchView;
 
     // google map
@@ -79,12 +88,18 @@ public class NearbyStorePage extends AppCompatActivity implements OnMapReadyCall
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nearby_store_page);
+        storeListView = findViewById(R.id.storeListView);
         CustomInterface.setStatusBarColor(this);
-
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorApplication)));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("");
-
+        int productId = getIntent().getIntExtra("productId",-1);
+        turnOnLocation();
+        if (productId != -1) {
+            NearByStoreAsynTask asynTask = new NearByStoreAsynTask();
+            Call<List<NearByStore>> call = ApiUtils.getAPIService().nearByStore(productId, String.valueOf(latitude), String.valueOf(longtitude));
+            asynTask.execute(call);
+        }
         main_layout = findViewById(R.id.main_layout);
         main_layout.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -93,24 +108,19 @@ public class NearbyStorePage extends AppCompatActivity implements OnMapReadyCall
                 return false;
             }
         });
-        nearByStore = getIntent().getStringArrayListExtra("listStore");
+//        nearByStore = getIntent().getStringArrayListExtra("listStore");
+//
+//        if (nearByStore != null){
+//            for (int i = 0 ; i < nearByStore.size() ; i++){
+//                NearByStore store = new Gson().fromJson(nearByStore.get(i),NearByStore.class);
+//                list.add(store);
+//            }
+//        }
 
-        if (nearByStore != null){
-            for (int i = 0 ; i < nearByStore.size() ; i++){
-                NearByStore store = new Gson().fromJson(nearByStore.get(i),NearByStore.class);
-                list.add(store);
-            }
-        }
-        productName = getIntent().getStringExtra("productName");
-
-        storeListView = findViewById(R.id.storeListView);
         adapter = new ListViewAdapter(NearbyStorePage.this, R.layout.nearby_store_page_custom_list_view, list);
         storeListView.setAdapter(adapter);
-
-
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
-
         mapFragment.getMapAsync(this);
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -160,7 +170,8 @@ public class NearbyStorePage extends AppCompatActivity implements OnMapReadyCall
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        changeLocation(mMap);
+
+
 //        Bitmap.Config conf = Bitmap.Config.ARGB_8888;
 //        Bitmap bmp = Bitmap.createBitmap(100, 100, conf);
 //        Canvas canvas1 = new Canvas(bmp);
@@ -223,8 +234,6 @@ public class NearbyStorePage extends AppCompatActivity implements OnMapReadyCall
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        // thêm search vào vào action bar
         getMenuInflater().inflate(R.menu.search_view_with_find_icon, menu);
         MenuItem itemSearch = menu.findItem(R.id.search_view);
         searchView = (SearchView) itemSearch.getActionView();
@@ -236,17 +245,13 @@ public class NearbyStorePage extends AppCompatActivity implements OnMapReadyCall
         searchView.clearFocus();
 
         if(searchView.getQuery() != null) {
-            // callAPI rồi set lại listview ở đây
 
-            Toast.makeText(NearbyStorePage.this, "onQueryTextSubmit : "+ searchView.getQuery(), Toast.LENGTH_SHORT).show();
-            Toast.makeText(NearbyStorePage.this, "Submit  : "+ productName, Toast.LENGTH_SHORT).show();
-            //list.clear();
             int index = storeListView.getFirstVisiblePosition();
             View v = storeListView.getChildAt(0);
             int top = (v == null) ? 0 : v.getTop();
             storeListView.setSelectionFromTop(index, top);
 
-            if (mMap != null) { //prevent crashing if the map doesn't exist yet (eg. on starting activity)
+            if (mMap != null) {
                 changeLocation(mMap);
             }
 
@@ -283,32 +288,11 @@ public class NearbyStorePage extends AppCompatActivity implements OnMapReadyCall
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-//                searchedProductList.clear();
-//                page = 1;
-//
-//                query = searchView.getQuery().toString().trim();
-//                SearchProductAddToStore.query = query;
-//                int index = theListView.getFirstVisiblePosition();
-//                View v = theListView.getChildAt(0);
-//                int top = (v == null) ? 0 : v.getTop();
-//                theListView.setSelectionFromTop(index, top);
-//
-//                if(!query.isEmpty()) {
-//                    callAPI(query,page);
-//                }
-
-                // callAPI rồi set lại listview ở đây
-
-                Toast.makeText(NearbyStorePage.this, "onQueryTextSubmit : "+ query, Toast.LENGTH_SHORT).show();
-                Toast.makeText(NearbyStorePage.this, "Submit  : "+ productName, Toast.LENGTH_SHORT).show();
-                //list.clear();
-
-
                 int index = storeListView.getFirstVisiblePosition();
                 View v = storeListView.getChildAt(0);
                 int top = (v == null) ? 0 : v.getTop();
                 storeListView.setSelectionFromTop(index, top);
-                if (mMap != null) { //prevent crashing if the map doesn't exist yet (eg. on starting activity)
+                if (mMap != null) {
                     changeLocation(mMap);
                 }
                 return false;
@@ -317,7 +301,6 @@ public class NearbyStorePage extends AppCompatActivity implements OnMapReadyCall
 
             @Override
             public boolean onQueryTextChange(String newText) {
-//                Toast.makeText(SearchProductAddToStore.this, "content : "+ newText, Toast.LENGTH_SHORT).show();
                 String[] columns = { BaseColumns._ID,
                         SearchManager.SUGGEST_COLUMN_TEXT_1,
                 };
@@ -405,20 +388,10 @@ public class NearbyStorePage extends AppCompatActivity implements OnMapReadyCall
 //        }
 //    }
 
-    public void changeLocation (GoogleMap googleMap){
-//        googleMap.clear();
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
-        } else {
-            Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-//            googleMap.clear();
-            if (location != null) {
-                latitude = location.getLatitude();
-                longtitude = location.getLongitude();
+    public void changeLocation (GoogleMap googleMap) {
                 double storeLongtitude = 0.0;
                 double storeLatitude = 0.0;
-                LatLng storeLatLng ;
+                LatLng storeLatLng;
                 LatLng myLocation = new LatLng(latitude, longtitude);
                 googleMap.addMarker(new MarkerOptions().position(myLocation).title("Vị trí của bạn"));
                 googleMap.getUiSettings().setCompassEnabled(false);
@@ -426,16 +399,108 @@ public class NearbyStorePage extends AppCompatActivity implements OnMapReadyCall
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(myLocation));
                 googleMap.setMinZoomPreference(12.0f);
                 googleMap.setMaxZoomPreference(20.0f);
-
                 for (int i = 0; i < list.size(); i++) {
                     storeLongtitude = list.get(i).getLongitude();
                     storeLatitude = list.get(i).getLatitude();
                     storeLatLng = new LatLng(storeLatitude, storeLongtitude);
                     googleMap.addMarker(new MarkerOptions().position(storeLatLng).title(list.get(i).getName()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
                 }
+    }
+    public class NearByStoreAsynTask extends AsyncTask<Call, Void, List<NearByStore>> {
+        @Override
+        protected List<NearByStore> doInBackground(Call... calls) {
+            try {
+                Call<List<NearByStore>> call = calls[0];
+                Response<List<NearByStore>> re = call.execute();
+                return re.body();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
 
+        @Override
+        protected void onPostExecute(List<NearByStore> listNearByStore) {
+            super.onPostExecute(listNearByStore);
+            if (listNearByStore != null) {
+                for (NearByStore near : listNearByStore) {
+                    list.add(near);
+                }
+                adapter = new ListViewAdapter(NearbyStorePage.this, R.layout.nearby_store_page_custom_list_view, listNearByStore);
+                storeListView.setAdapter(adapter);
+                changeLocation(mMap);
+            } else {
+                Toast.makeText(NearbyStorePage.this,"Có lỗi xảy ra!!!",Toast.LENGTH_LONG).show();
             }
         }
     }
 
+    //Đây là hàm do Đạt sửa bá đạo
+    private void turnOnLocation(){
+        final LocationListener locationListener = new LocationListener() {
+            public void onLocationChanged(Location location) {
+            }
+
+            public void onProviderDisabled(String provider){
+            }
+
+            public void onProviderEnabled(String provider){ }
+            public void onStatusChanged(String provider, int status,
+                                        Bundle extras){ }
+        };
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        // getting GPS status
+        boolean isGPSEnabled = locationManager
+                .isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+        // getting network status
+        boolean isNetworkEnabled = locationManager
+                .isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
+        } else {
+//            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,1000,1000,locationListener);
+//            Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+////            googleMap.clear();
+//            if (location != null) {
+//                currentLatitude = location.getLatitude();
+//                currentLongtitude = location.getLongitude();
+//            } else {
+//                Toast.makeText(this, "Bạn chưa bật định vị. Chưa thể tìm cửa hàng!!!!!", Toast.LENGTH_SHORT).show();
+//            }
+            if (!isGPSEnabled && !isNetworkEnabled) {
+                Toast.makeText(this, "Bạn chưa bật định vị. Chưa thể tìm cửa hàng!!!!!", Toast.LENGTH_SHORT).show();
+            }
+            if (isNetworkEnabled) {
+                locationManager.requestLocationUpdates(
+                        LocationManager.NETWORK_PROVIDER,
+                        1000,
+                        1000, locationListener);
+                if (locationManager != null) {
+                    Location location = locationManager
+                            .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                    if (location != null) {
+                        latitude = location.getLatitude();
+                        longtitude = location.getLongitude();
+                    }
+                }
+            }
+            if (isGPSEnabled) {
+                locationManager.requestLocationUpdates(
+                        LocationManager.GPS_PROVIDER,
+                        1000,
+                        1000, locationListener);
+                if (locationManager != null) {
+                    Location location = locationManager
+                            .getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                    if (location != null) {
+                        latitude = location.getLatitude();
+                        longtitude = location.getLongitude();
+                    }
+                }
+
+            }
+        }
+    }
 }

@@ -13,9 +13,21 @@ import java.util.ArrayList;
  */
 @SuppressWarnings({"unused", "WeakerAccess"})
 public class Product implements Serializable{
+    @SerializedName("store_id")
+    @Expose
+    private int store_id;
     @SerializedName("product_id")
     @Expose
     private int product_id;
+
+    public int getStore_id() {
+        return store_id;
+    }
+
+    public void setStore_id(int store_id) {
+        this.store_id = store_id;
+    }
+
     @SerializedName("product_name")
     @Expose
     private String product_name;
@@ -59,6 +71,13 @@ public class Product implements Serializable{
         this.promotion = promotion;
     }
 
+    public String getStoreName() {
+        return storeName;
+    }
+
+    public void setStoreName(String storeName) {
+        this.storeName = storeName;
+    }
 
     public int getProduct_id() {
         return product_id;

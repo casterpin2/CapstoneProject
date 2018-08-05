@@ -13,19 +13,20 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.storage.StorageReference;
+import com.google.gson.Gson;
 
 import java.util.List;
 
 import project.firebase.Firebase;
 import project.view.gui.ProductDetailPage;
 import project.view.R;
-import project.view.model.SaleProduct;
+import project.view.model.Product;
 import project.view.util.Formater;
 
 public class SaleProductCustomCardviewAdapter extends RecyclerView.Adapter<SaleProductCustomCardviewAdapter.MyViewHolder>  {
 
     private Context mContext;
-    private List<SaleProduct> saleProductList;
+    private List<Product> saleProductList;
     private StorageReference storageReference = Firebase.getFirebase();
     private Formater formater;
 
@@ -45,7 +46,7 @@ public class SaleProductCustomCardviewAdapter extends RecyclerView.Adapter<SaleP
     }
 
 
-    public SaleProductCustomCardviewAdapter(Context mContext, List<SaleProduct> saleProductList) {
+    public SaleProductCustomCardviewAdapter(Context mContext, List<Product> saleProductList) {
         this.mContext = mContext;
         this.saleProductList = saleProductList;
         formater = new Formater();
@@ -61,24 +62,26 @@ public class SaleProductCustomCardviewAdapter extends RecyclerView.Adapter<SaleP
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder,  int position) {
-        final SaleProduct saleProduct = saleProductList.get(position);
-        holder.productName.setText(saleProduct.getProductName());
+        final Product saleProduct = saleProductList.get(position);
+        holder.productName.setText(saleProduct.getProduct_name());
         holder.storeName.setText(saleProduct.getStoreName());
-        holder.originalPrice.setText(formater.formatDoubleToMoney( String.valueOf(saleProduct.getProductPrice())));
+        holder.originalPrice.setText(formater.formatDoubleToMoney( String.valueOf(saleProduct.getPrice())));
         holder.originalPrice.setPaintFlags(holder.originalPrice.getPaintFlags()| Paint.STRIKE_THRU_TEXT_FLAG);
-        holder.promotionPrice.setText(formater.formatDoubleToMoney( String.valueOf(saleProduct.getProductPrice() - (saleProduct.getProductPrice()* saleProduct.getProducrPromotionPercent()/100))));
-        holder.promotionPercent.setText(formater.formatDoubleToInt( "-"+String.valueOf(saleProduct.getProducrPromotionPercent())));
+        holder.promotionPrice.setText(formater.formatDoubleToMoney( String.valueOf(saleProduct.getPrice() - (saleProduct.getPrice()* saleProduct.getPromotion()/100))));
+        holder.promotionPercent.setText(formater.formatDoubleToInt( "-"+String.valueOf(saleProduct.getPromotion())));
         Glide.with(mContext /* context */)
                 .using(new FirebaseImageLoader())
-                .load(storageReference.child(saleProduct.getImgProductSale()))
+                .load(storageReference.child(saleProduct.getImage_path()))
                 .into(holder.productImage);
 
         holder.productImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                boolean isStoreProduct = true;
                 Intent intent = new Intent(mContext, ProductDetailPage.class);
-                intent.putExtra("productName", saleProduct.getProductName());
-                intent.putExtra("storeName", saleProduct.getStoreName());
+                intent.putExtra("product",new Gson().toJson(saleProduct));
+                intent.putExtra("isStoreProduct",isStoreProduct);
+                intent.putExtra("isStoreSee",false);
                 mContext.startActivity(intent);
             }
         });
