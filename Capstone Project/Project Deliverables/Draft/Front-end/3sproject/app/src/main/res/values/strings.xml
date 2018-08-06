@@ -1,10 +1,10 @@
 <resources>
     <string name="app_name">3sproject</string>
-    
+
     <string name="slogan">Điện thoại cầm tay\nMua ngay lập tức</string>
-    
+
     <string name="somethingWrong">Xảy ra lỗi. Vui lòng thử lại</string>
-    
+
     <!-- TODO: placeholder text in register and login page -->
     <string name="login_page_username_placeholder">Tên đăng nhập</string>
     <string name="login_page_password_placeholder">Mật khẩu</string>
