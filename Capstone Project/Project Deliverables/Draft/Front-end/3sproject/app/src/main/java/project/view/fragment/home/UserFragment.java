@@ -28,6 +28,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import project.firebase.Firebase;
 import project.objects.User;
 import project.view.gui.ChangePasswordPage;
+import project.view.gui.HomePage;
 import project.view.gui.LoginPage;
 import project.view.R;
 import project.view.gui.UserManagementOrderPage;
@@ -155,7 +156,7 @@ public class     UserFragment extends Fragment {
                     editor.putString("store", "");
                     //chấp nhận lưu xuống file
                     editor.commit();
-                    Intent intent = new Intent(getActivity(),HomeFragment.class);
+                    Intent intent = new Intent(getActivity(),HomePage.class);
                     startActivity(intent);
                     getActivity().finishAffinity();
                 }

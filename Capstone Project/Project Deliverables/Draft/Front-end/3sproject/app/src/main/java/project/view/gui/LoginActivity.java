@@ -8,12 +8,10 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -34,7 +32,6 @@ import project.objects.User;
 import project.retrofit.APIService;
 import project.retrofit.ApiUtils;
 import project.view.R;
-import project.view.fragment.home.HomeFragment;
 import project.view.model.Store;
 import project.view.model.Login;
 import project.view.util.CustomInterface;
@@ -42,20 +39,19 @@ import project.view.util.MD5Library;
 import retrofit2.Call;
 import retrofit2.Response;
 
-public class LoginPage extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity {
 
     private ScrollView scroll;
     private Button loginBtn, loginFBBtn, loginGPBtn;
-    private TextView toForgetPasswordPage, toRegisterPage, errorMessage, usernameValue, passwordValue ;
+    private TextView toRegisterPage, toForgetPasswordPage, errorMessage, usernameValue, passwordValue ;
     private APIService mAPI;
     public static Login login = new Login();
     private CallbackManager callbackManager;
     private ProgressBar loadingBar;
-    private RelativeLayout  main_layout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login_page);
+        setContentView(R.layout.activity_login);
         findView();
         mAPI = ApiUtils.getAPIService();
         callbackManager = CallbackManager.Factory.create();
@@ -63,27 +59,23 @@ public class LoginPage extends AppCompatActivity {
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorApplication)));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         CustomInterface.setStatusBarColor(this);
+
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         loadingBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorApplication), android.graphics.PorterDuff.Mode.MULTIPLY);
-        main_layout.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                CustomInterface.hideKeyboard(view,getBaseContext());
-                return false;
-            }
-        });
         CustomInterface.setStatusBarColor(this);
+
         scroll.setVerticalScrollBarEnabled(false);
         scroll.setHorizontalScrollBarEnabled(false);
-
 
         toRegisterPage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent toRegisterPage = new Intent(LoginPage.this, RegisterPage.class);
+                Intent toRegisterPage = new Intent(LoginActivity.this, RegisterPage.class);
                 startActivity(toRegisterPage);
             }
         });
+
+
 
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,15 +92,7 @@ public class LoginPage extends AppCompatActivity {
         loginFBBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LoginManager.getInstance().logInWithReadPermissions(LoginPage.this, Arrays.asList("public_profile"));
-            }
-        });
-
-        toForgetPasswordPage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent toForgetPasswordPageLayout = new Intent(getBaseContext(), GetPasswordPage.class);
-                startActivity(toForgetPasswordPageLayout);
+                LoginManager.getInstance().logInWithReadPermissions(LoginActivity.this, Arrays.asList("public_profile"));
             }
         });
 
@@ -124,12 +108,8 @@ public class LoginPage extends AppCompatActivity {
                 else {user.setImage_path("");}
                 user.setFirst_name(profile.getFirstName());
                 user.setLast_name(profile.getLastName());
-                try {
-                    Call<Login> call = mAPI.loginFB(user, profile.getId());
-                    new CallAPI().execute(call);
-                } catch(Exception e){
-
-                }
+                Call<Login> call = mAPI.loginFB(user,profile.getId());
+                new CallAPI().execute(call);
             }
 
             @Override
@@ -143,7 +123,7 @@ public class LoginPage extends AppCompatActivity {
                 if (exception instanceof FacebookAuthorizationException) {
                     if (AccessToken.getCurrentAccessToken() != null) {
                         LoginManager.getInstance().logOut();
-                        LoginManager.getInstance().logInWithReadPermissions(LoginPage.this, Arrays.asList("public_profile"));
+                        LoginManager.getInstance().logInWithReadPermissions(LoginActivity.this, Arrays.asList("public_profile"));
                     }
                 }
             }
@@ -193,14 +173,13 @@ public class LoginPage extends AppCompatActivity {
         loginGPBtn = (Button) findViewById(R.id.loginGPBtn);
         scroll = (ScrollView) findViewById(R.id.scrollView);
         toRegisterPage = (TextView) findViewById(R.id.toRegisterPageBtn);
+        toForgetPasswordPage = (TextView) findViewById(R.id.toForgetPasswordPageBtn);
         errorMessage = (TextView) findViewById(R.id.errorMessage);
         usernameValue = (TextView) findViewById(R.id.usernameValue);
         passwordValue = (TextView) findViewById(R.id.passwordValue);
         String username = getIntent().getStringExtra("username");
         usernameValue.setText(username);
         loadingBar = (ProgressBar) findViewById(R.id.loadingBar);
-        toForgetPasswordPage = findViewById(R.id.toForgetPasswordPageBtn);
-        main_layout = findViewById(R.id.main_layout);
     }
 
     @Override
@@ -215,12 +194,6 @@ public class LoginPage extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        if (requestCode == RC_SIGN_IN) {
-//            // The Task returned from this call is always completed, no need to attach
-//            // a listener.
-//            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-//            handleSignInResult(task);
-//        }
         callbackManager.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -241,20 +214,19 @@ public class LoginPage extends AppCompatActivity {
             if (result.getUser().getId() == 0) {
                 errorMessage.setText("Sai ");
             }else {
-                //Toast.makeText(LoginPage.this, LoginPage.login.getUser().toString(), Toast.LENGTH_LONG).show();
+                //Toast.makeText(LoginActivity.this, LoginActivity.login.getUser().toString(), Toast.LENGTH_LONG).show();
                 User user = result.getUser();
                 Store store = result.getStore();
-                Intent toHomePage = new Intent(LoginPage.this, HomePage.class);
+                Intent toHomePage = new Intent(LoginActivity.this, HomePage.class);
                 Bundle bundle = new Bundle();
                 bundle.putString("user",new Gson().toJson(user));
                 bundle.putString("store",new Gson().toJson(store));
                 toHomePage.putExtras(bundle);
-                //Glide.get(LoginPage.this).clearDiskCache();
+
                 startActivity(toHomePage);
                 finishAffinity();
                 finish();
             }
-            loadingBar.setVisibility(View.INVISIBLE);
             super.onPostExecute(result);
         }
 
@@ -271,10 +243,10 @@ public class LoginPage extends AppCompatActivity {
                 Call<Login> call = calls[0];
                 Response<Login> response = call.execute();
                 result = response.body();
-                //Glide.get(LoginPage.this).clearDiskCache();
+                //Glide.get(LoginActivity.this).clearDiskCache();
             } catch (IOException e) {
             }
-
+            loadingBar.setVisibility(View.INVISIBLE);
             return result;
         }
     }
