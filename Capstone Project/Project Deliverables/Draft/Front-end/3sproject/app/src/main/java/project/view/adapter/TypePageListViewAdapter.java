@@ -1,6 +1,7 @@
 package project.view.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,11 +13,14 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.storage.StorageReference;
+import com.google.gson.Gson;
 
 import java.util.List;
 
 import project.firebase.Firebase;
 import project.view.R;
+import project.view.gui.ProductDetailPage;
+import project.view.gui.ProductTypeDisplayPage;
 import project.view.model.Type;
 
 public class TypePageListViewAdapter extends RecyclerView.Adapter<TypePageListViewAdapter.MyViewHolder> {
@@ -39,7 +43,7 @@ public class TypePageListViewAdapter extends RecyclerView.Adapter<TypePageListVi
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        Type type = typeList.get(position);
+        final Type type = typeList.get(position);
         holder.tvTypeName.setText(type.getTypeName());
         holder.numberOfRecord.setText(type.getNumberOfProduct()+" sản phẩm hiện có");
         try {
@@ -48,6 +52,15 @@ public class TypePageListViewAdapter extends RecyclerView.Adapter<TypePageListVi
                     .load(storageReference.child(typeList.get(position).getPath()))
                     .skipMemoryCache(true)
                     .into(holder.subCategoryImg);
+            holder.subCategoryImg.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(context, ProductTypeDisplayPage.class);
+                    intent.putExtra("typeID",type.getId());
+                    intent.putExtra("typeName",type.getName());
+                    context.startActivity(intent);
+                }
+            });
         } catch (Exception e) {
 
         }

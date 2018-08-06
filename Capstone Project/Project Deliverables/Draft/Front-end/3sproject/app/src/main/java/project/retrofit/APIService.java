@@ -94,4 +94,6 @@ public interface APIService {
     @GET("getProductWithBarcode")
     Call<List<Item>> getProductWithBarcode(@Query("barcode") String barcode,@Query("store") int storeId);
 
+    @GET("getProductbyType")
+    Call<List<Product>> getProductbyType(@Query("typeId") int typeId);
 }

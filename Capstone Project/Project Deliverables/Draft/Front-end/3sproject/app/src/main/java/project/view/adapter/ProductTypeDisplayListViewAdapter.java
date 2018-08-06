@@ -12,12 +12,12 @@ import android.widget.TextView;
 import java.util.List;
 
 import project.view.R;
-import project.view.model.ProductType;
+import project.view.model.Product;
 
 public class ProductTypeDisplayListViewAdapter extends BaseAdapter {
     private Context context;
     private int layout;
-    private List<ProductType> productList;
+    private List<Product> productList;
 
     @Override
     public int getCount() {
@@ -34,7 +34,7 @@ public class ProductTypeDisplayListViewAdapter extends BaseAdapter {
         return 0;
     }
 
-    public ProductTypeDisplayListViewAdapter(Context context, int layout, List<ProductType> productList) {
+    public ProductTypeDisplayListViewAdapter(Context context, int layout, List<Product> productList) {
         this.context = context;
         this.layout = layout;
         this.productList = productList;
@@ -58,11 +58,11 @@ public class ProductTypeDisplayListViewAdapter extends BaseAdapter {
         }else{
             holder = (ProductTypeDisplayListViewAdapter.ViewHolder) view.getTag();
         }
-        ProductType product = productList.get(position);
+        Product product = productList.get(position);
 
         if(product != null) {
-            holder.productName.setText(product.getProductName());
-            holder.productDesc.setText(product.getProductDesc());
+            holder.productName.setText(product.getProduct_name());
+            holder.productDesc.setText(product.getDescription());
 
 //            productImage
         }
@@ -78,6 +78,5 @@ public class ProductTypeDisplayListViewAdapter extends BaseAdapter {
         ImageView productImage;
         TextView productName;
         TextView productDesc;
-
     }
 }

@@ -1,48 +1,51 @@
 package project.view.gui;
 
 import android.graphics.drawable.ColorDrawable;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import project.retrofit.APIService;
 import project.retrofit.ApiUtils;
 import project.view.adapter.ProductTypeDisplayListViewAdapter;
 import project.view.R;
-import project.view.model.ProductType;
+import project.view.model.Product;
+import retrofit2.Call;
+import retrofit2.Response;
 
 public class ProductTypeDisplayPage extends AppCompatActivity {
 
-    public List<ProductType> productList;
+    public List<Product> productList;
     private ListView theListView;
     private ProductTypeDisplayListViewAdapter adapter;
-    private APIService apiService;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_type_display);
-
-        apiService = ApiUtils.getAPIService();
         int typeID = getIntent().getIntExtra("typeID", -1);
         String typeName = getIntent().getStringExtra("typeName");
-//        listProduct(typeID);
+        productList = new ArrayList<>();
         adapter = new ProductTypeDisplayListViewAdapter(this, R.layout.product_type_display_custom_cardview, productList);
-        // get our list view
         theListView = (ListView) findViewById(R.id.mainListView);
-
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorApplication)));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-
         theListView.setAdapter(adapter);
-
-        getSupportActionBar().setTitle(typeName);
-        Toast.makeText(this, typeID + " type", Toast.LENGTH_SHORT).show();
+        if (typeID != -1) {
+            getSupportActionBar().setTitle(typeName);
+            Call<List<Product>> call = ApiUtils.getAPIService().getProductbyType(typeID);
+            new GetData().execute(call);
+        } else {
+            Toast.makeText(ProductTypeDisplayPage.this, "Có lỗi xảy ra !!!",Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
@@ -57,4 +60,38 @@ public class ProductTypeDisplayPage extends AppCompatActivity {
         }
     }
 
+    private class GetData extends AsyncTask<Call, Void, List<Product>> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+        @Override
+        protected void onPostExecute(List<Product> aVoid) {
+            if (aVoid != null) {
+                for (Product pro : aVoid){
+                    productList.add(pro);
+                }
+                adapter.notifyDataSetChanged();
+            } else {
+                Toast.makeText(ProductTypeDisplayPage.this, "Có lỗi xảy ra !!!",Toast.LENGTH_LONG).show();
+            }
+            super.onPostExecute(aVoid);
+
+        }
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            super.onProgressUpdate(values);
+
+        }
+        @Override
+        protected List<Product> doInBackground(Call... calls) {
+            try {
+                Call<List<Product>> call = calls[0];
+                Response<List<Product>> response = call.execute();
+                return response.body();
+            } catch (IOException e) {
+            }
+            return null;
+        }
+    }
 }
