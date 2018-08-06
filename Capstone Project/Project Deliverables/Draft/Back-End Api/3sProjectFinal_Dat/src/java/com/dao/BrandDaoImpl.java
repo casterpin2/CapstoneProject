@@ -62,7 +62,7 @@ public class BrandDaoImpl extends BaseDao implements BrandDao {
             list = new ArrayList<>();
             conn = getConnection();
 
-            pre = conn.prepareStatement(SQL + " limit 10");
+            pre = conn.prepareStatement(SQL + " limit 1,5");
             rs = pre.executeQuery();
             while (rs.next()) {
                 BrandEntities brand = new BrandEntities();
@@ -87,8 +87,7 @@ public class BrandDaoImpl extends BaseDao implements BrandDao {
         try {
             list = new ArrayList<>();
             conn = getConnection();
-            String sql = "select p.id,p.name,p.description,i.path from Product p   join (Type_Brand tb   join Brand b on tb.brand_id = b.id) on p.type_brand_id = tb.id \n"
-                    + "                     join (Image_Product ip   join Image i on ip.image_id = i.id) on p.id = ip.product_id where b.id = ?";
+            String sql = "select p.id,p.name,p.description,i.path,b.name as brand_name,t.name as type_name from Product p join (Type_Brand tb join Brand b on tb.brand_id = b.id) on p.type_brand_id = tb.id join (Type_Brand tl join Type t on tl.type_id = t.id) on p.type_brand_id = tl.id join (Image_Product ip join Image i on ip.image_id = i.id) on p.id = ip.product_id where b.id = ?";
             pre = conn.prepareStatement(sql);
             pre.setInt(1, brandId);
             rs = pre.executeQuery();
@@ -98,6 +97,8 @@ public class BrandDaoImpl extends BaseDao implements BrandDao {
                 product.setProduct_name(rs.getNString("name"));
                 product.setImage_path(rs.getNString("path"));
                 product.setDescription(rs.getNString("description"));
+                product.setBrand_name(rs.getNString("brand_name"));
+                product.setType_name(rs.getNString("type_name"));
                 list.add(product);
             }
         } finally {

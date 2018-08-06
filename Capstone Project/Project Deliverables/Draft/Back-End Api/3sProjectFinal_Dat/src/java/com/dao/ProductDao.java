@@ -6,7 +6,6 @@
 package com.dao;
 
 import com.entites.ProductAddEntites;
-import com.entites.UserEntites;
 import java.sql.SQLException;
 import java.util.List;
 
