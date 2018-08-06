@@ -5,6 +5,7 @@
  */
 package com.service;
 
+import com.entites.ProductAddEntites;
 import com.entites.TypeEntites;
 import java.sql.SQLException;
 import java.util.List;
@@ -15,4 +16,5 @@ import java.util.List;
  */
 public interface TypeService {
     public List<TypeEntites>  getTypebyCategory(int categoryId) throws SQLException;
+    public List<ProductAddEntites>  getProductbyType(int typeId) throws SQLException;
 }

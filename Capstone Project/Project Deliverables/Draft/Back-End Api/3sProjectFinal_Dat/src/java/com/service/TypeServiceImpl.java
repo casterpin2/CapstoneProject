@@ -6,6 +6,7 @@
 package com.service;
 
 import com.dao.TypeDao;
+import com.entites.ProductAddEntites;
 import com.entites.TypeEntites;
 import java.sql.SQLException;
 import java.util.List;
@@ -23,6 +24,11 @@ public class TypeServiceImpl implements TypeService{
     @Override
     public List<TypeEntites> getTypebyCategory(int categoryId) throws SQLException {
         return dao.getTypebyCategory(categoryId);
+    }
+
+    @Override
+    public List<ProductAddEntites> getProductbyType(int typeId) throws SQLException {
+        return dao.getProductbyType(typeId);
     }
     
 }
