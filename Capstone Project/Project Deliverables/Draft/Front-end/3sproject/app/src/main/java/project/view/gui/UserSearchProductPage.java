@@ -16,6 +16,7 @@ import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -31,6 +32,7 @@ import java.util.List;
 import project.retrofit.APIService;
 import project.retrofit.ApiUtils;
 import project.view.adapter.UserSearchProductListViewCustomAdapter;
+import project.view.model.Item;
 import project.view.model.Product;
 import project.view.R;
 import project.view.util.CustomInterface;
@@ -54,7 +56,8 @@ public class UserSearchProductPage extends AppCompatActivity {
     final static int REQUEST_LOCATION = 1;
     private double currentLatitude = 0.0;
     private double currentLongtitude = 0.0;
-
+    private static final int RESULT_CODE_SCAN=220;
+    private static final int REQUEST_CODE_SCAN=120;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,7 +94,10 @@ public class UserSearchProductPage extends AppCompatActivity {
         suggestions.add("DM");
         suggestions.add("Cool");
         suggestions.add("Sản phẩm này là Samsung Galaxy Note 8 128Gb");
-
+        if(getIntent().getStringExtra("code")!=null){
+            final Call<List<Product>> listBarcode = mAPI.userSearchBarcode(getIntent().getStringExtra("code"));
+            new UserSearchWithBarcode().execute(listBarcode);
+        }
 
         final List<String> searchedList = new ArrayList<>();
 
@@ -180,7 +186,9 @@ public class UserSearchProductPage extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent toBarCode = new Intent(UserSearchProductPage.this, BarcodeActivity.class);
-                startActivity(toBarCode);
+                toBarCode.putExtra("userSearchPage",1);
+                startActivityForResult(toBarCode,REQUEST_CODE_SCAN);
+
             }
         });
     }
@@ -421,6 +429,58 @@ public class UserSearchProductPage extends AppCompatActivity {
         } else {
             haveProduct.setVisibility(View.VISIBLE);
             noHaveProduct.setVisibility(View.INVISIBLE);
+        }
+    }
+    public class UserSearchWithBarcode extends AsyncTask<Call,List<Product>,Void>{
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+        }
+
+        @Override
+        protected void onProgressUpdate(List<Product>... values) {
+            super.onProgressUpdate(values);
+            productList.clear();
+            productList = values[0];
+            setLayout(noHaveProduct, haveProduct);
+            searchView.setFocusable(true);
+            searchView.setFocusableInTouchMode(true);
+            productListView.setVerticalScrollBarEnabled(false);
+            productListView.setHorizontalScrollBarEnabled(false);
+            adapter = new UserSearchProductListViewCustomAdapter(UserSearchProductPage.this,R.layout.user_search_product_page_custom_list_view, productList, currentLatitude, currentLongtitude);
+            productListView.setAdapter(adapter);
+
+        }
+
+        @Override
+        protected Void doInBackground(Call... calls) {
+            try{
+                Call<List<Product>> call = calls[0];
+                Response<List<Product>> response = call.execute();
+                List<Product> listProduct = new ArrayList<>();
+                for(int i =0 ; i< response.body().size();i++){
+                    listProduct.add(response.body().get(i));
+                }
+                publishProgress(listProduct);
+            }catch (Exception e){
+                Log.e("Error",e.getMessage());
+            }
+            return null;
+        }
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == REQUEST_CODE_SCAN &&  resultCode == RESULT_CODE_SCAN){
+            String  barcode = data.getStringExtra("code");
+            final Call<List<Product>> listBarcode = mAPI.userSearchBarcode(barcode);
+            new UserSearchWithBarcode().execute(listBarcode);
         }
     }
 }

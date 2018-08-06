@@ -14,9 +14,14 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -460,4 +465,102 @@ public class UserDaoImpl extends BaseDao implements UserDao {
         return null;
     }
 
+    @Override
+    public UserEntites updateInformation(UserEntites user) throws SQLException {
+        Connection conn = null;
+        PreparedStatement pre= null;
+        UserEntites data = null;
+        try{
+            String updateSql = "Update User set full_name =? ,gender = ?, dateOfBirth =?, phone =? ,email =? where id =?";
+            conn = getConnection();
+            conn.setAutoCommit(false);
+            pre = conn.prepareStatement(updateSql);
+            pre.setString(1, user.getDisplayName());
+            pre.setString(2, user.getGender());
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+            Date parsed = format.parse(user.getDateOfBirth());
+            java.sql.Date dateTime = new java.sql.Date(parsed.getTime());
+            pre.setDate(3, dateTime);
+            pre.setString(4, user.getPhone());
+            pre.setString(5, user.getEmail());
+            pre.setInt(6, user.getUserID());
+            int checkUpdate = pre.executeUpdate();
+            if(checkUpdate>0){
+                conn.commit();
+                data = getInformationUser(conn, user.getUserID());
+            }else{
+                conn.rollback();
+                conn.setAutoCommit(true);
+               
+            }
+            
+            
+        } catch (ParseException ex) {
+            System.out.println(ex.getMessage());
+        
+        }finally{
+            closeConnect(conn, pre, null);
+}
+        return data;
+    }
+    public UserEntites getInformationUser(Connection conn,int idUser) throws SQLException{
+        PreparedStatement pre = null;
+        ResultSet rs =null;
+        UserEntites us = null;
+        try{
+            String sql ="SELECT us.id,us.full_name,us.email,us.hasStore,us.gender,us.dateOfBirth,us.phone,img.path,us.device_id,us.username"
+                    + " FROM User us JOIN Image img on us.image_id = img.id where us.id = ?";
+            pre = conn.prepareStatement(sql);
+            pre.setInt(1, idUser);
+            rs = pre.executeQuery();
+            if(rs.next()){
+                us  = new UserEntites();
+                us.setUserID(rs.getInt("id"));
+                us.setLastName(rs.getString("full_name"));
+                us.setDeviceId(rs.getString("device_id"));
+                us.setEmail(rs.getString("email"));
+                us.setHasStore(rs.getInt("hasStore"));
+                us.setPhone(rs.getString("phone"));
+                us.setImage_path(rs.getString("path"));
+                us.setUserName(rs.getString("username"));
+                us.setDateOfBirth(rs.getString("dateOfBirth"));
+                us.setGender(rs.getString("gender"));
+            }
+        }finally{
+            closeConnect(null, pre, rs);
+        }
+        return us;
+    }
+
+    @Override
+    public UserEntites informationUser(int userId) throws SQLException {
+        Connection conn = null;
+        PreparedStatement pre = null;
+        ResultSet rs =null;
+        UserEntites us = null;
+        try{
+            String sql ="SELECT us.id,us.full_name,us.email,us.hasStore,us.gender,us.dateOfBirth,us.phone,img.path,us.device_id,us.username"
+                    + " FROM User us JOIN Image img on us.image_id = img.id where us.id = ?";
+            conn= getConnection();
+            pre = conn.prepareStatement(sql);
+            pre.setInt(1, userId);
+            rs = pre.executeQuery();
+            if(rs.next()){
+                us  = new UserEntites();
+                us.setUserID(rs.getInt("id"));
+                us.setLastName(rs.getString("full_name"));
+                us.setDeviceId(rs.getString("device_id"));
+                us.setEmail(rs.getString("email"));
+                us.setHasStore(rs.getInt("hasStore"));
+                us.setPhone(rs.getString("phone"));
+                us.setImage_path(rs.getString("path"));
+                us.setUserName(rs.getString("username"));
+                us.setDateOfBirth(rs.getString("dateOfBirth"));
+                us.setGender(rs.getString("gender"));
+            }
+        }finally{
+            closeConnect(conn, pre, rs);
+        }
+        return us;
+    }
 }

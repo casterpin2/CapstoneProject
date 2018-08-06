@@ -56,5 +56,10 @@ public class ProductServiceImpl implements ProductService{
         return dao.getProductWithBarCode(query, storeId);
     }
 
+    @Override
+    public List<ProductAddEntites> findProductWithUser(String query) throws SQLException {
+        return dao.findProductWithUser(query);
+    }
+
 
 }

@@ -265,4 +265,37 @@ public class ProductDaoImpl extends BaseDao implements ProductDao {
         return list;
     }
 
+    @Override
+    public List<ProductAddEntites> findProductWithUser(String query) throws SQLException {
+        Connection conn = null;
+        PreparedStatement pre =null;
+        ResultSet rs =null;
+        List<ProductAddEntites> list = null;
+        try{
+            list = new ArrayList<>();
+            String sql ="select p.id,p.name,b.name as brand_name,c.name as category_name,p.description,i.path ,t.name as type_name from "
+                    + "Product p join(Image_Product ip join Image i on i.id = ip.image_id) on p.id = ip.product_id join(Type_Brand tb "
+                    + "join (Type t join Category c on t.category_id = c.id) "
+                    + "on tb.type_id = t.id join Brand b on b.id = tb.brand_id) on p.type_brand_id = tb.id where p.barcode=?";
+            conn = getConnection();
+            pre = conn.prepareStatement(sql);
+            pre.setString(1, query);
+            rs= pre.executeQuery();
+              if (rs.next()) {
+                ProductAddEntites pro = new ProductAddEntites();
+                pro.setProduct_id(rs.getInt("id"));
+                pro.setProduct_name(rs.getString("name"));
+                pro.setBrand_name(rs.getString("brand_name"));
+                pro.setDescription(rs.getString("description"));
+                pro.setCategory_name(rs.getString("category_name"));
+                pro.setImage_path(rs.getString("path"));
+                pro.setType_name(rs.getString("type_name"));
+                list.add(pro);
+            }
+        }finally{
+            closeConnect(conn, pre, rs);
+        }
+        return list;
+    }
+
 }
