@@ -2,8 +2,10 @@ package project.view.gui;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -26,15 +28,21 @@ import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
+import com.google.gson.Gson;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import project.objects.User;
+import project.retrofit.APIService;
 import project.view.R;
 import project.view.util.CustomInterface;
 import project.view.util.TweakUI;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class EditUserInformationPage extends AppCompatActivity {
     private static final String TAG = "EditUserInformationPage";
@@ -49,9 +57,10 @@ public class EditUserInformationPage extends AppCompatActivity {
     Bundle extras;
     int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
     private RelativeLayout main_layout;
-
+    private  boolean checkUpdate;
     String[] genderName = {"Chưa xác định", "Nam", "Nữ"};
-
+    private String storeUser;
+    private APIService mApi;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,7 +73,7 @@ public class EditUserInformationPage extends AppCompatActivity {
                 return false;
             }
         });
-
+        mApi = APIService.retrofit.create(APIService.class);
         TweakUI.makeTransparent(this);
         mapping();
         getIncomingIntent();
@@ -124,8 +133,36 @@ public class EditUserInformationPage extends AppCompatActivity {
 
                 } else {
                     // code service here
+                    final User us = new User();
+                    us.setDateOfBirth(dob);
+                    us.setDisplayName(name);
+                    us.setEmail(email);
+                    us.setPhone(phone);
+                    us.setGender(gender);
+                    us.setId(extras.getInt("idUser",0));
+                    mApi.updateInfotmation(us).enqueue(new Callback<User>() {
+                        @Override
+                        public void onResponse(Call<User> call, Response<User> response) {
+                            if(response.body()!=null){
+                                String userJson = new Gson().toJson(us);
+                                SharedPreferences pre = getSharedPreferences("authentication", Context.MODE_PRIVATE);
+                                storeUser = pre.getString("store",null);
+                                SharedPreferences.Editor editor = pre.edit();
+                                //lưu vào editor
+                                editor.putString("user", userJson);
+                                editor.putString("store", storeUser);
+                                Toast.makeText(EditUserInformationPage.this, R.string.succesfully, Toast.LENGTH_LONG).show();
+                                checkUpdate = true;
+                            }
+                        }
 
-                    saveProfile(v);
+                        @Override
+                        public void onFailure(Call<User> call, Throwable t) {
+                            Toast.makeText(EditUserInformationPage.this, "Đã xảy ra lỗi", Toast.LENGTH_LONG).show();
+                            checkUpdate =false;
+                        }
+                    });
+                            saveProfile(v);
                 }
             }
         });
@@ -181,7 +218,9 @@ public class EditUserInformationPage extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                new DatePickerDialog(EditUserInformationPage.this, date, myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+                DatePickerDialog dpDialog  = new DatePickerDialog(EditUserInformationPage.this, date, myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH));
+                dpDialog.getDatePicker().setMaxDate(myCalendar.getTimeInMillis());
+                dpDialog.show();
             }
         });
 
@@ -262,7 +301,7 @@ public class EditUserInformationPage extends AppCompatActivity {
     }
 
     private void updateLabel() {
-        String myFormat = "MM/dd/yyyy"; //In which you need put here
+        String myFormat = "yyyy-MM-dd"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
 
         dobText.setText(sdf.format(myCalendar.getTime()));

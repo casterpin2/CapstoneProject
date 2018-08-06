@@ -60,4 +60,16 @@ public class UserServiceImpl implements UserService{
         return dao.nearByStore(productId, latitude, longitude);
     }
     
+    @Override
+    public UserEntites updateInformation(UserEntites user) throws SQLException {
+        return dao.updateInformation(user);
+}
+
+    @Override
+    public UserEntites informationUser(int userId) throws SQLException {
+        return dao.informationUser(userId);
+    }
+
+   
+    
 }

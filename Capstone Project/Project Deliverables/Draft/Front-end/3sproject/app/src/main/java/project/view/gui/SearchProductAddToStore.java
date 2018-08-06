@@ -555,6 +555,7 @@ public class SearchProductAddToStore extends AppCompatActivity {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 Intent toBarCodeScanPage = new Intent(SearchProductAddToStore.this, BarcodeActivity.class);
+                toBarCodeScanPage.putExtra("searchProductAdd",2);
                 startActivityForResult(toBarCodeScanPage,REQUEST_CODE_SCAN);
                 return false;
             }

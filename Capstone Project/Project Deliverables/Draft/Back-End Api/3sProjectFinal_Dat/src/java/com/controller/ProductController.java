@@ -74,5 +74,8 @@ public class ProductController {
     public List<ProductAddEntites> getProductWithBarcode(@RequestParam("barcode") String query, @RequestParam("store") int storeId) throws SQLException {
         return product.getProductWithBarCode(query, storeId);
     }
-
+       @RequestMapping(value = "/userSearchBarcode", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
+    public List<ProductAddEntites> getProductWithBarcodebyUser(@RequestParam("barcode") String query) throws SQLException {
+        return product.findProductWithUser(query);
+    }
 }

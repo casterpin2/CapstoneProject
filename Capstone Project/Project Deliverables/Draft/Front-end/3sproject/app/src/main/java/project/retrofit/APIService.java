@@ -21,6 +21,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Query;
 
 public interface APIService {
@@ -93,7 +94,13 @@ public interface APIService {
 
     @GET("getProductWithBarcode")
     Call<List<Item>> getProductWithBarcode(@Query("barcode") String barcode,@Query("store") int storeId);
-
     @GET("getProductbyType")
     Call<List<Product>> getProductbyType(@Query("typeId") int typeId);
+
+    @GET("informationUser")
+    Call<User> getInfotmation(@Query("userId") int userId);
+    @PUT("updateInformation")
+    Call<User> updateInfotmation(@Body User user);
+    @GET("userSearchBarcode")
+    Call<List<Product>> userSearchBarcode(@Query("barcode") String barcode);
 }

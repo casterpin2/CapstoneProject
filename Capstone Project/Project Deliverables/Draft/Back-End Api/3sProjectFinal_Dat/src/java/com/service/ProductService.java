@@ -21,4 +21,5 @@ public interface ProductService {
      public List<ProductAddEntites> getProductInStore(int storeID) throws SQLException;
      public boolean insertData(String name,String brand,String barcode) throws SQLException;
      public List<ProductAddEntites> getProductWithBarCode(String query, int storeId) throws SQLException;
+     public List<ProductAddEntites> findProductWithUser(String query) throws SQLException;
 }

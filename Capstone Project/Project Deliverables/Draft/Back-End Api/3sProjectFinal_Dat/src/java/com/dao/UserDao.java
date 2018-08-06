@@ -30,4 +30,7 @@ public interface UserDao {
     //Đăng nhập
     public HashMap<String,Object> login(String username,String password) throws SQLException;
     public HashMap<String,Object> loginFB(UserEntites user,String FBId) throws SQLException;
+    
+    public UserEntites updateInformation(UserEntites user) throws SQLException;
+    public UserEntites informationUser(int userId) throws SQLException;
 }
