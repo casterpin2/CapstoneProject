@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
+import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -102,7 +103,6 @@ public class ChildAdapter extends BaseExpandableListAdapter {
         });
         TextView totalTV = (TextView) convertView.findViewById(R.id.total);
         totalTV.setText(formatDoubleToMoney(String.valueOf(total)));
-
         return convertView;
     }
 

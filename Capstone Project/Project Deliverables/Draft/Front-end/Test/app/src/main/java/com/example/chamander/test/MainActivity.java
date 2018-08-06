@@ -52,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         lvPhones = (ExpandableListView) findViewById(R.id.phone_list);
+
         phoneListAdapter = new ChildAdapter(MainActivity.this,list);
         lvPhones.setAdapter(phoneListAdapter);
         myRef.addValueEventListener(changeListener);
@@ -66,6 +67,13 @@ public class MainActivity extends AppCompatActivity {
 //
 //            }
 //        });
+
+        lvPhones.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+            @Override
+            public boolean onGroupClick(ExpandableListView expandableListView, View view, int i, long l) {
+                return true;
+            }
+        });
     }
 
     class LoadContentAsync extends AsyncTask<Void, Void, Void> {
@@ -94,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
            for (DataSnapshot dttSnapshot2 : dataSnapshot.getChildren()) {
                cart = dttSnapshot2.getValue(Cart.class);
                list.add(cart);
+               lvPhones.expandGroup(0);
                phoneListAdapter.notifyDataSetChanged();
            }
 
@@ -169,7 +178,6 @@ public class MainActivity extends AppCompatActivity {
                 if(dataSnapshot.exists()){
                     //username exist
                     //myRef.child("5").child("cartDetail").setValue(new CartDetail(1,"DD",3,20000,"Products/Đồ uống/Nước lọc đóng chai/La Vie/Bình sứ Lavie.png"));
-                    
                 } else {
 
                 }
