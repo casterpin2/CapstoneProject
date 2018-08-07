@@ -13,6 +13,15 @@ import java.io.Serializable;
  */
 public class ProductAddEntites implements Serializable{
     private int product_id;
+    private int store_id;
+
+    public int getStore_id() {
+        return store_id;
+    }
+
+    public void setStore_id(int store_id) {
+        this.store_id = store_id;
+    }
     private String product_name;
     private String brand_name;
     private String description;
