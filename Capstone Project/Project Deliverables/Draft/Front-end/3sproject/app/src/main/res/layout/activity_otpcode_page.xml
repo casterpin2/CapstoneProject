@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginTop="16dp"
-    android:layout_marginBottom="16dp"
     android:background="@color/colorWhite"
     android:id="@+id/main_layout"
     tools:context=".gui.OTPCodePage">
@@ -21,34 +20,39 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:textColor="@color/colorBlack"
-            android:textSize="16dp"
-            android:lines="2"
-            android:text="Nhập mã xác thực bạn vừa nhận được vào đây"/>
+            android:textSize="20dp"
+            android:gravity="center"
+            android:lines="3"
+            android:text="Mã OTP vừa được gửi về thông qua tin nhắn SMS cho tài khoản của bạn. Vui lòng điền mã nhận được vào ô dưới để hoàn tất xác nhận."/>
 
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp">
             <android.support.design.widget.TextInputEditText
                 android:id="@+id/etCode"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Mã xác thực SMS"
                 android:inputType="numberDecimal"
-                android:layout_marginTop="8dp" />
+                android:layout_marginTop="8dp"
+                android:maxLength="4"/>
 
         </android.support.design.widget.TextInputLayout>
 
         <RelativeLayout
             android:id="@+id/rela"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
             <TextView
                 android:id="@+id/tvConfirmCodeMess"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="13dp"
-                android:textColor="@color/errorMess"/>
+                android:textColor="@color/errorMess"
+                android:textSize="12dp" />
 
             <TextView
                 android:id="@+id/tvReSend"
@@ -56,18 +60,19 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:layout_marginRight="16dp"
-                android:text="Gửi lại?"
-                android:gravity="right"
+                android:gravity="center"
+                android:layout_below="@id/tvConfirmCodeMess"
                 android:padding="8dp"
+                android:text="Bạn chưa nhận được mã OTP?"
                 android:textColor="@color/lb_more"
-                android:textSize="16dp" />
+                android:textSize="14dp" />
         </RelativeLayout>
     </LinearLayout>
     <Button
         android:id="@+id/btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Tiếp Tục"
+        android:text="Xác Nhận"
         android:layout_alignParentBottom="true"
         android:textColor="@color/colorWhite"
         android:background="@color/colorApplication"/>

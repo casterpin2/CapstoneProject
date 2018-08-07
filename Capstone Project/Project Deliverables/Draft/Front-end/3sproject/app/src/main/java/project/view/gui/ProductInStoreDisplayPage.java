@@ -10,11 +10,13 @@ import android.os.Bundle;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -26,6 +28,7 @@ import project.retrofit.ApiUtils;
 import project.view.R;
 import project.view.adapter.ProductInStoreCustomListViewAdapter;
 import project.view.model.ProductInStore;
+import project.view.util.CustomInterface;
 import retrofit2.Call;
 import retrofit2.Response;
 
@@ -39,6 +42,7 @@ public class ProductInStoreDisplayPage extends AppCompatActivity {
     private TextView nullMessage;
     private SearchView searchView;
     private List<ProductInStore> list = new ArrayList<>();
+    private RelativeLayout main_layout;
 
     public ProductInStoreDisplayPage() {
     }
@@ -61,6 +65,16 @@ public class ProductInStoreDisplayPage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_in_store_display_page);
         adapter = new ProductInStoreCustomListViewAdapter(ProductInStoreDisplayPage.this,R.layout.search_product_page_custom_list_view,list);
+
+        CustomInterface.setStatusBarColor(this);
+        main_layout = findViewById(R.id.main_layout);
+        main_layout.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                CustomInterface.hideKeyboard(view,getBaseContext());
+                return false;
+            }
+        });
         getSupportActionBar().setTitle("Sản phẩm cửa hàng");
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorApplication)));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
