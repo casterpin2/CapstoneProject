@@ -55,6 +55,12 @@ public class MainActivity extends AppCompatActivity {
         phoneListAdapter = new ChildAdapter(MainActivity.this,list);
         lvPhones.setAdapter(phoneListAdapter);
         myRef.addValueEventListener(changeListener);
+        lvPhones.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+            @Override
+            public boolean onGroupClick(ExpandableListView expandableListView, View view, int i, long l) {
+                return true;
+            }
+        });
 //        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
 //            @Override
 //            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -94,6 +100,9 @@ public class MainActivity extends AppCompatActivity {
            for (DataSnapshot dttSnapshot2 : dataSnapshot.getChildren()) {
                cart = dttSnapshot2.getValue(Cart.class);
                list.add(cart);
+               for(int i = 0; i < list.size(); i++) {
+                   lvPhones.expandGroup(i);
+               }
                phoneListAdapter.notifyDataSetChanged();
            }
 

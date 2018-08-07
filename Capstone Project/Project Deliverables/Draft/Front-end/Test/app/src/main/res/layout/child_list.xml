@@ -20,7 +20,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
             <ImageView
-                android:id="@+id/image"
+                android:id="@+id/productImage"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:scaleType="fitCenter"
@@ -33,7 +33,7 @@
             android:layout_marginLeft="10dp"
             android:layout_gravity="center">
         <TextView
-            android:id="@+id/device_name"
+            android:id="@+id/productName"
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:textSize="17dp"
