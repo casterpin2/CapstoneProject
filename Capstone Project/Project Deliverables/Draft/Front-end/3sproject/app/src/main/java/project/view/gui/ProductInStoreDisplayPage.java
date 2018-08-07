@@ -51,6 +51,7 @@ public class ProductInStoreDisplayPage extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         list.clear();
+        adapter.notifyDataSetChanged();
         final Call<List<ProductInStore>> call = mAPI.getProductInStore(storeID);
         new NetworkCall().execute(call);
     }
@@ -59,17 +60,12 @@ public class ProductInStoreDisplayPage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_in_store_display_page);
-
+        adapter = new ProductInStoreCustomListViewAdapter(ProductInStoreDisplayPage.this,R.layout.search_product_page_custom_list_view,list);
         getSupportActionBar().setTitle("Sản phẩm cửa hàng");
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorApplication)));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         storeID = getIntent().getIntExtra("storeID", -1);
         mAPI = ApiUtils.getAPIService();
-        final Call<List<ProductInStore>> call = mAPI.getProductInStore(storeID);
-//        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-//        getSupportActionBar().setCustomView(R.layout.actionbar_search_product_add_to_store_page);
-
-        new NetworkCall().execute(call);
     }
     private class NetworkCall extends AsyncTask<Call, Void, Void> {
 
@@ -94,17 +90,18 @@ public class ProductInStoreDisplayPage extends AppCompatActivity {
         @Override
         protected Void doInBackground(Call... calls) {
             try {
-                list.clear();
+
                 Call<List<ProductInStore>> call = calls[0];
                 final Response<List<ProductInStore>> response = call.execute();
                 for (int i = 0; i < response.body().size(); i++) {
                     list.add(response.body().get(i));
                 }
-                adapter = new ProductInStoreCustomListViewAdapter(ProductInStoreDisplayPage.this,R.layout.search_product_page_custom_list_view,list);
-                adapter.setStoreID(1);
+
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        adapter.notifyDataSetChanged();
+                        adapter.setStoreID(storeID);
                         nullMessage = findViewById(R.id.nullMessage);
                         theListView = (ListView) findViewById(R.id.mainListView);
                         theListView.setAdapter(adapter);
