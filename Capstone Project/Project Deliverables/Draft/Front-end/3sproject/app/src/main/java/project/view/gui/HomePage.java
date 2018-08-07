@@ -26,9 +26,6 @@ public class HomePage extends AppCompatActivity{
     BottomNavigationView bottomNavigationView;
     private ViewPager viewPager;
 
-    StoreFragment chatFragment;
-    HomeFragment callsFragment;
-    UserFragment contactsFragment;
     MenuItem prevMenuItem;
     private String userJSON;
     private String storeJSON;
