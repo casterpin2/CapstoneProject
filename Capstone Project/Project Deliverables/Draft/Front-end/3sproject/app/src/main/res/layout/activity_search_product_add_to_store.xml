@@ -41,12 +41,6 @@
         android:layout_alignParentRight="true"
         android:layout_gravity="end|bottom">
 
-        <com.andremion.counterfab.CounterFab
-            android:id="@+id/counter_fab"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            app:backgroundTint="@color/white"
-            android:src="@drawable/add" />
 
     </RelativeLayout>
 

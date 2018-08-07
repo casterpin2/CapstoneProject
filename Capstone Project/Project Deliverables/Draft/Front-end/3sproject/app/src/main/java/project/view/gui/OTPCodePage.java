@@ -30,7 +30,7 @@ public class OTPCodePage extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.otpcode_page);
+        setContentView(R.layout.activity_otpcode_page);
 
         CustomInterface.setStatusBarColor(this);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorApplication)));
@@ -61,21 +61,31 @@ public class OTPCodePage extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(OTPCodePage.this);
-                builder.setMessage("Bạn có muốn gửi lại mã xác nhận không?");
-                builder.setPositiveButton("Gửi lại", new DialogInterface.OnClickListener() {
+
+                View v = getLayoutInflater().inflate(R.layout.dialog_custom,null);
+                TextView content1 = v.findViewById(R.id.tvContent1);
+                TextView content2 = v.findViewById(R.id.tvContent2);
+                Button btnOK = v.findViewById(R.id.btnOK);
+                Button btnCancle = v.findViewById(R.id.btnCancle);
+                content1.setText("Gửi lại mã");
+                content2.setText("Bạn có muốn gửi lại mã xác nhận không?");
+                builder.setView(v);
+                final AlertDialog alertDialog = builder.create();
+                btnOK.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
+                    public void onClick(View view) {
+                        tvConfirmCodeMess.setText("");
                         Toast.makeText(OTPCodePage.this,"Đã gửi lại",Toast.LENGTH_LONG).show();
+                        alertDialog.hide();
                     }
                 });
 
-                builder.setNegativeButton("Hủy",new DialogInterface.OnClickListener() {
+                btnCancle.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                       // finish();
+                    public void onClick(View view) {
+                        alertDialog.hide();
                     }
                 });
-                AlertDialog alertDialog = builder.create();
                 alertDialog.show();
             }
         });

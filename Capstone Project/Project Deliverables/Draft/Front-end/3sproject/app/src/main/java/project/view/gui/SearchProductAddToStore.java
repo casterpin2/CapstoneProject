@@ -37,12 +37,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.andremion.counterfab.CounterFab;
 import com.bumptech.glide.Glide;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.storage.StorageReference;
-import com.google.gson.Gson;
-
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -75,7 +72,6 @@ public class SearchProductAddToStore extends AppCompatActivity {
     private TextView nullMessage;
     private static String query = "";
     private SearchView searchView;
-    private CounterFab counter_fab;
     private ProgressBar loadingBar;
     private int storeID;
     //lazy loading
@@ -98,7 +94,6 @@ public class SearchProductAddToStore extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(R.string.searhProductAddToStorePageTitle);
         CustomInterface.setStatusBarColor(this);
-        setContentView(R.layout.activity_search_product_add_to_store);
         storeID = getIntent().getIntExtra("storeID", -1);
         loadingBar = (ProgressBar) findViewById(R.id.loadingBar);
         main_layout = findViewById(R.id.main_layout);
@@ -121,14 +116,7 @@ public class SearchProductAddToStore extends AppCompatActivity {
         // get our list view
         theListView = (ListView) findViewById(R.id.mainListView);
 
-        counter_fab = (CounterFab) findViewById(R.id.counter_fab);
-        counter_fab.setCount(3);
-        counter_fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-            }
-        });
         informationDialog = new Dialog(SearchProductAddToStore.this);
 
         nullMessage = (TextView) findViewById(R.id.nullMessage);
@@ -225,9 +213,6 @@ public class SearchProductAddToStore extends AppCompatActivity {
     }
 
     public void showOptionDialog(final List<Item> productList, final int position, View view) {
-
-        view = (View) findViewById(R.id.search_page);
-
         optionDialog = new Dialog(SearchProductAddToStore.this);
         optionDialog.setContentView(R.layout.search_product_page_price_dialog_custom);
         final EditText priceValue_optionDialog = (EditText) optionDialog.findViewById(R.id.priceValue_optionDialog);
@@ -570,6 +555,7 @@ public class SearchProductAddToStore extends AppCompatActivity {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 Intent toBarCodeScanPage = new Intent(SearchProductAddToStore.this, BarcodeActivity.class);
+                toBarCodeScanPage.putExtra("searchProductAdd",2);
                 startActivityForResult(toBarCodeScanPage,REQUEST_CODE_SCAN);
                 return false;
             }

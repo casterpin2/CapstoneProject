@@ -50,7 +50,7 @@ public class UserController {
         ObjectMapper mapper = new ObjectMapper(factory);
         UserEntites us = mapper.readValue(jsonString, UserEntites.class);
         //String result = 
-        return "{\"result\":"+"\""+user.registerUser(us)+"\"}";
+        return "{\"result\":" + "\"" + user.registerUser(us) + "\"}";
     }
 
     @RequestMapping(value = "/vadilateRegisterUser", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
@@ -58,29 +58,43 @@ public class UserController {
 
         return user.userHasExists(username, email, phone, typeSearch);
     }
-    
-    @RequestMapping(value = "/login", method = RequestMethod.GET, produces = "application/json")
-    public HashMap<String,Object> login(@RequestParam("username") String username, @RequestParam("password") String password) throws SQLException {
 
-        return user.login(username,password);
+    @RequestMapping(value = "/login", method = RequestMethod.GET, produces = "application/json")
+    public HashMap<String, Object> login(@RequestParam("username") String username, @RequestParam("password") String password) throws SQLException {
+
+        return user.login(username, password);
     }
-    
+
     @RequestMapping(value = "/loginFB", method = RequestMethod.POST, produces = "application/json")
-    public HashMap<String,Object> loginFB(@RequestBody String userJSON, @RequestParam("FBId") String FBid) throws SQLException, IOException {
+    public HashMap<String, Object> loginFB(@RequestBody String userJSON, @RequestParam("FBId") String FBid) throws SQLException, IOException {
         JsonFactory factory = new JsonFactory();
         factory.enable(JsonParser.Feature.ALLOW_SINGLE_QUOTES);
         ObjectMapper mapper = new ObjectMapper(factory);
         UserEntites us = mapper.readValue(userJSON, UserEntites.class);
-        return user.loginFB(us,FBid);
+        return user.loginFB(us, FBid);
     }
-    
+
     @RequestMapping(value = "/userSearchProduct", method = RequestMethod.GET, produces = "application/json")
     public List<ProductAddEntites> userSearchProduct(@RequestParam("productName") String productName) throws SQLException, IOException {
         return user.userSearchProduct(productName);
     }
-    
+
     @RequestMapping(value = "/findStore", method = RequestMethod.GET, produces = "application/json")
-    public List<NearByStore> nearByStore(@RequestParam("productId") int productId,@RequestParam("latitude") String latitude,@RequestParam("longitude") String longitude) throws SQLException, IOException {
+    public List<NearByStore> nearByStore(@RequestParam("productId") int productId, @RequestParam("latitude") String latitude, @RequestParam("longitude") String longitude) throws SQLException, IOException {
         return user.nearByStore(productId, latitude, longitude);
     }
+
+    @RequestMapping(value = "/informationUser", method = RequestMethod.GET, produces = "application/json")
+    public UserEntites getUserInformatiopn(@RequestParam("userId") int userId) throws SQLException, IOException {
+        return user.informationUser(userId);
+    }
+    @RequestMapping(value = "/updateInformation", method = RequestMethod.PUT, produces = "application/json")
+    public UserEntites updateInformation(@RequestBody String userJson) throws SQLException, IOException {
+        JsonFactory factory = new JsonFactory();
+        factory.enable(JsonParser.Feature.ALLOW_SINGLE_QUOTES);
+        ObjectMapper mapper = new ObjectMapper(factory);
+        UserEntites us = mapper.readValue(userJson, UserEntites.class);
+        return user.updateInformation(us);
+    }
+    
 }

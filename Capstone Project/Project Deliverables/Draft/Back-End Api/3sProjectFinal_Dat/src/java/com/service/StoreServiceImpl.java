@@ -24,5 +24,15 @@ public class StoreServiceImpl implements StoreService{
     public StoreEntites registerStore(StoreEntites store,LocationEntites location) throws SQLException {
         return dao.registerStore(store,location);
     }
+
+    @Override
+    public boolean deleteProductInStore(int storeId, int productId) throws SQLException {
+        return dao.deleteProductInStore(storeId, productId);
+    }
+
+    @Override
+    public boolean editProductInStore(int storeId, int productId, double price, double promotion) throws SQLException {
+        return dao.editProductInStore(storeId, productId,price,promotion);
+    }
     
 }

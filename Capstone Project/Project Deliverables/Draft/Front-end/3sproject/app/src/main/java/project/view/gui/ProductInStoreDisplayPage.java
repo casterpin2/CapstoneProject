@@ -10,11 +10,13 @@ import android.os.Bundle;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -26,6 +28,7 @@ import project.retrofit.ApiUtils;
 import project.view.R;
 import project.view.adapter.ProductInStoreCustomListViewAdapter;
 import project.view.model.ProductInStore;
+import project.view.util.CustomInterface;
 import retrofit2.Call;
 import retrofit2.Response;
 
@@ -39,6 +42,7 @@ public class ProductInStoreDisplayPage extends AppCompatActivity {
     private TextView nullMessage;
     private SearchView searchView;
     private List<ProductInStore> list = new ArrayList<>();
+    private RelativeLayout main_layout;
 
     public ProductInStoreDisplayPage() {
     }
@@ -51,6 +55,7 @@ public class ProductInStoreDisplayPage extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         list.clear();
+        adapter.notifyDataSetChanged();
         final Call<List<ProductInStore>> call = mAPI.getProductInStore(storeID);
         new NetworkCall().execute(call);
     }
@@ -59,17 +64,22 @@ public class ProductInStoreDisplayPage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_in_store_display_page);
+        adapter = new ProductInStoreCustomListViewAdapter(ProductInStoreDisplayPage.this,R.layout.search_product_page_custom_list_view,list);
 
+        CustomInterface.setStatusBarColor(this);
+        main_layout = findViewById(R.id.main_layout);
+        main_layout.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                CustomInterface.hideKeyboard(view,getBaseContext());
+                return false;
+            }
+        });
         getSupportActionBar().setTitle("Sản phẩm cửa hàng");
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorApplication)));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         storeID = getIntent().getIntExtra("storeID", -1);
         mAPI = ApiUtils.getAPIService();
-        final Call<List<ProductInStore>> call = mAPI.getProductInStore(storeID);
-//        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-//        getSupportActionBar().setCustomView(R.layout.actionbar_search_product_add_to_store_page);
-
-        new NetworkCall().execute(call);
     }
     private class NetworkCall extends AsyncTask<Call, Void, Void> {
 
@@ -94,17 +104,18 @@ public class ProductInStoreDisplayPage extends AppCompatActivity {
         @Override
         protected Void doInBackground(Call... calls) {
             try {
-                list.clear();
+
                 Call<List<ProductInStore>> call = calls[0];
                 final Response<List<ProductInStore>> response = call.execute();
                 for (int i = 0; i < response.body().size(); i++) {
                     list.add(response.body().get(i));
                 }
-                adapter = new ProductInStoreCustomListViewAdapter(ProductInStoreDisplayPage.this,R.layout.search_product_page_custom_list_view,list);
-                adapter.setStoreID(1);
+
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        adapter.notifyDataSetChanged();
+                        adapter.setStoreID(storeID);
                         nullMessage = findViewById(R.id.nullMessage);
                         theListView = (ListView) findViewById(R.id.mainListView);
                         theListView.setAdapter(adapter);

@@ -5,6 +5,7 @@
  */
 package com.controller;
 
+import com.entites.ProductAddEntites;
 import com.entites.TypeEntites;
 import com.service.TypeService;
 import java.io.IOException;
@@ -31,5 +32,10 @@ public class TypeController {
     @RequestMapping(value = "/getType", method = RequestMethod.GET, produces = "application/json")
     public List<TypeEntites> nearByStore(@RequestParam("categoryId") int categoryId) throws SQLException, IOException {
         return service.getTypebyCategory(categoryId);
+    }
+    
+    @RequestMapping(value = "/getProductbyType", method = RequestMethod.GET, produces = "application/json")
+    public List<ProductAddEntites> getProductbyType(@RequestParam("typeId") int typeId) throws SQLException, IOException {
+        return service.getProductbyType(typeId);
     }
 }

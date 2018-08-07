@@ -30,7 +30,7 @@ public class ProductDaoImpl extends BaseDao implements ProductDao {
 "            (SELECT id,name,brand_name,category_name,image_id,price,promotion,type_name,des FROM Image_Product ip INNER JOIN\n" +
 "            (SELECT a.id,a.name,brand_name,c.name as category_name,price,promotion,type_name,des FROM Category c INNER JOIN\n" +
 "           (SELECT a.id,a.name,brand_name,category_id,price,promotion,t.name as type_name,des FROM Type t INNER JOIN\n" +
-"           (SELECT c.id,c.name,type_id,b.name as brand_name,price,promotion,des FROM Brand b INNER JOIN (SELECT b.id,name,type_id,brand_id,price,promotion,des FROM Type_Brand tb INNER JOIN (SELECT a.product_id as id,name,type_brand_id,price,promotion,p.description as des FROM Product p INNER JOIN (SELECT product_id,price,promotion FROM `Product_Store` WHERE store_id = ?) a ON a.product_id = p.id) b ON tb.id = b.type_brand_id) c ON c.brand_id = b.id) a ON t.id = a.type_id) a ON a.category_id = c.id) a ON a.id = ip.product_id) a ON i.id = a.image_id";
+"           (SELECT c.id,c.name,type_id,b.name as brand_name,price,promotion,des FROM Brand b INNER JOIN (SELECT b.id,name,type_id,brand_id,price,promotion,des FROM Type_Brand tb INNER JOIN (SELECT a.product_id as id,name,type_brand_id,price,promotion,p.description as des FROM Product p INNER JOIN (SELECT product_id,price,promotion FROM `Product_Store` WHERE store_id = ?) a ON a.product_id = p.id) b ON tb.id = b.type_brand_id) c ON c.brand_id = b.id) a ON t.id = a.type_id) a ON a.category_id = c.id) a ON a.id = ip.product_id) a ON i.id = a.image_id ORDER BY product_name";
 
     @Override
     public List<ProductAddEntites> getProductForAdd(String query,int page,int storeId) throws SQLException {
@@ -260,6 +260,39 @@ public class ProductDaoImpl extends BaseDao implements ProductDao {
                 list.add(pro);
             }
         } finally {
+            closeConnect(conn, pre, rs);
+        }
+        return list;
+    }
+
+    @Override
+    public List<ProductAddEntites> findProductWithUser(String query) throws SQLException {
+        Connection conn = null;
+        PreparedStatement pre =null;
+        ResultSet rs =null;
+        List<ProductAddEntites> list = null;
+        try{
+            list = new ArrayList<>();
+            String sql ="select p.id,p.name,b.name as brand_name,c.name as category_name,p.description,i.path ,t.name as type_name from "
+                    + "Product p join(Image_Product ip join Image i on i.id = ip.image_id) on p.id = ip.product_id join(Type_Brand tb "
+                    + "join (Type t join Category c on t.category_id = c.id) "
+                    + "on tb.type_id = t.id join Brand b on b.id = tb.brand_id) on p.type_brand_id = tb.id where p.barcode=?";
+            conn = getConnection();
+            pre = conn.prepareStatement(sql);
+            pre.setString(1, query);
+            rs= pre.executeQuery();
+              if (rs.next()) {
+                ProductAddEntites pro = new ProductAddEntites();
+                pro.setProduct_id(rs.getInt("id"));
+                pro.setProduct_name(rs.getString("name"));
+                pro.setBrand_name(rs.getString("brand_name"));
+                pro.setDescription(rs.getString("description"));
+                pro.setCategory_name(rs.getString("category_name"));
+                pro.setImage_path(rs.getString("path"));
+                pro.setType_name(rs.getString("type_name"));
+                list.add(pro);
+            }
+        }finally{
             closeConnect(conn, pre, rs);
         }
         return list;

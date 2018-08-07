@@ -44,10 +44,6 @@ public class ProductBrandDisplayListViewAdapter extends BaseAdapter {
     private List<Product> productList;
     private int layout;
     private StorageReference storageReference = Firebase.getFirebase();
-    final static int REQUEST_LOCATION = 1;
-    private double currentLatitude = 0.0;
-    private double currentLongtitude = 0.0;
-    private LocationManager locationManager;
     @Override
     public int getCount() {
         return productList.size();
@@ -63,12 +59,10 @@ public class ProductBrandDisplayListViewAdapter extends BaseAdapter {
         return 0;
     }
 
-    public ProductBrandDisplayListViewAdapter(Context context, int layout, List<Product> productList, double latitude, double longtitude) {
+    public ProductBrandDisplayListViewAdapter(Context context, int layout, List<Product> productList) {
         this.context = context;
         this.layout = layout;
         this.productList = productList;
-        this.currentLatitude = latitude;
-        this.currentLongtitude = longtitude;
     }
 
     @SuppressLint("ResourceAsColor")

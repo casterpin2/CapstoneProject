@@ -64,7 +64,7 @@ public class ProductBrandDisplayPage extends AppCompatActivity {
         brandName = getIntent().getStringExtra("brandName");
         apiService = APIService.retrofit.create(APIService.class);
         final Call<List<Product>> call = apiService.getProductBrand(brandID);
-        new NetworkCall().execute(call);
+        new GetData().execute(call);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorApplication)));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(brandName);
@@ -124,7 +124,7 @@ public class ProductBrandDisplayPage extends AppCompatActivity {
         return productList;
     }
 
-    private class NetworkCall extends AsyncTask<Call, Void, Void> {
+    private class GetData extends AsyncTask<Call, Void, Void> {
         @Override
         protected void onPreExecute() {
             loadingBar.setVisibility(View.VISIBLE);
@@ -153,7 +153,7 @@ public class ProductBrandDisplayPage extends AppCompatActivity {
                 for (int i = 0; i < response.body().size(); i++) {
                     list.add(response.body().get(i));
                 }
-                adapter = new ProductBrandDisplayListViewAdapter(ProductBrandDisplayPage.this, R.layout.product_brand_display_custom_listview, list,currentLatitude,currentLongtitude);
+                adapter = new ProductBrandDisplayListViewAdapter(ProductBrandDisplayPage.this, R.layout.product_brand_display_custom_listview, list);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -192,7 +192,7 @@ public class ProductBrandDisplayPage extends AppCompatActivity {
             public boolean onQueryTextChange(String newText) {
                 searchedProduct.clear();
                 if(newText.equals("") || newText == null){
-                    adapter = new ProductBrandDisplayListViewAdapter(ProductBrandDisplayPage.this, R.layout.product_brand_display_custom_listview, list,currentLatitude,currentLongtitude);
+                    adapter = new ProductBrandDisplayListViewAdapter(ProductBrandDisplayPage.this, R.layout.product_brand_display_custom_listview, list);
 
                 } else {
                     for (int i = 0; i < list.size(); i++) {
@@ -200,7 +200,7 @@ public class ProductBrandDisplayPage extends AppCompatActivity {
                             searchedProduct.add(list.get(i));
                         }
                     }
-                    adapter = new ProductBrandDisplayListViewAdapter(ProductBrandDisplayPage.this, R.layout.product_brand_display_custom_listview, searchedProduct,currentLatitude,currentLongtitude);
+                    adapter = new ProductBrandDisplayListViewAdapter(ProductBrandDisplayPage.this, R.layout.product_brand_display_custom_listview, searchedProduct);
                 }
                 adapter.notifyDataSetChanged();
                 theListView.setAdapter(adapter);

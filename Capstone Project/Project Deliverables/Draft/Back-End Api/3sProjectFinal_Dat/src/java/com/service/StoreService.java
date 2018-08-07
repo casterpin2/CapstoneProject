@@ -15,4 +15,6 @@ import java.sql.SQLException;
  */
 public interface StoreService {
     public StoreEntites  registerStore(StoreEntites store,LocationEntites location) throws SQLException;
+    public boolean deleteProductInStore(int storeId,int productId) throws SQLException;
+    public boolean editProductInStore(int storeId,int productId,double price,double promotion) throws SQLException;
 }

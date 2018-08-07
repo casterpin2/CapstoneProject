@@ -155,7 +155,9 @@ public class HomeFragment extends Fragment {
            @Override
            public void onClick(View v) {
                Intent toBarCode = new Intent(getContext(), BarcodeActivity.class);
+               toBarCode.putExtra("home",3);
                startActivity(toBarCode);
+
            }
        });
 
