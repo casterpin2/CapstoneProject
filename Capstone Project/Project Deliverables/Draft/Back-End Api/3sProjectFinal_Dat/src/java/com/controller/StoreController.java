@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import java.util.HashMap;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  *
@@ -45,5 +46,14 @@ public class StoreController {
         LocationEntites location = mapper.readValue(locationObj, LocationEntites.class);
         StoreEntites result = this.store.registerStore(store,location);
         return result;
+    }
+    @RequestMapping(value = "/deleteProductInStore", method = RequestMethod.DELETE, produces = "application/json;")
+    public boolean deleteProductInStore(@RequestParam("storeId") int storeId,@RequestParam("productId") int productId) throws SQLException, ClassNotFoundException, IOException {
+        return store.deleteProductInStore(storeId, productId);
+    }
+    
+    @RequestMapping(value = "/editProductInStore", method = RequestMethod.PUT, produces = "application/json;")
+    public boolean editProductInStore(@RequestParam("storeId") int storeId,@RequestParam("productId") int productId,@RequestParam("price") double price,@RequestParam("promotion") double promotion) throws SQLException, ClassNotFoundException, IOException {
+        return store.editProductInStore(storeId, productId, price, promotion);
     }
 }

@@ -44,8 +44,6 @@ public class ProductBrandDisplayListViewAdapter extends BaseAdapter {
     private List<Product> productList;
     private int layout;
     private StorageReference storageReference = Firebase.getFirebase();
-    final static int REQUEST_LOCATION = 1;
-    private LocationManager locationManager;
     @Override
     public int getCount() {
         return productList.size();

@@ -64,7 +64,6 @@ public class CategoryCustomCardviewAdapter extends RecyclerView.Adapter<Category
         holder.categoryImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(mContext,category.getCategoryID()+"sad",Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(mContext,TypeCategoryPage.class);
                 intent.putExtra("categoryId",category.getCategoryID());
                 intent.putExtra("categoryName",category.getCategoryName());

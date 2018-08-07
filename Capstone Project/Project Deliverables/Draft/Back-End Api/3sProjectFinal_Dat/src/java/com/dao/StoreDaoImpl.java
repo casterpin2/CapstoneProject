@@ -26,10 +26,11 @@ public class StoreDaoImpl extends BaseDao implements StoreDao {
     private final String REGISTER_LOCATION_INSERT = "insert into Location(apartment_number,street,county,district,city,longitude,latitude) values (?,?,?,?,?,?,?)";
     private final String GET_LAST_LOCATION_ID = "select MAX(id) as id from Location";
     private final String GET_LOCATION_ID = "select * from Location where latitude = ? and longitude = ?";
-    private final String GET_STORE_WITH_USER_ID = "select a.id,a.name,location_id,user_id,phone,status,registerLogFormat,b.path from\n" +
-                                                  "(select a.*,b.image_id from\n" +
-                                                  "(select *, DATE_FORMAT(registerLog,\"%d/%m/%Y\")  as registerLogFormat from Store where user_id = ?) a , Image_Store b where a.id = b.store_id) a , Image b where a.image_id = b.id";
+    private final String GET_STORE_WITH_USER_ID = "select a.id,a.name,location_id,user_id,phone,status,registerLogFormat,b.path from\n"
+            + "(select a.*,b.image_id from\n"
+            + "(select *, DATE_FORMAT(registerLog,\"%d/%m/%Y\")  as registerLogFormat from Store where user_id = ?) a , Image_Store b where a.id = b.store_id) a , Image b where a.image_id = b.id";
     private final String QUERY_LOCATION = "SELECT * FROM Location WHERE id = ?";
+
     @Override
     public StoreEntites registerStore(StoreEntites store, LocationEntites location) throws SQLException {
         StoreEntites result = new StoreEntites();
@@ -71,10 +72,10 @@ public class StoreDaoImpl extends BaseDao implements StoreDao {
                 conn.rollback();
                 return null;
             }
-               pre = conn.prepareStatement(UPDATE_HAS_STORE_USER);
-               pre.setInt(1, store.getUser_id());
-               count = pre.executeUpdate();
-               if (count == 0) {
+            pre = conn.prepareStatement(UPDATE_HAS_STORE_USER);
+            pre.setInt(1, store.getUser_id());
+            count = pre.executeUpdate();
+            if (count == 0) {
                 conn.setAutoCommit(false);
                 conn.rollback();
                 return null;
@@ -131,8 +132,8 @@ public class StoreDaoImpl extends BaseDao implements StoreDao {
         }
         return -1;
     }
-    
-    private StoreEntites getStore(int userId){
+
+    private StoreEntites getStore(int userId) {
         Connection conn = null;
         PreparedStatement pre = null;
         StoreEntites se = null;
@@ -159,13 +160,68 @@ public class StoreDaoImpl extends BaseDao implements StoreDao {
                 se.setLongtitude(rs.getString("longitude"));
                 return se;
             }
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             closeConnect(conn, pre, null);
             return null;
         } finally {
             closeConnect(conn, pre, null);
         }
         return null;
+    }
+
+    @Override
+    public boolean deleteProductInStore(int storeId, int productId) throws SQLException {
+        boolean check = false;
+        Connection conn = null;
+        PreparedStatement pre = null;
+        int count = 0;
+        try {
+            String sql = "delete from Product_Store where product_id = ? and store_id = ?";
+            conn = getConnection();
+            conn.setAutoCommit(false);
+            pre = conn.prepareStatement(sql);
+            pre.setInt(2, storeId);
+            pre.setInt(1, productId);
+            count++;
+            if (pre.executeUpdate() == count) {
+                conn.commit();
+                check = true;
+            } else {
+                conn.rollback();
+                conn.setAutoCommit(true);
+            }
+        } finally {
+            closeConnect(conn, pre, null);
+        }
+        return check;
+    }
+
+    @Override
+    public boolean editProductInStore(int storeId, int productId, double price, double promotion) throws SQLException {
+        boolean check = false;
+        Connection conn = null;
+        PreparedStatement pre = null;
+        int count = 0;
+        try {
+            String sql = "update Product_Store set price = ? , promotion = ? where product_id = ? and store_id = ?";
+            conn = getConnection();
+            conn.setAutoCommit(false);
+            pre = conn.prepareStatement(sql);
+            pre.setDouble(1, price);
+            pre.setDouble(2, promotion);
+            pre.setInt(4, storeId);
+            pre.setInt(3, productId);
+            count++;
+            if (pre.executeUpdate() == count) {
+                conn.commit();
+                check = true;
+            } else {
+                conn.rollback();
+                conn.setAutoCommit(true);
+            }
+        } finally {
+            closeConnect(conn, pre, null);
+        }
+        return check;
     }
 }

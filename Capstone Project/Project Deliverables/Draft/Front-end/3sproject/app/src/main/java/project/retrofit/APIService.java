@@ -19,6 +19,7 @@ import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
@@ -34,16 +35,6 @@ public interface APIService {
                         @Query("FBId") String FBId);
     ////////////////////////////////////////////////
 
-    @POST("registerStore")
-    Call<Store> registerStore(@Body HashMap<String,String> map);
-
-    @GET("getProductForAdd")
-    Call<List<Item>> getProducts(@Query("query") String query, @Query("page") int page,@Query("storeId") int storeId);
-
-    @POST("posts")
-    Call<Boolean> insertProduct(@Body Item stringJson,
-                           @Query("storeId") int storeId);
-
     @GET("brands")
     Call<List<Brand>> getBrands();
 
@@ -52,12 +43,32 @@ public interface APIService {
 
     @GET("brands/productWithBrand")
     Call<List<Product>> getProductBrand(@Query("brandId") int brandId);
+
     @GET("category")
     Call<List<Category>> getCategory();
+
+    //Store//
+
+    @DELETE("deleteProductInStore")
+    Call<Boolean> deleteProductInStore (@Query("storeId") int storeID,@Query("productId") int productID);
 
     @GET("getProductInStore")
     Call<List<ProductInStore>> getProductInStore(@Query("storeID") int storeID);
 
+    @PUT("editProductInStore")
+    Call<Boolean> editProductInStore (@Query("storeId") int storeID,@Query("productId") int productID,@Query("price") long price,@Query("promotion") double promotion);
+
+    @POST("registerStore")
+    Call<Store> registerStore(@Body HashMap<String,String> map);
+
+    @POST("posts")
+    Call<Boolean> insertProduct(@Body Item stringJson,
+                                @Query("storeId") int storeId);
+
+    @GET("getProductForAdd")
+    Call<List<Item>> getProducts(@Query("query") String query, @Query("page") int page,@Query("storeId") int storeId);
+
+    //Store//
     public static final Retrofit retrofit = new Retrofit.Builder()
             .baseUrl("http://150.95.111.195:8080/3sProjectFinal/api/")
             .addConverterFactory(GsonConverterFactory.create())
@@ -94,13 +105,16 @@ public interface APIService {
 
     @GET("getProductWithBarcode")
     Call<List<Item>> getProductWithBarcode(@Query("barcode") String barcode,@Query("store") int storeId);
+
     @GET("getProductbyType")
     Call<List<Product>> getProductbyType(@Query("typeId") int typeId);
 
     @GET("informationUser")
     Call<User> getInfotmation(@Query("userId") int userId);
+
     @PUT("updateInformation")
     Call<User> updateInfotmation(@Body User user);
+
     @GET("userSearchBarcode")
     Call<List<Product>> userSearchBarcode(@Query("barcode") String barcode);
 }

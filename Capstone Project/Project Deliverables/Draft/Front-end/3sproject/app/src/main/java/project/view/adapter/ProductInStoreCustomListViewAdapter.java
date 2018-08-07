@@ -3,9 +3,11 @@ package project.view.adapter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,15 +21,19 @@ import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.storage.StorageReference;
 import com.google.gson.Gson;
 
+import java.io.IOException;
 import java.util.List;
 
 import project.firebase.Firebase;
+import project.retrofit.ApiUtils;
 import project.view.gui.EditProductInStorePage;
 import project.view.R;
 import project.view.gui.ProductDetailPage;
 import project.view.model.Product;
 import project.view.model.ProductInStore;
 import project.view.util.Formater;
+import retrofit2.Call;
+import retrofit2.Response;
 
 
 public class ProductInStoreCustomListViewAdapter extends ArrayAdapter<ProductInStore> {
@@ -97,7 +103,9 @@ public class ProductInStoreCustomListViewAdapter extends ArrayAdapter<ProductInS
                 builder.setPositiveButton(R.string.alertdialog_acceptButton, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Toast.makeText(context, "Đã xóa"+ productList.get(position).getProductName(), Toast.LENGTH_SHORT).show();
+                        Log.d("storeid",String.valueOf(storeID));
+                        Call<Boolean> call = ApiUtils.getAPIService().deleteProductInStore(storeID,productList.get(position).getProductID());
+                        new DeleteProduct(position).execute(call);
                     }
                 });
                 builder.setNegativeButton(R.string.alertdialog_cancelButton, new DialogInterface.OnClickListener() {
@@ -162,4 +170,54 @@ public class ProductInStoreCustomListViewAdapter extends ArrayAdapter<ProductInS
         }
     }
 
+    public class DeleteProduct extends AsyncTask<Call, Void, Boolean> {
+
+        private int index;
+
+        public int getIndex() {
+            return index;
+        }
+
+        public void setIndex(int index) {
+            this.index = index;
+        }
+
+        public DeleteProduct(int index) {
+            this.index = index;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Boolean doInBackground(Call... calls) {
+            try {
+                Call<Boolean> call = calls[0];
+                Response<Boolean> re = call.execute();
+                boolean result = re.body();
+                return result;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Boolean result) {
+            if (result == null) {
+                Toast.makeText(context,"Không có mạng",Toast.LENGTH_LONG).show();
+                return;
+            }
+            if (!result){
+                Toast.makeText(context,"Có lỗi xảy ra !!!",Toast.LENGTH_LONG).show();
+                return;
+            } else {
+                productList.remove(index);
+                ProductInStoreCustomListViewAdapter.this.notifyDataSetChanged();
+            }
+            super.onPostExecute(result);
+
+        }
+    }
 }

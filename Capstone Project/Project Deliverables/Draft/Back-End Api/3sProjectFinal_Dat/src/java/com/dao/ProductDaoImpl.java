@@ -30,7 +30,7 @@ public class ProductDaoImpl extends BaseDao implements ProductDao {
 "            (SELECT id,name,brand_name,category_name,image_id,price,promotion,type_name,des FROM Image_Product ip INNER JOIN\n" +
 "            (SELECT a.id,a.name,brand_name,c.name as category_name,price,promotion,type_name,des FROM Category c INNER JOIN\n" +
 "           (SELECT a.id,a.name,brand_name,category_id,price,promotion,t.name as type_name,des FROM Type t INNER JOIN\n" +
-"           (SELECT c.id,c.name,type_id,b.name as brand_name,price,promotion,des FROM Brand b INNER JOIN (SELECT b.id,name,type_id,brand_id,price,promotion,des FROM Type_Brand tb INNER JOIN (SELECT a.product_id as id,name,type_brand_id,price,promotion,p.description as des FROM Product p INNER JOIN (SELECT product_id,price,promotion FROM `Product_Store` WHERE store_id = ?) a ON a.product_id = p.id) b ON tb.id = b.type_brand_id) c ON c.brand_id = b.id) a ON t.id = a.type_id) a ON a.category_id = c.id) a ON a.id = ip.product_id) a ON i.id = a.image_id";
+"           (SELECT c.id,c.name,type_id,b.name as brand_name,price,promotion,des FROM Brand b INNER JOIN (SELECT b.id,name,type_id,brand_id,price,promotion,des FROM Type_Brand tb INNER JOIN (SELECT a.product_id as id,name,type_brand_id,price,promotion,p.description as des FROM Product p INNER JOIN (SELECT product_id,price,promotion FROM `Product_Store` WHERE store_id = ?) a ON a.product_id = p.id) b ON tb.id = b.type_brand_id) c ON c.brand_id = b.id) a ON t.id = a.type_id) a ON a.category_id = c.id) a ON a.id = ip.product_id) a ON i.id = a.image_id ORDER BY product_name";
 
     @Override
     public List<ProductAddEntites> getProductForAdd(String query,int page,int storeId) throws SQLException {

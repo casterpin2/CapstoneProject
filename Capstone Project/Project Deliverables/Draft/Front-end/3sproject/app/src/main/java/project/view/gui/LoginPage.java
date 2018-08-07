@@ -144,8 +144,10 @@ public class LoginPage extends AppCompatActivity {
                     if (AccessToken.getCurrentAccessToken() != null) {
                         LoginManager.getInstance().logOut();
                         LoginManager.getInstance().logInWithReadPermissions(LoginPage.this, Arrays.asList("public_profile"));
+                        return;
                     }
                 }
+                errorMessage.setText("Không có mạng ");
             }
         });
         //Facebook Login///////////////////////////////////////////////////////////////////
@@ -237,9 +239,11 @@ public class LoginPage extends AppCompatActivity {
         protected void onPostExecute(Login result) {
             if (result == null){
                 errorMessage.setText("Không có mạng ");
+                loadingBar.setVisibility(View.INVISIBLE);
+                return;
             }
             if (result.getUser().getId() == 0) {
-                errorMessage.setText("Sai ");
+                errorMessage.setText("Tên tài khoản hoặc mật khẩu không đúng, xin vui lòng đăng nhập lại");
             }else {
                 //Toast.makeText(LoginPage.this, LoginPage.login.getUser().toString(), Toast.LENGTH_LONG).show();
                 User user = result.getUser();

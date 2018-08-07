@@ -1,7 +1,9 @@
 package project.view.gui;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
+import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -23,14 +25,20 @@ import com.bumptech.glide.Glide;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.storage.StorageReference;
 
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
 
 import project.firebase.Firebase;
+import project.retrofit.ApiUtils;
 import project.view.R;
+import project.view.adapter.ProductInStoreCustomListViewAdapter;
+import project.view.model.ProductInStore;
 import project.view.util.CustomInterface;
 import project.view.util.Formater;
+import retrofit2.Call;
+import retrofit2.Response;
 
 public class EditProductInStorePage extends AppCompatActivity {
 
@@ -63,7 +71,7 @@ public class EditProductInStorePage extends AppCompatActivity {
         final String productNameValue = getIntent().getStringExtra("productName");
         final String productImageLink = getIntent().getStringExtra("productImageLink");
         final int productIDValue = getIntent().getIntExtra("productID", -1);
-        int storeIDValue = getIntent().getIntExtra("storeID",-1);
+        final int storeIDValue = getIntent().getIntExtra("storeID",-1);
         final String categoryNameValue = getIntent().getStringExtra("categoryName");
         final String brandNameValue = getIntent().getStringExtra("brandName");
         final long productPriceValue = getIntent().getLongExtra("productPrice",-1);
@@ -142,16 +150,15 @@ public class EditProductInStorePage extends AppCompatActivity {
                         promotionPercentErrorMessage.setText(getResources().getString(R.string.promotionOption));
 
                     } else {
-                        long priceLong = Long.parseLong(productPrice.getText().toString().replaceAll(",", ""));
+                        long priceLong = Long.parseLong(productPrice.getText().toString().replaceAll(",+", "").replaceAll("\\.+", "").replaceAll("đ","").trim());
                         double promotionValue = Double.parseDouble(promotionPercent.getText().toString());
                         promotionPercentErrorMessage.setText("");
                         if (productPriceValue == priceLong && promotionPercentValue == promotionValue ) {
                             Toast.makeText(EditProductInStorePage.this, getResources().getString(R.string.unchange), Toast.LENGTH_SHORT).show();
 
                         } else {
-
-                            // call API here
-
+                            Call<Boolean> call = ApiUtils.getAPIService().editProductInStore(storeIDValue,productIDValue,priceLong,promotionValue);
+                            new EditProduct().execute(call);
                         }
 
                     }
@@ -186,7 +193,7 @@ public class EditProductInStorePage extends AppCompatActivity {
                 final double promotionPercentValue = getIntent().getDoubleExtra("promotionPercent",-1.0);
                 long priceLong = 0;
                 if (productPrice.getText().toString().length() != 0){
-                    priceLong= Long.parseLong(productPrice.getText().toString().replaceAll(",", ""));
+                    priceLong= Long.parseLong(productPrice.getText().toString().replaceAll("\\.+", "").replaceAll("đ","").trim().replaceAll(",+",""));
                 }
                 double promotionValue = 0.0;
                 if(promotionPercent.getText().toString().length() != 0){
@@ -218,6 +225,42 @@ public class EditProductInStorePage extends AppCompatActivity {
 
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public class EditProduct extends AsyncTask<Call, Void, Boolean> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Boolean doInBackground(Call... calls) {
+            try {
+                Call<Boolean> call = calls[0];
+                Response<Boolean> re = call.execute();
+                boolean result = re.body();
+                return result;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Boolean result) {
+            if (result == null) {
+                Toast.makeText(EditProductInStorePage.this,"Không có mạng",Toast.LENGTH_LONG).show();
+                return;
+            }
+            if (!result){
+                Toast.makeText(EditProductInStorePage.this,"Có lỗi xảy ra !!!",Toast.LENGTH_LONG).show();
+                return;
+            } else {
+                finish();
+            }
+            super.onPostExecute(result);
+
         }
     }
 }
