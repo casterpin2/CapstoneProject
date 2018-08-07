@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+    <TextView
+        android:id="@+id/tvContent1"
+        android:textSize="20dp"
+        android:text="content 1"
+        android:textColor="@color/colorBlack"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="20dp"/>
+    <TextView
+        android:id="@+id/tvContent2"
+        android:text="content 2"
+        android:textColor="@color/colorBlack"
+        android:textSize="16dp"
+        android:paddingBottom="32dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="2">
+        <Button
+            android:id="@+id/btnCancle"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/colorApplication"
+            android:layout_weight="1"
+            android:text="Hủy"
+            android:textColor="@color/colorWhite"/>
+        <Button
+            android:id="@+id/btnOK"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/colorLightGrey"
+            android:textColor="@color/colorApplication"
+            android:text="Đồng ý"
+            android:layout_weight="1"/>
+    </LinearLayout>
+</LinearLayout>
