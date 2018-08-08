@@ -11,7 +11,9 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.CursorAdapter;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -39,6 +41,11 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageReference;
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -70,7 +77,7 @@ public class SearchProductAddToStore extends AppCompatActivity {
     private SearchProductPageListViewAdapter adapter;
     private Dialog informationDialog, optionDialog;
     private TextView nullMessage;
-    private static String query = "";
+    private String query = "";
     private SearchView searchView;
     private ProgressBar loadingBar;
     private int storeID;
@@ -79,13 +86,44 @@ public class SearchProductAddToStore extends AppCompatActivity {
     public View footerView;
     public boolean isLoading;
     boolean limitData = false;
-    int page =1;
+    int page;
     private  String barcode;
     private RelativeLayout main_layout;
     public Context getContext() {
         return context;
     }
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    private final List<String> suggestions = new ArrayList<>();
+    private final List<String> searchedList = new ArrayList<>();
+    private CursorAdapter suggestionAdapter;
+    DatabaseReference myRef = database.getReference();
+    final DatabaseReference myRef1 = myRef.child("suggestion").child("product");
+    private ValueEventListener listener;
+    @Override
+    protected void onResume() {
+        super.onResume();
+        listener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                suggestions.clear();
+                for (DataSnapshot dttSnapshot2 : dataSnapshot.getChildren()) {
+                    suggestions.add(dttSnapshot2.getValue(String.class));
+                }
+            }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+        myRef1.addValueEventListener(listener);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        myRef1.removeEventListener(listener);
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -152,7 +190,7 @@ public class SearchProductAddToStore extends AppCompatActivity {
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
                 int count = searchedProductList.size();
-                if (view.getLastVisiblePosition() == totalItemCount - 1 && count == (page * 10) && isLoading == false && (page == 1 || page == 2)) {
+                if (view.getLastVisiblePosition() == totalItemCount - 1 && count == (page * 10) && isLoading == false  && (page > 0)) {
                     isLoading = true;
                     Thread thread = new ThreadgetMoreData();
                     thread.start();
@@ -475,7 +513,6 @@ public class SearchProductAddToStore extends AppCompatActivity {
                     break;
                 case 1:
                     //adapter.addListItemToAdapter((ArrayList<Item>)msg.obj);
-
                     theListView.removeFooterView(footerView);
                     getMoreData();
                     isLoading = false;
@@ -488,9 +525,10 @@ public class SearchProductAddToStore extends AppCompatActivity {
 
     public void getMoreData(){
         //List<Item> addList = new ArrayList<>();
-        page ++;
-        callAPI(query, page);
 
+        Log.d("page",String.valueOf(page));
+        callAPI(query, page);
+        page ++;
         //addList = searchedProductList;
 
         //return addList;
@@ -503,7 +541,7 @@ public class SearchProductAddToStore extends AppCompatActivity {
             mHandle.sendEmptyMessage(0);
             //List<Item> addMoreList = getMoreData();
             try {
-                Thread.sleep(1000);
+                Thread.sleep(2000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -527,17 +565,17 @@ public class SearchProductAddToStore extends AppCompatActivity {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 searchedProductList.clear();
-                page = 1;
+                page = 0;
 
                 query = searchView.getQuery().toString().trim();
-                SearchProductAddToStore.query = query;
+                setQuery(query);
                 int index = theListView.getFirstVisiblePosition();
                 View v = theListView.getChildAt(0);
                 int top = (v == null) ? 0 : v.getTop();
                 theListView.setSelectionFromTop(index, top);
 
                 if(!query.isEmpty()) {
-                    callAPI(query,page);
+                    getMoreData();
                 }
                 return false;
             }
@@ -632,7 +670,7 @@ public class SearchProductAddToStore extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == REQUEST_CODE_SCAN &&  resultCode == RESULT_CODE_SCAN){
              barcode = data.getStringExtra("code");
-            Call<List<Item>> call = mAPI.getProductWithBarcode(barcode,1);
+            Call<List<Item>> call = mAPI.getProductWithBarcode(barcode,storeID);
             new GetProductWithBarcode().execute(call);
         }
     }
@@ -750,5 +788,9 @@ public class SearchProductAddToStore extends AppCompatActivity {
             }
             return null;
         }
+    }
+
+    public void setQuery(String query) {
+        this.query = query;
     }
 }

@@ -3,6 +3,7 @@ package project.view.adapter;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.google.firebase.storage.StorageReference;
+import com.google.gson.Gson;
 
 import java.util.List;
 
@@ -111,9 +113,8 @@ public class NearByStoreListViewAdapter extends BaseAdapter {
                     int storeID = store.getId();
                     Intent toStoreInformation = new Intent(getContext(), StoreInformationPage.class);
                     toStoreInformation.putExtra("storeID", storeID);
+                    toStoreInformation.putExtra("nearByStore", new Gson().toJson(store));
                     getContext().startActivity(toStoreInformation);
-//                    Toast.makeText(context, "Nhảy vào màn thông tin cửa hàng", Toast.LENGTH_SHORT).show();
-
                 }
             });
         }

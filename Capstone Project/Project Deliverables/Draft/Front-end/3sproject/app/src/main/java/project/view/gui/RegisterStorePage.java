@@ -506,7 +506,7 @@ public class RegisterStorePage extends AppCompatActivity implements OnMapReadyCa
             super.onPostExecute(result);
             if (result != null) {
                 Toast.makeText(RegisterStorePage.this, "Đăng kí cửa hàng thành công", Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(RegisterStorePage.this, HomeFragment.class);
+                Intent intent = new Intent(RegisterStorePage.this, HomePage.class);
                 SharedPreferences preferences = getSharedPreferences("authentication", Context.MODE_PRIVATE);
                 User user = new Gson().fromJson(preferences.getString("user",""),User.class);
                 user.setHasStore(1);

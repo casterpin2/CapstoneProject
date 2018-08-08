@@ -27,6 +27,18 @@ public class NearByStore implements Serializable {
     @SerializedName("user_id")
     @Expose
     private int user_id;
+    @SerializedName("user_name")
+    @Expose
+    private String user_name;
+
+    public String getUser_name() {
+        return user_name;
+    }
+
+    public void setUser_name(String user_name) {
+        this.user_name = user_name;
+    }
+
     @SerializedName("phone")
     @Expose
     private String phone;
@@ -42,6 +54,18 @@ public class NearByStore implements Serializable {
     @SerializedName("distance")
     @Expose
     private double distance;
+
+    @SerializedName("image_path")
+    @Expose
+    private String image_path;
+
+    public String getImage_path() {
+        return image_path;
+    }
+
+    public void setImage_path(String image_path) {
+        this.image_path = image_path;
+    }
 
     public double getDistance() {
         return distance;

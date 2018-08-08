@@ -141,7 +141,7 @@ public class BarcodeActivity extends AppCompatActivity implements ZXingScannerVi
             intent.putExtra("code",myResult);
             setResult(RESULT_CODE_SCAN,intent);
             finish();
-        }else if(getIntent().getIntExtra("searchProductAdd",0)==3){
+        }else if(getIntent().getIntExtra("searchProductAdd",0)==2){
             Intent intent = new Intent(BarcodeActivity.this,SearchProductAddToStore.class);
             intent.putExtra("code",myResult);
             setResult(RESULT_CODE_SCAN,intent);

@@ -9,7 +9,10 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.BaseColumns;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.widget.CursorAdapter;
 import android.support.v4.widget.SimpleCursorAdapter;
@@ -17,14 +20,22 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -48,20 +59,57 @@ public class UserSearchProductPage extends AppCompatActivity {
     private LinearLayout haveProduct;
     private UserSearchProductListViewCustomAdapter adapter;
     RelativeLayout main_layout;
-
+    public View footerView;
     private List<Product> productList = new ArrayList<>();
     private APIService mAPI;
-
+    int page;
+    private String query = "";
+    public boolean isLoading;
+    public Handler mHandle;
     private LocationManager locationManager;
     final static int REQUEST_LOCATION = 1;
     private double currentLatitude = 0.0;
     private double currentLongtitude = 0.0;
     private static final int RESULT_CODE_SCAN=220;
     private static final int REQUEST_CODE_SCAN=120;
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    private final List<String> suggestions = new ArrayList<>();
+    private final List<String> searchedList = new ArrayList<>();
+    private CursorAdapter suggestionAdapter;
+    DatabaseReference myRef = database.getReference();
+    final DatabaseReference myRef1 = myRef.child("suggestion").child("product");
+    private ValueEventListener listener;
+    @Override
+    protected void onResume() {
+        super.onResume();
+        listener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                suggestions.clear();
+                for (DataSnapshot dttSnapshot2 : dataSnapshot.getChildren()) {
+                    suggestions.add(dttSnapshot2.getValue(String.class));
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+        myRef1.addValueEventListener(listener);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        myRef1.removeEventListener(listener);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_search_product_page);
+
         CustomInterface.setStatusBarColor(this);
         findView();
         main_layout.setOnTouchListener(new View.OnTouchListener() {
@@ -88,8 +136,28 @@ public class UserSearchProductPage extends AppCompatActivity {
         productListView.setHorizontalScrollBarEnabled(false);
         adapter = new UserSearchProductListViewCustomAdapter(this,R.layout.user_search_product_page_custom_list_view, productList, currentLatitude, currentLongtitude);
         productListView.setAdapter(adapter);
+        mHandle = new MyHandle();
+        LayoutInflater li = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        footerView = li.inflate(R.layout.footer_loading_listview_lazy_loading, null);
 
-        final List<String> suggestions = new ArrayList<>();
+        productListView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                int count = productList.size();
+                if (view.getLastVisiblePosition() == totalItemCount - 1 && count == (page * 5) && isLoading == false  && (page > 0)) {
+                    isLoading = true;
+                    Thread thread = new ThreadgetMoreData();
+                    thread.start();
+                }
+            }
+        });
+
+
         suggestions.add("Sản phẩm kia là abc xyz");
         suggestions.add("DM");
         suggestions.add("Cool");
@@ -99,10 +167,10 @@ public class UserSearchProductPage extends AppCompatActivity {
             new UserSearchWithBarcode().execute(listBarcode);
         }
 
-        final List<String> searchedList = new ArrayList<>();
 
 
-        final CursorAdapter suggestionAdapter = new SimpleCursorAdapter(this,
+
+        suggestionAdapter = new SimpleCursorAdapter(this,
                 R.layout.custom_suggested_listview_nearby_store_page,
                 null,
                 new String[]{SearchManager.SUGGEST_COLUMN_TEXT_1},
@@ -114,30 +182,19 @@ public class UserSearchProductPage extends AppCompatActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-//                searchedProductList.clear();
-//                page = 1;
-//
-//                query = searchView.getQuery().toString().trim();
-//                SearchProductAddToStore.query = query;
-//                int index = theListView.getFirstVisiblePosition();
-//                View v = theListView.getChildAt(0);
-//                int top = (v == null) ? 0 : v.getTop();
-//                theListView.setSelectionFromTop(index, top);
-//
-//                if(!query.isEmpty()) {
-//                    callAPI(query,page);
-//                }
+                productList.clear();
+                page = 0;
 
-//                int index = productListView.getFirstVisiblePosition();
-//                View v = productListView.getChildAt(0);
-//                int top = (v == null) ? 0 : v.getTop();
-//                productListView.setSelectionFromTop(index, top);
-                final Call<List<Product>> call =  mAPI.userSearchProduct(query);
-                new UserSearchProductAsyncTask1().execute(call);
+                query = searchView.getQuery().toString().trim();
+                setQuery(query);
+                int index = productListView.getFirstVisiblePosition();
+                View v = productListView.getChildAt(0);
+                int top = (v == null) ? 0 : v.getTop();
+                productListView.setSelectionFromTop(index, top);
 
-                //adapter = new UserSearchProductListViewCustomAdapter(UserSearchProductPage.this,R.layout.user_search_product_page_custom_list_view, asyncTask.getList());
-                //Toast.makeText(UserSearchProductPage.this, "onQueryTextSubmit : "+  productList.size(), Toast.LENGTH_SHORT).show();
-
+                if(!query.isEmpty()) {
+                    getMoreData();
+                }
                 return false;
             }
 
@@ -146,19 +203,20 @@ public class UserSearchProductPage extends AppCompatActivity {
             public boolean onQueryTextChange(String newText) {
 
 
-//                Toast.makeText(SearchProductAddToStore.this, "content : "+ newText, Toast.LENGTH_SHORT).show();
                 String[] columns = { BaseColumns._ID,
                         SearchManager.SUGGEST_COLUMN_TEXT_1,
                 };
                 final MatrixCursor cursor = new MatrixCursor(columns);
                 searchedList.removeAll(searchedList);
-
+                Log.d("ad",String.valueOf(suggestions.size()));
                 for (int i = 0; i < suggestions.size(); i++) {
-                    if (suggestions.get(i).toLowerCase().contains(newText.toLowerCase())) {
+                    Log.d("searchedList",String.valueOf(searchedList.size()));
+                    if (suggestions.get(i).toLowerCase().contains(newText)) {
                         String[] tmp = {Integer.toString(i), suggestions.get(i)};
                         cursor.addRow(tmp);
 
                         searchedList.add(suggestions.get(i).toString());
+
                     }
                 }
                 suggestionAdapter.swapCursor(cursor);
@@ -412,7 +470,6 @@ public class UserSearchProductPage extends AppCompatActivity {
         protected void onPostExecute(List<Product> list) {
             super.onPostExecute(list);
             if (list != null) {
-                productList.clear();
                 for (int i = 0; i < list.size(); i++) {
                     productList.add(list.get(i));
                 }
@@ -482,6 +539,64 @@ public class UserSearchProductPage extends AppCompatActivity {
             final Call<List<Product>> listBarcode = mAPI.userSearchBarcode(barcode);
             new UserSearchWithBarcode().execute(listBarcode);
         }
+    }
+
+    public class MyHandle extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what){
+                case 0 :
+                    productListView.addFooterView(footerView);
+                    break;
+                case 1:
+                    //adapter.addListItemToAdapter((ArrayList<Item>)msg.obj);
+                    productListView.removeFooterView(footerView);
+                    getMoreData();
+                    isLoading = false;
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    public void getMoreData(){
+        //List<Item> addList = new ArrayList<>();
+
+        Log.d("page",String.valueOf(page));
+        callAPI(query, page);
+        page ++;
+        //addList = searchedProductList;
+
+        //return addList;
+    }
+
+
+    public class ThreadgetMoreData extends Thread {
+        @Override
+        public void run() {
+            mHandle.sendEmptyMessage(0);
+            //List<Item> addMoreList = getMoreData();
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            if (isLoading == true){
+                Message msg = mHandle.obtainMessage(1);
+                mHandle.sendMessage(msg);
+            }
+        }
+    }
+
+    public void setQuery(String query) {
+        this.query = query;
+    }
+
+    private void callAPI (String query, int page){
+        if (query.isEmpty()) return;
+        Call<List<Product>> call = mAPI.userSearchProduct(query,page);
+        new UserSearchProductAsyncTask1().execute(call);
     }
 }
 

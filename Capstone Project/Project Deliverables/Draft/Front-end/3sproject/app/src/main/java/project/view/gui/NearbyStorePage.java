@@ -3,7 +3,6 @@ package project.view.gui;
 import android.app.ActionBar;
 import android.app.SearchManager;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.MatrixCursor;
 import android.graphics.drawable.ColorDrawable;
@@ -12,7 +11,6 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Handler;
-import android.os.Message;
 import android.provider.BaseColumns;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.widget.CursorAdapter;
@@ -20,7 +18,6 @@ import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -41,27 +38,23 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import project.googleMapAPI.GoogleMapJSON;
-import project.retrofit.APIService;
 import project.retrofit.ApiUtils;
 import project.view.R;
-import project.view.adapter.UserSearchProductListViewCustomAdapter;
+import project.view.adapter.NearByStoreListViewAdapter;
 import project.view.model.NearByStore;
-import project.view.adapter.ListViewAdapter;
 import project.view.util.CustomInterface;
 import retrofit2.Call;
 import retrofit2.Response;
 
 public class NearbyStorePage extends AppCompatActivity implements OnMapReadyCallback {
     private ListView storeListView;
-    private ListViewAdapter adapter;
+    private NearByStoreListViewAdapter adapter;
     private List<String> nearByStore = new ArrayList<>();
     private List<NearByStore> list = new ArrayList<>();
     private RelativeLayout main_layout;
@@ -117,7 +110,7 @@ public class NearbyStorePage extends AppCompatActivity implements OnMapReadyCall
 //            }
 //        }
 
-        adapter = new ListViewAdapter(NearbyStorePage.this, R.layout.nearby_store_page_custom_list_view, list);
+        adapter = new NearByStoreListViewAdapter(NearbyStorePage.this, R.layout.nearby_store_page_custom_list_view, list);
         storeListView.setAdapter(adapter);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -426,7 +419,7 @@ public class NearbyStorePage extends AppCompatActivity implements OnMapReadyCall
                 for (NearByStore near : listNearByStore) {
                     list.add(near);
                 }
-                adapter = new ListViewAdapter(NearbyStorePage.this, R.layout.nearby_store_page_custom_list_view, listNearByStore);
+                adapter = new NearByStoreListViewAdapter(NearbyStorePage.this, R.layout.nearby_store_page_custom_list_view, listNearByStore);
                 storeListView.setAdapter(adapter);
                 changeLocation(mMap);
             } else {

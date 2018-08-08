@@ -39,7 +39,8 @@ import project.view.util.MD5Library;
 import retrofit2.Call;
 import retrofit2.Response;
 
-public class LoginActivity extends AppCompatActivity {
+public class
+LoginActivity extends AppCompatActivity {
 
     private ScrollView scroll;
     private Button loginBtn, loginFBBtn, loginGPBtn;

@@ -84,7 +84,7 @@ public interface APIService {
 
     //User search product
     @GET("userSearchProduct")
-    Call<List<Product>> userSearchProduct(@Query("productName") String productName);
+    Call<List<Product>> userSearchProduct(@Query("productName") String productName,@Query("page") int page);
 
     @GET("productSales/top20")
     Call<List<Product>> getSaleProductTop20();
