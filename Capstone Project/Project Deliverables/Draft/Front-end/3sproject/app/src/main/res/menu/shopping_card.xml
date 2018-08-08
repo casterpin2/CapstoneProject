@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".gui.MainActivity">
     <item
-        android:id="@+id/search_with_barcode"
+        android:id="@+id/shopping_card"
         android:title="Search With Barcode"
-        android:icon="@drawable/qrcode"
+        android:icon="@drawable/shopping_card"
         app:showAsAction="always"/>
 </menu>

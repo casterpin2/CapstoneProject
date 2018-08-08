@@ -49,7 +49,6 @@
                         app:cardUseCompatPadding="true"
                         android:id="@+id/searchLayout"
                         app:cardBackgroundColor="@color/white"
-                        android:layout_marginRight="16dp"
                         app:cardElevation="5dp">
                         <LinearLayout
                             android:layout_width="match_parent"

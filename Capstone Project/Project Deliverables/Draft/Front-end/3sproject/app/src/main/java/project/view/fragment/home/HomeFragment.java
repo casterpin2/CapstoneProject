@@ -19,12 +19,16 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.storage.StorageReference;
@@ -204,18 +208,33 @@ public class HomeFragment extends Fragment {
       return view;
     }
 
-private void findView(){
-    scroll = view.findViewById(R.id.scrollView);
-    imgBarCode = view.findViewById(R.id.imgBarCode);
-    viewPager =view.findViewById(R.id.img_slider);
-    searchLayout = view.findViewById(R.id.searchLayout);
-    sliderDotspanel = view.findViewById(R.id.slider_dots);
-    tv_more_category = view.findViewById(R.id.tv_more_category);
-    tv_more_brand = view.findViewById(R.id.tv_more_brand);
-    tv_more_sale = view.findViewById(R.id.tv_more_sale);
-    recyclerViewSaleProduct= view.findViewById(R.id.list_sale);
-    toolbar = (Toolbar) view.findViewById(R.id.toolbar);
-}
+    private void findView(){
+        scroll = view.findViewById(R.id.scrollView);
+        imgBarCode = view.findViewById(R.id.imgBarCode);
+        viewPager =view.findViewById(R.id.img_slider);
+        searchLayout = view.findViewById(R.id.searchLayout);
+        sliderDotspanel = view.findViewById(R.id.slider_dots);
+        tv_more_category = view.findViewById(R.id.tv_more_category);
+        tv_more_brand = view.findViewById(R.id.tv_more_brand);
+        tv_more_sale = view.findViewById(R.id.tv_more_sale);
+        recyclerViewSaleProduct= view.findViewById(R.id.list_sale);
+        toolbar = (Toolbar) view.findViewById(R.id.toolbar);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if(item.getItemId()==R.id.shopping_card){
+            Toast.makeText(getContext(),"abc",Toast.LENGTH_LONG).show();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.shopping_card,menu);
+    }
 
     private int dpToPx(int dp) {
         Resources r = getResources();
