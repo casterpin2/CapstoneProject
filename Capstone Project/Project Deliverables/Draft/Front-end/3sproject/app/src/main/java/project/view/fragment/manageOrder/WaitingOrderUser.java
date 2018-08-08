@@ -1,4 +1,4 @@
-package project.view.fragment;
+package project.view.fragment.manageOrder;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;

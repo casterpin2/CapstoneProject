@@ -27,6 +27,7 @@ import com.google.gson.Gson;
 import de.hdodenhof.circleimageview.CircleImageView;
 import project.firebase.Firebase;
 import project.objects.User;
+import project.view.gui.CartPage;
 import project.view.gui.ChangePasswordPage;
 import project.view.gui.HomePage;
 import project.view.gui.LoginPage;
@@ -174,7 +175,8 @@ public class     UserFragment extends Fragment {
             cartLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    Intent toCartPage = new Intent(getContext(), CartPage.class);
+                    startActivity(toCartPage);
                 }
             });
 

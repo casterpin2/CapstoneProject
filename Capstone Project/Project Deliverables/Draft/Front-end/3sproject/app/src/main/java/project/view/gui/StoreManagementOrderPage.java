@@ -15,9 +15,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
-import project.view.fragment.DoingOrderStore;
-import project.view.fragment.DoneOrderStore;
-import project.view.fragment.WaitingOrderStore;
+import project.view.fragment.manageOrder.DoingOrderStore;
+import project.view.fragment.manageOrder.DoneOrderStore;
+import project.view.fragment.manageOrder.WaitingOrderStore;
 import project.view.R;
 import project.view.util.CustomInterface;
 

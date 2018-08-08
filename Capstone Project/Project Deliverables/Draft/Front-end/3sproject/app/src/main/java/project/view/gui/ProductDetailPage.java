@@ -43,12 +43,12 @@ import retrofit2.Response;
 public class ProductDetailPage extends AppCompatActivity {
     private ImageView productImage;
     private TextView salePriceText, productPriceText, promotionPercentText, productNameText, categoryNameText, brandNameText, productDescText;
-    private TextView productNotInStoreName, productNotInStoreCategoryName, productNotInStoreBrandName, productNotInStoreDesc;
-    private Button addToCartBtn, findStoreBtn;
-    private LinearLayout isNotProductInStoreLayout, isProductInStoreLayout, productDetailLayout;
+    private TextView productNotInStoreName, productNotInStoreCategoryName, productNotInStoreBrandName, productNotInStoreDesc, storeNameTV;
+    private Button addToCartBtn, findStoreBtn, editProductInStore;
+    private LinearLayout isNotProductInStoreLayout, isProductInStoreLayout, productDetailLayout, storeNameLayout;
     private Product product;
-    private String productName;
     private int storeID;
+    private String storeName;
     private boolean isStoreProduct;
     private boolean isStoreSee;
     private ProgressBar loadingBar;
@@ -61,7 +61,7 @@ public class ProductDetailPage extends AppCompatActivity {
         setContentView(R.layout.activity_describe_product);
         mapping();
         product = new Gson().fromJson(getIntent().getStringExtra("product"),Product.class);
-        getSupportActionBar().setTitle(productName);
+        getSupportActionBar().setTitle(product.getProduct_name());
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorApplication)));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -82,6 +82,26 @@ public class ProductDetailPage extends AppCompatActivity {
             if (isStoreSee){
                 addToCartBtn.setVisibility(View.INVISIBLE);
                 addToCartBtn.setClickable(false);
+                editProductInStore.setVisibility(View.VISIBLE);
+                editProductInStore.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent toEditProductInStorePage = new Intent(ProductDetailPage.this, EditProductInStorePage.class);
+//                        toEditProductInStorePage.putExtra("productName", );
+//                        toEditProductInStorePage.putExtra("productID", );
+//                        toEditProductInStorePage.putExtra("storeID", storeID);
+//                        toEditProductInStorePage.putExtra("categoryName", );
+//                        toEditProductInStorePage.putExtra("brandName", );
+//                        toEditProductInStorePage.putExtra("productPrice", );
+//                        toEditProductInStorePage.putExtra("promotionPercent", );
+//                        toEditProductInStorePage.putExtra("productImageLink", );
+                        startActivity(toEditProductInStorePage);
+                    }
+                });
+            } else {
+                storeName = getIntent().getStringExtra("storeName");
+                storeNameLayout.setVisibility(View.VISIBLE);
+                storeNameTV.setText(storeName);
             }
             productPriceText.setText(Formater.formatDoubleToMoney(String.valueOf(product.getPrice())));
             productPriceText.setPaintFlags(productPriceText.getPaintFlags()| Paint.STRIKE_THRU_TEXT_FLAG);
@@ -140,10 +160,13 @@ public class ProductDetailPage extends AppCompatActivity {
         productDetailLayout = (LinearLayout) findViewById(R.id.productDetailLayout);
         findStoreBtn = (Button) findViewById(R.id.findStoreBtn);
         loadingBar = (ProgressBar) findViewById(R.id.loadingBar);
+        editProductInStore = (Button) findViewById(R.id.editProductInStore);
+        storeNameTV = (TextView) findViewById(R.id.storeName);
 
         productNotInStoreCategoryName = (TextView) findViewById(R.id.productNotInStoreCategoryName);
         productNotInStoreBrandName = (TextView) findViewById(R.id.productNotInStoreBrandName);
         productNotInStoreDesc = (TextView) findViewById(R.id.productNotInStoreDesc);
+        storeNameLayout = (LinearLayout) findViewById(R.id.storeNameLayout);
 
     }
 

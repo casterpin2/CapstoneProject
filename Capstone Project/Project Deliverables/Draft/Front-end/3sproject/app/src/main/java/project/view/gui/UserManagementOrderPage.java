@@ -15,9 +15,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
-import project.view.fragment.DoingOrderUser;
-import project.view.fragment.DoneOrderUser;
-import project.view.fragment.WaitingOrderUser;
+import project.view.fragment.manageOrder.DoingOrderUser;
+import project.view.fragment.manageOrder.DoneOrderUser;
+import project.view.fragment.manageOrder.WaitingOrderUser;
 import project.view.R;
 import project.view.util.CustomInterface;
 

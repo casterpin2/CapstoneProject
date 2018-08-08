@@ -111,6 +111,7 @@ public class ProductBrandDisplayListViewAdapter extends BaseAdapter {
                 String productName = product.getProduct_name();
                 Intent toProductDetail = new Intent(getContext(), ProductDetailPage.class);
                 toProductDetail.putExtra("product",new Gson().toJson(product));
+                toProductDetail.putExtra("isStoreProduct",isStoreProduct);
                 getContext().startActivity(toProductDetail);
             }
         });
