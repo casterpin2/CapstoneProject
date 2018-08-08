@@ -24,6 +24,8 @@
             android:layout_height="wrap_content"
             android:text="@string/login_page_login3SBtn"
             android:layout_centerHorizontal="true"
+            android:paddingStart="32dp"
+            android:paddingEnd="32dp"
             android:layout_below="@+id/noLoginMessage2"
             android:background="@drawable/login_button"
             android:textColor="@color/colorWhite"

@@ -1,14 +1,17 @@
 package project.view.gui;
 
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,16 +39,26 @@ public class RegisterPage extends AppCompatActivity {
     private APIService apiUserService;
     private User us;
     private Gson gson;
+    private RelativeLayout main_layout;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
         findView();
+        main_layout.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                CustomInterface.hideKeyboard(view,getBaseContext());
+                return false;
+            }
+        });
         CustomInterface.setStatusBarColor(this);
+        getSupportActionBar().setTitle(R.string.title_register_screen);
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorApplication)));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         apiUserService = ApiUtils.getAPIService();
         us = new User();
-
         etUserName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -197,6 +210,7 @@ public class RegisterPage extends AppCompatActivity {
         tvConfirmPassword = findViewById(R.id.tvConfirmPassword);
         tvEmail = findViewById(R.id.tvEmail);
         tvPhoneNumber = findViewById(R.id.tvPhoneNumber);
+        main_layout = findViewById(R.id.main_layout);
     }
 
     private void checkUserName(final String input) {
