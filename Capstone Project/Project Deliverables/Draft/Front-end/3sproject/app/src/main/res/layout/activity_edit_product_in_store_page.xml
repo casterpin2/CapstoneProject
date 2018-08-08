@@ -198,6 +198,7 @@
         android:text="Lưu thay đổi"
         android:background="@drawable/login_button"
         android:layout_below="@+id/promotionPercentLayout"
+        android:layout_marginTop="10dp"
         android:layout_alignParentBottom="true"
         android:textColor="@color/colorWhite"
         />
