@@ -71,7 +71,7 @@ public class Formater {
     }
 
 
-    private static int dpToPx(int dp,Resources r) {
+    public static int dpToPx(int dp,Resources r) {
      //   Resources r = getResources();
         return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics()));
     }

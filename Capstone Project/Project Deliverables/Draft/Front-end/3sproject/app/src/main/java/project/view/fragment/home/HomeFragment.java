@@ -52,6 +52,7 @@ import project.view.gui.UserSearchProductPage;
 import project.view.adapter.BrandRecycleViewAdapter;
 import project.view.adapter.CategoryRecycleViewAdapter;
 import project.view.adapter.SliderImageViewPagerAdapter;
+import project.view.util.Formater;
 import project.view.util.GridSpacingItemDecoration;
 import retrofit2.Call;
 import retrofit2.Response;
@@ -236,11 +237,6 @@ public class HomeFragment extends Fragment {
         inflater.inflate(R.menu.shopping_card,menu);
     }
 
-    private int dpToPx(int dp) {
-        Resources r = getResources();
-        return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics()));
-    }
-
     private class CategoryData extends AsyncTask<Call, List<Category>, Void>{
         @Override
         protected void onPreExecute() {
@@ -352,7 +348,7 @@ public class HomeFragment extends Fragment {
 
             RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getContext(), 2);
             recyclerViewSaleProduct.setLayoutManager(mLayoutManager);
-            recyclerViewSaleProduct.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(2), true));
+            recyclerViewSaleProduct.addItemDecoration(new GridSpacingItemDecoration(2, Formater.dpToPx(2,getResources()), true));
             recyclerViewSaleProduct.setItemAnimator(new DefaultItemAnimator());
             recyclerViewSaleProduct.setAdapter(saleProductCustomCardviewAdapter);
         }
@@ -370,7 +366,6 @@ public class HomeFragment extends Fragment {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
             return null;
         }
     }
