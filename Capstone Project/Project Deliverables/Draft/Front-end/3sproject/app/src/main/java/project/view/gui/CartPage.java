@@ -22,6 +22,7 @@ import project.view.R;
 import project.view.adapter.CartAdapter;
 import project.view.model.Cart;
 import project.view.model.CartDetail;
+import project.view.util.CustomInterface;
 
 public class CartPage extends AppCompatActivity {
     private ExpandableListView lvPhones;
@@ -65,6 +66,10 @@ public class CartPage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cart_page);
+
+        getSupportActionBar().setTitle("Giỏ hàng");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        CustomInterface.setStatusBarColor(CartPage.this);
         lvPhones = (ExpandableListView) findViewById(R.id.phone_list);
     }
 

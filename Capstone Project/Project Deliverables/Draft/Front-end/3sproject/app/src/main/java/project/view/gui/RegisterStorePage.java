@@ -309,7 +309,7 @@ public class RegisterStorePage extends AppCompatActivity implements OnMapReadyCa
 //                Toast.makeText(this, "Bạn chưa bật định vị. Chưa thể tìm cửa hàng!!!!!", Toast.LENGTH_SHORT).show();
 //            }
             if (!isGPSEnabled && !isNetworkEnabled) {
-                Toast.makeText(this, "Bạn chưa bật định vị. Chưa thể tìm cửa hàng!!!!!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Bạn chưa bật định vị. Chưa thể xác định vị trí!", Toast.LENGTH_SHORT).show();
             }
             if (isNetworkEnabled) {
                 locationManager.requestLocationUpdates(

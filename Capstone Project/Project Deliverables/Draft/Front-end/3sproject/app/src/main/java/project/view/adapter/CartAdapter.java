@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,7 +37,13 @@ public class CartAdapter extends BaseExpandableListAdapter {
     private double totalPrice = 0;
     private StorageReference storageReference = Firebase.getFirebase();
     private int userId;
-    public CartAdapter(Context context, List<Cart> list,int userId) {
+    private int quantity = 0;
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    public CartAdapter(Context context, List<Cart> list, int userId) {
         this.context = context;
         this.list = list;
         this.userId = userId;
@@ -117,9 +124,11 @@ public class CartAdapter extends BaseExpandableListAdapter {
         final int storeId = ((Cart) getGroup(groupPosition)).getStoreId();
         final int productId = ((CartDetail) getChild(groupPosition, childPosition)).getProductId();
         final String productName = ((CartDetail) getChild(groupPosition, childPosition)).getProductName();
-        final int quantity = ((CartDetail) getChild(groupPosition, childPosition)).getQuantity();
+        quantity = ((CartDetail) getChild(groupPosition, childPosition)).getQuantity();
         final String productImagePath = ((CartDetail) getChild(groupPosition, childPosition)).getImage_path();
         double price = ((CartDetail) getChild(groupPosition, childPosition)).getUnitPrice();
+
+
         //totalProduct = price * quantityLong;
 
         if (convertView == null) {
@@ -149,6 +158,26 @@ public class CartAdapter extends BaseExpandableListAdapter {
                 DatabaseReference myRef = database.getReference().child("cart").child(String.valueOf(userId));
                 ((CartDetail) getChild(groupPosition, childPosition)).setQuantity(quantity-1);
                 myRef.child(String.valueOf(storeId)).child("cartDetail").child(String.valueOf(productId)).child("quantity").setValue(quantity-1);
+                if(quantity == 0) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                    builder.setTitle("Xóa sản phẩm khỏi giỏ hàng");
+                    builder.setMessage("Số lượng sản phẩm là 0. Bạn có muốn xóa sản phẩm khỏi giỏ hàng không?");
+
+                    builder.setPositiveButton(R.string.alertdialog_acceptButton, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            // xóa sản phẩm khỏi cart
+                        }
+                    });
+
+                    builder.setNegativeButton("Không", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            setQuantity(1);
+                        }
+                    });
+                    builder.show();
+                }
             }
         });
 
@@ -161,6 +190,14 @@ public class CartAdapter extends BaseExpandableListAdapter {
                 DatabaseReference myRef = database.getReference().child("cart").child(String.valueOf(userId));
                 ((CartDetail) getChild(groupPosition, childPosition)).setQuantity(quantity+1);
                 myRef.child(String.valueOf(storeId)).child("cartDetail").child(String.valueOf(productId)).child("quantity").setValue(quantity+1);
+            }
+        });
+
+        ImageButton deleteBtn = (ImageButton) convertView.findViewById(R.id.deleteBtn);
+        deleteBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // xóa sản phẩm khỏi cart
             }
         });
 

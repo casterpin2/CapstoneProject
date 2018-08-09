@@ -68,7 +68,7 @@ public class SaleProductCustomCardviewAdapter extends RecyclerView.Adapter<SaleP
         holder.originalPrice.setText(formater.formatDoubleToMoney( String.valueOf(saleProduct.getPrice())));
         holder.originalPrice.setPaintFlags(holder.originalPrice.getPaintFlags()| Paint.STRIKE_THRU_TEXT_FLAG);
         holder.promotionPrice.setText(formater.formatDoubleToMoney( String.valueOf(saleProduct.getPrice() - (saleProduct.getPrice()* saleProduct.getPromotion()/100))));
-        holder.promotionPercent.setText(formater.formatDoubleToInt( "-"+String.valueOf(saleProduct.getPromotion())));
+        holder.promotionPercent.setText(formater.formatDoubleToInt( String.valueOf(saleProduct.getPromotion())));
         Glide.with(mContext /* context */)
                 .using(new FirebaseImageLoader())
                 .load(storageReference.child(saleProduct.getImage_path()))
