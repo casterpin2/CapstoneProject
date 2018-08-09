@@ -61,6 +61,9 @@ public interface APIService {
     @POST("registerStore")
     Call<Store> registerStore(@Body HashMap<String,String> map);
 
+    @GET("getStoreById")
+    Call<Store> getStoreById(@Query("storeId") int storeID);
+
     @POST("posts")
     Call<Boolean> insertProduct(@Body Item stringJson,
                                 @Query("storeId") int storeId);

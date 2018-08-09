@@ -20,6 +20,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,9 +43,11 @@ import project.firebase.Firebase;
 import project.objects.User;
 import project.retrofit.ApiUtils;
 import project.view.R;
+import project.view.adapter.ProductInStoreByUserCustomListViewAdapter;
 import project.view.model.CartDetail;
 import project.view.model.NearByStore;
 import project.view.model.Product;
+import project.view.model.ProductInStore;
 import project.view.model.Store;
 import project.view.util.CustomInterface;
 import project.view.util.Formater;
@@ -67,6 +70,7 @@ public class ProductDetailPage extends AppCompatActivity {
     private Store myStore;
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference myRef;
+    private Store store;
     private LocationManager locationManager;
     final static int REQUEST_LOCATION = 1;
     private StorageReference storageReference = Firebase.getFirebase();
@@ -117,8 +121,6 @@ public class ProductDetailPage extends AppCompatActivity {
                 storeNameLayout.setVisibility(View.VISIBLE);
                 storeNameTV.setText(storeName);
             }
-            String storeJson = getIntent().getStringExtra("nearByStore");
-            final Store store = new Gson().fromJson(storeJson, Store.class);
             productPriceText.setText(Formater.formatDoubleToMoney(String.valueOf(product.getPrice())));
             productPriceText.setPaintFlags(productPriceText.getPaintFlags()| Paint.STRIKE_THRU_TEXT_FLAG);
 
@@ -143,46 +145,9 @@ public class ProductDetailPage extends AppCompatActivity {
                         return;
                     }
                     if (myStore != null){
-                        if (myStore.getId() == store.getId()){
-                            Toast.makeText(ProductDetailPage.this, "Cửa hàng của bạn, không thể thêm vào giỏ hàng", Toast.LENGTH_LONG).show();
-                            return;
-                        }
-                        myRef = database.getReference().child("cart").child(String.valueOf(user.getId())).child(String.valueOf(store.getId()));
-                        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                if (!dataSnapshot.exists()){
-                                    myRef.child("phone").setValue(String.valueOf(store.getPhone()));
-                                    myRef.child("storeId").setValue(store.getId());
-                                    myRef.child("storeName").setValue(String.valueOf(store.getName()));
-                                    myRef.child("image_path").setValue(String.valueOf(store.getImage_path()));
-                                    CartDetail cartDetail  = new CartDetail(product.getProduct_id(),product.getProduct_name(),1,product.getPrice(),product.getImage_path());
-                                    myRef.child("cartDetail").child(String.valueOf(product.getProduct_id())).setValue(cartDetail);
-                                } else {
-                                    myRef.child("cartDetail").child(String.valueOf(product.getProduct_id())).addListenerForSingleValueEvent(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                            if (!dataSnapshot.exists()){
-                                                CartDetail cartDetail  = new CartDetail(product.getProduct_id(),product.getProduct_name(),1,product.getPrice(),product.getImage_path());
-                                                myRef.child("cartDetail").child(String.valueOf(product.getProduct_id())).setValue(cartDetail);
-                                            } else {
-                                                Toast.makeText(ProductDetailPage.this, "Sản phẩm đã có trong cửa hàng", Toast.LENGTH_SHORT).show();
-                                            }
-                                        }
+                        Call<Store> call = ApiUtils.getAPIService().getStoreById(storeID);
+                        new GetStoreById().execute(call);
 
-                                        @Override
-                                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                        }
-                                    });
-                                }
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                            }
-                        });
                     }
                 }
             });
@@ -261,5 +226,90 @@ public class ProductDetailPage extends AppCompatActivity {
             user = new Gson().fromJson(userJSON,User.class);
             String storeJSON = pre.getString("store", "");
             myStore = new Gson().fromJson(storeJSON,Store.class);
+    }
+
+    private class GetStoreById extends AsyncTask<Call, Void, Store> {
+
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected void onPostExecute(final Store store) {
+            super.onPostExecute(store);
+            if (store == null){
+                Toast.makeText(ProductDetailPage.this, "Có lỗi xảy ra!!!", Toast.LENGTH_SHORT).show();
+            } else {
+                setStore(store);
+            }
+            if (store == null){
+                return;
+            }
+            if (myStore.getId() == store.getId()){
+                Toast.makeText(ProductDetailPage.this, "Cửa hàng của bạn, không thể thêm vào giỏ hàng", Toast.LENGTH_LONG).show();
+                return;
+            }
+            myRef = database.getReference().child("cart").child(String.valueOf(user.getId())).child(String.valueOf(store.getId()));
+            myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (!dataSnapshot.exists()){
+                        myRef.child("phone").setValue(String.valueOf(store.getPhone()));
+                        myRef.child("storeId").setValue(store.getId());
+                        myRef.child("storeName").setValue(String.valueOf(store.getName()));
+                        myRef.child("image_path").setValue(String.valueOf(store.getImage_path()));
+                        CartDetail cartDetail  = new CartDetail(product.getProduct_id(),product.getProduct_name(),1,product.getPrice(),product.getImage_path());
+                        myRef.child("cartDetail").child(String.valueOf(product.getProduct_id())).setValue(cartDetail);
+                        Toast.makeText(ProductDetailPage.this, "Thêm sản phẩm thành công", Toast.LENGTH_SHORT).show();
+                    } else {
+                        myRef.child("cartDetail").child(String.valueOf(product.getProduct_id())).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                if (!dataSnapshot.exists()){
+                                    CartDetail cartDetail  = new CartDetail(product.getProduct_id(),product.getProduct_name(),1,product.getPrice(),product.getImage_path());
+                                    myRef.child("cartDetail").child(String.valueOf(product.getProduct_id())).setValue(cartDetail);
+                                    Toast.makeText(ProductDetailPage.this, "Thêm sản phẩm thành công", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(ProductDetailPage.this, "Sản phẩm đã có trong cửa hàng", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            super.onProgressUpdate(values);
+
+        }
+
+        @Override
+        protected Store doInBackground(Call... calls) {
+            try {
+                Call<Store> call = calls[0];
+                Response<Store> response = call.execute();
+                return response.body();
+            } catch (IOException e) {
+            }
+            return null;
+        }
+    }
+
+    private  void setStore(Store store) {
+        this.store = store;
     }
 }

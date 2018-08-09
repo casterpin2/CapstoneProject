@@ -82,6 +82,7 @@ public class SaleProductCustomCardviewAdapter extends RecyclerView.Adapter<SaleP
                 intent.putExtra("product",new Gson().toJson(saleProduct));
                 intent.putExtra("isStoreProduct",isStoreProduct);
                 intent.putExtra("isStoreSee",false);
+                intent.putExtra("storeID",saleProduct.getStore_id());
                 intent.putExtra("storeName", saleProduct.getStoreName());
                 mContext.startActivity(intent);
             }

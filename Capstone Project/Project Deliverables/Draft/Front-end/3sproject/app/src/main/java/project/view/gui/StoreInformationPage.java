@@ -83,7 +83,6 @@ public class StoreInformationPage extends AppCompatActivity {
         callLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getBaseContext(),"as",Toast.LENGTH_LONG).show();
                 Intent callIntent = new Intent(Intent.ACTION_CALL);
                 callIntent.setData(Uri.parse("tel:123456789"));
                 if (ActivityCompat.checkSelfPermission(getBaseContext(), Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
@@ -105,8 +104,6 @@ public class StoreInformationPage extends AppCompatActivity {
             public void onClick(View v) {
                 Intent toProductManagement = new Intent(StoreInformationPage.this, ProductInStoreByUserDisplayPage.class);
                 toProductManagement.putExtra("storeID", storeID);
-                Store s = new Store(store.getId(),store.getName(),store.getPhone(),store.getImage_path());
-                toProductManagement.putExtra("nearByStore", new Gson().toJson(s));
                 startActivity(toProductManagement);
             }
         });
