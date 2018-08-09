@@ -19,6 +19,7 @@ import com.google.gson.Gson;
 import project.firebase.Firebase;
 import project.view.R;
 import project.view.model.NearByStore;
+import project.view.model.Store;
 import project.view.model.StoreInformation;
 
 public class StoreInformationPage extends AppCompatActivity {
@@ -47,7 +48,7 @@ public class StoreInformationPage extends AppCompatActivity {
         // storeId is transported from login action
         storeID = getIntent().getIntExtra("storeID", -1);
         String storeJson = getIntent().getStringExtra("nearByStore");
-        NearByStore store = new Gson().fromJson(storeJson, NearByStore.class);
+        final NearByStore store = new Gson().fromJson(storeJson, NearByStore.class);
         storeName.setText(store.getName());
         ownerName.setText(store.getUser_name());
         address.setText(store.getAddress());
@@ -71,6 +72,8 @@ public class StoreInformationPage extends AppCompatActivity {
             public void onClick(View v) {
                 Intent toProductManagement = new Intent(StoreInformationPage.this, ProductInStoreByUserDisplayPage.class);
                 toProductManagement.putExtra("storeID", storeID);
+                Store s = new Store(store.getId(),store.getName(),store.getPhone(),store.getImage_path());
+                toProductManagement.putExtra("nearByStore", new Gson().toJson(s));
                 startActivity(toProductManagement);
             }
         });

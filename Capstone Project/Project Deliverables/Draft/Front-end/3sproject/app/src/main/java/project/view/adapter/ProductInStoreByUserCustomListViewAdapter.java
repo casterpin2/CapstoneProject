@@ -32,6 +32,12 @@ public class ProductInStoreByUserCustomListViewAdapter extends ArrayAdapter<Prod
     private List<ProductInStore> productList;
     private StorageReference storageReference = Firebase.getFirebase();
     private int storeID;
+    private String storeJson;
+
+    public String getStoreJson() {
+        return storeJson;
+    }
+
 
     public int getStoreID() {
         return storeID;
@@ -51,10 +57,11 @@ public class ProductInStoreByUserCustomListViewAdapter extends ArrayAdapter<Prod
         this.context = context;
     }
 
-    public ProductInStoreByUserCustomListViewAdapter(@NonNull Context context, int resource, @NonNull List<ProductInStore> productList) {
+    public ProductInStoreByUserCustomListViewAdapter(@NonNull Context context, int resource, @NonNull List<ProductInStore> productList,String storeJson) {
         super(context, resource, productList);
         this.context = context;
         this.productList = productList;
+        this.storeJson = storeJson;
     }
     @NonNull
     @Override
@@ -92,6 +99,7 @@ public class ProductInStoreByUserCustomListViewAdapter extends ArrayAdapter<Prod
                 Intent toProductDetail = new Intent(getContext(), ProductDetailPage.class);
                 toProductDetail.putExtra("product",new Gson().toJson(p));
                 toProductDetail.putExtra("isStoreProduct",isStoreProduct);
+                toProductDetail.putExtra("nearByStore",getStoreJson());
                 getContext().startActivity(toProductDetail);
             }
         });

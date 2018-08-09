@@ -46,10 +46,7 @@
         <activity android:name=".gui.EditProductInStorePage" />
         <activity
             android:name=".gui.HomePage"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
-
-
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".gui.StoreInformationPage"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -101,17 +98,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity android:name=".gui.Main3Activity" />
         <activity
             android:name=".gui.GetPasswordPage"
-            android:windowSoftInputMode="adjustResize">
-
-        </activity>
+            android:windowSoftInputMode="adjustResize"></activity>
         <activity
             android:name=".gui.OTPCodePage"
-            android:windowSoftInputMode="adjustResize">
-        </activity>
+            android:windowSoftInputMode="adjustResize"></activity>
+        <activity android:name=".gui.CartPage"></activity>
     </application>
 
 </manifest>
