@@ -13,6 +13,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.StorageReference;
@@ -31,11 +33,13 @@ import project.view.model.CartDetail;
 public class CartAdapter extends BaseExpandableListAdapter {
     private Context context;
     private List<Cart> list;
-
+    private double totalPrice = 0;
     private StorageReference storageReference = Firebase.getFirebase();
-    public CartAdapter(Context context, List<Cart> list) {
+    private int userId;
+    public CartAdapter(Context context, List<Cart> list,int userId) {
         this.context = context;
         this.list = list;
+        this.userId = userId;
     }
 
     @Override
@@ -55,7 +59,8 @@ public class CartAdapter extends BaseExpandableListAdapter {
 
     @Override
     public Object getChild(int groupPosition, int childPosition) {
-        return list.get(groupPosition).getCartDetail().get(childPosition);
+        Object[] cartDetails = list.get(groupPosition).getCartDetail().values().toArray();
+        return cartDetails[childPosition];
     }
 
     @Override
@@ -81,7 +86,12 @@ public class CartAdapter extends BaseExpandableListAdapter {
             LayoutInflater infalInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = infalInflater.inflate(R.layout.parent_list, null);
         }
-
+        final ImageView storeImage = (ImageView) convertView.findViewById(R.id.storeAvatar);
+        Glide.with(context /* context */)
+                .using(new FirebaseImageLoader())
+                .load(storageReference.child(((Cart) getGroup(groupPosition)).getImage_path()))
+                //.skipMemoryCache(true)
+                .into(storeImage);
         TextView storeNameTV = (TextView) convertView.findViewById(R.id.storeName);
         storeNameTV.setText(storeName);
         storeNameTV.setOnClickListener(new View.OnClickListener() {
@@ -91,8 +101,14 @@ public class CartAdapter extends BaseExpandableListAdapter {
             }
         });
         TextView totalTV = (TextView) convertView.findViewById(R.id.totalStoreOrder);
-        totalTV.setText(formatDoubleToMoney(String.valueOf(100000)));
-
+        double count = 0;
+        Object[] cartDetails = list.get(groupPosition).getCartDetail().values().toArray();
+        for(int i = 0 ; i < cartDetails.length;i++) {
+            CartDetail cartDetail = (CartDetail)cartDetails[i];
+            count += cartDetail.getUnitPrice() * cartDetail.getQuantity();
+        }
+        totalPrice += count;
+        totalTV.setText(formatDoubleToMoney(String.valueOf(count)));
         return convertView;
     }
 
@@ -119,17 +135,18 @@ public class CartAdapter extends BaseExpandableListAdapter {
         priceTv.setText(formatDoubleToMoney(String.valueOf(price)));
         final Button decreaseBtn = (Button) convertView.findViewById(R.id.decreaseBtn);
         final ImageView productImage = (ImageView) convertView.findViewById(R.id.productImage);
-//        Glide.with(context /* context */)
-//                .using(new FirebaseImageLoader())
-//                .load(storageReference.child(productImagePath))
-//                //.skipMemoryCache(true)
-//                .into(productImage);
+        Glide.with(context /* context */)
+                .using(new FirebaseImageLoader())
+                .load(storageReference.child(productImagePath))
+                //.skipMemoryCache(true)
+                .into(productImage);
         decreaseBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 decreaseQuantity(quantityTv, decreaseBtn);
+                if (quantity == 1) return;
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
-                DatabaseReference myRef = database.getReference().child("cart").child("1");
+                DatabaseReference myRef = database.getReference().child("cart").child(String.valueOf(userId));
                 ((CartDetail) getChild(groupPosition, childPosition)).setQuantity(quantity-1);
                 myRef.child(String.valueOf(storeId)).child("cartDetail").child(String.valueOf(productId)).child("quantity").setValue(quantity-1);
             }
@@ -141,7 +158,7 @@ public class CartAdapter extends BaseExpandableListAdapter {
             public void onClick(View view) {
                 increaseQuantity(quantityTv);
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
-                DatabaseReference myRef = database.getReference().child("cart").child("1");
+                DatabaseReference myRef = database.getReference().child("cart").child(String.valueOf(userId));
                 ((CartDetail) getChild(groupPosition, childPosition)).setQuantity(quantity+1);
                 myRef.child(String.valueOf(storeId)).child("cartDetail").child(String.valueOf(productId)).child("quantity").setValue(quantity+1);
             }
@@ -185,29 +202,24 @@ public class CartAdapter extends BaseExpandableListAdapter {
 
     public void decreaseQuantity(TextView quantityTV, Button decreaseBtn) {
         int quantity = Integer.parseInt(quantityTV.getText().toString());
-        quantity = quantity - 1;
-        quantityTV.setText(String.valueOf(quantity));
-        if (quantity == 0) {
+
+        if (quantity <= 1) {
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
             builder.setTitle("Hủy sản phẩm");
-            builder.setMessage("Số lượng sản phẩm bạn chọn là 0. Bạn có muốn xóa sản phẩm khỏi giỏ hàng?");
+            builder.setMessage("Số lượng sản phẩm bạn chọn là 1. Không thể giảm?");
 
             builder.setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    Toast.makeText(context, "Deleted", Toast.LENGTH_SHORT).show();;
-                }
-            });
-
-            builder.setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    return;
+                   return;
                 }
             });
             builder.show();
-            decreaseBtn.setEnabled(false);
+            return;
+            //decreaseBtn.setEnabled(false);
         }
+            quantity = quantity - 1;
+            quantityTV.setText(String.valueOf(quantity));
 //        sumOrder.setText(Formater.formatDoubleToMoney(String.valueOf((getSalesPrice(productDetail.getProductPrice(), productDetail.getPromotionPercent()))* quantity)));
 
     }

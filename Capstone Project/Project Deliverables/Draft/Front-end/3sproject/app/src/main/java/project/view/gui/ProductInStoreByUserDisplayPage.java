@@ -37,7 +37,7 @@ public class ProductInStoreByUserDisplayPage extends AppCompatActivity {
     private ViewGroup context;
     private int storeID;
     private TextView nullMessage;
-
+    private String storeJson;
     private SearchView searchView;
     List<ProductInStore> list = new ArrayList<>();
 
@@ -59,6 +59,7 @@ public class ProductInStoreByUserDisplayPage extends AppCompatActivity {
         getSupportActionBar().setTitle("Sản phẩm cửa hàng");
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorApplication)));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        storeJson = getIntent().getStringExtra("nearByStore");
         storeID = getIntent().getIntExtra("storeID", -1);
 
         mAPI = ApiUtils.getAPIService();
@@ -98,8 +99,8 @@ public class ProductInStoreByUserDisplayPage extends AppCompatActivity {
                     list.add(response.body().get(i));
                 }
 
-                adapter = new ProductInStoreByUserCustomListViewAdapter(ProductInStoreByUserDisplayPage.this,R.layout.search_product_page_custom_list_view,list);
-                adapter.setStoreID(1);
+                adapter = new ProductInStoreByUserCustomListViewAdapter(ProductInStoreByUserDisplayPage.this,R.layout.search_product_page_custom_list_view,list,storeJson);
+                adapter.setStoreID(storeID);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -161,7 +162,7 @@ public class ProductInStoreByUserDisplayPage extends AppCompatActivity {
             public boolean onQueryTextChange(String newText) {
                 searchedProduct.clear();
                 if(newText.equals("") || newText == null){
-                    adapter = new ProductInStoreByUserCustomListViewAdapter(ProductInStoreByUserDisplayPage.this, R.layout.search_product_page_custom_list_view, list);
+                    adapter = new ProductInStoreByUserCustomListViewAdapter(ProductInStoreByUserDisplayPage.this, R.layout.search_product_page_custom_list_view, list,storeJson);
 
                 } else {
                     for (int i = 0; i < list.size(); i++) {
@@ -169,7 +170,7 @@ public class ProductInStoreByUserDisplayPage extends AppCompatActivity {
                             searchedProduct.add(list.get(i));
                         }
                     }
-                    adapter = new ProductInStoreByUserCustomListViewAdapter(ProductInStoreByUserDisplayPage.this, R.layout.search_product_page_custom_list_view, searchedProduct);
+                    adapter = new ProductInStoreByUserCustomListViewAdapter(ProductInStoreByUserDisplayPage.this, R.layout.search_product_page_custom_list_view, searchedProduct,storeJson);
                 }
                 adapter.notifyDataSetChanged();
                 theListView.setAdapter(adapter);

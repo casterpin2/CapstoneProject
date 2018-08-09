@@ -110,11 +110,18 @@ public class Store implements Serializable{
     public void setStatus(int status) {
         this.status = status;
     }
-
-    public Store(String name, int user_id, String phone) {
+    public Store(String name,int user_id, String phone) {
         this.name = name;
         this.user_id = user_id;
         this.phone = phone;
+        this.image_path = image_path;
+    }
+
+    public Store(int user_id,String name, String phone,String image_path) {
+        this.name = name;
+        this.user_id = user_id;
+        this.phone = phone;
+        this.image_path = image_path;
     }
 
     public Store(int id) {

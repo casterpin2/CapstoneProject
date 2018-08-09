@@ -4,8 +4,10 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ExpandableListView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -28,79 +30,65 @@ public class CartPage extends AppCompatActivity {
     private CartDetail detail;
     List<CartDetail>  cartDetail;
     FirebaseDatabase database = FirebaseDatabase.getInstance();
-    DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
-    DatabaseReference myRef = database.getReference().child("cart").child("1");
+    DatabaseReference myRef;
     CartAdapter phoneListAdapter;
     private Button button;
     public static int count = 0;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        int userId = getIntent().getIntExtra("userID",-1);
+        if (userId != -1) {
+            myRef = database.getReference().child("cart").child(String.valueOf(userId));
+            phoneListAdapter = new CartAdapter(CartPage.this, list,userId);
+            lvPhones.setAdapter(phoneListAdapter);
+            myRef.addValueEventListener(changeListener);
+        } else {
+            Toast.makeText(this, "Không có người dùng", Toast.LENGTH_LONG).show();
+        }
+        lvPhones.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+            @Override
+            public boolean onGroupClick(ExpandableListView expandableListView, View view, int i, long l) {
+                return true;
+            }
+        });
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        myRef.removeEventListener(changeListener);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cart_page);
+        lvPhones = (ExpandableListView) findViewById(R.id.phone_list);
     }
 
-
-
-    public void addData1(){
-        count++;
-        CartDetail detail = new CartDetail(1,"DD",3,20000,"Products/Đồ uống/Nước lọc đóng chai/La Vie/Bình sứ Lavie.png");
-        List<CartDetail> list = new ArrayList<>();
-        list.add(detail);
-        Cart cart = new Cart(count,"0942281296","Đây là cửa hàng",list);
-        String storeId = String.valueOf(5);
-        myRef.child(String.valueOf(count)).setValue(cart);
-    }
-
-    public void addProductExist(String storeId, final CartDetail detail){
-        final DatabaseReference reference = myRef.child("5");
-//        ValueEventListener eventListener = new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                if(!dataSnapshot.exists()) {
-//                    //create new user
-//                } else {
-//                    //CartDetail detail = new CartDetail(1,"DD",3,20000,"Products/Đồ uống/Nước lọc đóng chai/La Vie/Bình sứ Lavie.png");
-//                    String productId = String.valueOf(detail.getProductId());
-//                    final DatabaseReference reference1 = reference.child("cartDetail").child(productId);
-//                    ValueEventListener eventListener1 = new ValueEventListener() {
-//                        @Override
-//                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                            if(!dataSnapshot.exists()) {
-//
-//                            }else{
-//                                int quantity = Integer.parseInt(dataSnapshot.child("quantity").getValue().toString()) + 1;
-//                                reference1.child("quantity").setValue(quantity);
-//                            }
-//                        }
-//
-//                        @Override
-//                        public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//                        }
-//                    };
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {}
-//        };
-        myRef.child("5").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists()){
-                    //username exist
-                    //myRef.child("5").child("cartDetail").setValue(new CartDetail(1,"DD",3,20000,"Products/Đồ uống/Nước lọc đóng chai/La Vie/Bình sứ Lavie.png"));
-                } else {
-
+    private ValueEventListener changeListener = new ValueEventListener() {
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            list.clear();
+            if (dataSnapshot.exists()) {
+                for (DataSnapshot dttSnapshot2 : dataSnapshot.getChildren()) {
+                    cart = dttSnapshot2.getValue(Cart.class);
+                    list.add(cart);
+                    for (int i = 0; i < list.size(); i++) {
+                        lvPhones.expandGroup(i);
+                    }
+                    phoneListAdapter.notifyDataSetChanged();
                 }
             }
+        }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
 
-            }
-        });
-    }
+        }
+    };
 
     public void startService(){
 

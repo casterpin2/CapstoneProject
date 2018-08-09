@@ -19,6 +19,8 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +29,7 @@ import project.retrofit.APIService;
 import project.retrofit.ApiUtils;
 import project.view.R;
 import project.view.adapter.ProductInStoreCustomListViewAdapter;
+import project.view.model.NearByStore;
 import project.view.model.ProductInStore;
 import project.view.util.CustomInterface;
 import retrofit2.Call;
@@ -75,6 +78,7 @@ public class ProductInStoreDisplayPage extends AppCompatActivity {
                 return false;
             }
         });
+
         getSupportActionBar().setTitle("Sản phẩm cửa hàng");
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorApplication)));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

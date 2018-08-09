@@ -1,17 +1,27 @@
 package project.view.model;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class Cart {
     private int storeId;
     private String phone;
     private String storeName;
-    private List<CartDetail> cartDetail;
+    private String image_path;
+    private HashMap<String,CartDetail> cartDetail;
 
     public Cart() {
     }
 
-    public Cart(int storeId, String phone, String storeName, List<CartDetail> cartDetail) {
+    public String getImage_path() {
+        return image_path;
+    }
+
+    public void setImage_path(String image_path) {
+        this.image_path = image_path;
+    }
+
+    public Cart(int storeId, String phone, String storeName, HashMap<String,CartDetail> cartDetail) {
         this.storeId = storeId;
         this.phone = phone;
         this.storeName = storeName;
@@ -48,11 +58,11 @@ public class Cart {
         this.storeName = storeName;
     }
 
-    public List<CartDetail> getCartDetail() {
+    public HashMap<String, CartDetail> getCartDetail() {
         return cartDetail;
     }
 
-    public void setCartDetail(List<CartDetail> cartDetail) {
+    public void setCartDetail(HashMap<String, CartDetail> cartDetail) {
         this.cartDetail = cartDetail;
     }
 
