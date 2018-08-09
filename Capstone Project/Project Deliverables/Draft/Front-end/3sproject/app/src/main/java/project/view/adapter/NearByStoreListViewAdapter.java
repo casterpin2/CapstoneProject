@@ -113,7 +113,6 @@ public class NearByStoreListViewAdapter extends BaseAdapter {
                     int storeID = store.getId();
                     Intent toStoreInformation = new Intent(getContext(), StoreInformationPage.class);
                     toStoreInformation.putExtra("storeID", storeID);
-                    toStoreInformation.putExtra("nearByStore", new Gson().toJson(store));
                     getContext().startActivity(toStoreInformation);
                 }
             });

@@ -4,6 +4,8 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,15 +21,24 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.gson.Gson;
 
+import java.io.IOException;
+
 import project.firebase.Firebase;
+import project.retrofit.ApiUtils;
 import project.view.R;
+import project.view.model.CartDetail;
 import project.view.model.NearByStore;
 import project.view.model.Store;
 import project.view.model.StoreInformation;
 import project.view.util.TweakUI;
+import retrofit2.Call;
+import retrofit2.Response;
 
 public class StoreInformationPage extends AppCompatActivity {
 
@@ -60,19 +71,8 @@ public class StoreInformationPage extends AppCompatActivity {
         // set layout in case of store null or not
         // storeId is transported from login action
         storeID = getIntent().getIntExtra("storeID", -1);
-        String storeJson = getIntent().getStringExtra("nearByStore");
-        final NearByStore store = new Gson().fromJson(storeJson, NearByStore.class);
-        storeName.setText(store.getName());
-        ownerName.setText(store.getUser_name());
-        address.setText(store.getAddress());
-        registerDate.setText(store.getRegisterLog());
-        phoneText.setText(store.getPhone());
-        Glide.with(this /* context */)
-                .using(new FirebaseImageLoader())
-                .load(storageReference.child(store.getImage_path()))
-                .skipMemoryCache(true)
-                .into(storeImg);
-
+        Call<Store> call = ApiUtils.getAPIService().getStoreById(storeID);
+        new GetStoreById().execute(call);
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -110,6 +110,49 @@ public class StoreInformationPage extends AppCompatActivity {
 
 
     }
+    private class GetStoreById extends AsyncTask<Call, Void, Store> {
 
 
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected void onPostExecute(final Store store) {
+            super.onPostExecute(store);
+            if (store == null){
+                Toast.makeText(StoreInformationPage.this, "Có lỗi xảy ra!!!", Toast.LENGTH_SHORT).show();
+                return;
+            } else {
+                storeName.setText(store.getName());
+                ownerName.setText(store.getUser_name());
+                address.setText(store.getAddress());
+                registerDate.setText(store.getRegisterLog());
+                phoneText.setText(store.getPhone());
+                Glide.with(StoreInformationPage.this /* context */)
+                        .using(new FirebaseImageLoader())
+                        .load(storageReference.child(store.getImage_path()))
+                        .skipMemoryCache(true)
+                        .into(storeImg);
+            }
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            super.onProgressUpdate(values);
+
+        }
+
+        @Override
+        protected Store doInBackground(Call... calls) {
+            try {
+                Call<Store> call = calls[0];
+                Response<Store> response = call.execute();
+                return response.body();
+            } catch (IOException e) {
+            }
+            return null;
+        }
+    }
 }

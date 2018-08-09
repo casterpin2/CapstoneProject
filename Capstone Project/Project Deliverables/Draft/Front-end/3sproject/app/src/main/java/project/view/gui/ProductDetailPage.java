@@ -241,11 +241,9 @@ public class ProductDetailPage extends AppCompatActivity {
             super.onPostExecute(store);
             if (store == null){
                 Toast.makeText(ProductDetailPage.this, "Có lỗi xảy ra!!!", Toast.LENGTH_SHORT).show();
+                return;
             } else {
                 setStore(store);
-            }
-            if (store == null){
-                return;
             }
             if (myStore.getId() == store.getId()){
                 Toast.makeText(ProductDetailPage.this, "Cửa hàng của bạn, không thể thêm vào giỏ hàng", Toast.LENGTH_LONG).show();

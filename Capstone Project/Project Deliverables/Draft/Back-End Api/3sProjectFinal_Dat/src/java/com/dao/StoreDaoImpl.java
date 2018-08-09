@@ -224,4 +224,35 @@ public class StoreDaoImpl extends BaseDao implements StoreDao {
         }
         return check;
     }
+
+    @Override
+    public StoreEntites getStoreById(int storeId) throws SQLException {
+        Connection conn = null;
+        PreparedStatement pre = null;
+        StoreEntites se = null;
+        try {
+            se = new StoreEntites();
+            conn = getConnection();
+            pre = conn.prepareStatement("select s.*,u.full_name,i.path,DATE_FORMAT(registerLog,\"%d/%m/%Y\")  as registerLogFormat from Store s join (Image i join Image_Store it on i.id = it.image_id) on it.store_id = s.id and s.id = ? join User u on s.user_id = u.id");
+            pre.setInt(1, storeId);
+            ResultSet rs = pre.executeQuery();
+            if (rs.next()) {
+                se.setId(rs.getInt("id"));
+                se.setName(rs.getString("name"));
+                se.setLocation_id(rs.getInt("location_id"));
+                se.setUser_id(rs.getInt("user_id"));
+                se.setPhone(rs.getString("phone"));
+                se.setImage_path(rs.getString("path"));
+                se.setRegisterLog(rs.getString("registerLogFormat"));
+                se.setUser_name(rs.getNString("full_name"));
+                return se;
+            }
+        } catch (SQLException e) {
+            closeConnect(conn, pre, null);
+            return null;
+        } finally {
+            closeConnect(conn, pre, null);
+        }
+        return null;
+    }
 }

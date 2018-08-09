@@ -56,4 +56,9 @@ public class StoreController {
     public boolean editProductInStore(@RequestParam("storeId") int storeId,@RequestParam("productId") int productId,@RequestParam("price") double price,@RequestParam("promotion") double promotion) throws SQLException, ClassNotFoundException, IOException {
         return store.editProductInStore(storeId, productId, price, promotion);
     }
+    
+    @RequestMapping(value = "/getStoreById", method = RequestMethod.GET, produces = "application/json;")
+    public StoreEntites getStoreById(@RequestParam("storeId") int storeId) throws SQLException, ClassNotFoundException, IOException {
+        return store.getStoreById(storeId);
+    }
 }

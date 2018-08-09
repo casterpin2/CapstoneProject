@@ -51,8 +51,8 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public List<ProductAddEntites> userSearchProduct(String productName) throws SQLException {
-        return dao.userSearchProduct(productName);
+    public List<ProductAddEntites> userSearchProduct(String productName,int page) throws SQLException {
+        return dao.userSearchProduct(productName,page);
     }
 
     @Override

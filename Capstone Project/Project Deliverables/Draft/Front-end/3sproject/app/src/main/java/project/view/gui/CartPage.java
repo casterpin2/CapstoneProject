@@ -40,7 +40,7 @@ public class CartPage extends AppCompatActivity {
     public static int count = 0;
     private RelativeLayout noCart;
     private TextView totalCart;
-    private Button checkoutAllBtn;
+    private Button checkoutAllBtn,shoppingBtn;
 
     @Override
     protected void onResume() {
@@ -60,6 +60,7 @@ public class CartPage extends AppCompatActivity {
                 return true;
             }
         });
+
     }
 
     @Override
@@ -90,7 +91,14 @@ public class CartPage extends AppCompatActivity {
         noCart = (RelativeLayout) findViewById(R.id.noCart);
         totalCart = (TextView) findViewById(R.id.totalCart);
         checkoutAllBtn = (Button) findViewById(R.id.checkoutAllBtn);
-
+        shoppingBtn = (Button) findViewById(R.id.shoppingBtn);
+        shoppingBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(CartPage.this,HomePage.class));
+                finishAffinity();
+            }
+        });
     }
 
     private ValueEventListener changeListener = new ValueEventListener() {
@@ -98,14 +106,23 @@ public class CartPage extends AppCompatActivity {
         public void onDataChange(DataSnapshot dataSnapshot) {
             list.clear();
             if (dataSnapshot.exists()) {
+                noCart.setVisibility(View.INVISIBLE);
                 for (DataSnapshot dttSnapshot2 : dataSnapshot.getChildren()) {
                     cart = dttSnapshot2.getValue(Cart.class);
                     list.add(cart);
                     for (int i = 0; i < list.size(); i++) {
                         lvPhones.expandGroup(i);
                     }
+                    //phoneListAdapter.setTotalPrice(0.0);
                     phoneListAdapter.notifyDataSetChanged();
+
+                    totalCart.setText(phoneListAdapter.getTotalPrice());
                 }
+            } else {
+                list.clear();
+                phoneListAdapter.notifyDataSetChanged();
+                totalCart.setText(phoneListAdapter.getTotalPrice());
+                noCart.setVisibility(View.VISIBLE);
             }
         }
 

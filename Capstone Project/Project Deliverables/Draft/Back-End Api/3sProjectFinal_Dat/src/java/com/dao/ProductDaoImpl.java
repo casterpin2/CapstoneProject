@@ -45,7 +45,7 @@ public class ProductDaoImpl extends BaseDao implements ProductDao {
             pre = conn.prepareStatement(PRODUCT_QUERY_1);
             pre.setString(1, "%" + query + "%");
             pre.setInt(2, storeId);
-            pre.setInt(3, page*10-9);
+            pre.setInt(3, page*10);
             pre.setInt(4, 10);
             rs = pre.executeQuery();
             while (rs.next()) {

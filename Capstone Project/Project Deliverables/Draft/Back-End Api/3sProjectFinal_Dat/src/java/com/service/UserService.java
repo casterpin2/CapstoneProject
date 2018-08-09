@@ -18,7 +18,7 @@ import java.util.List;
  */
 public interface UserService {
     //User tim kiem san pham
-    public List<ProductAddEntites> userSearchProduct(String productName) throws SQLException;
+    public List<ProductAddEntites> userSearchProduct(String productName,int page) throws SQLException;
     //Business Core
     public List<NearByStore> nearByStore(int productId, String latitude, String longitude) throws SQLException;
     

@@ -26,6 +26,15 @@ public class StoreEntites implements Serializable {
         this.location_id = location_id;
     }
     private int user_id;
+    private String user_name;
+
+    public String getUser_name() {
+        return user_name;
+    }
+
+    public void setUser_name(String user_name) {
+        this.user_name = user_name;
+    }
     private String phone;
     private String image_path;
     private String address;

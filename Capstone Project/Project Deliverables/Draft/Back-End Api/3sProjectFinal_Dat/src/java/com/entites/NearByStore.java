@@ -24,6 +24,24 @@ public class NearByStore implements Serializable{
     private double promotion;
     private double price;
     private double distance;
+    private String user_name;
+    private String image_path;
+
+    public String getImage_path() {
+        return image_path;
+    }
+
+    public void setImage_path(String image_path) {
+        this.image_path = image_path;
+    }
+    
+    public String getUser_name() {
+        return user_name;
+    }
+
+    public void setUser_name(String user_name) {
+        this.user_name = user_name;
+    }
     public NearByStore() {
     }
 

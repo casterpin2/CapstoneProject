@@ -55,17 +55,16 @@ public class UserDaoImpl extends BaseDao implements UserDao {
 
     private String INSERT_IMAGE_STORE = "INSERT INTO Image_Store(image_id,store_id) VALUES (53,?)";
 
-    private String QUERY_USER_SEARCH_PRODUCT = "SELECT a.id,a.name,a.description,a.brand_name,a.path,b.name as type_name FROM\n" +
-"(SELECT a.*,b.path FROM\n" +
-"(SELECT a.*,b.image_id FROM\n" +
-"(SELECT a.id,a.name,a.description,a.type_id,b.name as brand_name FROM\n" +
-"(SELECT a.id,name,description,b.brand_id,b.type_id FROM Product a , Type_Brand b WHERE a.type_brand_id = b.id AND MATCH(name) AGAINST (? IN NATURAL LANGUAGE MODE)) a,Brand b WHERE a.brand_id =b.id) a , Image_Product b WHERE a.id = b.product_id) a , Image b WHERE a.image_id = b.id) a, Type b WHERE a.type_id = b.id";
+    private String QUERY_USER_SEARCH_PRODUCT = "SELECT a.id,a.name,a.description,a.brand_name,a.path,b.name as type_name FROM (SELECT a.*,b.path FROM (SELECT a.*,b.image_id FROM (SELECT a.id,a.name,a.description,a.type_id,b.name as brand_name FROM (SELECT a.id,name,description,b.brand_id,b.type_id FROM Product a , Type_Brand b WHERE a.type_brand_id = b.id AND name LIKE ?) a,Brand b WHERE a.brand_id =b.id) a , Image_Product b WHERE a.id = b.product_id) a , Image b WHERE a.image_id = b.id) a, Type b WHERE a.type_id = b.id ORDER BY name LIMIT ?,?";
 
-    private String BUSINESS_CORE = "SELECT a.*,b.promotion,b.price FROM \n"
-            + "(SELECT a.apartment_number,a.street,a.county,a.district,a.city,a.longitude,a.latitude,a.distance,b.* FROM\n"
-            + "(SELECT *, ( 6371 * acos( cos( radians(?) ) * cos( radians(latitude) ) * cos( radians(longitude) - radians(?) ) + \n"
-            + "sin( radians(?) ) * sin( radians(latitude) ) ) )\n"
-            + "AS distance FROM Location HAVING distance < 5 ORDER BY distance LIMIT 0 , 20) a, Store b WHERE a.id = b.location_id AND b.status = 1) a, (SELECT store_id,promotion,price FROM Product_Store WHERE product_id = ?) b WHERE a.id = b.store_id";
+    private String BUSINESS_CORE = "SELECT a.*,b.path as image_path FROM\n" +
+"            (SELECT a.*,b.image_id as image_id FROM \n" +
+"            (SELECT a.*,b.full_name as user_name FROM\n" +
+"            (SELECT a.*,b.promotion,b.price FROM \n" +
+"            (SELECT a.apartment_number,a.street,a.county,a.district,a.city,a.longitude,a.latitude,a.distance,b.* FROM\n" +
+"            (SELECT *, ( 6371 * acos( cos( radians(?) ) * cos( radians(latitude) ) * cos( radians(longitude) - radians(?) ) +\n" +
+"            sin( radians(?) ) * sin( radians(latitude) ) ) )\n" +
+"            AS distance FROM Location HAVING distance < 5 ORDER BY distance LIMIT 0 , 20) a, Store b WHERE a.id = b.location_id AND b.status = 1) a, (SELECT store_id,promotion,price FROM Product_Store WHERE product_id = ?) b WHERE a.id = b.store_id) a , User b WHERE a.user_id = b.id) a , Image_Store b WHERE a.id = b.store_id) a , Image b WHERE a.image_id = b.id";
 
     @Override
     public List<UserEntites> getAllUserForAdmin() throws SQLException {
@@ -395,7 +394,7 @@ public class UserDaoImpl extends BaseDao implements UserDao {
     }
 
     @Override
-    public List<ProductAddEntites> userSearchProduct(String productName) throws SQLException {
+    public List<ProductAddEntites> userSearchProduct(String productName,int page) throws SQLException {
         Connection conn = null;
         PreparedStatement pre = null;
         ResultSet rs = null;
@@ -404,7 +403,9 @@ public class UserDaoImpl extends BaseDao implements UserDao {
         try {
             conn = getConnection();
             pre = conn.prepareStatement(QUERY_USER_SEARCH_PRODUCT);
-            pre.setString(1, productName);
+            pre.setString(1, "%" + productName + "%");
+            pre.setInt(2, page*5);
+            pre.setInt(3, 5);
             rs = pre.executeQuery();
             while (rs.next()) {
                 entites = new ProductAddEntites();
@@ -454,6 +455,8 @@ public class UserDaoImpl extends BaseDao implements UserDao {
                 entites.setPhone(rs.getString("phone"));
                 entites.setRegisterLog(rs.getString("registerLog"));
                 entites.setDistance(rs.getDouble("distance"));
+                entites.setUser_name(rs.getNString("user_name"));
+                entites.setImage_path(rs.getNString("image_path"));
                 list.add(entites);
             }
             return list;

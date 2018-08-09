@@ -34,5 +34,10 @@ public class StoreServiceImpl implements StoreService{
     public boolean editProductInStore(int storeId, int productId, double price, double promotion) throws SQLException {
         return dao.editProductInStore(storeId, productId,price,promotion);
     }
+
+    @Override
+    public StoreEntites getStoreById(int storeId) throws SQLException {
+        return dao.getStoreById(storeId);
+    }
     
 }

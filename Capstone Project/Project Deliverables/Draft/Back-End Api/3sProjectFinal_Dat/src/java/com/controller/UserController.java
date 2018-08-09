@@ -75,8 +75,8 @@ public class UserController {
     }
 
     @RequestMapping(value = "/userSearchProduct", method = RequestMethod.GET, produces = "application/json")
-    public List<ProductAddEntites> userSearchProduct(@RequestParam("productName") String productName) throws SQLException, IOException {
-        return user.userSearchProduct(productName);
+    public List<ProductAddEntites> userSearchProduct(@RequestParam("productName") String productName,@RequestParam("page") int page) throws SQLException, IOException {
+        return user.userSearchProduct(productName,page);
     }
 
     @RequestMapping(value = "/findStore", method = RequestMethod.GET, produces = "application/json")

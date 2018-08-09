@@ -2,8 +2,11 @@ package project.view.adapter;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,8 +19,11 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageReference;
 
 import java.text.DecimalFormat;
@@ -28,19 +34,39 @@ import java.util.Locale;
 
 import project.firebase.Firebase;
 import project.view.R;
+import project.view.gui.StoreInformationPage;
 import project.view.model.Cart;
 import project.view.model.CartDetail;
+import project.view.model.StoreInformation;
 
 public class CartAdapter extends BaseExpandableListAdapter {
+
     private Context context;
     private List<Cart> list;
     private double totalPrice = 0;
     private StorageReference storageReference = Firebase.getFirebase();
     private int userId;
-    private int quantity = 0;
 
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
+    public void setTotalPrice(double totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+
+    public Context getContext() {
+        return context;
+    }
+
+    public String getTotalPrice() {
+        totalPrice = 0;
+        for (Cart cart : list){
+            Object[] cartDetails = cart.getCartDetail().values().toArray();
+            double count = 0;
+            for(int i = 0 ; i < cartDetails.length;i++) {
+                CartDetail cartDetail = (CartDetail)cartDetails[i];
+                count += cartDetail.getUnitPrice() * cartDetail.getQuantity();
+            }
+            totalPrice += count;
+        }
+        return formatDoubleToMoney(String.valueOf(totalPrice));
     }
 
     public CartAdapter(Context context, List<Cart> list, int userId) {
@@ -88,6 +114,7 @@ public class CartAdapter extends BaseExpandableListAdapter {
     @Override
     public View getGroupView(int groupPosition, boolean b, View convertView, ViewGroup viewGroup) {
         String storeName = ((Cart) getGroup(groupPosition)).getStoreName();
+        final int storeId = ((Cart) getGroup(groupPosition)).getStoreId();
 //        total += totalProduct;
         if (convertView == null) {
             LayoutInflater infalInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -104,7 +131,7 @@ public class CartAdapter extends BaseExpandableListAdapter {
         storeNameTV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(context, "Clicked", Toast.LENGTH_SHORT).show();
+                getContext().startActivity(new Intent(getContext(), StoreInformationPage.class).putExtra("storeID",storeId));
             }
         });
         TextView totalTV = (TextView) convertView.findViewById(R.id.totalStoreOrder);
@@ -114,6 +141,7 @@ public class CartAdapter extends BaseExpandableListAdapter {
             CartDetail cartDetail = (CartDetail)cartDetails[i];
             count += cartDetail.getUnitPrice() * cartDetail.getQuantity();
         }
+        //totalPrice = 0;
         totalPrice += count;
         totalTV.setText(formatDoubleToMoney(String.valueOf(count)));
         return convertView;
@@ -124,7 +152,7 @@ public class CartAdapter extends BaseExpandableListAdapter {
         final int storeId = ((Cart) getGroup(groupPosition)).getStoreId();
         final int productId = ((CartDetail) getChild(groupPosition, childPosition)).getProductId();
         final String productName = ((CartDetail) getChild(groupPosition, childPosition)).getProductName();
-        quantity = ((CartDetail) getChild(groupPosition, childPosition)).getQuantity();
+        final int quantity = ((CartDetail) getChild(groupPosition, childPosition)).getQuantity();
         final String productImagePath = ((CartDetail) getChild(groupPosition, childPosition)).getImage_path();
         double price = ((CartDetail) getChild(groupPosition, childPosition)).getUnitPrice();
 
@@ -158,26 +186,6 @@ public class CartAdapter extends BaseExpandableListAdapter {
                 DatabaseReference myRef = database.getReference().child("cart").child(String.valueOf(userId));
                 ((CartDetail) getChild(groupPosition, childPosition)).setQuantity(quantity-1);
                 myRef.child(String.valueOf(storeId)).child("cartDetail").child(String.valueOf(productId)).child("quantity").setValue(quantity-1);
-                if(quantity == 0) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                    builder.setTitle("Xóa sản phẩm khỏi giỏ hàng");
-                    builder.setMessage("Số lượng sản phẩm là 0. Bạn có muốn xóa sản phẩm khỏi giỏ hàng không?");
-
-                    builder.setPositiveButton(R.string.alertdialog_acceptButton, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            // xóa sản phẩm khỏi cart
-                        }
-                    });
-
-                    builder.setNegativeButton("Không", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            setQuantity(1);
-                        }
-                    });
-                    builder.show();
-                }
             }
         });
 
@@ -198,6 +206,34 @@ public class CartAdapter extends BaseExpandableListAdapter {
             @Override
             public void onClick(View view) {
                 // xóa sản phẩm khỏi cart
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle("Xóa sản phẩm");
+                builder.setMessage("Bạn có muốn xóa sản phẩm này khỏi cửa hàng?");
+
+                builder.setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        FirebaseDatabase database = FirebaseDatabase.getInstance();
+                        final DatabaseReference myRef = database.getReference().child("cart").child(String.valueOf(userId));
+                        myRef.child(String.valueOf(storeId)).child("cartDetail").addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                if (dataSnapshot.getChildrenCount() == 1) {
+                                    myRef.child(String.valueOf(storeId)).removeValue();
+                                } else {
+                                    myRef.child(String.valueOf(storeId)).child("cartDetail").child(String.valueOf(productId)).removeValue();
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+
+                    }
+                });
+                builder.show();
             }
         });
 
