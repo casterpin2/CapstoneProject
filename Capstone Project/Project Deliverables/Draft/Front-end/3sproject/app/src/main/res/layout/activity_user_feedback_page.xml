@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".gui.UserFeedbackPage">
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:id="@+id/main_layout"
+            android:orientation="vertical">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="256dp"
+                    android:src="@drawable/feedback_cover"
+                    android:scaleType="fitXY"/>
+                <ImageButton
+                    android:id="@+id/backBtn"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginLeft="5dp"
+                    android:adjustViewBounds="true"
+                    android:background="@null"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/btn_back" />
+            </RelativeLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"
+                android:gravity="center"
+                android:textSize="16dp"
+                android:textColor="@color/colorBlack"
+                android:text="Bạn có gợi ý hoặc có những đóng góp về dịch vụ của cửa hàng chúng tôi. Vui lòng để lại ý kiến bên dưới." />
+            <EditText
+                android:id="@+id/content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="8dp"
+                android:layout_marginLeft="8dp"
+                android:hint="Nội dung"
+                android:textSize="14dp"
+                android:layout_marginTop="5dp"
+                android:inputType="textMultiLine"
+                android:lines="7"
+                android:minLines="7"
+                android:gravity="top|left"
+                android:maxLines="7"
+                android:outlineProvider="none" />
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:padding="8dp"
+                        android:textSize="14dp"
+                        android:text="Cảm nhận của bạn về cửa hàng?"/>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center">
+                        <ImageView
+                            android:id="@+id/smile_unchecked"
+                            android:layout_width="42dp"
+                            android:layout_height="42dp"
+                            android:layout_marginRight="16dp"
+                            android:src="@drawable/smile_checked"/>
+                        <ImageView
+                            android:id="@+id/sad_unchecked"
+                            android:layout_width="42dp"
+                            android:layout_height="42dp"
+                            android:src="@drawable/sad_unchecked"/>
+                    </LinearLayout>
+                    <TextView
+                        android:id="@+id/tv_feedback_status"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:padding="8dp"
+                        android:textColor="@color/colorApplication"
+                        android:textSize="14dp"
+                        android:text="Hài lòng"/>
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+        <TextView
+            android:id="@+id/errorMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/errorMess"
+            android:layout_marginLeft="16dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="48dp"/>
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+    <Button
+        android:id="@+id/btn_send_feedback"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bottom_button"
+        android:text="Gửi phản hồi"
+        android:layout_alignParentBottom="true"
+        android:textColor="@color/colorWhite"/>
+</RelativeLayout>

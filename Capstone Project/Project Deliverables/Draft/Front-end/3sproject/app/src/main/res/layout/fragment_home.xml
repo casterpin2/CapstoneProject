@@ -69,7 +69,7 @@
                                 android:layout_gravity="center_vertical"
                                 android:text="Tìm mua ngay ..."
                                 android:textColor="@color/colorApplication"
-                                android:textSize="20dp" />
+                                android:textSize="16dp" />
                         </LinearLayout>
                         <ImageButton
                             android:id="@+id/imgBarCode"

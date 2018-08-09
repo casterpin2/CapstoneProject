@@ -114,6 +114,10 @@
             android:name=".gui.OTPCodePage"
             android:windowSoftInputMode="adjustResize">
         </activity>
+        <activity android:name=".gui.UserFeedbackPage"
+            android:windowSoftInputMode="adjustResize"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
     </application>
 
 </manifest>

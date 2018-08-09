@@ -53,23 +53,6 @@ public class GetPasswordPage extends AppCompatActivity {
                 else{
                     tvSendCodeMess.setText("");
                     AlertDialog.Builder builder = new AlertDialog.Builder(GetPasswordPage.this);
-//                    builder.setMessage("Đây có phải số điện thoại bạn đã đăng ký tài khoản không? ");
-//                    builder.setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
-//                        @Override
-//                        public void onClick(DialogInterface dialogInterface, int i) {
-//                            Toast.makeText(GetPasswordPage.this,"Đã gửi",Toast.LENGTH_LONG).show();
-//                            tvSendCodeMess.setText("");
-//                            Intent toOTPCodePage = new Intent(getBaseContext(),OTPCodePage.class);
-//                            startActivity(toOTPCodePage);
-//                        }
-//                    });
-//
-//                    builder.setNegativeButton("Không đồng ý",new DialogInterface.OnClickListener() {
-//                        @Override
-//                        public void onClick(DialogInterface dialogInterface, int i) {
-//                            // finish();
-//                        }
-//                    });
                     View v = getLayoutInflater().inflate(R.layout.dialog_custom,null);
                     TextView content1 = v.findViewById(R.id.tvContent1);
                     TextView content2 = v.findViewById(R.id.tvContent2);
