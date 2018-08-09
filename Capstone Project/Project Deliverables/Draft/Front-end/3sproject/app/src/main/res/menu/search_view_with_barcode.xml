@@ -6,13 +6,13 @@
     <item
         android:id="@+id/search_view"
         app:actionViewClass="android.support.v7.widget.SearchView"
-        android:icon="@android:drawable/ic_menu_search"
+        android:icon="@drawable/white_search"
         android:title="Search"
         app:showAsAction="always|collapseActionView"
         />
     <item
         android:id="@+id/search_with_barcode"
+        android:icon="@drawable/white_barcode"
         android:title="Search With Barcode"
-        android:icon="@drawable/barcode_icon"
         app:showAsAction="always"/>
 </menu>
