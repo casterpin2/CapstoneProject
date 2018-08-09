@@ -14,9 +14,13 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +28,7 @@ import java.util.List;
 import project.view.R;
 import project.view.adapter.SaleProductCustomCardviewAdapter;
 import project.view.model.Product;
+import project.view.util.CustomInterface;
 import project.view.util.GridSpacingItemDecoration;
 
 public class SaleProductDisplayPage extends AppCompatActivity {
@@ -32,6 +37,7 @@ public class SaleProductDisplayPage extends AppCompatActivity {
     private SaleProductCustomCardviewAdapter adapter;
     private List<Product> saleProductList;
     private SearchView searchView;
+    private TextView toolbar_title ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,9 +47,10 @@ public class SaleProductDisplayPage extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        toolbar.setTitle("");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#00000000")));
-
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorApplication)));
+        CustomInterface.setStatusBarColor(SaleProductDisplayPage.this);
 
         initCollapsingToolbar();
 
@@ -71,7 +78,8 @@ public class SaleProductDisplayPage extends AppCompatActivity {
     private void initCollapsingToolbar() {
         final CollapsingToolbarLayout collapsingToolbar =
                 (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-        collapsingToolbar.setTitle(" ");
+        toolbar_title = (TextView) findViewById(R.id.toolbar_title);
+        collapsingToolbar.setTitle("");
         AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appbar);
         appBarLayout.setExpanded(true);
 
@@ -86,13 +94,14 @@ public class SaleProductDisplayPage extends AppCompatActivity {
                     scrollRange = appBarLayout.getTotalScrollRange();
                 }
                 if (scrollRange + verticalOffset == 0) {
-                    collapsingToolbar.setTitle(getString(R.string.sale_product_title));
-                    getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#F50057")));
-
+                    collapsingToolbar.setTitle("");
+                    getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorApplication)));
+                    toolbar_title.setVisibility(View.VISIBLE);
                     isShow = true;
                 } else if (isShow) {
                     getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#00000000")));
                     collapsingToolbar.setTitle(" ");
+                    toolbar_title.setVisibility(View.INVISIBLE);
                     isShow = false;
                 }
             }

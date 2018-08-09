@@ -107,15 +107,16 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="8dp"
-                        android:layout_marginTop="8dp">
+                        android:paddingTop="8dp">
                         <TextView
                             android:id="@+id/tv_categories"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/lb_categories"
                             android:layout_marginLeft="16dp"
-                            android:textSize="20dp"
-                            android:textColor="@color/colorBlack"/>
+                            android:textSize="17dp"
+                            android:textAllCaps="true"
+                            android:textColor="@color/darkGrey"/>
 
                         <TextView
                             android:id="@+id/tv_more_category"
@@ -126,7 +127,7 @@
                             android:text="@string/lb_more"
                             android:gravity="right"
                             android:textColor="@color/lb_more"
-                            android:textSize="16dp" />
+                            android:textSize="14dp" />
                     </RelativeLayout>
                     <android.support.v7.widget.RecyclerView
                         android:id="@+id/list_category"
@@ -146,15 +147,16 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="8dp"
-                        android:layout_marginTop="8dp">
+                        android:paddingTop="8dp">
                         <TextView
                             android:id="@+id/tv_brand"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/lb_brands"
                             android:layout_marginLeft="16dp"
-                            android:textSize="20dp"
-                            android:textColor="@color/colorBlack"/>
+                            android:textSize="17dp"
+                            android:textColor="@color/darkGrey"
+                            android:textAllCaps="true"/>
                         <TextView
                             android:id="@+id/tv_more_brand"
                             android:layout_width="match_parent"
@@ -164,7 +166,7 @@
                             android:text="@string/lb_more"
                             android:gravity="right"
                             android:textColor="@color/lb_more"
-                            android:textSize="16dp" />
+                            android:textSize="14dp" />
                     </RelativeLayout>
                     <android.support.v7.widget.RecyclerView
                         android:id="@+id/list_brand"
@@ -178,15 +180,16 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
                     android:orientation="vertical"
-                    android:layout_marginTop="8dp">
+                    android:paddingTop="8dp">
                     <TextView
                         android:id="@+id/tv_sale_product"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/lb_sale"
                         android:layout_marginLeft="16dp"
-                        android:textSize="18dp"
-                        android:textColor="@color/colorBlack"/>
+                        android:textSize="17dp"
+                        android:textAllCaps="true"
+                        android:textColor="@color/darkGrey"/>
                     <android.support.v7.widget.RecyclerView
                         android:id="@+id/list_sale"
                         android:layout_width="match_parent"
@@ -201,9 +204,9 @@
                         android:text="@string/lb_more"
                         android:gravity="center"
                         android:textColor="@color/lb_more"
-                        android:textSize="18dp"
+                        android:textSize="17dp"
                         android:layout_marginTop="8dp"
-                        android:layout_marginBottom="16dp"/>
+                        android:layout_marginBottom="8dp"/>
                 </LinearLayout>
             </LinearLayout>
         </android.support.v4.widget.NestedScrollView>
