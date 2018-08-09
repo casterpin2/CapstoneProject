@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    tools:context=".gui.StoreInformationPage"
     android:layout_height="match_parent">
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -79,6 +80,7 @@
                         android:layout_alignParentLeft="true"
                         android:layout_marginLeft="5dp"
                         android:layout_alignParentTop="true"
+                        android:layout_marginTop="32dp"
                         android:adjustViewBounds="true"
                         android:background="@null"
                         android:scaleType="centerInside"
@@ -264,6 +266,7 @@
                         android:layout_marginTop="15dp"
                         android:orientation="vertical">
                         <LinearLayout
+                            android:id="@+id/callLayout"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal">
@@ -316,7 +319,6 @@
                             android:background="@drawable/border_button"
                             android:layout_marginBottom="16dp"
                             android:layout_marginTop="32dp"/>
-
                     </LinearLayout>
 
                 </LinearLayout>

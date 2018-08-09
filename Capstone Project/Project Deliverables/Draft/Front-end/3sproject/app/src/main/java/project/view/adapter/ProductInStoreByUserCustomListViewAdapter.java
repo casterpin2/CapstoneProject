@@ -96,10 +96,12 @@ public class ProductInStoreByUserCustomListViewAdapter extends ArrayAdapter<Prod
             @Override
             public void onClick(View v) {
                 boolean isStoreProduct = true;
+                boolean isStoreSee = false;
                 Intent toProductDetail = new Intent(getContext(), ProductDetailPage.class);
                 toProductDetail.putExtra("product",new Gson().toJson(p));
                 toProductDetail.putExtra("isStoreProduct",isStoreProduct);
                 toProductDetail.putExtra("nearByStore",getStoreJson());
+                toProductDetail.putExtra("isStoreSee",isStoreSee);
                 getContext().startActivity(toProductDetail);
             }
         });

@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.CALL_PHONE"/>
 
     <application
         android:allowBackup="true"
@@ -46,7 +47,9 @@
         <activity android:name=".gui.EditProductInStorePage" />
         <activity
             android:name=".gui.HomePage"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+
         <activity
             android:name=".gui.StoreInformationPage"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -105,7 +108,15 @@
         <activity
             android:name=".gui.OTPCodePage"
             android:windowSoftInputMode="adjustResize"></activity>
-        <activity android:name=".gui.CartPage"></activity>
+        <activity
+                android:name=".gui.CartPage"
+                android:windowSoftInputMode="adjustResize">
+        </activity>
+        <activity android:name=".gui.UserFeedbackPage"
+            android:windowSoftInputMode="adjustResize"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+
     </application>
 
 </manifest>

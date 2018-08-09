@@ -222,22 +222,6 @@ public class HomeFragment extends Fragment {
         toolbar = (Toolbar) view.findViewById(R.id.toolbar);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        if(item.getItemId()==R.id.shopping_card){
-            Toast.makeText(getContext(),"abc",Toast.LENGTH_LONG).show();
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.shopping_card,menu);
-        super.onCreateOptionsMenu(menu, inflater);
-
-    }
-
     private class CategoryData extends AsyncTask<Call, List<Category>, Void>{
         @Override
         protected void onPreExecute() {
