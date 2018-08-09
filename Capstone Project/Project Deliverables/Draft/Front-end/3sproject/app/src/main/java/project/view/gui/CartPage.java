@@ -4,9 +4,12 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ExpandableListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
@@ -35,6 +38,9 @@ public class CartPage extends AppCompatActivity {
     CartAdapter phoneListAdapter;
     private Button button;
     public static int count = 0;
+    private RelativeLayout noCart;
+    private TextView totalCart;
+    private Button checkoutAllBtn;
 
     @Override
     protected void onResume() {
@@ -57,6 +63,16 @@ public class CartPage extends AppCompatActivity {
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
     protected void onPause() {
         super.onPause();
         myRef.removeEventListener(changeListener);
@@ -71,6 +87,10 @@ public class CartPage extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         CustomInterface.setStatusBarColor(CartPage.this);
         lvPhones = (ExpandableListView) findViewById(R.id.phone_list);
+        noCart = (RelativeLayout) findViewById(R.id.noCart);
+        totalCart = (TextView) findViewById(R.id.totalCart);
+        checkoutAllBtn = (Button) findViewById(R.id.checkoutAllBtn);
+
     }
 
     private ValueEventListener changeListener = new ValueEventListener() {
