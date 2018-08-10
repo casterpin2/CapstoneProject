@@ -114,7 +114,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginLeft="16dp"
                                     android:text="Thông tin tài khoản"
-                                    android:textSize="13dp"
+                                    android:textSize="14dp"
                                     android:layout_gravity="center"/>
                             </LinearLayout>
                             <View
@@ -147,7 +147,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginLeft="16dp"
                                     android:text="Giỏ hàng"
-                                    android:textSize="13dp"
+                                    android:textSize="14dp"
                                     android:layout_gravity="center"/>
                             </LinearLayout>
                             <View
@@ -179,7 +179,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginLeft="16dp"
                                     android:text="Đơn hàng của tôi"
-                                    android:textSize="13dp"
+                                    android:textSize="14dp"
                                     android:layout_gravity="center"/>
                             </LinearLayout>
                         </LinearLayout>
@@ -219,7 +219,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginLeft="16dp"
                                     android:text="Đổi mật khẩu"
-                                    android:textSize="13dp"
+                                    android:textSize="14dp"
                                     android:layout_gravity="center"/>
                             </LinearLayout>
                         </LinearLayout>

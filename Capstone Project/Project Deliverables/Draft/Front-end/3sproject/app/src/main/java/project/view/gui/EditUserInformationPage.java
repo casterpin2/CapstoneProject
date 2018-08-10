@@ -73,8 +73,11 @@ public class EditUserInformationPage extends AppCompatActivity {
                 return false;
             }
         });
+
+        CustomInterface.setStatusBarColor(this);
+        CustomInterface.setSoftInputMode(this);
         mApi = APIService.retrofit.create(APIService.class);
-        TweakUI.makeTransparent(this);
+        //TweakUI.makeTransparent(this);
         mapping();
         getIncomingIntent();
         setLastSelector();

@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -47,6 +48,7 @@ public class EditStoreInformationPage extends AppCompatActivity implements OnMap
     private StoreInformation storeInformation;
     private double storeLongtitude = 0.0;
     private double storeLatitude = 0.0;
+    private Button registerBtn;
 
     //googleMap
     private double handleLongtitude = 0.0;
@@ -72,7 +74,8 @@ public class EditStoreInformationPage extends AppCompatActivity implements OnMap
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_store_information_page);
-
+        CustomInterface.setSoftInputMode(this);
+        CustomInterface.setStatusBarColor(this);
         findView();
         main_layout.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -81,6 +84,7 @@ public class EditStoreInformationPage extends AppCompatActivity implements OnMap
                 return false;
             }
         });
+        getSupportActionBar().setTitle("Thay đổi thông tin cửa hàng");
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorApplication)));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -140,6 +144,7 @@ public class EditStoreInformationPage extends AppCompatActivity implements OnMap
 
         });
 
+
     }
 
     public void findView(){
@@ -149,6 +154,8 @@ public class EditStoreInformationPage extends AppCompatActivity implements OnMap
         handleAddressText = (TextView) findViewById(R.id.handleAddressText);
         handleAddressLayout = (RelativeLayout) findViewById(R.id.handleAddressLayout);
         switch_button = (SwitchButton) findViewById(R.id.switch_button);
+        registerBtn = findViewById(R.id.registerBtn);
+        registerBtn.setText("Thay dổi");
     }
 
     public void getIntentFromStoreInformationPage() {

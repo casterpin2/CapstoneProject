@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -33,6 +34,7 @@ public class UserFeedbackPage extends AppCompatActivity {
         setContentView(R.layout.activity_user_feedback_page);
      //   TweakUI.makeTransparent(this);
         CustomInterface.setStatusBarColor(this);
+        CustomInterface.setSoftInputMode(this);
         findView();
 
         main_layout.setOnTouchListener(new View.OnTouchListener() {
