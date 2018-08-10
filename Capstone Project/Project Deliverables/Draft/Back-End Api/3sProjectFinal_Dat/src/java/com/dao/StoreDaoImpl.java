@@ -233,7 +233,7 @@ public class StoreDaoImpl extends BaseDao implements StoreDao {
         try {
             se = new StoreEntites();
             conn = getConnection();
-            pre = conn.prepareStatement("select s.*,u.full_name,i.path,DATE_FORMAT(registerLog,\"%d/%m/%Y\")  as registerLogFormat from Store s join (Image i join Image_Store it on i.id = it.image_id) on it.store_id = s.id and s.id = ? join User u on s.user_id = u.id");
+            pre = conn.prepareStatement("select s.*,u.full_name,i.path,DATE_FORMAT(registerLog,\"%d/%m/%Y\")  as registerLogFormat,l.* from Store s join (Image i join Image_Store it on i.id = it.image_id) on it.store_id = s.id and s.id = ? join User u on s.user_id = u.id join Location l on l.id = s.location_id");
             pre.setInt(1, storeId);
             ResultSet rs = pre.executeQuery();
             if (rs.next()) {
@@ -245,6 +245,8 @@ public class StoreDaoImpl extends BaseDao implements StoreDao {
                 se.setImage_path(rs.getString("path"));
                 se.setRegisterLog(rs.getString("registerLogFormat"));
                 se.setUser_name(rs.getNString("full_name"));
+                se.setAddress(rs.getString("apartment_number")+" "+rs.getString("street")+" "+rs.getString("county")+" "+rs.getString("district")+" "+rs.getString("city"));
+                se.setAddress(se.getAddress().replaceAll("0", "").replaceAll("Unnamed Road", "").replaceAll("\\s+", " ").replaceAll("null", "").trim());
                 return se;
             }
         } catch (SQLException e) {

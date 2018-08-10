@@ -271,6 +271,7 @@ public class UserDaoImpl extends BaseDao implements UserDao {
                     rs = pre.executeQuery();
                     rs.next();
                     store.setAddress(rs.getString("apartment_number") + " " + rs.getString("street") + " " + rs.getString("county") + " " + rs.getString("district") + " " + rs.getString("city"));
+                    store.setAddress(store.getAddress().replaceAll("0", "").replaceAll("Unnamed Road", "").replaceAll("\\s+", " ").replaceAll("null", "").trim());
                     store.setLatitude(rs.getString("latitude"));
                     store.setLongtitude(rs.getString("longitude"));
                 }
@@ -324,6 +325,7 @@ public class UserDaoImpl extends BaseDao implements UserDao {
                     rs = pre.executeQuery();
                     rs.next();
                     store.setAddress(rs.getString("apartment_number") + " " + rs.getString("street") + " " + rs.getString("county") + " " + rs.getString("district") + " " + rs.getString("city"));
+                    store.setAddress(store.getAddress().replaceAll("0", "").replaceAll("Unnamed Road", "").replaceAll("\\s+", " ").replaceAll("null", "").trim());
                     store.setLatitude(rs.getString("latitude"));
                     store.setLongtitude(rs.getString("longitude"));
                 }
@@ -445,6 +447,7 @@ public class UserDaoImpl extends BaseDao implements UserDao {
                 entites = new NearByStore();
                 entites.setId(rs.getInt("id"));
                 entites.setAddress(rs.getString("apartment_number")+" "+rs.getString("street")+" "+rs.getString("county")+" "+rs.getString("district")+" "+rs.getString("city"));
+                entites.setAddress(entites.getAddress().replaceAll("0", "").replaceAll("Unnamed Road", "").replaceAll("\\s+", " ").replaceAll("null", "").trim());
                 entites.setLatitude(rs.getDouble("latitude"));
                 entites.setLongitude(rs.getDouble("longitude"));
                 entites.setName(rs.getString("name"));
