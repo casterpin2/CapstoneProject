@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +14,6 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
@@ -37,7 +35,6 @@ import project.view.R;
 import project.view.gui.StoreInformationPage;
 import project.view.model.Cart;
 import project.view.model.CartDetail;
-import project.view.model.StoreInformation;
 
 public class CartAdapter extends BaseExpandableListAdapter {
 
@@ -118,7 +115,7 @@ public class CartAdapter extends BaseExpandableListAdapter {
 //        total += totalProduct;
         if (convertView == null) {
             LayoutInflater infalInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = infalInflater.inflate(R.layout.parent_list, null);
+            convertView = infalInflater.inflate(R.layout.cart_parent_list, null);
         }
         final ImageView storeImage = (ImageView) convertView.findViewById(R.id.storeAvatar);
         Glide.with(context /* context */)
@@ -161,7 +158,7 @@ public class CartAdapter extends BaseExpandableListAdapter {
 
         if (convertView == null) {
             LayoutInflater infalInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = infalInflater.inflate(R.layout.child_list, null);
+            convertView = infalInflater.inflate(R.layout.cart_child_list, null);
         }
 
         TextView productNameTV = (TextView) convertView.findViewById(R.id.productName);

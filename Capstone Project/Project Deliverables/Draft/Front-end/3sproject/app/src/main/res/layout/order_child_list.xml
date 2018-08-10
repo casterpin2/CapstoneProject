@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    >
+
+    <!--<TextView-->
+    <!--android:id="@+id/device_name"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_gravity="center_vertical"-->
+    <!--android:layout_margin="16dp"/>-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:weightSum="10"
+        android:paddingLeft="35dp">
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:layout_height="match_parent"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp">
+            <ImageView
+                android:id="@+id/productImage"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/product"
+                android:layout_centerInParent="true"/>
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_weight="8"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_gravity="center"
+            android:paddingRight="5dp">
+            <TextView
+                android:id="@+id/productName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="14dp"
+                android:paddingRight="3dp"
+                android:maxHeight="30dp"
+                android:textColor="#000000"
+                android:maxLines="2"
+                android:ellipsize="end"/>
+            <LinearLayout
+                android:id="@+id/quantityLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/productName"
+                android:layout_marginTop="3dp">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="Số lượng"
+                    android:textSize="15dp"/>
+                <TextView
+                    android:id="@+id/quantity"
+                    android:layout_width="0dp"
+                    android:layout_weight="2"
+                    android:layout_height="wrap_content"
+                    android:text="1"
+                    android:textSize="16dp"
+                    android:layout_gravity="center"
+                    />
+
+            </LinearLayout>
+            <TextView
+                android:id="@+id/price"
+                android:layout_below="@+id/quantityLayout"
+                android:layout_marginTop="3dp"
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:text=""
+                android:textSize="15dp"
+                android:layout_marginRight="10dp"
+                android:textColor="@color/colorPrimary"/>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+
+</LinearLayout>
