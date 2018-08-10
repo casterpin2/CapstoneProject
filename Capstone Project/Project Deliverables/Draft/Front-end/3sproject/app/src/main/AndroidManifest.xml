@@ -23,7 +23,9 @@
         <activity android:name=".gui.MainActivity" />
         <activity
             android:name=".gui.LoginPage"
-            android:noHistory="true" />
+            android:noHistory="true">
+
+        </activity>
         <activity android:name=".gui.SearchProductAddToStore" />
         <activity
             android:name=".gui.SaleProductDisplayPage"
@@ -62,16 +64,20 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".gui.StoreManagementOrderPage"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
         <activity
-            android:name=".gui.UserManagementOrderPage"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:name=".gui.UserManagementOrderPage">
+
+        </activity>
         <activity
             android:name=".gui.OrderDetailManagementPage"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".gui.NearbyStorePage" />
         <activity android:name=".gui.ProductDetailPage" />
-        <activity android:name=".gui.OrderPage" />
+        <activity android:name=".gui.OrderPage">
+
+        </activity>
         <activity android:name=".gui.ProductInStoreByUserDisplayPage" />
 
         <!-- Facebook -->

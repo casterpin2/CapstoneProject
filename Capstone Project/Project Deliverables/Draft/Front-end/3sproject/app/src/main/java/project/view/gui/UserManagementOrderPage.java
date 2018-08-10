@@ -13,19 +13,29 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ExpandableListView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import project.view.adapter.CartAdapter;
 import project.view.adapter.UserOrderAdapter;
 import project.view.fragment.manageOrder.DoingOrderUser;
 import project.view.fragment.manageOrder.DoneOrderUser;
 import project.view.fragment.manageOrder.WaitingOrderUser;
 import project.view.R;
+import project.view.model.Cart;
 import project.view.model.Order;
 import project.view.util.CustomInterface;
 
@@ -143,16 +153,17 @@ import project.view.util.CustomInterface;
 public class UserManagementOrderPage extends AppCompatActivity {
 
     private ExpandableListView orderListView;
-    private List<Order> orderList = new ArrayList<>();
+    private List<Order> list = new ArrayList<>();
     private Order order;
     private RelativeLayout noOrder;
     private UserOrderAdapter adapter;
-
-
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    DatabaseReference myRef;
+    private int userId;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_management);
-
+        userId = getIntent().getIntExtra("userID",-1);
         getSupportActionBar().setTitle("Quản lý đơn hàng");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         orderListView = (ExpandableListView) findViewById(R.id.orderList);
@@ -167,6 +178,32 @@ public class UserManagementOrderPage extends AppCompatActivity {
         }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (userId != -1) {
+            myRef = database.getReference().child("ordersUser").child(String.valueOf(userId));
+            adapter = new UserOrderAdapter(UserManagementOrderPage.this, list,userId);
+            orderListView.setAdapter(adapter);
+            myRef.addValueEventListener(changeListener);
+        } else {
+            Toast.makeText(this, "Không có người dùng", Toast.LENGTH_LONG).show();
+        }
+        orderListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+            @Override
+            public boolean onGroupClick(ExpandableListView expandableListView, View view, int i, long l) {
+                return true;
+            }
+        });
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        myRef.removeEventListener(changeListener);
+    }
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
@@ -175,4 +212,40 @@ public class UserManagementOrderPage extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+
+    private ValueEventListener changeListener = new ValueEventListener() {
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+
+            list.clear();
+            //loadingBar.setVisibility(View.VISIBLE);
+            if (dataSnapshot.exists()) {
+                noOrder.setVisibility(View.INVISIBLE);
+                for (DataSnapshot dttSnapshot2 : dataSnapshot.getChildren()) {
+                    order = dttSnapshot2.getValue(Order.class);
+                    Log.d("order",order.toString());
+                    order.setOrderId(dttSnapshot2.getKey());
+                    list.add(order);
+                    for (int i = 0; i < list.size(); i++) {
+                        orderListView.expandGroup(i);
+
+                    }
+                    adapter.notifyDataSetChanged();
+
+                }
+            } else {
+                list.clear();
+                //buyLinearLayout.setVisibility(View.INVISIBLE);
+                //loadingBar.setVisibility(View.INVISIBLE);
+                //phoneListAdapter.notifyDataSetChanged();
+                //totalCart.setText(phoneListAdapter.getTotalPrice());
+                noOrder.setVisibility(View.VISIBLE);
+            }
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+
+        }
+    };
 }
