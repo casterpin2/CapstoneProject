@@ -42,6 +42,13 @@
             android:background="@color/colorApplication"
             android:text="Thêm sản phẩm"
             android:textColor="@color/colorWhite"/>
+        <ProgressBar
+            android:id="@+id/loadingBar"
+            style="?android:attr/progressBarStyleInverse"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="invisible"/>
     </RelativeLayout>
 
 </RelativeLayout>

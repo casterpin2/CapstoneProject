@@ -14,7 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="20dp"
-            android:text="Vui lòng đăng nhập để xem thông tin cửa hàng"
+            android:text="@string/pleaseLogin"
             android:layout_marginTop="7dp"
             android:maxLines="3"
             android:textAlignment="center"/>

@@ -22,7 +22,6 @@
             android:id="@+id/textContent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Cửa hàng quanh đây"
             android:layout_marginTop="5dp"/>
         <ListView
             android:id="@+id/storeListView"
@@ -34,5 +33,24 @@
             >
 
         </ListView>
+        <TextView
+            android:id="@+id/noHaveStore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textContent"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="40dp"
+            android:text="@string/noHaveStore"
+            android:textSize="18dp"
+            android:visibility="invisible"/>
+        <ProgressBar
+            android:id="@+id/loadingBar"
+            style="?android:attr/progressBarStyleInverse"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textContent"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="40dp"
+            android:visibility="invisible"/>
     </RelativeLayout>
 </RelativeLayout>

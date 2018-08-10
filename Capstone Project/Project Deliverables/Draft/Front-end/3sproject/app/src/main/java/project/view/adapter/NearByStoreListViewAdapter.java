@@ -3,6 +3,7 @@ package project.view.adapter;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Paint;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -64,13 +65,13 @@ public class NearByStoreListViewAdapter extends BaseAdapter {
                 li = LayoutInflater.from(getContext());
                 view = li.inflate(R.layout.nearby_store_page_custom_list_view, null);
                 holder = new ViewHolder();
-                holder.storeName = (TextView) view.findViewById(R.id.storeName1);
+                holder.storeName = (TextView) view.findViewById(R.id.storeName);
                 holder.storeAddress = (TextView) view.findViewById(R.id.storeAddress);
                 holder.distance = (TextView) view.findViewById(R.id.distance);
-                holder.productPrice = (TextView) view.findViewById(R.id.productPrice1);
-                holder.promotionPercent = (TextView) view.findViewById(R.id.promotionPercent1);
-                holder.test = (LinearLayout) view.findViewById(R.id.test1);
-                holder.orderBtn = (Button) view.findViewById(R.id.orderBtn1);
+                holder.productPrice = (TextView) view.findViewById(R.id.productPrice);
+                holder.promotionPercent = (TextView) view.findViewById(R.id.promotionPercent);
+                holder.saleProduct = (TextView) view.findViewById(R.id.salePrice);
+                holder.orderBtn = (Button) view.findViewById(R.id.orderBtn);
 
                 view.setTag(holder);
             } else {
@@ -86,15 +87,22 @@ public class NearByStoreListViewAdapter extends BaseAdapter {
                 if (store.getPromotion() > 0.0) {
                     holder.promotionPercent.setVisibility(View.VISIBLE);
                     holder.promotionPercent.setText(Formater.formatDoubleToInt(String.valueOf(store.getPromotion())));
-                    double salePriceDouble = store.getPrice() * store.getPromotion() / 100;
-                    long salePriceLong = (long) salePriceDouble;
                     long displayPrice = (long) store.getPrice();
                     holder.productPrice.setText(Formater.formatDoubleToMoney(String.valueOf(displayPrice)));
+                    holder.productPrice.setPaintFlags(holder.productPrice.getPaintFlags()| Paint.STRIKE_THRU_TEXT_FLAG);
+
+                    double salePriceDouble = store.getPrice() - (store.getPrice() * store.getPromotion() / 100);
+                    long salePriceLong = (long) salePriceDouble;
+                    holder.saleProduct.setText(Formater.formatDoubleToMoney(String.valueOf(salePriceLong)));
                 } else if (store.getPromotion() == 0.0) {
                     holder.promotionPercent.setVisibility(View.INVISIBLE);
-                    holder.productPrice.setText(Formater.formatDoubleToMoney(String.valueOf(store.getPrice())));
+                    holder.productPrice.setText("");
+                    holder.saleProduct.setText(Formater.formatDoubleToMoney(String.valueOf(store.getPrice())));
 //                holder.promotionPercent.setText(formatDoubleToInt(context, String.valueOf(store.getPromotionPercent())));
                 }
+//                double salePriceDouble = store.getPrice() - (store.getPrice() * store.getPromotion() / 100);
+//                long salePriceLong = (long) salePriceDouble;
+//                holder.saleProduct.setText(Formater.formatDoubleToMoney(String.valueOf(salePriceLong)));
 
                 holder.orderBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -130,7 +138,7 @@ public class NearByStoreListViewAdapter extends BaseAdapter {
         TextView distance;
         TextView productPrice;
         TextView promotionPercent;
-        LinearLayout test;
+        TextView saleProduct;
         Button orderBtn;
 
     }

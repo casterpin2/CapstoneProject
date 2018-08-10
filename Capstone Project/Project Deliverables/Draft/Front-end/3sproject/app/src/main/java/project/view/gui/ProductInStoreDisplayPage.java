@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -46,6 +47,7 @@ public class ProductInStoreDisplayPage extends AppCompatActivity {
     private SearchView searchView;
     private List<ProductInStore> list = new ArrayList<>();
     private RelativeLayout main_layout;
+    private ProgressBar loadingBar;
 
     public ProductInStoreDisplayPage() {
     }
@@ -79,6 +81,9 @@ public class ProductInStoreDisplayPage extends AppCompatActivity {
             }
         });
 
+        loadingBar = (ProgressBar) findViewById(R.id.loadingBar);
+        loadingBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorApplication), android.graphics.PorterDuff.Mode.MULTIPLY);
+
         getSupportActionBar().setTitle("Sản phẩm cửa hàng");
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorApplication)));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -91,12 +96,13 @@ public class ProductInStoreDisplayPage extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            loadingBar.setVisibility(View.VISIBLE);
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-
+            loadingBar.setVisibility(View.INVISIBLE);
         }
 
         @Override

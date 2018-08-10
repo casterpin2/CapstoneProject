@@ -97,6 +97,7 @@ public class ProductBrandDisplayListViewAdapter extends BaseAdapter {
                 public void onClick(View v) {
                     int productId = product.getProduct_id();
                     Intent toNearByStorePage = new Intent(getContext(), NearbyStorePage.class);
+                    toNearByStorePage.putExtra("productName", product.getProduct_name());
                     toNearByStorePage.putExtra("productId",productId);
                     getContext().startActivity(toNearByStorePage);
                 }

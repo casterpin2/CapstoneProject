@@ -121,7 +121,7 @@
     <string name="tab2">Cửa hàng</string>
     <string name="tab3">Người dùng</string>
 
-    <!-- TODO: placeholder text in store infformation screen -->
+    <!-- TODO: placeholder text in store information screen -->
     <string name="doNotHaveStore">Bạn chưa có cửa hàng</string>
     <string name="orderText">Đơn hàng</string>
     <string name="productText">Sản phẩm</string>
@@ -129,6 +129,9 @@
     <string name="addressText">Địa chỉ</string>
     <string name="registerDateText">Ngày đăng kí</string>
     <string name="phoneText">Số điện thoại</string>
+    <string name="noHaveInternetMessage">Không có kết nối</string>
+    <string name="pleaseConnectInternetMessage">Vui lòng kết nối mạng</string>
+    <string name="pleaseLogin">Vui lòng đăng nhập để xem thông tin cửa hàng</string>
 
     <!-- TODO: placeholder text in register store screen -->
 
@@ -147,7 +150,7 @@
     <string name="lb_order_date">Đặt ngày:  </string>
 
 
-    <string name="title_fragment_me">Tài khoản</string>
+    <string name="title_fragment_me">Người dùng</string>
 
 
     <!-- TODO: facebook application -->
@@ -155,10 +158,17 @@
     <string name="fb_login_protocol_scheme">fb2158107454303596</string>
 
     <!---->
-    <!--barcode-->
+    <!-- TODO: placeholder text in Barcode Activity -->
     <string name="error_camera">Bạn chưa cấp quyền cho ứng dụng truy cập vào máy ảnh</string>
     <string name="barcode_accpet">Cho phép ứng dụng truy cập vào máy ảnh của bạn</string>
     <string name="ok_barcode">Đồng ý</string>
     <string name="cancel_barcode">Từ chối</string>
     <string name="succesfully">Lưu thông tin thành công</string>
+
+    <!-- TODO: placeholder text in User fragment -->
+    <string name="product_management_button">Quản lý sản phẩm</string>
+
+    <!-- TODO: placeholder text in Nearby Store Page -->
+    <string name="noHaveStore">Không có cửa hàng nào</string>
+
 </resources>

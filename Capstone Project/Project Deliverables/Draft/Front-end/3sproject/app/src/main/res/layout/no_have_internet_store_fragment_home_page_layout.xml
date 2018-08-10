@@ -20,14 +20,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="20dp"
-            android:text="Không có kết nối"
+            android:text="@string/noHaveInternetMessage"
             android:textAlignment="center"
             />
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="20dp"
-            android:text="Vui lòng kết nối mạng"
+            android:text="@string/pleaseConnectInternetMessage"
             android:layout_below="@+id/noHaveInternetmessage"
             android:textAlignment="center"/>
     </RelativeLayout>

@@ -10,10 +10,12 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:weightSum="10">
         <RelativeLayout
-            android:layout_width="144dp"
-            android:layout_height="160dp">
+            android:layout_width="0dp"
+            android:layout_weight="3"
+            android:layout_height="120dp">
 
             <ImageView
                 android:id="@+id/productImage"
@@ -28,38 +30,40 @@
 
         <!--product information-->
         <RelativeLayout
-            android:layout_width="fill_parent"
+            android:layout_width="0dp"
+            android:layout_weight="6"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginLeft="20dp">
+            android:layout_marginLeft="3dp"
+            android:layout_marginRight="3dp">
 
             <RelativeLayout
                 android:layout_width="wrap_content"
-                android:layout_height="135dp"
-                android:layout_centerVertical="true">
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="3dp">
                 <LinearLayout
                     android:id="@+id/productNameLinearLayout"
                     android:layout_width="fill_parent"
-                    android:layout_height="50dp"
-                    android:layout_marginRight="10dp">
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="5dp">
 
 
                     <TextView
                         android:id="@+id/productName"
                         android:layout_height="wrap_content"
                         android:layout_width="0dp"
-                        android:lines="3"
+                        android:maxLines="3"
                         android:ellipsize="end"
                         android:text="Tên sản phẩm"
-                        android:textSize="20dp"
-                        android:textColor="@color/colorBlack"
+                        android:textSize="17dp"
+                        android:textColor="@color/darkGrey"
                         android:layout_weight="1"
                         />
                 </LinearLayout>
                 <LinearLayout
                     android:id="@+id/productLinearLayout"
                     android:layout_width="fill_parent"
-                    android:layout_height="30dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginRight="10dp"
                     android:layout_below="@+id/productNameLinearLayout"
                     android:layout_marginTop="5dp">
@@ -80,7 +84,7 @@
                         android:singleLine="true"
                         android:ellipsize="marquee"
                         android:text="tiền"
-                        android:textSize="14dp"
+                        android:textSize="15dp"
                         android:textColor="@color/colorApplication"
                         android:layout_weight="3"
 
@@ -89,9 +93,10 @@
                 <LinearLayout
                     android:id="@+id/productBrandLinearLayout"
                     android:layout_width="fill_parent"
-                    android:layout_height="30dp"
+                    android:layout_height="wrap_content"
                     android:layout_below="@+id/productLinearLayout"
-                    android:layout_marginRight="10dp">
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="5dp">
 
                     <TextView
                         android:id="@+id/brandText"
@@ -108,35 +113,47 @@
                         android:singleLine="true"
                         android:ellipsize="marquee"
                         android:text="phần trăm"
-                        android:textSize="14dp"
+                        android:textSize="15dp"
                         android:textColor="@color/colorApplication"
                         android:layout_weight="3"
                         />
                 </LinearLayout>
-                <LinearLayout
-                    android:id="@+id/test"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/productBrandLinearLayout"
-                    android:layout_marginRight="10dp">
-                    <ImageView
-                        android:id="@+id/editBtn"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:layout_weight="2"
-                        android:gravity="center"
-                        android:src="@drawable/edit"/>
-
-                    <ImageView
-                        android:id="@+id/deleteBtn"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:layout_weight="2"
-                        android:gravity="center"
-                        android:src="@drawable/delete"/>
-                </LinearLayout>
             </RelativeLayout>
         </RelativeLayout>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_weight="1"
+                android:layout_height="0dp"
+                android:background="@color/colorGreen">
+                <ImageView
+                    android:id="@+id/editBtn"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_weight="2"
+                    android:gravity="center"
+                    android:src="@drawable/edit_white"
+                    android:layout_centerInParent="true"/>
+            </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_weight="1"
+                android:layout_height="0dp"
+                android:background="@color/colorPrimary">
+                <ImageView
+                    android:id="@+id/deleteBtn"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_weight="2"
+                    android:gravity="center"
+                    android:src="@drawable/trash"
+                    android:layout_centerInParent="true"/>
+            </RelativeLayout>
+        </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>

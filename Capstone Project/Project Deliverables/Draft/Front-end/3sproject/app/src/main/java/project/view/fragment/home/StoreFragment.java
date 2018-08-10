@@ -40,14 +40,13 @@ import project.view.model.StoreInformation;
  */
 public class StoreFragment extends Fragment {
     private Context context;
-    private TextView storeName, ownerName, address, registerDate, phoneText;
-    private ImageView storeImg, btnEdit;
+    private TextView storeName, ownerName, address, registerDate, phoneText, tv_count_smile, tv_count_sad;
+    private ImageView storeImg, btnEdit, errorImage;
     private int storeID = 1;
     private int hasStore = 0;
     private int userID = 1;
     private double latitude = 0.0;
     private double longtitude = 0.0;
-    private StoreInformation storeInformation;
     private View view;
     private Store store;
     private User user;
@@ -79,10 +78,6 @@ public class StoreFragment extends Fragment {
         if (isNetworkAvailable() == true && hasStore == 1 && userID != 0 && storeID != 0) {
             view = inflater.inflate(R.layout.fragment_store,container,false);
             findViewInStoreFragment();
-//        setLayout(hasStore,userID,haveStoreLayout, notHaveStoreLayout, noHaveInternet,noLoginLayout);
-//            SimpleDateFormat timeFormat= new SimpleDateFormat("dd/MM/yyyy");
-//            String s=timeFormat.format(store.getRegisterLog());
-//            registerDate.setText(s);
             registerDate.setText(store.getRegisterLog());
             storeName.setText(store.getName());
             phoneText.setText(store.getPhone());
@@ -94,7 +89,6 @@ public class StoreFragment extends Fragment {
             mainLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
                 public void onRefresh() {
-//                setLayout(hasStore,userID,haveStoreLayout, notHaveStoreLayout, noHaveInternet,noLoginLayout);
                     stopRefresh();
                 }
             });
@@ -156,6 +150,13 @@ public class StoreFragment extends Fragment {
         }
         else if (isNetworkAvailable() == false){
             view = inflater.inflate(R.layout.no_have_internet_store_fragment_home_page_layout,container,false);
+            findViewInNoHaveInternetLayout();
+            errorImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    // cái này để reload khi mà mất mạng
+                }
+            });
         }
         return view;
     }
@@ -170,17 +171,14 @@ public class StoreFragment extends Fragment {
         btnEdit = view.findViewById(R.id.imgEdit);
         btnManagermentOrder = view.findViewById(R.id.btnManagerOrder);
         btnManagermentProduct = view.findViewById(R.id.btnManagerProduct);
+        tv_count_smile = (TextView) view.findViewById(R.id.tv_count_smile);
+        tv_count_sad = (TextView) view.findViewById(R.id.tv_count_sad);
 
         mainLayout = view.findViewById(R.id.storeFragmentLayout);
         Glide.with(getContext() /* context */)
                 .using(new FirebaseImageLoader())
                 .load(storageReference.child(store.getImage_path()))
-                //.asBitmap()
-                //.toBytes(Bitmap.CompressFormat.PNG, 100)
-                //.format(DecodeFormat.PREFER_ARGB_8888)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
-                //.asBitmap()
-
                 .skipMemoryCache(true)
                 .into(storeImg);
     }
@@ -191,6 +189,9 @@ public class StoreFragment extends Fragment {
 
     private void findViewInNoHaveStoreLayout(){
         registerStoreBtn = view.findViewById(R.id.registerStoreBtn);
+    }
+    private void findViewInNoHaveInternetLayout(){
+        errorImage = view.findViewById(R.id.errorImage);
     }
 
     @Override

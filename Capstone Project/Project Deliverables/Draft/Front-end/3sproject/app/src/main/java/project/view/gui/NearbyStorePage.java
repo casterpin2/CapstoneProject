@@ -18,6 +18,7 @@ import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
+import android.text.Html;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -27,7 +28,9 @@ import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -62,6 +65,8 @@ public class NearbyStorePage extends AppCompatActivity implements OnMapReadyCall
     private LocationManager locationManager;
     private int productId;
     private SearchView searchView;
+    private TextView textContent, noHaveStore;
+    private ProgressBar loadingBar;
 
     // google map
     double latitude = 0.0;
@@ -82,6 +87,12 @@ public class NearbyStorePage extends AppCompatActivity implements OnMapReadyCall
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nearby_store_page);
         storeListView = findViewById(R.id.storeListView);
+        textContent = findViewById(R.id.textContent);
+        noHaveStore = findViewById(R.id.noHaveStore);
+        loadingBar = findViewById(R.id.loadingBar);
+        loadingBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorApplication), android.graphics.PorterDuff.Mode.MULTIPLY);
+        // cái này nhận tên sản phẩm từ các màn sang
+        productName = getIntent().getStringExtra("productName");
         CustomInterface.setStatusBarColor(this);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorApplication)));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -93,6 +104,7 @@ public class NearbyStorePage extends AppCompatActivity implements OnMapReadyCall
             Call<List<NearByStore>> call = ApiUtils.getAPIService().nearByStore(productId, String.valueOf(latitude), String.valueOf(longtitude));
             asynTask.execute(call);
         }
+
         main_layout = findViewById(R.id.main_layout);
         main_layout.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -101,6 +113,8 @@ public class NearbyStorePage extends AppCompatActivity implements OnMapReadyCall
                 return false;
             }
         });
+        String sourceString = "Cửa hàng quanh đây có <b>" + productName + "</b> ";
+        textContent.setText(Html.fromHtml(sourceString));
 //        nearByStore = getIntent().getStringArrayListExtra("listStore");
 //
 //        if (nearByStore != null){
@@ -158,11 +172,15 @@ public class NearbyStorePage extends AppCompatActivity implements OnMapReadyCall
             }
         });
 
+
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        LatLng myLocation = new LatLng(latitude, longtitude);
+        googleMap.addMarker(new MarkerOptions().position(myLocation).title("Vị trí của bạn"));
+        googleMap.moveCamera(CameraUpdateFactory.newLatLng(myLocation));
 
 
 //        Bitmap.Config conf = Bitmap.Config.ARGB_8888;
@@ -385,21 +403,27 @@ public class NearbyStorePage extends AppCompatActivity implements OnMapReadyCall
                 double storeLongtitude = 0.0;
                 double storeLatitude = 0.0;
                 LatLng storeLatLng;
-                LatLng myLocation = new LatLng(latitude, longtitude);
-                googleMap.addMarker(new MarkerOptions().position(myLocation).title("Vị trí của bạn"));
+//                LatLng myLocation = new LatLng(latitude, longtitude);
+//                googleMap.addMarker(new MarkerOptions().position(myLocation).title("Vị trí của bạn"));
                 googleMap.getUiSettings().setCompassEnabled(false);
                 googleMap.getUiSettings().setRotateGesturesEnabled(false);
-                mMap.moveCamera(CameraUpdateFactory.newLatLng(myLocation));
-                googleMap.setMinZoomPreference(12.0f);
-                googleMap.setMaxZoomPreference(20.0f);
+                googleMap.setMinZoomPreference(14.0f);
+                googleMap.setMaxZoomPreference(22.0f);
                 for (int i = 0; i < list.size(); i++) {
                     storeLongtitude = list.get(i).getLongitude();
                     storeLatitude = list.get(i).getLatitude();
                     storeLatLng = new LatLng(storeLatitude, storeLongtitude);
-                    googleMap.addMarker(new MarkerOptions().position(storeLatLng).title(list.get(i).getName()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+                    googleMap.addMarker(new MarkerOptions().position(storeLatLng).title(list.get(i).getName()).snippet(list.get(i).getAddress()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
                 }
     }
     public class NearByStoreAsynTask extends AsyncTask<Call, Void, List<NearByStore>> {
+
+        @Override
+        protected void onPreExecute() {
+            loadingBar.setVisibility(View.VISIBLE);
+            super.onPreExecute();
+        }
+
         @Override
         protected List<NearByStore> doInBackground(Call... calls) {
             try {
@@ -415,6 +439,7 @@ public class NearbyStorePage extends AppCompatActivity implements OnMapReadyCall
         @Override
         protected void onPostExecute(List<NearByStore> listNearByStore) {
             super.onPostExecute(listNearByStore);
+            loadingBar.setVisibility(View.INVISIBLE);
             if (listNearByStore != null) {
                 for (NearByStore near : listNearByStore) {
                     list.add(near);
@@ -424,6 +449,11 @@ public class NearbyStorePage extends AppCompatActivity implements OnMapReadyCall
                 changeLocation(mMap);
             } else {
                 Toast.makeText(NearbyStorePage.this,"Có lỗi xảy ra!!!",Toast.LENGTH_LONG).show();
+            }
+            if (list.size() == 0) {
+                noHaveStore.setVisibility(View.VISIBLE);
+            } else {
+                noHaveStore.setVisibility(View.INVISIBLE);
             }
         }
     }
