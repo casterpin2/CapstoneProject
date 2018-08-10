@@ -17,6 +17,7 @@ import java.io.IOException;
 import project.objects.User;
 import project.retrofit.APIService;
 import project.view.R;
+import project.view.fragment.home.UserFragment;
 import project.view.model.Brand;
 import project.view.util.TweakUI;
 import retrofit2.Call;
@@ -29,6 +30,7 @@ public class UserInformationPage extends AppCompatActivity {
     private final int REQUEST_PROFILE_CODE = 123;
     private APIService apiService;
     private ProgressBar loadingBar;
+    private String nameDisplay;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,11 +39,6 @@ public class UserInformationPage extends AppCompatActivity {
         mapping();
         loadingBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorApplication), android.graphics.PorterDuff.Mode.MULTIPLY);
 
-        String name = txtName.getText().toString();
-        String phone = txtPhone.getText().toString();
-        String email = txtEmail.getText().toString();
-        String gender = txtGender.getText().toString();
-        String dob = txtDob.getText().toString();
         apiService = APIService.retrofit.create(APIService.class);
        // Toast.makeText(this, this.getIntent().getIntExtra("userID",0)+"", Toast.LENGTH_LONG).show();
 
@@ -50,7 +47,13 @@ public class UserInformationPage extends AppCompatActivity {
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onBackPressed();
+               Intent backToUserFragment = new Intent(UserInformationPage.this, UserFragment.class);
+               if(nameDisplay!=null){
+                   backToUserFragment.putExtra("nameDisplay",nameDisplay+"");
+               }
+
+               setResult(222,backToUserFragment);
+               finish();
             }
         });
         btnEditInfo.setOnClickListener(new View.OnClickListener() {
@@ -66,6 +69,7 @@ public class UserInformationPage extends AppCompatActivity {
                 Intent toEditUserInformationPage = new Intent(UserInformationPage.this, EditUserInformationPage.class);
                 toEditUserInformationPage.putExtras(extras);
                 startActivityForResult(toEditUserInformationPage, REQUEST_PROFILE_CODE);
+
             }
         });
         //gọi hàm lưu trạng thái ở đây
@@ -91,7 +95,7 @@ public class UserInformationPage extends AppCompatActivity {
         // TODO Auto-generated method stub
         super.onResume();
         //gọi hàm đọc trạng thái ở đây
-//        restoringPreferences();
+      //  restoringPreferences();
     }
 
 
@@ -124,7 +128,7 @@ public class UserInformationPage extends AppCompatActivity {
             txtEmail.setText(email);
             txtDob.setText(dob);
             txtGender.setText(gender);
-
+            nameDisplay = txtName.getText().toString();
          //   savingPreferences(name, phone, email, gender, dob);
         }
         else if (requestCode == REQUEST_PROFILE_CODE && resultCode == 201) {
@@ -147,26 +151,26 @@ public class UserInformationPage extends AppCompatActivity {
 //        editor.commit();
 //    }
 
-//    public void restoringPreferences(){
-//        SharedPreferences pre=getSharedPreferences
-//                ("main",MODE_PRIVATE);
-//        //lấy giá trị checked ra, nếu không thấy thì giá trị mặc định là false
-//
-//        //lấy user, pwd, nếu không thấy giá trị mặc định là rỗng
-//        String name = pre.getString("name", "");
-//        String phone = pre.getString("phone", "");
-//        String email = pre.getString("email", "");
-//        String gender = pre.getString("gender", "");
-//        String dob = pre.getString("dob", "");
-//
-//        txtName.setText(name);
-//        txtPhone.setText(phone);
-//        txtEmail.setText(email);
-//        txtGender.setText(gender);
-//        txtDob.setText(dob);
-//
-//    }
-    public class UserDataClass extends AsyncTask<Call,User,Void> {
+    public void restoringPreferences(){
+        SharedPreferences pre=getSharedPreferences
+                ("main",MODE_PRIVATE);
+        //lấy giá trị checked ra, nếu không thấy thì giá trị mặc định là false
+
+        //lấy user, pwd, nếu không thấy giá trị mặc định là rỗng
+        String name = pre.getString("name", "");
+        String phone = pre.getString("phone", "");
+        String email = pre.getString("email", "");
+        String gender = pre.getString("gender", "");
+        String dob = pre.getString("dob", "");
+
+        txtName.setText(name);
+        txtPhone.setText(phone);
+        txtEmail.setText(email);
+        txtGender.setText(gender);
+        txtDob.setText(dob);
+
+    }
+     public class UserDataClass extends AsyncTask<Call,User,Void> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -188,6 +192,7 @@ public class UserInformationPage extends AppCompatActivity {
             txtEmail.setText(us.getEmail());
             txtGender.setText(us.getGender());
             txtDob.setText(us.getDateOfBirth());
+            nameDisplay = txtName.getText().toString();
         }
 
         @Override

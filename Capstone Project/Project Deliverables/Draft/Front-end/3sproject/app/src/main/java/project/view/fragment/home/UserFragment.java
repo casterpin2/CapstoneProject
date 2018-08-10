@@ -19,11 +19,13 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.storage.StorageReference;
 import com.google.gson.Gson;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 import project.firebase.Firebase;
 import project.objects.User;
@@ -40,7 +42,7 @@ import project.view.gui.UserInformationPage;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class     UserFragment extends Fragment {
+public class UserFragment extends Fragment {
 
     private View view;
     private Toolbar toolbar;
@@ -55,6 +57,7 @@ public class     UserFragment extends Fragment {
     String userAvatarPath = "";
     private User user;
     private Store store;
+
     public UserFragment() {
         // Required empty public constructor
     }
@@ -65,12 +68,12 @@ public class     UserFragment extends Fragment {
                              Bundle savedInstanceState) {
         String userJSON = getArguments().getString("userJSON");
         String storeJSON = getArguments().getString("storeJSON");
-        if (userJSON .isEmpty()){
+        if (userJSON.isEmpty()) {
             user = new User();
             store = new Store();
         } else {
-            user = new Gson().fromJson(userJSON,User.class);
-            store = new Gson().fromJson(storeJSON,Store.class);
+            user = new Gson().fromJson(userJSON, User.class);
+            store = new Gson().fromJson(storeJSON, Store.class);
         }
         userID = user.getId();
         // Inflate the layout for this fragment
@@ -94,7 +97,7 @@ public class     UserFragment extends Fragment {
             fullName = user.getFirst_name() + " " + user.getLast_name();
             tvUserName.setText(fullName);
             userAvatarPath = user.getImage_path();
-            if (!userAvatarPath.isEmpty()){
+            if (!userAvatarPath.isEmpty()) {
                 if (userAvatarPath.contains("graph")) {
                     Glide.with(getContext() /* context */)
                             .load(userAvatarPath)
@@ -140,7 +143,7 @@ public class     UserFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     Intent toChangePasswordScreen = new Intent(getContext(), ChangePasswordPage.class);
-                    toChangePasswordScreen.putExtra("userID",userID);
+                    toChangePasswordScreen.putExtra("userID", userID);
                     getContext().startActivity(toChangePasswordScreen);
                 }
             });
@@ -157,7 +160,7 @@ public class     UserFragment extends Fragment {
                     editor.putString("store", "");
                     //chấp nhận lưu xuống file
                     editor.commit();
-                    Intent intent = new Intent(getActivity(),HomePage.class);
+                    Intent intent = new Intent(getActivity(), HomePage.class);
                     startActivity(intent);
                     getActivity().finishAffinity();
                 }
@@ -166,8 +169,10 @@ public class     UserFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     Intent toUserInfoScreen = new Intent(getContext(), UserInformationPage.class);
-                    toUserInfoScreen.putExtra("userID",userID);
-                    getContext().startActivity(toUserInfoScreen);
+                    toUserInfoScreen.putExtra("userID", userID);
+                    ;
+                    startActivityForResult(toUserInfoScreen, 111);
+
                 }
             });
 
@@ -175,8 +180,8 @@ public class     UserFragment extends Fragment {
             cartLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent toCartPage  = new Intent(getContext(), CartPage.class);
-                    toCartPage.putExtra("userID",userID);
+                    Intent toCartPage = new Intent(getContext(), CartPage.class);
+                    toCartPage.putExtra("userID", userID);
                     getContext().startActivity(toCartPage);
                 }
             });
@@ -185,11 +190,11 @@ public class     UserFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     Intent toUserOrderManagement = new Intent(getContext(), UserManagementOrderPage.class);
-                    toUserOrderManagement.putExtra("userID",userID);
+                    toUserOrderManagement.putExtra("userID", userID);
                     getContext().startActivity(toUserOrderManagement);
                 }
             });
-        } else if (isNetworkAvailable() == false){
+        } else if (isNetworkAvailable() == false) {
             view = inflater.inflate(R.layout.no_have_internet_user_fragment_home_page_layout, container, false);
         }
 
@@ -200,6 +205,7 @@ public class     UserFragment extends Fragment {
     public void onResume() {
         // TODO Auto-generated method stub
         super.onResume();
+    //    SharedPreferences pre = getSharedPreferences("authentication", Context.MODE_PRIVATE);
     }
 
     @Override
@@ -210,14 +216,13 @@ public class     UserFragment extends Fragment {
     }
 
 
-
     @Override
     public void onPause() {
         super.onPause();
 
     }
 
-    private void findViewInUserFragment(){
+    private void findViewInUserFragment() {
         btnLogout = view.findViewById(R.id.btnLogout);
         changePasswordLayout = view.findViewById(R.id.changePasswordLayout);
         userInfoLayout = view.findViewById(R.id.userInfoLayout);
@@ -227,17 +232,19 @@ public class     UserFragment extends Fragment {
         tvUserName = view.findViewById(R.id.tvUserName);
         profile_image = view.findViewById(R.id.profile_image);
 
-    } public void findViewInNotLoginnedLayout(){
-        loginBtn = view .findViewById(R.id.loginBtn);
     }
 
-    private void stopRefresh(){
+    public void findViewInNotLoginnedLayout() {
+        loginBtn = view.findViewById(R.id.loginBtn);
+    }
+
+    private void stopRefresh() {
 
         userInforLayout.setRefreshing(false);
     }
 
-    public void setLayout(int userID, RelativeLayout loginnedLayout, RelativeLayout noLoginLayout, RelativeLayout noHaveInternetLayout){
-        if(isNetworkAvailable() == true && userID == 0) {
+    public void setLayout(int userID, RelativeLayout loginnedLayout, RelativeLayout noLoginLayout, RelativeLayout noHaveInternetLayout) {
+        if (isNetworkAvailable() == true && userID == 0) {
             noLoginLayout.setVisibility(View.VISIBLE);
             loginnedLayout.setVisibility(View.INVISIBLE);
             noHaveInternetLayout.setVisibility(View.INVISIBLE);
@@ -258,7 +265,8 @@ public class     UserFragment extends Fragment {
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
-    public class clearCache extends AsyncTask<Void,Void,Void> {
+
+    public class clearCache extends AsyncTask<Void, Void, Void> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -283,4 +291,14 @@ public class     UserFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        String a = data.getStringExtra("nameDisplay");
+        if (requestCode == 111 && resultCode == 222) {
+            if (data.getStringExtra("nameDisplay") != null && !data.getStringExtra("nameDisplay").isEmpty()) {
+                tvUserName.setText(data.getStringExtra("nameDisplay"));
+            }
+        }
+    }
 }
