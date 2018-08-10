@@ -45,11 +45,10 @@ public class CartPage extends AppCompatActivity {
     private Button checkoutAllBtn,shoppingBtn;
     private ProgressBar loadingBar;
     private LinearLayout buyLinearLayout;
-
+    private int userId;
     @Override
     protected void onResume() {
         super.onResume();
-        int userId = getIntent().getIntExtra("userID",-1);
         if (userId != -1) {
             myRef = database.getReference().child("cart").child(String.valueOf(userId));
             phoneListAdapter = new CartAdapter(CartPage.this, list,userId);
@@ -91,6 +90,7 @@ public class CartPage extends AppCompatActivity {
         getSupportActionBar().setTitle("Giỏ hàng");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         CustomInterface.setStatusBarColor(CartPage.this);
+        userId = getIntent().getIntExtra("userID",-1);
         lvPhones = (ExpandableListView) findViewById(R.id.phone_list);
         noCart = (RelativeLayout) findViewById(R.id.noCart);
         totalCart = (TextView) findViewById(R.id.totalCart);
@@ -106,6 +106,40 @@ public class CartPage extends AppCompatActivity {
                 finishAffinity();
             }
         });
+        checkoutAllBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (list.size() == 0) return;
+                final DatabaseReference reference = database.getReference().child("ordersUser").child(String.valueOf(userId));
+                reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        for (Cart cart : list) {
+                            String key = reference.push().getKey();
+                            DatabaseReference re = reference.child(key);
+                            re.child("storeId").setValue(cart.getStoreId());
+                            re.child("storeName").setValue(cart.getStoreName());
+                            re.child("status").setValue("waitting");
+                            re.child("phone").setValue(cart.getPhone());
+                            re.child("isFeedback").setValue("false");
+                            re.child("image_path").setValue(cart.getImage_path());
+                            re.child("totalPrice").setValue(phoneListAdapter.getTotal());
+                            re.child("orderDetail").setValue(cart.getCartDetail());
+
+                        }
+                        Toast.makeText(CartPage.this,"Thêm sản phẩm thành công",Toast.LENGTH_LONG).show();
+                        Intent intent = new Intent(CartPage.this,UserManagementOrderPage.class);
+                        intent.putExtra("userID",userId);
+                        startActivity(intent);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+            }
+        });
     }
 
     private ValueEventListener changeListener = new ValueEventListener() {
@@ -114,7 +148,7 @@ public class CartPage extends AppCompatActivity {
 
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
-
+            checkoutAllBtn.setEnabled(false);
             list.clear();
             loadingBar.setVisibility(View.VISIBLE);
             if (dataSnapshot.exists()) {
@@ -134,6 +168,7 @@ public class CartPage extends AppCompatActivity {
                         totalCart.setVisibility(View.INVISIBLE);
                     }
                 }
+                checkoutAllBtn.setEnabled(true);
             } else {
                 list.clear();
                 buyLinearLayout.setVisibility(View.INVISIBLE);

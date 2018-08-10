@@ -56,6 +56,15 @@ public class Product implements Serializable{
     @Expose
     private String storeName;
 
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    private int quantity;
     public Product() {
     }
 

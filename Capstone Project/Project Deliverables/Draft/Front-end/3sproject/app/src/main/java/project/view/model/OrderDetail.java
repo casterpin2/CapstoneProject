@@ -162,16 +162,16 @@ public class OrderDetail {
     public void setAddress(String address) {
         this.address = address;
     }
-    public static ArrayList<OrderDetail> dataTest(){
-        ArrayList<OrderDetail> arrContact = new ArrayList<>();
-        OrderDetail orderDetail = new OrderDetail("1111111111","Nước khoáng lavi 500ml","Nước lavi 500ml",1,"Cửa hàng của tôi",22222, 2,"0916606094",new Date().toString(),"Thạch thất, Hà nội");
-
-        for (int i = 0; i<20;i++){
-            arrContact.add(orderDetail);
-        }
-
-        return  arrContact;
-    }
+//    public static ArrayList<OrderDetail> dataTest(){
+//        ArrayList<OrderDetail> arrContact = new ArrayList<>();
+//        OrderDetail orderDetail = new OrderDetail("1111111111","Nước khoáng lavi 500ml","Nước lavi 500ml",1,"Cửa hàng của tôi",22222, 2,"0916606094",new Date().toString(),"Thạch thất, Hà nội");
+//
+//        for (int i = 0; i<20;i++){
+//            arrContact.add(orderDetail);
+//        }
+//
+//        return  arrContact;
+//    }
 }
 
 

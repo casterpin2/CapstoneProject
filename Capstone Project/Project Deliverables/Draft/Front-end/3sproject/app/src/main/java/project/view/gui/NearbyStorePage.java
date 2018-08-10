@@ -12,6 +12,7 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.provider.BaseColumns;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.widget.CursorAdapter;
 import android.support.v4.widget.SimpleCursorAdapter;
@@ -41,6 +42,11 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -67,7 +73,12 @@ public class NearbyStorePage extends AppCompatActivity implements OnMapReadyCall
     private SearchView searchView;
     private TextView textContent, noHaveStore;
     private ProgressBar loadingBar;
-
+    private FirebaseDatabase database = FirebaseDatabase.getInstance();
+    private DatabaseReference myRef = database.getReference();
+    final DatabaseReference myRef1 = myRef.child("suggestion").child("product");
+    private ValueEventListener listener;
+    private final List<String> suggestions = new ArrayList<>();
+    private final List<String> searchedList = new ArrayList<>();
     // google map
     double latitude = 0.0;
     double longtitude = 0.0;
@@ -81,6 +92,32 @@ public class NearbyStorePage extends AppCompatActivity implements OnMapReadyCall
     int page = 1;
 
     private String productName;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        listener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                suggestions.clear();
+                for (DataSnapshot dttSnapshot2 : dataSnapshot.getChildren()) {
+                    suggestions.add(dttSnapshot2.getValue(String.class));
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+        myRef1.addValueEventListener(listener);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        myRef1.removeEventListener(listener);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -273,16 +310,6 @@ public class NearbyStorePage extends AppCompatActivity implements OnMapReadyCall
 
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-
-        final List<String> suggestions = new ArrayList<>();
-        suggestions.add("Sản phẩm kia là abc xyz");
-        suggestions.add("DM");
-        suggestions.add("Cool");
-        suggestions.add("Sản phẩm này là Samsung Galaxy Note 8 128Gb");
-
-        final List<String> searchedList = new ArrayList<>();
-
-
         final CursorAdapter suggestionAdapter = new SimpleCursorAdapter(this,
                 R.layout.custom_suggested_listview_nearby_store_page,
                 null,

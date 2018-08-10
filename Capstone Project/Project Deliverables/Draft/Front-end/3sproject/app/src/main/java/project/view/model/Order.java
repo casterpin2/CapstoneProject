@@ -9,7 +9,40 @@ public class Order {
     private String status;
     private double totalPrice;
     private String deliverTime;
-    private String storeName;
+    private String address;
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getIsFeedback() {
+        return isFeedback;
+    }
+
+    public void setIsFeedback(String isFeedback) {
+        this.isFeedback = isFeedback;
+    }
+
+    private String isFeedback;
+    public String getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
+    }
+
+    private String orderId;
+
+    private HashMap<String,CartDetail> orderDetail;
+
+    public HashMap<String, CartDetail> getOrderDetail() {
+        return orderDetail;
+    }
 
     public String getStoreName() {
         return storeName;
@@ -19,15 +52,12 @@ public class Order {
         this.storeName = storeName;
     }
 
-    public HashMap<String, CartDetail> getOrderDetail() {
-        return orderDetail;
-    }
+    private String storeName;
 
     public void setOrderDetail(HashMap<String, CartDetail> orderDetail) {
         this.orderDetail = orderDetail;
     }
 
-    private HashMap<String,CartDetail> orderDetail;
     public Order() {
     }
 
@@ -68,5 +98,18 @@ public class Order {
         result.put("totalPrice", totalPrice);
         result.put("deliverTime", deliverTime);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "status='" + status + '\'' +
+                ", totalPrice=" + totalPrice +
+                ", deliverTime='" + deliverTime + '\'' +
+                ", isFeedback='" + isFeedback + '\'' +
+                ", orderId='" + orderId + '\'' +
+                ", orderDetail=" + orderDetail +
+                ", storeName='" + storeName + '\'' +
+                '}';
     }
 }

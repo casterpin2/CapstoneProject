@@ -82,7 +82,7 @@ public class EditProductInStorePage extends AppCompatActivity {
 
         Glide.with(this /* context */)
                 .using(new FirebaseImageLoader())
-                .load(storageReference.child(productImageLink))
+                    .load(storageReference.child(productImageLink))
                 .into(imageView);
         productName.setText(productNameValue);
         categoryName.setText(categoryNameValue);

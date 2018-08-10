@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -125,6 +126,7 @@ public class LoginPage extends AppCompatActivity {
                 user.setFirst_name(profile.getFirstName());
                 user.setLast_name(profile.getLastName());
                 try {
+                    Log.d("facebookId",profile.getId()+"");
                     Call<Login> call = mAPI.loginFB(user, profile.getId());
                     new CallAPI().execute(call);
                 } catch(Exception e){
@@ -238,7 +240,7 @@ public class LoginPage extends AppCompatActivity {
         @Override
         protected void onPostExecute(Login result) {
             if (result == null){
-                errorMessage.setText("Không có mạng ");
+                errorMessage.setText("Có lỗi xảy ra ");
                 loadingBar.setVisibility(View.INVISIBLE);
                 return;
             }
