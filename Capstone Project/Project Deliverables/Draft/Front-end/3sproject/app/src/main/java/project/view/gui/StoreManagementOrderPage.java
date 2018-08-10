@@ -31,7 +31,7 @@ public class StoreManagementOrderPage extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_order_management);
+        setContentView(R.layout.activity_store_order_management);
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle(R.string.title_order_management);
