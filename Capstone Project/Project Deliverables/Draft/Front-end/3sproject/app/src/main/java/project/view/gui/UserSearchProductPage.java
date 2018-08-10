@@ -27,6 +27,7 @@ import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -57,6 +58,7 @@ public class UserSearchProductPage extends AppCompatActivity {
     private ImageView imgBack, imgBarCode;
     private TextView noHaveProduct;
     private LinearLayout haveProduct;
+    private ProgressBar loadingBar;
     private UserSearchProductListViewCustomAdapter adapter;
     RelativeLayout main_layout;
     public View footerView;
@@ -156,7 +158,7 @@ public class UserSearchProductPage extends AppCompatActivity {
                 }
             }
         });
-
+        loadingBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorApplication), android.graphics.PorterDuff.Mode.MULTIPLY);
 
         suggestions.add("Sản phẩm kia là abc xyz");
         suggestions.add("DM");
@@ -334,6 +336,7 @@ public class UserSearchProductPage extends AppCompatActivity {
         imgBack = findViewById(R.id.backBtn);
         imgBarCode = findViewById(R.id.imgBarCode);
         productListView = (ListView) findViewById(R.id.productListView);
+        loadingBar = (ProgressBar) findViewById(R.id.loadingBar);
     }
 
 
@@ -450,6 +453,13 @@ public class UserSearchProductPage extends AppCompatActivity {
 //    }
 
     public class UserSearchProductAsyncTask1 extends AsyncTask<Call, Void, List<Product>> {
+
+        @Override
+        protected void onPreExecute() {
+            loadingBar.setVisibility(View.VISIBLE);
+            super.onPreExecute();
+        }
+
         @Override
         protected List<Product> doInBackground(Call... calls) {
             try {
@@ -469,6 +479,7 @@ public class UserSearchProductPage extends AppCompatActivity {
         @Override
         protected void onPostExecute(List<Product> list) {
             super.onPostExecute(list);
+            loadingBar.setVisibility(View.INVISIBLE);
             if (list != null) {
                 for (int i = 0; i < list.size(); i++) {
                     productList.add(list.get(i));
@@ -476,6 +487,7 @@ public class UserSearchProductPage extends AppCompatActivity {
                 adapter.notifyDataSetChanged();
                 setLayout(noHaveProduct,haveProduct);
         } else {Toast.makeText(UserSearchProductPage.this,"Có lỗi xảy ra!!!",Toast.LENGTH_LONG).show();}
+
         }
     }
 
@@ -491,6 +503,7 @@ public class UserSearchProductPage extends AppCompatActivity {
     public class UserSearchWithBarcode extends AsyncTask<Call,List<Product>,Void>{
         @Override
         protected void onPreExecute() {
+            loadingBar.setVisibility(View.VISIBLE);
             super.onPreExecute();
 
         }
@@ -498,6 +511,7 @@ public class UserSearchProductPage extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+            loadingBar.setVisibility(View.INVISIBLE);
         }
 
         @Override

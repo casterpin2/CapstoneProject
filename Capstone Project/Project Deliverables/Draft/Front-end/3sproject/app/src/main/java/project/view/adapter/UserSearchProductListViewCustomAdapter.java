@@ -115,6 +115,7 @@ public class UserSearchProductListViewCustomAdapter extends BaseAdapter {
                     int productId = product.getProduct_id();
                     Intent toNearByStorePage = new Intent(getContext(), NearbyStorePage.class);
                     toNearByStorePage.putExtra("productId",productId);
+                    toNearByStorePage.putExtra("productName", product.getProduct_name());
                     getContext().startActivity(toNearByStorePage);
                 }
             });
