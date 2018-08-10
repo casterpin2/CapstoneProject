@@ -699,14 +699,14 @@ public class SearchProductAddToStore extends AppCompatActivity {
                 limitData = true;
             }
             //searchedProductList = response.body();
-            if(searchedProductList.isEmpty()) {
+            if(searchedProductList.isEmpty() && listProduct.isEmpty()) {
                 TextView nullMessage = findViewById(R.id.nullMessage);
                 nullMessage.setText("Không có sản phẩm nào phù hợp!");
                 theListView.setVisibility(View.INVISIBLE);
             } else {
                 TextView nullMessage = findViewById(R.id.nullMessage);
                 nullMessage.setText("");
-                adapter = new SearchProductPageListViewAdapter(SearchProductAddToStore.this, R.layout.search_product_page_custom_list_view, searchedProductList);
+                adapter = new SearchProductPageListViewAdapter(SearchProductAddToStore.this, R.layout.search_product_page_custom_list_view, listProduct);
                 theListView.setAdapter(adapter);
                 theListView.setVisibility(View.VISIBLE);
             }
