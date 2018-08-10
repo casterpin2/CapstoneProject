@@ -20,6 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
+        android:layout_marginBottom="3dp"
         android:orientation="horizontal"
     >
         <TextView
@@ -38,13 +39,12 @@
             android:layout_height="wrap_content" >
             <Button
                 android:id="@+id/checkoutAllBtn"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:layout_marginRight="10dp"
                 android:text="Mua hàng"
-                android:background="@drawable/border_button"
-                android:textColor="@color/colorApplication"/>
+                android:background="@drawable/login_button"
+                android:textColor="@color/white"/>
         </RelativeLayout>
     </LinearLayout>
 
@@ -66,10 +66,17 @@
         android:id="@+id/shoppingBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Bắt đầu mau sắm"
+        android:text="Bắt đầu mua sắm"
         android:textSize="15dp"
         android:layout_below="@+id/notification"
         android:layout_centerHorizontal="true"/>
     </RelativeLayout>
+    <ProgressBar
+        android:id="@+id/loadingBar"
+        style="?android:attr/progressBarStyleInverse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="invisible"/>
 
 </RelativeLayout>

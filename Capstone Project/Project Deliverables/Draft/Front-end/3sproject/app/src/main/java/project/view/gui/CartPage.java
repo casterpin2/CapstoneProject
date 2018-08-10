@@ -8,6 +8,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ExpandableListView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,6 +43,8 @@ public class CartPage extends AppCompatActivity {
     private RelativeLayout noCart;
     private TextView totalCart;
     private Button checkoutAllBtn,shoppingBtn;
+    private ProgressBar loadingBar;
+    private LinearLayout buyLinearLayout;
 
     @Override
     protected void onResume() {
@@ -91,6 +95,9 @@ public class CartPage extends AppCompatActivity {
         noCart = (RelativeLayout) findViewById(R.id.noCart);
         totalCart = (TextView) findViewById(R.id.totalCart);
         checkoutAllBtn = (Button) findViewById(R.id.checkoutAllBtn);
+        buyLinearLayout = (LinearLayout) findViewById(R.id.buyLinearLayout);
+        loadingBar = (ProgressBar) findViewById(R.id.loadingBar);
+        loadingBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorApplication), android.graphics.PorterDuff.Mode.MULTIPLY);
         shoppingBtn = (Button) findViewById(R.id.shoppingBtn);
         shoppingBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -102,9 +109,14 @@ public class CartPage extends AppCompatActivity {
     }
 
     private ValueEventListener changeListener = new ValueEventListener() {
+
+
+
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
+
             list.clear();
+            loadingBar.setVisibility(View.VISIBLE);
             if (dataSnapshot.exists()) {
                 noCart.setVisibility(View.INVISIBLE);
                 for (DataSnapshot dttSnapshot2 : dataSnapshot.getChildren()) {
@@ -114,12 +126,18 @@ public class CartPage extends AppCompatActivity {
                         lvPhones.expandGroup(i);
                     }
                     //phoneListAdapter.setTotalPrice(0.0);
+                    loadingBar.setVisibility(View.INVISIBLE);
                     phoneListAdapter.notifyDataSetChanged();
 
                     totalCart.setText(phoneListAdapter.getTotalPrice());
+                    if (list.size() == 0) {
+                        totalCart.setVisibility(View.INVISIBLE);
+                    }
                 }
             } else {
                 list.clear();
+                buyLinearLayout.setVisibility(View.INVISIBLE);
+                loadingBar.setVisibility(View.INVISIBLE);
                 phoneListAdapter.notifyDataSetChanged();
                 totalCart.setText(phoneListAdapter.getTotalPrice());
                 noCart.setVisibility(View.VISIBLE);

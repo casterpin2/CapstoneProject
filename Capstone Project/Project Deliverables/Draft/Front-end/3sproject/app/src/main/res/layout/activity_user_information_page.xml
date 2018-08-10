@@ -38,7 +38,6 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:gravity="center"
-            android:text="Tên người dùng"
             android:textColor="@color/colorWhite"
             android:textSize="21dp"
             android:background="#70000000"
@@ -116,7 +115,6 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="sans-serif-light"
-                                android:text="tungvs96@gmail.com"
                                 android:textColor="@color/colorBlack"
                                 android:textSize="13dp"
                                 android:layout_marginRight="20dp"/>
@@ -222,7 +220,6 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="sans-serif-light"
-                                android:text="21/09/2017"
                                 android:textColor="@color/colorBlack"
                                 android:textSize="13dp"
                                 android:layout_marginRight="20dp"/>
@@ -275,7 +272,6 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="sans-serif-light"
-                                android:text="0123456789"
                                 android:textColor="@color/colorBlack"
                                 android:textSize="13dp"
                                 android:layout_marginRight="20dp"/>
@@ -328,7 +324,6 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="sans-serif-light"
-                                android:text="Nam"
                                 android:textColor="@color/colorBlack"
                                 android:textSize="13dp"
                                 android:layout_marginRight="20dp"/>
@@ -343,7 +338,7 @@
                         android:id="@+id/btnEditInfo"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:text="Thay đổi thông tin"
+                        android:text="@string/editBtn"
                         android:textColor="@color/colorApplication"
                         android:background="@drawable/border_button"
                         android:layout_marginBottom="16dp"
@@ -353,4 +348,11 @@
             </LinearLayout>
         </RelativeLayout>
     </ScrollView>
+    <ProgressBar
+        android:id="@+id/loadingBar"
+        style="?android:attr/progressBarStyleInverse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="invisible"/>
 </RelativeLayout>

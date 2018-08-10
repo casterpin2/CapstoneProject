@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,12 +28,14 @@ public class UserInformationPage extends AppCompatActivity {
     private Button btnEditInfo;
     private final int REQUEST_PROFILE_CODE = 123;
     private APIService apiService;
+    private ProgressBar loadingBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_information_page);
         TweakUI.makeTransparent(this);
         mapping();
+        loadingBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorApplication), android.graphics.PorterDuff.Mode.MULTIPLY);
 
         String name = txtName.getText().toString();
         String phone = txtPhone.getText().toString();
@@ -101,6 +104,7 @@ public class UserInformationPage extends AppCompatActivity {
         txtGender = findViewById(R.id.txt_gender);
         txtDob = findViewById(R.id.txt_dob);
         storeName = findViewById(R.id.storeName);
+        loadingBar = findViewById(R.id.loadingBar);
     }
 
 
@@ -166,11 +170,13 @@ public class UserInformationPage extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            loadingBar.setVisibility(View.VISIBLE);
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+            loadingBar.setVisibility(View.INVISIBLE);
         }
 
         @Override

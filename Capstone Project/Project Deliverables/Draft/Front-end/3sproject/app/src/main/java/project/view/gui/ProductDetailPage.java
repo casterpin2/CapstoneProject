@@ -260,7 +260,7 @@ public class ProductDetailPage extends AppCompatActivity {
                         myRef.child("image_path").setValue(String.valueOf(store.getImage_path()));
                         CartDetail cartDetail  = new CartDetail(product.getProduct_id(),product.getProduct_name(),1,product.getPrice(),product.getImage_path());
                         myRef.child("cartDetail").child(String.valueOf(product.getProduct_id())).setValue(cartDetail);
-                        Toast.makeText(ProductDetailPage.this, "Thêm sản phẩm thành công", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ProductDetailPage.this, "Thêm sản phẩm vào giỏ hàng thành công", Toast.LENGTH_SHORT).show();
                     } else {
                         myRef.child("cartDetail").child(String.valueOf(product.getProduct_id())).addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
@@ -268,7 +268,7 @@ public class ProductDetailPage extends AppCompatActivity {
                                 if (!dataSnapshot.exists()){
                                     CartDetail cartDetail  = new CartDetail(product.getProduct_id(),product.getProduct_name(),1,product.getPrice(),product.getImage_path());
                                     myRef.child("cartDetail").child(String.valueOf(product.getProduct_id())).setValue(cartDetail);
-                                    Toast.makeText(ProductDetailPage.this, "Thêm sản phẩm thành công", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(ProductDetailPage.this, "Thêm sản phẩm vào giỏ hàng thành công", Toast.LENGTH_SHORT).show();
                                 } else {
                                     Toast.makeText(ProductDetailPage.this, "Sản phẩm đã có trong cửa hàng", Toast.LENGTH_SHORT).show();
                                 }

@@ -171,4 +171,10 @@
     <!-- TODO: placeholder text in Nearby Store Page -->
     <string name="noHaveStore">Không có cửa hàng nào</string>
 
+    <!-- TODO: placeholder text in User Information Page -->
+    <string name="editBtn">Thay đổi thông tin</string>
+
+
+
+
 </resources>

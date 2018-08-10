@@ -3,6 +3,11 @@
     android:layout_width="match_parent"
     android:layout_height="50dp"
     >
+    <View
+        android:layout_above="@+id/store"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/grey"/>
     <LinearLayout
         android:id="@+id/store"
         android:layout_width="match_parent"
@@ -65,10 +70,5 @@
 
 
     </LinearLayout>
-    <View
-        android:layout_below="@+id/store"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#000000"/>
 
 </RelativeLayout>
