@@ -147,6 +147,7 @@ public class UserManagementOrderPage extends AppCompatActivity {
     private Order order;
     private RelativeLayout noOrder;
     private UserOrderAdapter adapter;
+    private int userID;
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -163,6 +164,7 @@ public class UserManagementOrderPage extends AppCompatActivity {
                 return true;
             }
         });
+        adapter = new UserOrderAdapter(UserManagementOrderPage.this, orderList,userID);
 
         }
 
