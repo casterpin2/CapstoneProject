@@ -499,7 +499,7 @@ public class SearchProductAddToStore extends AppCompatActivity {
 //            }
 //        });
         Call<List<Item>> call = mAPI.getProducts(query,page,storeID);
-        new GetProduct().execute(call);
+        new ProductListWithName().execute(call);
     }
 
     //lazy loading
@@ -609,7 +609,7 @@ public class SearchProductAddToStore extends AppCompatActivity {
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
-    public class GetProduct extends AsyncTask<Call,List<Item>,Void> {
+    public class ProductListWithName extends AsyncTask<Call,List<Item>,Void> {
         @Override
         protected void onPreExecute() {
             loadingBar.setVisibility(View.VISIBLE);
@@ -671,10 +671,10 @@ public class SearchProductAddToStore extends AppCompatActivity {
         if(requestCode == REQUEST_CODE_SCAN &&  resultCode == RESULT_CODE_SCAN){
              barcode = data.getStringExtra("code");
             Call<List<Item>> call = mAPI.getProductWithBarcode(barcode,storeID);
-            new GetProductWithBarcode().execute(call);
+            new ProductListWithBarcode().execute(call);
         }
     }
-    public class GetProductWithBarcode extends AsyncTask<Call,List<Item>,Void>{
+    public class ProductListWithBarcode extends AsyncTask<Call,List<Item>,Void>{
         @Override
         protected void onPreExecute() {
             super.onPreExecute();

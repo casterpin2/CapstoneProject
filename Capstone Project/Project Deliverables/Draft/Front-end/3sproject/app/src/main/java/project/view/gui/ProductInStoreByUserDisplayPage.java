@@ -57,7 +57,7 @@ public class ProductInStoreByUserDisplayPage extends AppCompatActivity {
         storeID = getIntent().getIntExtra("storeID", -1);
         mAPI = ApiUtils.getAPIService();
         final Call<List<ProductInStore>> call = mAPI.getProductInStore(storeID);
-        new ProductInStoreByUserDisplayPage.Data().execute(call);
+        new ProductInStoreByUserDisplayPage.ProductInStoreList().execute(call);
 
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -104,7 +104,7 @@ public class ProductInStoreByUserDisplayPage extends AppCompatActivity {
         spinnerSort = findViewById(R.id.spinnerSort);
     }
 
-    public class Data extends AsyncTask<Call,List<ProductInStore>,Void> {
+    public class ProductInStoreList extends AsyncTask<Call,List<ProductInStore>,Void> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();

@@ -62,7 +62,7 @@ public class ProductInStoreDisplayPage extends AppCompatActivity {
         list.clear();
         adapter.notifyDataSetChanged();
         final Call<List<ProductInStore>> call = mAPI.getProductInStore(storeID);
-        new NetworkCall().execute(call);
+        new ProductInStoreList().execute(call);
     }
 
     @Override
@@ -90,7 +90,7 @@ public class ProductInStoreDisplayPage extends AppCompatActivity {
         storeID = getIntent().getIntExtra("storeID", -1);
         mAPI = ApiUtils.getAPIService();
     }
-    private class NetworkCall extends AsyncTask<Call, Void, Void> {
+    private class ProductInStoreList extends AsyncTask<Call, Void, Void> {
 
 
         @Override
