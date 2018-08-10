@@ -62,6 +62,7 @@ public class OrderPage extends AppCompatActivity implements OnMapReadyCallback{
     private EditText productQuantity, orderDate, orderTime;
     private SwitchButton switch_button;
     private ImageView productImage;
+    private RelativeLayout productDetailLayout;
 
     private RelativeLayout handleAddressLayout;
 
@@ -83,6 +84,7 @@ public class OrderPage extends AppCompatActivity implements OnMapReadyCallback{
     private GoogleMap mMap;
     private String handleLocationPlace = "";
     private User user;
+    private boolean isCart;
 
     //Calendar
     private int mYear, mMonth, mDay, mHour, mMinute;
@@ -111,7 +113,16 @@ public class OrderPage extends AppCompatActivity implements OnMapReadyCallback{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_fast);
+
+        isCart = getIntent().getBooleanExtra("isCart", true);
         mapping();
+        if (isCart) {
+            productDetailLayout.setVisibility(View.GONE);
+            getSupportActionBar().setTitle("Đặt hàng");
+        } else {
+            productDetailLayout.setVisibility(View.VISIBLE);
+            getSupportActionBar().setTitle("Đặt hàng nhanh");
+        }
         SharedPreferences pre = getSharedPreferences("authentication", Context.MODE_PRIVATE);
         String userJSON = pre.getString("user", "");
         Toast.makeText(this,userJSON,Toast.LENGTH_LONG);
@@ -135,7 +146,7 @@ public class OrderPage extends AppCompatActivity implements OnMapReadyCallback{
 
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorApplication)));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Đặt hàng nhanh");
+
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -326,6 +337,7 @@ public class OrderPage extends AppCompatActivity implements OnMapReadyCallback{
         handleAddressLayout = (RelativeLayout) findViewById(R.id.handleAddressLayout);
         orderDate = (EditText) findViewById(R.id.orderDate);
         orderTime = (EditText) findViewById(R.id.orderTime);
+        productDetailLayout = (RelativeLayout) findViewById(R.id.productDetailLayout);
     }
 
 
