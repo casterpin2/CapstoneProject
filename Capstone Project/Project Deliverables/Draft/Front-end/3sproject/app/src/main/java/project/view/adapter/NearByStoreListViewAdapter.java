@@ -113,17 +113,19 @@ public class NearByStoreListViewAdapter extends BaseAdapter {
                         getContext().startActivity(intent);
                     }
                 });
+                holder.storeName.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        int storeID = store.getId();
+                        Intent toStoreInformation = new Intent(getContext(), StoreInformationPage.class);
+                        toStoreInformation.putExtra("storeID", storeID);
+                        toStoreInformation.putExtra("storeName", store.getName());
+                        getContext().startActivity(toStoreInformation);
+                    }
+                });
             }
 
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int storeID = store.getId();
-                    Intent toStoreInformation = new Intent(getContext(), StoreInformationPage.class);
-                    toStoreInformation.putExtra("storeID", storeID);
-                    getContext().startActivity(toStoreInformation);
-                }
-            });
+
         }
         return view;
     }

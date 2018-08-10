@@ -15,8 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import project.view.gui.OrderDetailManagementPage;
-import project.view.gui.ProductInStoreByUserDisplayPage;
 import project.view.R;
+import project.view.gui.StoreInformationPage;
 import project.view.model.OrderDetail;
 import project.view.util.Formater;
 
@@ -70,7 +70,7 @@ public class OrderManagementAdapter extends ArrayAdapter<OrderDetail> {
             @Override
             public void onClick(View v) {
                 //Toast.makeText(context,"Go to product in store",Toast.LENGTH_SHORT).show();
-                Intent goToProductInStore = new Intent(context, ProductInStoreByUserDisplayPage.class);
+                Intent goToProductInStore = new Intent(context, StoreInformationPage.class);
                 goToProductInStore.putExtra("storeID",order.getStoreID());
                 context.startActivity(goToProductInStore);
             }

@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -78,6 +79,7 @@ public class RegisterStorePage extends AppCompatActivity implements OnMapReadyCa
     double autoLongtitude = 0.0;
     private String result = "";
     private RelativeLayout main_layout;
+    private ProgressBar loadingBar;
     public void setAutoLatitude(double autoLatitude) {
         this.autoLatitude = autoLatitude;
     }
@@ -199,6 +201,7 @@ public class RegisterStorePage extends AppCompatActivity implements OnMapReadyCa
         etStoreName = (EditText) findViewById(R.id.etStoreName);
         main_layout = findViewById(R.id.main_layout);
         iconSwitch = findViewById(R.id.switch_button);
+        loadingBar = findViewById(R.id.loadingBar);
 
         registerBtn = (Button) findViewById(R.id.registerBtn);
 
@@ -499,12 +502,14 @@ public class RegisterStorePage extends AppCompatActivity implements OnMapReadyCa
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            loadingBar.setVisibility(View.VISIBLE);
         }
 
         @Override
         protected void onPostExecute(Store result) {
             super.onPostExecute(result);
             if (result != null) {
+                loadingBar.setVisibility(View.INVISIBLE);
                 Toast.makeText(RegisterStorePage.this, "Đăng kí cửa hàng thành công", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(RegisterStorePage.this, HomePage.class);
                 SharedPreferences preferences = getSharedPreferences("authentication", Context.MODE_PRIVATE);

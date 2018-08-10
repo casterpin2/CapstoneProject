@@ -160,6 +160,7 @@ public class UserManagementOrderPage extends AppCompatActivity {
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference myRef;
     private int userId;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_management);
@@ -174,7 +175,6 @@ public class UserManagementOrderPage extends AppCompatActivity {
                 return true;
             }
         });
-
         }
 
     @Override

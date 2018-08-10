@@ -26,21 +26,14 @@
                 android:scaleType="centerInside"
                 />
             <LinearLayout
+                android:id="@+id/flagSaleLayout"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:layout_alignTop="@id/productImage"
                 android:layout_alignRight="@id/productImage"
                 android:orientation="vertical"
-                android:gravity="center_horizontal"
-                >
-                <!--<TextView-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:padding="10dp"-->
-                <!--android:textSize="12dp"-->
-                <!--android:textColor="@color/colorPrimary"-->
-                <!--android:text="Giảm"-->
-                <!--/>-->
+                android:gravity="center_horizontal">
+
                 <TextView
                     android:id="@+id/promotionPercent"
                     android:layout_height="35dp"
@@ -91,13 +84,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/storeName"
-                android:orientation="horizontal"
-                >
+                android:gravity="right|center"
+                android:orientation="horizontal">
                 <TextView
                     android:id="@+id/originalPrice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingBottom="@dimen/songs_count_padding_bottom"
                     android:paddingLeft="@dimen/album_title_padding"
                     android:paddingRight="@dimen/album_title_padding"
                     android:textSize="@dimen/songs_count"
@@ -108,7 +100,6 @@
                     android:id="@+id/promotionPrice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingBottom="@dimen/songs_count_padding_bottom"
                     android:paddingLeft="@dimen/album_title_padding"
                     android:paddingRight="@dimen/album_title_padding"
                     android:textSize="13dp"
@@ -117,6 +108,17 @@
                     android:textColor="@color/colorPrimary"
                     android:text="100.000"
                     />
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:padding="8dp">
+                    <ImageView
+                        android:id="@+id/imgAddCard"
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:src="@drawable/add_card"/>
+                </RelativeLayout>
             </LinearLayout>
 
         </RelativeLayout>

@@ -2,13 +2,13 @@ package project.view.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import android.graphics.Paint;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -16,134 +16,92 @@ import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.storage.StorageReference;
 import com.google.gson.Gson;
 
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.List;
-import java.util.Locale;
 
 import project.firebase.Firebase;
 import project.view.gui.ProductDetailPage;
 import project.view.model.Product;
 import project.view.model.ProductInStore;
 import project.view.R;
+import project.view.util.Formater;
 
-public class ProductInStoreByUserCustomListViewAdapter extends ArrayAdapter<ProductInStore> {
-    private Context context;
-    private List<ProductInStore> productList;
+public class ProductInStoreByUserCustomListViewAdapter extends RecyclerView.Adapter<ProductInStoreByUserCustomListViewAdapter.MyViewHolder> {
+
+    private Context mContext;
+    private List<ProductInStore> productInStores;
     private StorageReference storageReference = Firebase.getFirebase();
-    private int storeID;
-    private String storeJson;
+    private Formater formater;
 
-    public String getStoreJson() {
-        return storeJson;
+    public class MyViewHolder extends RecyclerView.ViewHolder {
+        public TextView promotionPercent, productName, storeName, originalPrice, promotionPrice;
+        public ImageView productImage;
+        public LinearLayout flagSaleLayout;
+
+        public MyViewHolder(View view) {
+            super(view);
+            promotionPercent = (TextView) view.findViewById(R.id.promotionPercent);
+            productName = (TextView) view.findViewById(R.id.productName);
+            storeName = (TextView) view.findViewById(R.id.storeName);
+            originalPrice = (TextView) view.findViewById(R.id.originalPrice);
+            promotionPrice = (TextView) view.findViewById(R.id.promotionPrice);
+            productImage = (ImageView) view.findViewById(R.id.productImage);
+            flagSaleLayout = view.findViewById(R.id.flagSaleLayout);
+        }
     }
 
 
-    public int getStoreID() {
-        return storeID;
+    public ProductInStoreByUserCustomListViewAdapter(Context mContext, List<ProductInStore> productInStores) {
+        this.mContext = mContext;
+        this.productInStores = productInStores;
+        formater = new Formater();
     }
 
-    public void setStoreID(int storeID) {
-        this.storeID = storeID;
-    }
-
-    @NonNull
     @Override
-    public Context getContext() {
-        return context;
+    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View itemView = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.sale_product_display_page_custom_cardview, parent, false);
+
+        return new ProductInStoreByUserCustomListViewAdapter.MyViewHolder(itemView);
     }
 
-    public void setContext(Context context) {
-        this.context = context;
-    }
-
-    public ProductInStoreByUserCustomListViewAdapter(@NonNull Context context, int resource, @NonNull List<ProductInStore> productList,String storeJson) {
-        super(context, resource, productList);
-        this.context = context;
-        this.productList = productList;
-        this.storeJson = storeJson;
-    }
-    @NonNull
     @Override
-    public View getView(final int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        ProductInStoreByUserCustomListViewAdapter.ViewHolder viewHolder;
-        if (convertView == null) {
-            LayoutInflater inflater = LayoutInflater.from(context);
-            convertView = inflater.inflate(R.layout.product_in_store_by_user_custom_listview, parent, false);
-            viewHolder = new ProductInStoreByUserCustomListViewAdapter.ViewHolder(convertView);
-            convertView.setTag(viewHolder);
-        } else {
-            viewHolder = (ProductInStoreByUserCustomListViewAdapter.ViewHolder)convertView.getTag();
+    public void onBindViewHolder( MyViewHolder holder, int position) {
+        final  ProductInStore productInStore = productInStores.get(position);
+        holder.productName.setText(productInStore.getProductName());
+        holder.storeName.setVisibility(View.INVISIBLE);
+
+        if(productInStore.getPromotionPercent()==0.0){
+            holder.flagSaleLayout.setVisibility(View.INVISIBLE);
+            holder.originalPrice.setVisibility(View.GONE);
+        }else {
+            holder.flagSaleLayout.setVisibility(View.VISIBLE );
+            holder.promotionPercent.setText(formater.formatDoubleToInt( String.valueOf(productInStore.getPromotionPercent())));
+            holder.originalPrice.setText(formater.formatDoubleToMoney( String.valueOf(productInStore.getProductPrice())));
+            holder.originalPrice.setPaintFlags(holder.originalPrice.getPaintFlags()| Paint.STRIKE_THRU_TEXT_FLAG);
         }
 
-        viewHolder.productName.setText(productList.get(position).getProductName());
-        viewHolder.productPromotion.setText(productList.get(position).getPromotionPercent()+" %");
-        viewHolder.productPrice.setText(convertLongToString(productList.get(position).getProductPrice())+ " đ");
-        if (viewHolder.productName.getLineCount() > 3) {
-            int lineEndIndex = viewHolder.productName.getLayout().getLineEnd(2);
-            String text = viewHolder.productName.getText().subSequence(0, lineEndIndex - 3) + "...";
-            viewHolder.productName.setText(text);
-        }
+        holder.promotionPrice.setText(formater.formatDoubleToMoney( String.valueOf(productInStore.getProductPrice() - (productInStore.getProductPrice()* productInStore.getPromotionPercent()/100))));
 
-        Glide.with(context /* context */)
+        Glide.with(mContext /* context */)
                 .using(new FirebaseImageLoader())
-                .load(storageReference.child(productList.get(position).getProductImage()))
-                .into(viewHolder.productImage);
+                .load(storageReference.child(productInStore.getProductImage()))
+                .into(holder.productImage);
 
-        final ProductInStore productInStore = productList.get(position);
-        final Product p = new Product(productInStore.getProductID(),productInStore.getProductName(),productInStore.getBrandName(),productInStore.getDescription(),"",productInStore.getTypeName(),productInStore.getProductImage(),productInStore.getProductPrice(),productInStore.getPromotionPercent());
-        convertView.setOnClickListener(new View.OnClickListener() {
+        holder.productImage.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                boolean isStoreProduct = true;
-                boolean isStoreSee = false;
-                Intent toProductDetail = new Intent(getContext(), ProductDetailPage.class);
-                toProductDetail.putExtra("product",new Gson().toJson(p));
-                toProductDetail.putExtra("isStoreProduct",isStoreProduct);
-                toProductDetail.putExtra("storeID",storeID);
-                toProductDetail.putExtra("isStoreSee",isStoreSee);
-                getContext().startActivity(toProductDetail);
+            public void onClick(View view) {
+//                Intent intent = new Intent(mContext, ProductDetailPage.class);
+//                intent.putExtra("product",new Gson().toJson(saleProduct));
+//                intent.putExtra("isStoreProduct",isStoreProduct);
+//                intent.putExtra("isStoreSee",false);
+//                intent.putExtra("storeID",saleProduct.getStore_id());
+//                intent.putExtra("storeName", saleProduct.getStoreName());
+//                mContext.startActivity(intent);
             }
         });
-        return convertView;
     }
-
-
-
-    private static class ViewHolder {
-        TextView productName;
-        TextView productPrice;
-        TextView productPromotion;
-        ImageView productImage;
-
-        public ViewHolder(View view) {
-            productImage = (ImageView) view.findViewById(R.id.productImage);
-            productName = (TextView) view.findViewById(R.id.productName);
-            productPrice =(TextView) view.findViewById(R.id.productPrice);
-            productPromotion =(TextView) view.findViewById(R.id.productPromotion);
-
-        }
-    }
-
-    public String convertLongToString (long needConvert) {
-        String formattedString = null;
-        try {
-//            String originalString = s.toString();
-//            Long longval;
-//            if (originalString.contains(",")) {
-//                originalString = originalString.replaceAll(",", "");
-//            }
-//            longval = Long.parseLong(originalString);
-
-            DecimalFormat formatter = (DecimalFormat) NumberFormat.getInstance(Locale.US);
-            formatter.applyPattern("#,###,###,###");
-            formattedString = formatter.format(needConvert);
-
-            //setting text after format to EditText
-
-        } catch (NumberFormatException nfe) {
-            nfe.printStackTrace();
-        }
-        return formattedString;
+    @Override
+    public int getItemCount() {
+        return productInStores.size();
     }
 }

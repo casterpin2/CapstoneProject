@@ -50,7 +50,6 @@ public class BrandCustomCardviewAdapter extends RecyclerView.Adapter<BrandCustom
     public BrandCustomCardviewAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.brand_display_page_custom_cardview, parent, false);
-
         return new BrandCustomCardviewAdapter.MyViewHolder(itemView);
     }
 
