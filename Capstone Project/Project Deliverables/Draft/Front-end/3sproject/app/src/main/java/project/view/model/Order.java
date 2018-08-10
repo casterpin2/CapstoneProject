@@ -9,7 +9,25 @@ public class Order {
     private String status;
     private double totalPrice;
     private String deliverTime;
+    private String storeName;
 
+    public String getStoreName() {
+        return storeName;
+    }
+
+    public void setStoreName(String storeName) {
+        this.storeName = storeName;
+    }
+
+    public HashMap<String, CartDetail> getOrderDetail() {
+        return orderDetail;
+    }
+
+    public void setOrderDetail(HashMap<String, CartDetail> orderDetail) {
+        this.orderDetail = orderDetail;
+    }
+
+    private HashMap<String,CartDetail> orderDetail;
     public Order() {
     }
 
