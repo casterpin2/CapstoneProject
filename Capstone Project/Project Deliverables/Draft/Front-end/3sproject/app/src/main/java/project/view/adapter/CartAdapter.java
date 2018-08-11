@@ -51,7 +51,10 @@ public class CartAdapter extends BaseExpandableListAdapter {
     public Context getContext() {
         return context;
     }
-
+    public double getTotal(){
+        getTotalPrice();
+        return totalPrice;
+    }
     public String getTotalPrice() {
         totalPrice = 0;
         for (Cart cart : list){

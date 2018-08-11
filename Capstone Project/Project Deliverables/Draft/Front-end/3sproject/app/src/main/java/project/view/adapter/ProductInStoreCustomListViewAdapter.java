@@ -36,9 +36,9 @@ import retrofit2.Call;
 import retrofit2.Response;
 
 
-public class ProductInStoreCustomListViewAdapter extends ArrayAdapter<ProductInStore> {
+public class ProductInStoreCustomListViewAdapter extends ArrayAdapter<Product> {
     private Context context;
-    private List<ProductInStore> productList;
+    private List<Product> productList;
     private StorageReference storageReference = Firebase.getFirebase();
     private int storeID;
 
@@ -60,7 +60,7 @@ public class ProductInStoreCustomListViewAdapter extends ArrayAdapter<ProductInS
         this.context = context;
     }
 
-    public ProductInStoreCustomListViewAdapter(@NonNull Context context, int resource, @NonNull List<ProductInStore> productList) {
+    public ProductInStoreCustomListViewAdapter(@NonNull Context context, int resource, @NonNull List<Product> productList) {
         super(context, resource, productList);
         this.context = context;
         this.productList = productList;
@@ -79,10 +79,10 @@ public class ProductInStoreCustomListViewAdapter extends ArrayAdapter<ProductInS
             viewHolder = (ProductInStoreCustomListViewAdapter.ViewHolder)convertView.getTag();
         }
 
-        viewHolder.productName.setText(productList.get(position).getProductName());
-        viewHolder.productPromotion.setText(productList.get(position).getPromotionPercent()+" %");
-        viewHolder.productPrice.setText(Formater.formatDoubleToMoney(String.valueOf(productList.get(position).getProductPrice())));
-        viewHolder.editBtn.setTag(productList.get(position).getProductID());
+        viewHolder.productName.setText(productList.get(position).getProduct_name());
+        viewHolder.productPromotion.setText(productList.get(position).getPromotion()+" %");
+        viewHolder.productPrice.setText(Formater.formatDoubleToMoney(String.valueOf(productList.get(position).getPrice())));
+        viewHolder.editBtn.setTag(productList.get(position).getProduct_id());
         if (viewHolder.productName.getLineCount() > 3) {
             int lineEndIndex = viewHolder.productName.getLayout().getLineEnd(2);
             String text = viewHolder.productName.getText().subSequence(0, lineEndIndex - 3) + "...";
@@ -91,7 +91,7 @@ public class ProductInStoreCustomListViewAdapter extends ArrayAdapter<ProductInS
 
         Glide.with(context /* context */)
                 .using(new FirebaseImageLoader())
-                .load(storageReference.child(productList.get(position).getProductImage()))
+                .load(storageReference.child(productList.get(position).getImage_path()))
                 .into(viewHolder.productImage);
 
         viewHolder.deleteBtn.setOnClickListener(new View.OnClickListener() {
@@ -104,7 +104,7 @@ public class ProductInStoreCustomListViewAdapter extends ArrayAdapter<ProductInS
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Log.d("storeid",String.valueOf(storeID));
-                        Call<Boolean> call = ApiUtils.getAPIService().deleteProductInStore(storeID,productList.get(position).getProductID());
+                        Call<Boolean> call = ApiUtils.getAPIService().deleteProductInStore(storeID,productList.get(position).getProduct_id());
                         new DeleteProduct(position).execute(call);
                     }
                 });
@@ -123,26 +123,25 @@ public class ProductInStoreCustomListViewAdapter extends ArrayAdapter<ProductInS
             public void onClick(View v) {
 
                 Intent toEditProductInformationPage = new Intent(getContext(), EditProductInStorePage.class);
-                toEditProductInformationPage.putExtra("productName", productList.get(position).getProductName());
-                toEditProductInformationPage.putExtra("productID", productList.get(position).getProductID());
+                toEditProductInformationPage.putExtra("productName", productList.get(position).getProduct_name());
+                toEditProductInformationPage.putExtra("productID", productList.get(position).getProduct_name());
                 toEditProductInformationPage.putExtra("storeID", storeID);
-                toEditProductInformationPage.putExtra("categoryName", productList.get(position).getCategoryName());
-                toEditProductInformationPage.putExtra("brandName", productList.get(position).getBrandName());
-                toEditProductInformationPage.putExtra("productPrice", productList.get(position).getProductPrice());
-                toEditProductInformationPage.putExtra("promotionPercent", productList.get(position).getPromotionPercent());
-                toEditProductInformationPage.putExtra("productImageLink", productList.get(position).getProductImage());
+                toEditProductInformationPage.putExtra("categoryName", productList.get(position).getCategory_name());
+                toEditProductInformationPage.putExtra("brandName", productList.get(position).getBrand_name());
+                toEditProductInformationPage.putExtra("productPrice", productList.get(position).getPrice());
+                toEditProductInformationPage.putExtra("promotionPercent", productList.get(position).getPromotion());
+                toEditProductInformationPage.putExtra("productImageLink", productList.get(position).getImage_path());
                 context.startActivity(toEditProductInformationPage);
 
             }
         });
-        final ProductInStore productInStore = productList.get(position);
-        final Product p = new Product(productInStore.getProductID(),productInStore.getProductName(),productInStore.getBrandName(),productInStore.getDescription(),"",productInStore.getTypeName(),productInStore.getProductImage(),productInStore.getProductPrice(),productInStore.getPromotionPercent());
+        final Product product = productList.get(position);
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 boolean isStoreProduct = true;
                 Intent toProductDetail = new Intent(getContext(), ProductDetailPage.class);
-                toProductDetail.putExtra("product",new Gson().toJson(p));
+                toProductDetail.putExtra("product",new Gson().toJson(product));
                 toProductDetail.putExtra("isStoreProduct",isStoreProduct);
                 toProductDetail.putExtra("isStoreSee",true);
                 getContext().startActivity(toProductDetail);

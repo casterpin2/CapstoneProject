@@ -174,7 +174,7 @@ public class UserManagementOrderPage extends AppCompatActivity {
             public boolean onGroupClick(ExpandableListView expandableListView, View view, int i, long l) {
                 return true;
             }
-        });
+            });
         }
 
     @Override
@@ -237,8 +237,7 @@ public class UserManagementOrderPage extends AppCompatActivity {
                 list.clear();
                 //buyLinearLayout.setVisibility(View.INVISIBLE);
                 //loadingBar.setVisibility(View.INVISIBLE);
-                //phoneListAdapter.notifyDataSetChanged();
-                //totalCart.setText(phoneListAdapter.getTotalPrice());
+                adapter.notifyDataSetChanged();
                 noOrder.setVisibility(View.VISIBLE);
             }
         }

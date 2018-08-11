@@ -64,7 +64,7 @@ public class UserDaoImpl extends BaseDao implements UserDao {
 "            (SELECT a.apartment_number,a.street,a.county,a.district,a.city,a.longitude,a.latitude,a.distance,b.* FROM\n" +
 "            (SELECT *, ( 6371 * acos( cos( radians(?) ) * cos( radians(latitude) ) * cos( radians(longitude) - radians(?) ) +\n" +
 "            sin( radians(?) ) * sin( radians(latitude) ) ) )\n" +
-"            AS distance FROM Location HAVING distance < 5 ORDER BY distance LIMIT 0 , 20) a, Store b WHERE a.id = b.location_id AND b.status = 1) a, (SELECT store_id,promotion,price FROM Product_Store WHERE product_id = ?) b WHERE a.id = b.store_id) a , User b WHERE a.user_id = b.id) a , Image_Store b WHERE a.id = b.store_id) a , Image b WHERE a.image_id = b.id";
+"            AS distance FROM Location HAVING distance < 5) a, Store b WHERE a.id = b.location_id AND b.status = 1) a, (SELECT store_id,promotion,price FROM Product_Store WHERE product_id = ?) b WHERE a.id = b.store_id) a , User b WHERE a.user_id = b.id) a , Image_Store b WHERE a.id = b.store_id) a , Image b WHERE a.image_id = b.id ORDER BY distance limit 0,5";
 
     @Override
     public List<UserEntites> getAllUserForAdmin() throws SQLException {
@@ -349,9 +349,9 @@ public class UserDaoImpl extends BaseDao implements UserDao {
                 }
                 pre = conn.prepareStatement(INSERT_ACCOUNT_FB);
                 pre.setString(1, user.getFirstName()+" "+user.getLastName());
-                pre.setString(3, user.getEmail());
-                pre.setString(4, FBId);
-                pre.setInt(5, image_id);
+                pre.setString(2, user.getEmail());
+                pre.setString(3, FBId);
+                pre.setInt(4, image_id);
                 if (pre.executeUpdate() == 0) {
                     conn.rollback();
                     conn.setAutoCommit(true);

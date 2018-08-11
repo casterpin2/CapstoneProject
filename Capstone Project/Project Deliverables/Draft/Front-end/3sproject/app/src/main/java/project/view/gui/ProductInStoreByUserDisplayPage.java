@@ -13,17 +13,25 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
+import com.google.firebase.storage.StorageReference;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import project.firebase.Firebase;
 import project.retrofit.APIService;
 import project.retrofit.ApiUtils;
 import project.view.R;
 import project.view.adapter.ProductInStoreByUserCustomListViewAdapter;
+import project.view.model.Product;
 import project.view.model.ProductInStore;
+import project.view.model.Store;
 import project.view.util.CustomInterface;
 import project.view.util.Formater;
 import project.view.util.GridSpacingItemDecoration;
@@ -36,14 +44,17 @@ public class ProductInStoreByUserDisplayPage extends AppCompatActivity {
     private ImageView imgBarCode;
     private int storeID;
     private String storeName;
+    private String phone;
+    private String image_path;
+    private Store store;
     private APIService mAPI;
     private RecyclerView recycler_view;
     private ProductInStoreByUserCustomListViewAdapter productInStoreByUserCustomListViewAdapter;
-    private ImageView backBtn;
+    private ImageView backBtn,backdrop;
     private TextView tvStoreName;
     private Spinner spinnerCategory,spinnerSort;
     private LinearLayout sortLayout;
-
+    private StorageReference storageReference = Firebase.getFirebase();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,10 +64,19 @@ public class ProductInStoreByUserDisplayPage extends AppCompatActivity {
         imgBarCode.setVisibility(View.INVISIBLE);
         CustomInterface.setStatusBarColor(this);
         storeName = getIntent().getStringExtra("storeName");
+        phone = getIntent().getStringExtra("phone");
+        image_path = getIntent().getStringExtra("image_path");
         tvStoreName.setText(storeName);
         storeID = getIntent().getIntExtra("storeID", -1);
+        store = new Store(storeID,storeName,phone,image_path);
+        if (!image_path.isEmpty()){
+            Glide.with(this /* context */)
+                    .using(new FirebaseImageLoader())
+                    .load(storageReference.child(image_path))
+                    .into(backdrop);
+        }
         mAPI = ApiUtils.getAPIService();
-        final Call<List<ProductInStore>> call = mAPI.getProductInStore(storeID);
+        final Call<List<Product>> call = mAPI.getProductInStore(storeID);
         new ProductInStoreByUserDisplayPage.ProductInStoreList().execute(call);
 
         backBtn.setOnClickListener(new View.OnClickListener() {
@@ -102,9 +122,10 @@ public class ProductInStoreByUserDisplayPage extends AppCompatActivity {
         spinnerCategory = findViewById(R.id.spinnerCategory);
         sortLayout = findViewById(R.id.sortLayout);
         spinnerSort = findViewById(R.id.spinnerSort);
+        backdrop = findViewById(R.id.backdrop);
     }
 
-    public class ProductInStoreList extends AsyncTask<Call,List<ProductInStore>,Void> {
+    public class ProductInStoreList extends AsyncTask<Call,List<Product>,Void> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -116,9 +137,9 @@ public class ProductInStoreByUserDisplayPage extends AppCompatActivity {
         }
 
         @Override
-        protected void onProgressUpdate(List<ProductInStore>... values) {
+        protected void onProgressUpdate(List<Product>... values) {
             super.onProgressUpdate(values);
-            final List<ProductInStore> productInStores = values[0];
+            final List<Product> productInStores = values[0];
             spinnerSort.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -136,7 +157,7 @@ public class ProductInStoreByUserDisplayPage extends AppCompatActivity {
                 }
             });
 
-            productInStoreByUserCustomListViewAdapter = new ProductInStoreByUserCustomListViewAdapter(ProductInStoreByUserDisplayPage.this, productInStores);
+            productInStoreByUserCustomListViewAdapter = new ProductInStoreByUserCustomListViewAdapter(ProductInStoreByUserDisplayPage.this, productInStores,store);
             RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(ProductInStoreByUserDisplayPage.this, 2);
             recycler_view.setLayoutManager(mLayoutManager);
             recycler_view.addItemDecoration(new GridSpacingItemDecoration(2, Formater.dpToPx(2,getResources()), true));
@@ -147,9 +168,9 @@ public class ProductInStoreByUserDisplayPage extends AppCompatActivity {
         @Override
         protected Void doInBackground(Call... calls) {
             try {
-                Call<List<ProductInStore>> call = calls[0];
-                Response<List<ProductInStore>> response = call.execute();
-                List<ProductInStore> list = new ArrayList<>();
+                Call<List<Product>> call = calls[0];
+                Response<List<Product>> response = call.execute();
+                List<Product> list = new ArrayList<>();
                 for(int i =0 ; i< response.body().size();i++){
                     list.add(response.body().get(i));
                 }

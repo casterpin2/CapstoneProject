@@ -1,6 +1,8 @@
 package project.view.adapter;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,14 +12,24 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.StorageReference;
+
 import org.w3c.dom.Text;
 
 import java.util.Formatter;
 import java.util.List;
 
+import project.firebase.Firebase;
 import project.view.R;
+import project.view.gui.CartPage;
+import project.view.model.CartDetail;
 import project.view.model.Order;
 import project.view.model.OrderDetail;
+import project.view.model.Product;
 import project.view.util.Formater;
 
 public class UserOrderAdapter extends BaseExpandableListAdapter {
@@ -26,7 +38,7 @@ public class UserOrderAdapter extends BaseExpandableListAdapter {
     private List<Order> list;
     private int userId;
     private boolean isFeedback;
-
+    private StorageReference storageReference = Firebase.getFirebase();
     public UserOrderAdapter(Context context, List<Order> list, int userId) {
         this.context = context;
         this.list = list;
@@ -79,7 +91,7 @@ public class UserOrderAdapter extends BaseExpandableListAdapter {
         String storeName = ((Order) getGroup(groupPosition)).getStoreName();
         String orderDate = ((Order) getGroup(groupPosition)).getDeliverTime();
         double totalOrder = ((Order) getGroup(groupPosition)).getTotalPrice();
-
+        final String orderId = ((Order) getGroup(groupPosition)).getOrderId();
         RelativeLayout waittingOrderLayout = convertView.findViewById(R.id.waittingOrderLayout);
         RelativeLayout processingOrderLayout = convertView.findViewById(R.id.processingOrder);
         RelativeLayout doneOrderWithoutFeedbackLayout = convertView.findViewById(R.id.doneOrderWithoutFeedback);
@@ -93,10 +105,10 @@ public class UserOrderAdapter extends BaseExpandableListAdapter {
             doneOrderWithoutFeedbackLayout.setVisibility(View.INVISIBLE);
             doneOrderWithFeedbackLayout.setVisibility(View.INVISIBLE);
 
-            TextView waittingOrderStore = convertView.findViewById(R.id.waittingOrderStore);
+            TextView waittingOrderStore = convertView.findViewById(R.id.waittingOrderStoreName);
             TextView waittingOrderOrderDate = convertView.findViewById(R.id.waittingOrderOrderDate);
             TextView waittingOrderTotalCast = convertView.findViewById(R.id.waittingOrderTotalCast);
-            Button cancelBtn = convertView.findViewById(R.id.cancel_button);
+            Button cancelBtn = convertView.findViewById(R.id.cancelBtn);
 
             waittingOrderStore.setText(storeName);
             waittingOrderOrderDate.setText(orderDate);
@@ -104,6 +116,28 @@ public class UserOrderAdapter extends BaseExpandableListAdapter {
             cancelBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                    builder.setTitle("Hủy đơn hàng");
+                    builder.setMessage("Bạn có chắc chắn muốn hủy đơn hàng này không?");
+
+                    builder.setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            FirebaseDatabase database = FirebaseDatabase.getInstance();
+                            final DatabaseReference myRef = database.getReference().child("ordersUser").child(String.valueOf(userId)).child(orderId);
+                            myRef.removeValue();
+                            return;
+                        }
+                    });
+
+                    builder.setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            return;
+                        }
+                    });
+                    builder.show();
                     // hủy đơn hàng ở đây
                 }
             });
@@ -114,7 +148,7 @@ public class UserOrderAdapter extends BaseExpandableListAdapter {
             doneOrderWithoutFeedbackLayout.setVisibility(View.INVISIBLE);
             doneOrderWithFeedbackLayout.setVisibility(View.INVISIBLE);
 
-            TextView processingOrderStore = convertView.findViewById(R.id.processingOrderStore);
+            TextView processingOrderStore = convertView.findViewById(R.id.processingOrderStoreName);
             TextView processingOrderOrderDate = convertView.findViewById(R.id.processingOrderOrderDate);
             TextView processingOrderTotalCast = convertView.findViewById(R.id.processingOrderTotalCast);
 
@@ -125,11 +159,11 @@ public class UserOrderAdapter extends BaseExpandableListAdapter {
         } else if (orderStatus.equalsIgnoreCase("done")) {
             waittingOrderLayout.setVisibility(View.INVISIBLE);
             processingOrderLayout.setVisibility(View.INVISIBLE);
-             if (isFeedback == true) {
+             if (((Order) getGroup(groupPosition)).getIsFeedback().equalsIgnoreCase("true")) {
                  doneOrderWithoutFeedbackLayout.setVisibility(View.INVISIBLE);
                  doneOrderWithFeedbackLayout.setVisibility(View.VISIBLE);
 
-                 TextView doneOrderWithFeedbackStore = convertView.findViewById(R.id.doneOrderWithFeedbackStore);
+                 TextView doneOrderWithFeedbackStore = convertView.findViewById(R.id.doneOrderWithFeedbackStoreName);
                  TextView doneOrderWithFeedbackOrderDate = convertView.findViewById(R.id.doneOrderWithFeedbackOrderDate);
                  TextView doneOrderWithFeedbackTotalCast = convertView.findViewById(R.id.doneOrderWithFeedbackTotalCast);
 
@@ -141,7 +175,7 @@ public class UserOrderAdapter extends BaseExpandableListAdapter {
                  doneOrderWithoutFeedbackLayout.setVisibility(View.VISIBLE);
                  doneOrderWithFeedbackLayout.setVisibility(View.INVISIBLE);
 
-                 TextView doneOrderWithoutFeedbackStore = convertView.findViewById(R.id.doneOrderWithoutFeedbackStore);
+                 TextView doneOrderWithoutFeedbackStore = convertView.findViewById(R.id.doneOrderWithoutFeedbackStoreName);
                  TextView doneOrderWithoutFeedbackOrderDate = convertView.findViewById(R.id.doneOrderWithoutFeedbackOrderDate);
                  TextView doneOrderWithoutFeedbackTotalCast = convertView.findViewById(R.id.doneOrderWithoutFeedbackTotalCast);
                  Button feedbackBtn = convertView.findViewById(R.id.feedbackBtn);
@@ -176,14 +210,18 @@ public class UserOrderAdapter extends BaseExpandableListAdapter {
         TextView priceTV = convertView.findViewById(R.id.price);
 
 //        String productImagePath = ((OrderDetail) getChild(groupPosition, childPosition)).get(); // ảnh cửa sản phẩm
-        String productName = ((OrderDetail) getChild(groupPosition, childPosition)).getProductName();
-        int quantity = ((OrderDetail) getChild(groupPosition, childPosition)).getProductQuantity();
-        long price = ((OrderDetail) getChild(groupPosition, childPosition)).getFinalPrice();
+        String productName = ((CartDetail) getChild(groupPosition, childPosition)).getProductName();
+        int quantity = ((CartDetail) getChild(groupPosition, childPosition)).getQuantity();
+        double price = ((CartDetail) getChild(groupPosition, childPosition)).getQuantity() * ((CartDetail) getChild(groupPosition, childPosition)).getUnitPrice();
 
         productNameTV.setText(productName);
         quantityTV.setText(String.valueOf(quantity));
-        priceTV.setText(String.valueOf(price));
-
+        priceTV.setText(CartAdapter.formatDoubleToMoney(String.valueOf(price)));
+        Glide.with(context /* context */)
+                .using(new FirebaseImageLoader())
+                .load(storageReference.child(((CartDetail) getChild(groupPosition, childPosition)).getImage_path()))
+                //.skipMemoryCache(true)
+                .into(productImage);
         return convertView;
     }
 

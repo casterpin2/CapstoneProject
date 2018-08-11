@@ -109,13 +109,15 @@ public class NearByStoreListViewAdapter extends BaseAdapter {
                         getContext().startActivity(intent);
                     }
                 });
-                holder.storeName.setOnClickListener(new View.OnClickListener() {
+                view.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         int storeID = store.getId();
                         Intent toProductInStoreByUser = new Intent(getContext(), ProductInStoreByUserDisplayPage.class);
                         toProductInStoreByUser.putExtra("storeID", storeID);
                         toProductInStoreByUser.putExtra("storeName", store.getName());
+                        toProductInStoreByUser.putExtra("phone", store.getPhone());
+                        toProductInStoreByUser.putExtra("image_path", store.getImage_path());
                         getContext().startActivity(toProductInStoreByUser);
                     }
                 });

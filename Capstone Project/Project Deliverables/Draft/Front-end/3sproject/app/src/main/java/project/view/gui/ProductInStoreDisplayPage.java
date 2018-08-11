@@ -31,6 +31,7 @@ import project.retrofit.ApiUtils;
 import project.view.R;
 import project.view.adapter.ProductInStoreCustomListViewAdapter;
 import project.view.model.NearByStore;
+import project.view.model.Product;
 import project.view.model.ProductInStore;
 import project.view.util.CustomInterface;
 import retrofit2.Call;
@@ -45,7 +46,7 @@ public class ProductInStoreDisplayPage extends AppCompatActivity {
     private int storeID;
     private TextView nullMessage;
     private SearchView searchView;
-    private List<ProductInStore> list = new ArrayList<>();
+    private List<Product> list = new ArrayList<>();
     private RelativeLayout main_layout;
     private ProgressBar loadingBar;
 
@@ -61,7 +62,7 @@ public class ProductInStoreDisplayPage extends AppCompatActivity {
         super.onResume();
         list.clear();
         adapter.notifyDataSetChanged();
-        final Call<List<ProductInStore>> call = mAPI.getProductInStore(storeID);
+        final Call<List<Product>> call = mAPI.getProductInStore(storeID);
         new ProductInStoreList().execute(call);
     }
 
@@ -115,8 +116,8 @@ public class ProductInStoreDisplayPage extends AppCompatActivity {
         protected Void doInBackground(Call... calls) {
             try {
 
-                Call<List<ProductInStore>> call = calls[0];
-                final Response<List<ProductInStore>> response = call.execute();
+                Call<List<Product>> call = calls[0];
+                final Response<List<Product>> response = call.execute();
                 for (int i = 0; i < response.body().size(); i++) {
                     list.add(response.body().get(i));
                 }
@@ -141,7 +142,7 @@ public class ProductInStoreDisplayPage extends AppCompatActivity {
                         theListView. setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                int productID = list.get(position).getProductID();
+                                int productID = list.get(position).getProduct_id();
                                 int isStoreProduct = 0;
                                 Intent toProductDetailPage = new Intent(ProductInStoreDisplayPage.this, MainActivity.class);
                                 toProductDetailPage.putExtra("productID",productID);
@@ -181,7 +182,7 @@ public class ProductInStoreDisplayPage extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.search_view_with_find_icon, menu);
         MenuItem itemSearch = menu.findItem(R.id.search_view);
-        final List<ProductInStore> searchedProduct = new ArrayList<>();
+        final List<Product> searchedProduct = new ArrayList<>();
         searchView = (SearchView) itemSearch.getActionView();
 
 //        searchView.setLayoutParams(new ActionBar.LayoutParams(Gravity.LEFT));
@@ -208,7 +209,7 @@ public class ProductInStoreDisplayPage extends AppCompatActivity {
 
                 } else {
                     for (int i = 0; i < list.size(); i++) {
-                        if(list.get(i).getProductName().toLowerCase().contains(newText.toLowerCase())) {
+                        if(list.get(i).getProduct_name().toLowerCase().contains(newText.toLowerCase())) {
                             searchedProduct.add(list.get(i));
                         }
                     }

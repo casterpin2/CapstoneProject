@@ -28,7 +28,7 @@
             android:layout_marginTop="10dp">
 
             <RelativeLayout
-                android:id="@+id/productDetailLayout"
+                android:id="@+id/productDetailOrderPageLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -149,8 +149,7 @@
                 android:id="@+id/orderBuyProduct"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="120dp"
-                android:gravity="center">
+                android:layout_marginTop="120dp">
 
                 <Button
                     android:id="@+id/decreaseBtn"
@@ -195,7 +194,7 @@
                 android:layout_height="1dp"
                 android:layout_marginTop="125dp"
                 android:background="@color/grey" />
-
+            </RelativeLayout>
 
             <LinearLayout
                 android:id="@+id/orderSum"
@@ -203,7 +202,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
-                android:layout_marginTop="210dp">
+                android:layout_marginTop="10dp"
+                android:layout_below="@+id/productDetailLayout">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -224,7 +224,7 @@
                     android:textStyle="bold" />
 
             </LinearLayout>
-            </RelativeLayout>
+
 
             <RelativeLayout
                 android:layout_width="wrap_content"
@@ -232,7 +232,7 @@
                 android:layout_marginBottom="5dp"
                 android:layout_marginLeft="5dp"
                 android:layout_marginTop="10dp"
-                android:layout_below="@+id/productDetailLayout">
+                android:layout_below="@+id/orderSum">
 
 
                 <android.support.design.widget.TextInputLayout

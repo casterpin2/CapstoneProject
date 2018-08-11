@@ -1,6 +1,7 @@
 package project.view.gui;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -12,6 +13,7 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -105,14 +107,14 @@ public class ProductDetailPage extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         Intent toEditProductInStorePage = new Intent(ProductDetailPage.this, EditProductInStorePage.class);
-//                        toEditProductInStorePage.putExtra("productName", );
-//                        toEditProductInStorePage.putExtra("productID", );
-//                        toEditProductInStorePage.putExtra("storeID", storeID);
-//                        toEditProductInStorePage.putExtra("categoryName", );
-//                        toEditProductInStorePage.putExtra("brandName", );
-//                        toEditProductInStorePage.putExtra("productPrice", );
-//                        toEditProductInStorePage.putExtra("promotionPercent", );
-//                        toEditProductInStorePage.putExtra("productImageLink", );
+                        toEditProductInStorePage.putExtra("productName", product.getProduct_name());
+                        toEditProductInStorePage.putExtra("productID", product.getProduct_id());
+                        toEditProductInStorePage.putExtra("storeID", storeID);
+                        toEditProductInStorePage.putExtra("categoryName", product.getCategory_name());
+                        toEditProductInStorePage.putExtra("brandName", product.getBrand_name());
+                        toEditProductInStorePage.putExtra("productPrice", product.getPrice());
+                        toEditProductInStorePage.putExtra("promotionPercent", product.getPromotion());
+                        toEditProductInStorePage.putExtra("productImageLink", product.getImage_path());
                         startActivity(toEditProductInStorePage);
                     }
                 });
@@ -145,9 +147,27 @@ public class ProductDetailPage extends AppCompatActivity {
                         return;
                     }
                     if (myStore != null){
-                        Call<Store> call = ApiUtils.getAPIService().getStoreById(storeID);
-                        new GetStoreById().execute(call);
 
+                        AlertDialog.Builder builder = new AlertDialog.Builder(ProductDetailPage.this);
+                        builder.setTitle("Thêm sản phẩm vào giỏ hàng");
+                        builder.setMessage("Bạn có chắc chắn muốn thêm sản phẩm này vào cửa hàng không?");
+
+                        builder.setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Call<Store> call = ApiUtils.getAPIService().getStoreById(storeID);
+                                new GetStoreById().execute(call);
+                                return;
+                            }
+                        });
+
+                        builder.setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                return;
+                            }
+                        });
+                        builder.show();
                     }
                 }
             });
@@ -239,54 +259,8 @@ public class ProductDetailPage extends AppCompatActivity {
         @Override
         protected void onPostExecute(final Store store) {
             super.onPostExecute(store);
-            if (store == null){
-                Toast.makeText(ProductDetailPage.this, "Có lỗi xảy ra!!!", Toast.LENGTH_SHORT).show();
-                return;
-            } else {
-                setStore(store);
-            }
-            if (myStore.getId() == store.getId()){
-                Toast.makeText(ProductDetailPage.this, "Cửa hàng của bạn, không thể thêm vào giỏ hàng", Toast.LENGTH_LONG).show();
-                return;
-            }
-            myRef = database.getReference().child("cart").child(String.valueOf(user.getId())).child(String.valueOf(store.getId()));
-            myRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    if (!dataSnapshot.exists()){
-                        myRef.child("phone").setValue(String.valueOf(store.getPhone()));
-                        myRef.child("storeId").setValue(store.getId());
-                        myRef.child("storeName").setValue(String.valueOf(store.getName()));
-                        myRef.child("image_path").setValue(String.valueOf(store.getImage_path()));
-                        CartDetail cartDetail  = new CartDetail(product.getProduct_id(),product.getProduct_name(),1,product.getPrice(),product.getImage_path());
-                        myRef.child("cartDetail").child(String.valueOf(product.getProduct_id())).setValue(cartDetail);
-                        Toast.makeText(ProductDetailPage.this, "Thêm sản phẩm vào giỏ hàng thành công", Toast.LENGTH_SHORT).show();
-                    } else {
-                        myRef.child("cartDetail").child(String.valueOf(product.getProduct_id())).addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                if (!dataSnapshot.exists()){
-                                    CartDetail cartDetail  = new CartDetail(product.getProduct_id(),product.getProduct_name(),1,product.getPrice(),product.getImage_path());
-                                    myRef.child("cartDetail").child(String.valueOf(product.getProduct_id())).setValue(cartDetail);
-                                    Toast.makeText(ProductDetailPage.this, "Thêm sản phẩm vào giỏ hàng thành công", Toast.LENGTH_SHORT).show();
-                                } else {
-                                    Toast.makeText(ProductDetailPage.this, "Sản phẩm đã có trong cửa hàng", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                            }
-                        });
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            });
+            setStore(store);
+            addProductToCart(store);
         }
 
         @Override
@@ -307,7 +281,57 @@ public class ProductDetailPage extends AppCompatActivity {
         }
     }
 
-    private  void setStore(Store store) {
+    private void setStore(Store store) {
         this.store = store;
+    }
+
+    private void addProductToCart(Store store1){
+        if (store == null){
+            Toast.makeText(ProductDetailPage.this, "Có lỗi xảy ra!!!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (myStore.getId() == store.getId()){
+            Toast.makeText(ProductDetailPage.this, "Cửa hàng của bạn, không thể thêm vào giỏ hàng", Toast.LENGTH_LONG).show();
+            return;
+        }
+        myRef = database.getReference().child("cart").child(String.valueOf(user.getId())).child(String.valueOf(store.getId()));
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (!dataSnapshot.exists()){
+                    myRef.child("phone").setValue(String.valueOf(store.getPhone()));
+                    myRef.child("storeId").setValue(store.getId());
+                    myRef.child("storeName").setValue(String.valueOf(store.getName()));
+                    myRef.child("image_path").setValue(String.valueOf(store.getImage_path()));
+                    CartDetail cartDetail  = new CartDetail(product.getProduct_id(),product.getProduct_name(),1,product.getPrice(),product.getImage_path());
+                    myRef.child("cartDetail").child(String.valueOf(product.getProduct_id())).setValue(cartDetail);
+                    Toast.makeText(ProductDetailPage.this, "Thêm sản phẩm vào giỏ hàng thành công", Toast.LENGTH_SHORT).show();
+                } else {
+                    myRef.child("cartDetail").child(String.valueOf(product.getProduct_id())).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if (!dataSnapshot.exists()){
+                                CartDetail cartDetail  = new CartDetail(product.getProduct_id(),product.getProduct_name(),1,product.getPrice(),product.getImage_path());
+                                myRef.child("cartDetail").child(String.valueOf(product.getProduct_id())).setValue(cartDetail);
+                                Toast.makeText(ProductDetailPage.this, "Thêm sản phẩm vào giỏ hàng thành công", Toast.LENGTH_SHORT).show();
+                            } else {
+                                myRef.child("cartDetail").child(String.valueOf(product.getProduct_id())).child("quantity").setValue((long)dataSnapshot.child("quantity").getValue()+1);
+                                Toast.makeText(ProductDetailPage.this, "Thêm sản phẩm vào giỏ hàng thành công", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 }

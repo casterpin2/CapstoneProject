@@ -1,8 +1,10 @@
 package project.view.gui;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -117,36 +119,10 @@ public class CartPage extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (list.size() == 0) return;
-//                final DatabaseReference reference = database.getReference().child("ordersUser").child(String.valueOf(userId));
-//                reference.addListenerForSingleValueEvent(new ValueEventListener() {
-//                    @Override
-//                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                        for (Cart cart : list) {
-//                            String key = reference.push().getKey();
-//                            DatabaseReference re = reference.child(key);
-//                            re.child("storeId").setValue(cart.getStoreId());
-//                            re.child("storeName").setValue(cart.getStoreName());
-//                            re.child("status").setValue("waitting");
-//                            re.child("phone").setValue(cart.getPhone());
-//                            re.child("isFeedback").setValue("false");
-//                            re.child("image_path").setValue(cart.getImage_path());
-//                            re.child("totalPrice").setValue(phoneListAdapter.getTotal());
-//                            re.child("orderDetail").setValue(cart.getCartDetail());
-//
-//                        }
-//                        Toast.makeText(CartPage.this,"Thêm sản phẩm thành công",Toast.LENGTH_LONG).show();
-//                        Intent intent = new Intent(CartPage.this,UserManagementOrderPage.class);
-//                        intent.putExtra("userID",userId);
-//                        startActivity(intent);
-//                    }
-//
-//                    @Override
-//                    public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//                    }
-//                });
+
                 Intent intent = new Intent(CartPage.this,OrderPage.class);
                 intent.putExtra("isCart",true);
+                intent.putExtra("price",totalCart.getText().toString());
                 startActivityForResult(intent,1);
             }
         });
@@ -157,8 +133,55 @@ public class CartPage extends AppCompatActivity {
 
         if (requestCode == 1) {
             if (resultCode == Activity.RESULT_OK) {
-                String address = data.getStringExtra("address");
-                Toast.makeText(this, address, Toast.LENGTH_LONG).show();
+                final String address = data.getStringExtra("address");
+                final String deliverTime = data.getStringExtra("deliverTime");
+                String userName = data.getStringExtra("userName");
+                String phone = data.getStringExtra("phone");
+                final DatabaseReference reference = database.getReference().child("ordersUser").child(String.valueOf(userId));
+                reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        for (Cart cart : list) {
+                            String key = reference.push().getKey();
+                            DatabaseReference re = reference.child(key);
+                            re.child("address").setValue(address);
+                            re.child("deliverTime").setValue(deliverTime);
+                            re.child("storeId").setValue(cart.getStoreId());
+                            re.child("storeName").setValue(cart.getStoreName());
+                            re.child("status").setValue("waitting");
+                            re.child("phone").setValue(cart.getPhone());
+                            re.child("isFeedback").setValue("false");
+                            re.child("image_path").setValue(cart.getImage_path());
+                            Object[] cartDetails = cart.getCartDetail().values().toArray();
+                            double price = 0;
+                            for(int i = 0 ; i < cartDetails.length;i++) {
+                                CartDetail cartDetail = (CartDetail)cartDetails[i];
+                                price += cartDetail.getUnitPrice() * cartDetail.getQuantity();
+                            }
+                            re.child("totalPrice").setValue(price);
+                            re.child("orderDetail").setValue(cart.getCartDetail());
+
+                        }
+                        DatabaseReference re = database.getReference().child("cart").child(String.valueOf(userId));
+                        re.removeValue();
+                        AlertDialog.Builder builder = new AlertDialog.Builder(CartPage.this);
+                        builder.setTitle("Đặt hàng");
+                        builder.setMessage("Bạn đã đặt hàng thành công");
+
+                        builder.setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                return;
+                            }
+                        });
+                        builder.show();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
             }
             else{
                 Toast.makeText(this, "Có lỗi xảy ra!!!", Toast.LENGTH_SHORT).show();
@@ -173,7 +196,7 @@ public class CartPage extends AppCompatActivity {
 
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
-            //checkoutAllBtn.setEnabled(false);
+            checkoutAllBtn.setEnabled(false);
             list.clear();
             loadingBar.setVisibility(View.VISIBLE);
             if (dataSnapshot.exists()) {
@@ -193,7 +216,7 @@ public class CartPage extends AppCompatActivity {
                         totalCart.setVisibility(View.INVISIBLE);
                     }
                 }
-                //checkoutAllBtn.setEnabled(true);
+                checkoutAllBtn.setEnabled(true);
             } else {
                 list.clear();
                 buyLinearLayout.setVisibility(View.INVISIBLE);
