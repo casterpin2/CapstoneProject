@@ -486,7 +486,7 @@ public class RegisterStorePage extends AppCompatActivity implements OnMapReadyCa
             return location;
         }
     }
-    private class CallAPI extends AsyncTask<Call, Void, Store> {
+    private class RegisterStore extends AsyncTask<Call, Void, Store> {
 
 
         @Override
@@ -551,6 +551,6 @@ public class RegisterStorePage extends AppCompatActivity implements OnMapReadyCa
         Log.d("location",map.toString());
         mAPI = ApiUtils.getAPIService();
         final Call<Store> call = mAPI.registerStore(map);
-        new CallAPI().execute(call);
+        new RegisterStore().execute(call);
     }
 }

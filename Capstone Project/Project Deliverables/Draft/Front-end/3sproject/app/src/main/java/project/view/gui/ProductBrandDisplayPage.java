@@ -64,7 +64,7 @@ public class ProductBrandDisplayPage extends AppCompatActivity {
         brandName = getIntent().getStringExtra("brandName");
         apiService = APIService.retrofit.create(APIService.class);
         final Call<List<Product>> call = apiService.getProductBrand(brandID);
-        new GetData().execute(call);
+        new BrandList().execute(call);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorApplication)));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(brandName);
@@ -124,7 +124,7 @@ public class ProductBrandDisplayPage extends AppCompatActivity {
         return productList;
     }
 
-    private class GetData extends AsyncTask<Call, Void, Void> {
+    private class BrandList extends AsyncTask<Call, Void, Void> {
         @Override
         protected void onPreExecute() {
             loadingBar.setVisibility(View.VISIBLE);

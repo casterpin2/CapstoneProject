@@ -42,7 +42,7 @@ public class UserInformationPage extends AppCompatActivity {
         apiService = APIService.retrofit.create(APIService.class);
        // Toast.makeText(this, this.getIntent().getIntExtra("userID",0)+"", Toast.LENGTH_LONG).show();
 
-        Call<User> call = apiService.getInfotmation(getIntent().getIntExtra("userID",0));
+        Call<User> call = apiService.getInformation(getIntent().getIntExtra("userID",0));
         new UserDataClass().execute(call);
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
