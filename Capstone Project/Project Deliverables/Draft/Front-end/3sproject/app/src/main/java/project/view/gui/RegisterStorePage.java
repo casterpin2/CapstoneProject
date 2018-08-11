@@ -452,7 +452,6 @@ public class RegisterStorePage extends AppCompatActivity implements OnMapReadyCa
             location.setDistrict(location1.getDistrict());
             location.setCounty(location1.getCounty());
             location.setApartment_number(location1.getApartment_number());
-            Toast.makeText(RegisterStorePage.this, location.toString(), Toast.LENGTH_LONG).show();
             super.onPostExecute(location1);
         }
 

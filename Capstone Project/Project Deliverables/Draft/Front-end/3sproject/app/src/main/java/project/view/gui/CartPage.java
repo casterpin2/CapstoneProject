@@ -1,5 +1,6 @@
 package project.view.gui;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -14,6 +15,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -23,11 +27,14 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import project.googleMapAPI.GoogleMapJSON;
+import project.retrofit.ApiUtils;
 import project.view.R;
 import project.view.adapter.CartAdapter;
 import project.view.model.Cart;
 import project.view.model.CartDetail;
 import project.view.util.CustomInterface;
+import retrofit2.Call;
 
 public class CartPage extends AppCompatActivity {
     private ExpandableListView lvPhones;
@@ -110,37 +117,55 @@ public class CartPage extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (list.size() == 0) return;
-                final DatabaseReference reference = database.getReference().child("ordersUser").child(String.valueOf(userId));
-                reference.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        for (Cart cart : list) {
-                            String key = reference.push().getKey();
-                            DatabaseReference re = reference.child(key);
-                            re.child("storeId").setValue(cart.getStoreId());
-                            re.child("storeName").setValue(cart.getStoreName());
-                            re.child("status").setValue("waitting");
-                            re.child("phone").setValue(cart.getPhone());
-                            re.child("isFeedback").setValue("false");
-                            re.child("image_path").setValue(cart.getImage_path());
-                            re.child("totalPrice").setValue(phoneListAdapter.getTotal());
-                            re.child("orderDetail").setValue(cart.getCartDetail());
-
-                        }
-                        Toast.makeText(CartPage.this,"Thêm sản phẩm thành công",Toast.LENGTH_LONG).show();
-                        Intent intent = new Intent(CartPage.this,UserManagementOrderPage.class);
-                        intent.putExtra("userID",userId);
-                        startActivity(intent);
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
+//                final DatabaseReference reference = database.getReference().child("ordersUser").child(String.valueOf(userId));
+//                reference.addListenerForSingleValueEvent(new ValueEventListener() {
+//                    @Override
+//                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                        for (Cart cart : list) {
+//                            String key = reference.push().getKey();
+//                            DatabaseReference re = reference.child(key);
+//                            re.child("storeId").setValue(cart.getStoreId());
+//                            re.child("storeName").setValue(cart.getStoreName());
+//                            re.child("status").setValue("waitting");
+//                            re.child("phone").setValue(cart.getPhone());
+//                            re.child("isFeedback").setValue("false");
+//                            re.child("image_path").setValue(cart.getImage_path());
+//                            re.child("totalPrice").setValue(phoneListAdapter.getTotal());
+//                            re.child("orderDetail").setValue(cart.getCartDetail());
+//
+//                        }
+//                        Toast.makeText(CartPage.this,"Thêm sản phẩm thành công",Toast.LENGTH_LONG).show();
+//                        Intent intent = new Intent(CartPage.this,UserManagementOrderPage.class);
+//                        intent.putExtra("userID",userId);
+//                        startActivity(intent);
+//                    }
+//
+//                    @Override
+//                    public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                    }
+//                });
+                Intent intent = new Intent(CartPage.this,OrderPage.class);
+                intent.putExtra("isCart",true);
+                startActivityForResult(intent,1);
             }
         });
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == 1) {
+            if (resultCode == Activity.RESULT_OK) {
+                String address = data.getStringExtra("address");
+                Toast.makeText(this, address, Toast.LENGTH_LONG).show();
+            }
+            else{
+                Toast.makeText(this, "Có lỗi xảy ra!!!", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
 
     private ValueEventListener changeListener = new ValueEventListener() {
 
@@ -148,7 +173,7 @@ public class CartPage extends AppCompatActivity {
 
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
-            checkoutAllBtn.setEnabled(false);
+            //checkoutAllBtn.setEnabled(false);
             list.clear();
             loadingBar.setVisibility(View.VISIBLE);
             if (dataSnapshot.exists()) {
@@ -168,7 +193,7 @@ public class CartPage extends AppCompatActivity {
                         totalCart.setVisibility(View.INVISIBLE);
                     }
                 }
-                checkoutAllBtn.setEnabled(true);
+                //checkoutAllBtn.setEnabled(true);
             } else {
                 list.clear();
                 buyLinearLayout.setVisibility(View.INVISIBLE);
