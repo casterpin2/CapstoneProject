@@ -216,7 +216,7 @@ public class UserOrderAdapter extends BaseExpandableListAdapter {
 
         productNameTV.setText(productName);
         quantityTV.setText(String.valueOf(quantity));
-        priceTV.setText(CartAdapter.formatDoubleToMoney(String.valueOf(price)));
+        priceTV.setText(Formater.formatDoubleToMoney(String.valueOf(price)));
         Glide.with(context /* context */)
                 .using(new FirebaseImageLoader())
                 .load(storageReference.child(((CartDetail) getChild(groupPosition, childPosition)).getImage_path()))
