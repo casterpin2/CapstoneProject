@@ -61,7 +61,7 @@ import project.view.util.CustomInterface;
 import retrofit2.Call;
 import retrofit2.Response;
 
-public class NearbyStorePage extends AppCompatActivity implements OnMapReadyCallback {
+public class NearbyStorePage extends BasePage implements OnMapReadyCallback {
     private ListView storeListView;
     private NearByStoreListViewAdapter adapter;
     private List<String> nearByStore = new ArrayList<>();

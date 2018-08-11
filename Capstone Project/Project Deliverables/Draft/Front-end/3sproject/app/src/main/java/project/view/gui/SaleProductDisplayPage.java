@@ -31,7 +31,7 @@ import project.view.model.Product;
 import project.view.util.CustomInterface;
 import project.view.util.GridSpacingItemDecoration;
 
-public class SaleProductDisplayPage extends AppCompatActivity {
+public class SaleProductDisplayPage extends BasePage {
 
     private RecyclerView recyclerView;
     private SaleProductCustomCardviewAdapter adapter;

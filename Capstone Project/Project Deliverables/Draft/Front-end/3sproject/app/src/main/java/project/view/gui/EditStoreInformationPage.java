@@ -32,7 +32,7 @@ import project.view.R;
 import project.view.model.StoreInformation;
 import project.view.util.CustomInterface;
 
-public class EditStoreInformationPage extends AppCompatActivity implements OnMapReadyCallback {
+public class EditStoreInformationPage extends BasePage implements OnMapReadyCallback {
     private EditText etStoreName, etPhone;
     private TextView handleAddressText;
     private RelativeLayout handleAddressLayout,main_layout;

@@ -23,7 +23,7 @@ import project.view.util.TweakUI;
 import retrofit2.Call;
 import retrofit2.Response;
 
-public class UserInformationPage extends AppCompatActivity {
+public class UserInformationPage extends BasePage {
     private TextView txtName, txtPhone, txtEmail, txtGender, txtDob, storeName;
     private ImageView btnBack;
     private Button btnEditInfo;

@@ -1,8 +1,11 @@
 package project.view.gui;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -17,7 +20,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
-
+import android.provider.Settings.Secure;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookAuthorizationException;
@@ -26,6 +29,11 @@ import com.facebook.FacebookException;
 import com.facebook.Profile;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -53,6 +61,9 @@ public class LoginPage extends AppCompatActivity {
     private CallbackManager callbackManager;
     private ProgressBar loadingBar;
     private RelativeLayout  main_layout;
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    DatabaseReference myRef;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -250,15 +261,40 @@ public class LoginPage extends AppCompatActivity {
                 //Toast.makeText(LoginPage.this, LoginPage.login.getUser().toString(), Toast.LENGTH_LONG).show();
                 User user = result.getUser();
                 Store store = result.getStore();
-                Intent toHomePage = new Intent(LoginPage.this, HomePage.class);
+                savingPreferences(user,store);
+                final Intent toHomePage = new Intent(LoginPage.this, HomePage.class);
                 Bundle bundle = new Bundle();
                 bundle.putString("user",new Gson().toJson(user));
                 bundle.putString("store",new Gson().toJson(store));
                 toHomePage.putExtras(bundle);
                 //Glide.get(LoginPage.this).clearDiskCache();
-                startActivity(toHomePage);
-                finishAffinity();
-                finish();
+                final String android_id = Secure.getString(LoginPage.this.getContentResolver(),
+                        Secure.ANDROID_ID);
+                myRef = database.getReference().child("authentication").child(String.valueOf(user.getId())).child("device_id");
+                myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            if (dataSnapshot.getValue(String.class).equalsIgnoreCase(android_id))
+                                return;
+                            myRef.setValue(android_id);
+                            startActivity(toHomePage);
+                            finishAffinity();
+                            finish();
+                        } else{
+                            myRef.setValue(android_id);
+                            startActivity(toHomePage);
+                            finishAffinity();
+                            finish();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
             }
             loadingBar.setVisibility(View.INVISIBLE);
             super.onPostExecute(result);
@@ -283,5 +319,13 @@ public class LoginPage extends AppCompatActivity {
 
             return result;
         }
+    }
+
+    private void savingPreferences(User user , Store store){
+            SharedPreferences pre = getSharedPreferences("authentication", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = pre.edit();
+            editor.putString("user", new Gson().toJson(user));
+            editor.putString("store", new Gson().toJson(store));
+            editor.commit();
     }
 }

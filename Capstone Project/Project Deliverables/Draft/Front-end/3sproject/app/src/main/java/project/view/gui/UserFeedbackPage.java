@@ -19,7 +19,7 @@ import project.view.R;
 import project.view.util.CustomInterface;
 import project.view.util.TweakUI;
 
-public class UserFeedbackPage extends AppCompatActivity {
+public class UserFeedbackPage extends BasePage {
     private LinearLayout main_layout;
     private boolean isSmile = false;
     protected boolean isSad = false;

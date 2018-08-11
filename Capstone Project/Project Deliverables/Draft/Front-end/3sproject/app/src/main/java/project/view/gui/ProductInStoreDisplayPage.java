@@ -37,7 +37,7 @@ import project.view.util.CustomInterface;
 import retrofit2.Call;
 import retrofit2.Response;
 
-public class ProductInStoreDisplayPage extends AppCompatActivity {
+public class ProductInStoreDisplayPage extends BasePage {
     private ProductInStoreCustomListViewAdapter adapter;
     private ListView theListView;
     private Button addNewBtn;

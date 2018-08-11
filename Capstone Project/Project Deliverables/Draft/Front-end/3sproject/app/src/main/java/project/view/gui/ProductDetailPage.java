@@ -56,7 +56,7 @@ import project.view.util.Formater;
 import retrofit2.Call;
 import retrofit2.Response;
 
-public class ProductDetailPage extends AppCompatActivity {
+public class ProductDetailPage extends BasePage {
     private ImageView productImage;
     private TextView salePriceText, productPriceText, promotionPercentText, productNameText, categoryNameText, brandNameText, productDescText;
     private TextView productNotInStoreName, productNotInStoreCategoryName, productNotInStoreBrandName, productNotInStoreDesc, storeNameTV;

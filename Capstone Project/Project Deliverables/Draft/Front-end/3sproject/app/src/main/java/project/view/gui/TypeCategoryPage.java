@@ -43,7 +43,7 @@ import android.widget.ImageButton;
 import retrofit2.Response;
 import project.view.util.GridSpacingItemDecoration;
 
-public class TypeCategoryPage extends AppCompatActivity {
+public class TypeCategoryPage extends BasePage {
 
     private RecyclerView recyclerView;
     private TypePageListViewAdapter adapter;

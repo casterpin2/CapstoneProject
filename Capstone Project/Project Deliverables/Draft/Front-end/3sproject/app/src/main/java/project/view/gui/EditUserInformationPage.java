@@ -46,7 +46,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class EditUserInformationPage extends AppCompatActivity {
+public class EditUserInformationPage extends BasePage {
     private static final String TAG = "EditUserInformationPage";
 
     private EditText userNameText, phoneText, emailText, dobText;

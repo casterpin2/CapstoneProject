@@ -22,7 +22,7 @@ import project.view.model.Product;
 import retrofit2.Call;
 import retrofit2.Response;
 
-public class ProductTypeDisplayPage extends AppCompatActivity {
+public class ProductTypeDisplayPage extends BasePage {
 
     public List<Product> productList;
     private ListView theListView;

@@ -21,7 +21,7 @@ import project.view.fragment.manageOrder.WaitingOrderStore;
 import project.view.R;
 import project.view.util.CustomInterface;
 
-public class StoreManagementOrderPage extends AppCompatActivity {
+public class StoreManagementOrderPage extends BasePage {
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
 

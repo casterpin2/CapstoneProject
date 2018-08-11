@@ -150,7 +150,7 @@ import project.view.util.CustomInterface;
 //    }
 //}
 
-public class UserManagementOrderPage extends AppCompatActivity {
+public class UserManagementOrderPage extends BasePage {
 
     private ExpandableListView orderListView;
     private List<Order> list = new ArrayList<>();

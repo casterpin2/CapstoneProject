@@ -63,7 +63,7 @@ import retrofit2.Call;
 import retrofit2.Response;
 
 
-public class OrderPage extends AppCompatActivity implements OnMapReadyCallback{
+public class OrderPage extends BasePage implements OnMapReadyCallback{
     //    int minteger = 1;
 //    int max = 20000;
     private TextView productName, productPrice, salePrice, promotionPercent, sumOrder;

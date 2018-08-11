@@ -65,7 +65,7 @@ import project.view.util.CustomInterface;
 import retrofit2.Call;
 import retrofit2.Response;
 
-public class SearchProductAddToStore extends AppCompatActivity {
+public class SearchProductAddToStore extends BasePage {
 
 
     private static final int RESULT_CODE_SCAN=220;

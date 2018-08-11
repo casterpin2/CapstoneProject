@@ -40,7 +40,7 @@ import project.view.util.ProductInStoreCompareableIncrease;
 import retrofit2.Call;
 import retrofit2.Response;
 
-public class ProductInStoreByUserDisplayPage extends AppCompatActivity {
+public class ProductInStoreByUserDisplayPage extends BasePage {
     private ImageView imgBarCode;
     private int storeID;
     private String storeName;

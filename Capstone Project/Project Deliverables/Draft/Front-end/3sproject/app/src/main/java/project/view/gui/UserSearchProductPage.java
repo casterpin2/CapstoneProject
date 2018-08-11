@@ -51,7 +51,7 @@ import project.view.util.CustomInterface;
 import retrofit2.Call;
 import retrofit2.Response;
 
-public class UserSearchProductPage extends AppCompatActivity {
+public class UserSearchProductPage extends BasePage {
 
     private SearchView searchView;
     private ListView productListView;

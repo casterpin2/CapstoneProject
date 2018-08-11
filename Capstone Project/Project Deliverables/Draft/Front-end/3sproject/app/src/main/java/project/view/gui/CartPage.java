@@ -38,7 +38,7 @@ import project.view.model.CartDetail;
 import project.view.util.CustomInterface;
 import retrofit2.Call;
 
-public class CartPage extends AppCompatActivity {
+public class CartPage extends BasePage {
     private ExpandableListView lvPhones;
     private List<Cart> list = new ArrayList<>();
     private Cart cart;

@@ -43,7 +43,7 @@ import project.view.util.GridSpacingItemDecoration;
 import retrofit2.Call;
 import retrofit2.Response;
 
-public class BrandDisplayPage extends AppCompatActivity {
+public class BrandDisplayPage extends BasePage {
 
     private CoordinatorLayout main_layout;
     private RecyclerView recyclerView;

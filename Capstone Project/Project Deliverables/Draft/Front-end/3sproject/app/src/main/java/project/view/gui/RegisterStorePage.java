@@ -59,7 +59,7 @@ import project.view.util.Regex;
 import retrofit2.Call;
 import retrofit2.Response;
 
-public class RegisterStorePage extends AppCompatActivity implements OnMapReadyCallback {
+public class RegisterStorePage extends BasePage implements OnMapReadyCallback {
     private final String GOOGLE_MAP_KEY = "AIzaSyB_Wiwy7Mu3fjzCHO_7E5dn5n1n6ZaxaWs";
     final static int REQUEST_LOCATION = 1;
     int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;

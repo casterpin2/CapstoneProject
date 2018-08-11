@@ -21,7 +21,7 @@ import project.view.fragment.home.UserFragment;
 import project.view.adapter.ViewPagerAdapter;
 
 
-public class HomePage extends AppCompatActivity{
+public class HomePage extends BasePage{
 
     BottomNavigationView bottomNavigationView;
     private ViewPager viewPager;
@@ -107,15 +107,6 @@ public class HomePage extends AppCompatActivity{
         if (bundle.getString("user") != null) {
             userJSON = bundle.getString("user");
             storeJSON = bundle.getString("store");
-            //tạo đối tượng getSharedPreferences
-            SharedPreferences pre = getSharedPreferences("authentication", Context.MODE_PRIVATE);
-            //tạo đối tượng Editor để lưu thay đổi
-            SharedPreferences.Editor editor = pre.edit();
-            //lưu vào editor
-            editor.putString("user", bundle.getString("user"));
-            editor.putString("store", bundle.getString("store"));
-            //chấp nhận lưu xuống file
-            editor.commit();
         }
     }
 

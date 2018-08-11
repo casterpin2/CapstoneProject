@@ -9,7 +9,7 @@ import android.view.MenuItem;
 
 import project.view.R;
 
-public class OrderDetailManagementPage extends AppCompatActivity {
+public class OrderDetailManagementPage extends BasePage {
     private Toolbar toolbar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {

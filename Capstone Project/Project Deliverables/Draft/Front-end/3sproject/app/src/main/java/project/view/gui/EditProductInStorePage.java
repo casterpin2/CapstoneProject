@@ -40,7 +40,7 @@ import project.view.util.Formater;
 import retrofit2.Call;
 import retrofit2.Response;
 
-public class EditProductInStorePage extends AppCompatActivity {
+public class EditProductInStorePage extends BasePage {
 
     private TextView productName,categoryName, brandName, promotionPercentErrorMessage, productPriceErrorMessage;
     private EditText productPrice, promotionPercent;

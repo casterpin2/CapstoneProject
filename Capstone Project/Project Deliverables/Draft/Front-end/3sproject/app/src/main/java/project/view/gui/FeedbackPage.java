@@ -13,7 +13,7 @@ import com.sackcentury.shinebuttonlib.ShineButton;
 
 import project.view.R;
 
-public class FeedbackPage extends AppCompatActivity {
+public class FeedbackPage extends BasePage {
     private ShineButton like, smile;
     private EditText content;
     private Button sendBtn, skipBtn;
