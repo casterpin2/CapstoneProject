@@ -38,6 +38,7 @@
                     android:background="#90000000"
                     android:orientation="vertical"
                     android:layout_alignParentBottom="true">
+
                     <TextView
                         android:id="@+id/tv_store_name"
                         android:layout_width="wrap_content"
@@ -96,7 +97,9 @@
                                 <!--android:textSize="14dp"/>-->
                         <!--</LinearLayout>-->
                     <!--</LinearLayout>-->
+
                 </LinearLayout>
+
             </RelativeLayout>
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
@@ -120,6 +123,6 @@
             </android.support.v7.widget.Toolbar>
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
-    <include layout="@layout/content_main" />
+    <include layout="@layout/content_with_filter" />
 
 </android.support.design.widget.CoordinatorLayout>

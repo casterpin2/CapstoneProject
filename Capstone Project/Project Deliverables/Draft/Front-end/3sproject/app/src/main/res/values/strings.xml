@@ -85,7 +85,7 @@
     <string name="error_validate_name">Tên hiển thị không chứa kí tự đặc biêt, có nhiều hơn 6 kí tự và ít hơn 30 kí tự</string>
     <string name="error_validate_username_exists">Tên người dùng đã tồn tại</string>
     <string name="error_validate_password">Mật khẩu phải từ 8 ký tự bao gồm ký tự đặc biệt, ký tự chữ số</string>
-    <string name="error_validate_phone">Số điện thoại không hợp lệ</string>
+    <string name="error_validate_phone">Số điện thoại phải có độ dài 10 kí tự  hoặc 11 kí tự</string>
     <string name="error_validate_email">Email không hợp lệ</string>
     <string name="error_confirm_password">Mật khẩu nhập lại không khớp</string>
     <string name="error_empty">Bạn không thể bỏ trống trường này</string>
@@ -136,11 +136,15 @@
     <!-- TODO: placeholder text in register store screen -->
 
     <string name="registerStorePageTitle">Đăng kí cửa hàng</string>
+    <string name="errorStoreName">Tên cửa hàng không chứa kí tự đặc biệt, lớn hơn 6 kí tự và nhỏ hơn 64 kí tự!</string>
+    <string name="errorPhoneNumber">errorStoreName</string>
     <string name="storeNameText">Tên cửa hàng</string>
     <string name="cityText">Tỉnh / Thành phố</string>
     <string name="townText">Quận / Huyện</string>
     <string name="communeText">Phường / Xã</string>
     <string name="locateCurrentLocationText">Lấy vị trí hiện tại của bạn làm địa chỉ của cửa hàng.</string>
+    <string name="noGPSYet">Bạn chưa bật định vị. Chưa thể xác định vị trí!</string>
+    <string name="yourGPS">Ví trí của bạn</string>
 
     <!-- TODO: placeholder text in order management screen -->
     <string name="title_order_management">Quản lý đơn hàng</string>

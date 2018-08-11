@@ -11,7 +11,9 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -42,6 +44,7 @@ public class StoreInformationPage extends AppCompatActivity {
     private ProductInStoreByUserCustomListViewAdapter productInStoreByUserCustomListViewAdapter;
     private ImageView backBtn;
     private TextView tvStoreName;
+    private Spinner spinnerCategory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,13 +67,30 @@ public class StoreInformationPage extends AppCompatActivity {
                 finish();
             }
         });
+
+        addItemsOnSpinner2();
+    }
+
+    public void addItemsOnSpinner2() {
+
+
+        List<String> list = new ArrayList<String>();
+        list.add("Tất cả sản phẩm");
+        list.add("Đồ uống");
+        list.add("Đồ ăn");
+        list.add("Đồ gia dụng");
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_item, list);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerCategory.setAdapter(dataAdapter);
     }
 
     private void findView(){
         imgBarCode = findViewById(R.id.imgBarCode);
         recycler_view = findViewById(R.id.recycler_view);
         backBtn = findViewById(R.id.backBtn);
-        tvStoreName = findViewById(R.id.tvStoreName);
+        tvStoreName = findViewById(R.id.tv_store_name);
+        spinnerCategory = findViewById(R.id.spinnerCategory);
     }
 
     public class Data extends AsyncTask<Call,List<ProductInStore>,Void>{
