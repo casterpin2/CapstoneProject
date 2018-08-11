@@ -11,6 +11,7 @@
 
 
     <RelativeLayout
+        android:id="@+id/main_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -68,6 +69,13 @@
                     android:hint="Số điện thoại"
                     android:textSize="13dp"
                     android:focusedByDefault="false"/>
+                <TextView
+                    android:id="@+id/tvPhoneError"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:textSize="10dp"
+                    android:textColor="@color/colorRed"/>
             </android.support.design.widget.TextInputLayout>
 
             <!--<LinearLayout-->
@@ -157,14 +165,6 @@
                     android:text="Tự động lấy địa điểm"
                     android:textSize="11dp" />
 
-                <!--<com.polyak.iconswitch.IconSwitch-->
-                <!--android:id="@+id/icon_switch"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_alignParentEnd="true"-->
-                <!--android:layout_alignParentTop="true"-->
-                <!--app:isw_icon_left="@drawable/cancel_16dp"-->
-                <!--app:isw_icon_right="@drawable/location_16dp"/>-->
                 <com.suke.widget.SwitchButton
                     android:id="@+id/switch_button"
                     android:layout_width="wrap_content"
@@ -173,24 +173,15 @@
                     android:layout_alignParentTop="true"/>
 
             </RelativeLayout>
+            <TextView
+                android:id="@+id/tvLocationError"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:textSize="10dp"
+                android:layout_below="@id/autoAddressLayout"
+                android:textColor="@color/colorRed"/>
 
-
-
-
-
-
-            <!--<TextView-->
-            <!--android:id="@+id/test1"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_below="@+id/registerBtn"-->
-            <!--android:textSize="20dp"/>-->
-            <!--<TextView-->
-            <!--android:id="@+id/test2"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_below="@+id/test1"-->
-            <!--android:textSize="20dp"/>-->
             <Button
                 android:id="@+id/registerBtn"
                 android:layout_width="match_parent"
@@ -205,7 +196,7 @@
                 android:name="com.google.android.gms.maps.SupportMapFragment"
                 android:layout_width="match_parent"
                 android:layout_height="250dp"
-                android:layout_below="@+id/autoAddressLayout"
+                android:layout_below="@+id/tvLocationError"
                 tools:context=".TestMap"
                 android:layout_marginTop="5dp"/>
         </RelativeLayout>

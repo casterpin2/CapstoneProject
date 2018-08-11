@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -30,6 +31,7 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.gson.Gson;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
@@ -61,6 +63,9 @@ public class EditUserInformationPage extends AppCompatActivity {
     String[] genderName = {"Chưa xác định", "Nam", "Nữ"};
     private String storeUser;
     private APIService mApi;
+    SharedPreferences pre;
+    User us;
+    boolean checkCall = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -136,36 +141,29 @@ public class EditUserInformationPage extends AppCompatActivity {
 
                 } else {
                     // code service here
-                    final User us = new User();
+                    us = new User();
+                    pre = getSharedPreferences("authentication", Context.MODE_PRIVATE);
+                    String existUserJson = pre.getString("user",null);
+                    User userTemp  = new Gson().fromJson(existUserJson, User.class);
+
                     us.setDateOfBirth(dob);
                     us.setDisplayName(name);
+                    us.setFirst_name("");
+                    us.setLast_name(name);
+                    us.setImage_path(userTemp.getImage_path());
+                    us.setUsername(userTemp.getUsername());
+                    us.setHasStore(userTemp.getHasStore());
                     us.setEmail(email);
                     us.setPhone(phone);
                     us.setGender(gender);
                     us.setId(extras.getInt("idUser",0));
-                    mApi.updateInfotmation(us).enqueue(new Callback<User>() {
-                        @Override
-                        public void onResponse(Call<User> call, Response<User> response) {
-                            if(response.body()!=null){
-                                String userJson = new Gson().toJson(us);
-                                SharedPreferences pre = getSharedPreferences("authentication", Context.MODE_PRIVATE);
-                                storeUser = pre.getString("store",null);
-                                SharedPreferences.Editor editor = pre.edit();
-                                //lưu vào editor
-                                editor.putString("user", userJson);
-                                editor.putString("store", storeUser);
-                                Toast.makeText(EditUserInformationPage.this, R.string.succesfully, Toast.LENGTH_LONG).show();
-                                checkUpdate = true;
-                            }
-                        }
+                    final Call<User> call = mApi.updateInfotmation(us);
+                    new UserUpdate().execute(call);
 
-                        @Override
-                        public void onFailure(Call<User> call, Throwable t) {
-                            Toast.makeText(EditUserInformationPage.this, "Đã xảy ra lỗi", Toast.LENGTH_LONG).show();
-                            checkUpdate =false;
-                        }
-                    });
-                            saveProfile(v);
+
+
+                    saveProfile(v);
+
                 }
             }
         });
@@ -371,8 +369,9 @@ public class EditUserInformationPage extends AppCompatActivity {
         extras.putString("gender", gender);
         Intent intent = new Intent(EditUserInformationPage.this, UserInformationPage.class);
         intent.putExtras(extras);
-        setResult(200, intent);
+        setResult(200,intent);
         finish();
+
     }
 //
 //    @Override
@@ -410,6 +409,52 @@ public class EditUserInformationPage extends AppCompatActivity {
 //        }
 //    }
 
+
+    private class UserUpdate extends AsyncTask<Call,User,Void>{
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            if(checkCall){
+
+                String userJson = new Gson().toJson(us);
+                storeUser = pre.getString("store",null);
+                SharedPreferences.Editor editor = pre.edit();
+                //lưu vào editor
+                editor.putString("user", userJson);
+                editor.putString("store", storeUser);
+                editor.commit();
+                Toast.makeText(EditUserInformationPage.this, R.string.succesfully, Toast.LENGTH_LONG).show();
+                checkUpdate = true;
+            }
+
+        }
+
+        @Override
+        protected void onProgressUpdate(User... values) {
+            super.onProgressUpdate(values);
+
+        }
+
+        @Override
+        protected Void doInBackground(Call... calls) {
+            try{
+            Call<User> call = calls[0];
+            Response<User> reponse = call.execute();
+            if(reponse.body()!=null){
+                checkCall = true;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+            return null;
+        }
+    }
 
 
 }

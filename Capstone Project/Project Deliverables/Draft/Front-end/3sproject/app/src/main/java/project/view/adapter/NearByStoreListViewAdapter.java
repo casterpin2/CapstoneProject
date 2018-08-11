@@ -20,6 +20,7 @@ import java.util.List;
 import project.firebase.Firebase;
 import project.view.gui.MainActivity;
 import project.view.R;
+import project.view.gui.ProductInStoreByUserDisplayPage;
 import project.view.gui.StoreInformationPage;
 import project.view.model.NearByStore;
 import project.view.util.Formater;
@@ -98,12 +99,7 @@ public class NearByStoreListViewAdapter extends BaseAdapter {
                     holder.promotionPercent.setVisibility(View.INVISIBLE);
                     holder.productPrice.setText("");
                     holder.saleProduct.setText(Formater.formatDoubleToMoney(String.valueOf(store.getPrice())));
-//                holder.promotionPercent.setText(formatDoubleToInt(context, String.valueOf(store.getPromotionPercent())));
                 }
-//                double salePriceDouble = store.getPrice() - (store.getPrice() * store.getPromotion() / 100);
-//                long salePriceLong = (long) salePriceDouble;
-//                holder.saleProduct.setText(Formater.formatDoubleToMoney(String.valueOf(salePriceLong)));
-
                 holder.orderBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -117,15 +113,13 @@ public class NearByStoreListViewAdapter extends BaseAdapter {
                     @Override
                     public void onClick(View v) {
                         int storeID = store.getId();
-                        Intent toStoreInformation = new Intent(getContext(), StoreInformationPage.class);
-                        toStoreInformation.putExtra("storeID", storeID);
-                        toStoreInformation.putExtra("storeName", store.getName());
-                        getContext().startActivity(toStoreInformation);
+                        Intent toProductInStoreByUser = new Intent(getContext(), ProductInStoreByUserDisplayPage.class);
+                        toProductInStoreByUser.putExtra("storeID", storeID);
+                        toProductInStoreByUser.putExtra("storeName", store.getName());
+                        getContext().startActivity(toProductInStoreByUser);
                     }
                 });
             }
-
-
         }
         return view;
     }

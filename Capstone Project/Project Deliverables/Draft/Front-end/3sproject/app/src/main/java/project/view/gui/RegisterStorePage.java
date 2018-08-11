@@ -68,7 +68,7 @@ public class RegisterStorePage extends AppCompatActivity implements OnMapReadyCa
     private LocationManager locationManager;
     private RelativeLayout handleAddressLayout;
     private Button registerBtn;
-    private TextView handleAddressText, tvStoreNameError;
+    private TextView handleAddressText, tvStoreNameError,tvPhoneError,tvLocationError;
     private EditText etStoreName, etPhone;
     private String handleLocationPlace = "";
     private SwitchButton iconSwitch;
@@ -80,6 +80,8 @@ public class RegisterStorePage extends AppCompatActivity implements OnMapReadyCa
     private String result = "";
     private RelativeLayout main_layout;
     private ProgressBar loadingBar;
+    private boolean isPhone = false,isStoreName = false,isLoction=false;
+
     public void setAutoLatitude(double autoLatitude) {
         this.autoLatitude = autoLatitude;
     }
@@ -93,18 +95,17 @@ public class RegisterStorePage extends AppCompatActivity implements OnMapReadyCa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register_store_page);
         findView();
-//        main_layout.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View view, MotionEvent motionEvent) {
-//                CustomInterface.hideKeyboard(view,getBaseContext());
-//                return false;
-//            }
-//        });
-        //mAPI = ApiUtils.getAPIServiceMap();
-        //mAPI1 = ApiUtils.getAPIService();
+        main_layout.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                CustomInterface.hideKeyboard(view,getBaseContext());
+                return false;
+            }
+        });
+        CustomInterface.setStatusBarColor(this);
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        getSupportActionBar().setTitle("Đăng kí cửa hàng");
+        getSupportActionBar().setTitle(R.string.registerStorePageTitle);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorApplication)));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -123,22 +124,41 @@ public class RegisterStorePage extends AppCompatActivity implements OnMapReadyCa
                 if(!hasFocus){
                     Regex regex = new Regex();
                     String input = etStoreName.getText().toString();
-                    if(!regex.isStoreName(input)){
-                        tvStoreNameError.setText("Tên cửa hàng không chứa kí tự đặc biệt, lớn hơn 6 kí tựu và nhỏ hơn 64 kí tự!!");
+                    if(!regex.isName(input)){
+                        tvStoreNameError.setText(R.string.errorStoreName);
+                        isStoreName = false;
                     }
                     else
                         tvStoreNameError.setText("");
+                        isStoreName = true;
                 }
             }
         });
 
+        etPhone.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                isPhone = true;
+                if(!hasFocus){
+                   if(etPhone.getText().length()<10||etPhone.getText().length()>11){
+                       tvPhoneError.setText(R.string.error_validate_phone);
+                       isPhone= false;
+                   }
+                   else {
+                       tvPhoneError.setText("");
+                       isPhone = true;
+                   }
+                }
+            }
+        });
         iconSwitch.setOnCheckedChangeListener(new SwitchButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(SwitchButton view, boolean isChecked) {
+                tvLocationError.setText("");
                 if(view.isChecked()) {
                     turnOnLocation();
                     handleAddressLayout.setEnabled(false);
-                    handleAddressText.setText("Vị trí hiện tại của bạn");
+                    handleAddressText.setText(R.string.yourGPS);
                 } else {
                     setAutoLatitude(0.0);
                     setAutoLongtitude(0.0);
@@ -179,12 +199,29 @@ public class RegisterStorePage extends AppCompatActivity implements OnMapReadyCa
         registerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String storeName = etStoreName.getText().toString().trim();
-                String phone = etPhone.getText().toString().trim();
-                //project.view.model.Location l = new project.view.model.Location(1,"a","b","c","d","e","f");
-                int user_id = getIntent().getIntExtra("user_id",0);
-                if (user_id != 0) {
-                    callAPIRegisterStore(new Store(storeName, user_id, phone), location);
+                isLoction = true;
+
+                if((handleLongtitude==0&&handleLatitude==0)&&(autoLatitude==0||autoLongtitude==0)){
+                    tvLocationError.setText("Chưa xác định được vị trí của bạn.");
+                    isLoction = false;
+                }
+                else {
+                    tvLocationError.setText("");
+                }
+                if (!isStoreName){
+                    tvStoreNameError.setText(R.string.errorStoreName);
+                }
+                if (!isPhone){
+                    tvPhoneError.setText(R.string.error_validate_phone);
+                }
+
+                if(isPhone&&isStoreName&&isLoction) {
+                    String storeName = etStoreName.getText().toString().trim();
+                    String phone = etPhone.getText().toString().trim();
+                    int user_id = getIntent().getIntExtra("user_id", 0);
+                    if (user_id != 0) {
+                        callAPIRegisterStore(new Store(storeName, user_id, phone), location);
+                    }
                 }
             }
         });
@@ -202,8 +239,9 @@ public class RegisterStorePage extends AppCompatActivity implements OnMapReadyCa
         main_layout = findViewById(R.id.main_layout);
         iconSwitch = findViewById(R.id.switch_button);
         loadingBar = findViewById(R.id.loadingBar);
-
+        tvPhoneError = findViewById(R.id.tvPhoneError);
         registerBtn = (Button) findViewById(R.id.registerBtn);
+        tvLocationError = findViewById(R.id.tvLocationError);
 
     }
     @Override
@@ -211,21 +249,14 @@ public class RegisterStorePage extends AppCompatActivity implements OnMapReadyCa
 
         if (requestCode == 1) {
             if (resultCode == Activity.RESULT_OK) {
-//                cityID = data.getIntExtra("cityID", cityID);
-//                townID = data.getIntExtra("townID", townID);
-//                communeID = data.getIntExtra("communeID", communeID);
-
-//                city.setText(String.valueOf(cityID));
-//                town.setText(String.valueOf(townID));
-//                commune.setText(String.valueOf(communeID));
 
             }
             if (resultCode == Activity.RESULT_CANCELED) {
-                //Write your code if there's no result
             }
 
             if (requestCode == PLACE_AUTOCOMPLETE_REQUEST_CODE) {
                 if (resultCode == RESULT_OK) {
+                    tvLocationError.setText("");
                     Place place = PlaceAutocomplete.getPlace(this, data);
                     handleLocationPlace = place.getAddress().toString();
                     handleAddressText.setText(handleLocationPlace);
@@ -242,41 +273,14 @@ public class RegisterStorePage extends AppCompatActivity implements OnMapReadyCa
                 } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
                     Status status = PlaceAutocomplete.getStatus(this, data);
                     // TODO: Handle the error.
-                    Toast.makeText(RegisterStorePage.this, "An error occurred: " + status, Toast.LENGTH_SHORT).show();
 
                 } else if (resultCode == RESULT_CANCELED) {
-                    // The user canceled the operation.
                 }
             }
         }
     }
 
 
-//    public void getLocation() {
-//        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-//                && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
-//        } else {
-//            Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-//            if (location != null) {
-//                autoLatitude = location.getLatitude();
-//                autoLongtitude = location.getLongitude();
-//                this.location.setLatitude(String.valueOf(autoLatitude));
-//                this.location.setLongitude(String.valueOf(autoLongtitude));
-//                StringBuilder stringBuilder = new StringBuilder();
-//                stringBuilder.append(autoLatitude).append(",").append(autoLongtitude);
-//                mAPI = ApiUtils.getAPIServiceMap();
-//                final Call<GoogleMapJSON> call = mAPI.getLocation(stringBuilder.toString(),GOOGLE_MAP_KEY);
-//                new CallMapAPI().execute(call);
-//                //Toast.makeText(RegisterStorePage.this, this.location.toString(), Toast.LENGTH_LONG).show();
-//                //Toast.makeText(this, location1.toString(), Toast.LENGTH_SHORT).show();
-//                markerToMap(autoLongtitude, autoLatitude, mMap, "Ví trí của bạn");
-//            } else {
-//                Toast.makeText(this, "Chưa có vị trí định vị!!", Toast.LENGTH_SHORT).show();
-//            }
-//
-//        }
-//    }
     //Đây là hàm do Đạt sửa bá đạo
     private void turnOnLocation(){
         final LocationListener locationListener = new LocationListener() {
@@ -302,17 +306,8 @@ public class RegisterStorePage extends AppCompatActivity implements OnMapReadyCa
                 && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
         } else {
-//            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,1000,1000,locationListener);
-//            Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-////            googleMap.clear();
-//            if (location != null) {
-//                currentLatitude = location.getLatitude();
-//                currentLongtitude = location.getLongitude();
-//            } else {
-//                Toast.makeText(this, "Bạn chưa bật định vị. Chưa thể tìm cửa hàng!!!!!", Toast.LENGTH_SHORT).show();
-//            }
             if (!isGPSEnabled && !isNetworkEnabled) {
-                Toast.makeText(this, "Bạn chưa bật định vị. Chưa thể xác định vị trí!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getResources().getString(R.string.noGPSYet), Toast.LENGTH_SHORT).show();
             }
             if (isNetworkEnabled) {
                 locationManager.requestLocationUpdates(
@@ -332,8 +327,6 @@ public class RegisterStorePage extends AppCompatActivity implements OnMapReadyCa
                         mAPI = ApiUtils.getAPIServiceMap();
                         final Call<GoogleMapJSON> call = mAPI.getLocation(stringBuilder.toString(),GOOGLE_MAP_KEY);
                         new CallMapAPI().execute(call);
-                        //Toast.makeText(RegisterStorePage.this, this.location.toString(), Toast.LENGTH_LONG).show();
-                        //Toast.makeText(this, location1.toString(), Toast.LENGTH_SHORT).show();
                         markerToMap(autoLongtitude, autoLatitude, mMap, "Ví trí của bạn");
                     }
                 }
@@ -356,9 +349,7 @@ public class RegisterStorePage extends AppCompatActivity implements OnMapReadyCa
                         mAPI = ApiUtils.getAPIServiceMap();
                         final Call<GoogleMapJSON> call = mAPI.getLocation(stringBuilder.toString(),GOOGLE_MAP_KEY);
                         new CallMapAPI().execute(call);
-                        //Toast.makeText(RegisterStorePage.this, this.location.toString(), Toast.LENGTH_LONG).show();
-                        //Toast.makeText(this, location1.toString(), Toast.LENGTH_SHORT).show();
-                        markerToMap(autoLongtitude, autoLatitude, mMap, "Ví trí của bạn");
+                        markerToMap(autoLongtitude, autoLatitude, mMap, getResources().getString(R.string.yourGPS));
                     }
                 }
 

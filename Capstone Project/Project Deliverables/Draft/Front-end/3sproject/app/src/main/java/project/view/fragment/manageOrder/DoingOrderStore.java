@@ -19,9 +19,9 @@ public class DoingOrderStore extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_order_management,container,false);
-        lvOrder = view.findViewById(R.id.lv_order);
-        StoreOrderManagementAdapter storeOrderManagementAdapter = new StoreOrderManagementAdapter(getContext(),R.layout.item_store_order_management, OrderDetail.dataTest());
-        lvOrder.setAdapter(storeOrderManagementAdapter);
+//        lvOrder = view.findViewById(R.id.lv_order);
+//        StoreOrderManagementAdapter storeOrderManagementAdapter = new StoreOrderManagementAdapter(getContext(),R.layout.item_store_order_management, OrderDetail.dataTest());
+//        lvOrder.setAdapter(storeOrderManagementAdapter);
         return view;
     }
 }

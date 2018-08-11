@@ -75,6 +75,7 @@ public class ProductInStoreByUserCustomListViewAdapter extends RecyclerView.Adap
             holder.originalPrice.setVisibility(View.GONE);
         }else {
             holder.flagSaleLayout.setVisibility(View.VISIBLE );
+            holder.originalPrice.setVisibility(View.VISIBLE);
             holder.promotionPercent.setText(formater.formatDoubleToInt( String.valueOf(productInStore.getPromotionPercent())));
             holder.originalPrice.setText(formater.formatDoubleToMoney( String.valueOf(productInStore.getProductPrice())));
             holder.originalPrice.setPaintFlags(holder.originalPrice.getPaintFlags()| Paint.STRIKE_THRU_TEXT_FLAG);
