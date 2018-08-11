@@ -53,7 +53,7 @@ public interface APIService {
     Call<Boolean> deleteProductInStore (@Query("storeId") int storeID,@Query("productId") int productID);
 
     @GET("getProductInStore")
-    Call<List<ProductInStore>> getProductInStore(@Query("storeID") int storeID);
+    Call<List<Product>> getProductInStore(@Query("storeID") int storeID);
 
     @PUT("editProductInStore")
     Call<Boolean> editProductInStore (@Query("storeId") int storeID,@Query("productId") int productID,@Query("price") long price,@Query("promotion") double promotion);
