@@ -108,7 +108,7 @@ public class UserOrderAdapter extends BaseExpandableListAdapter {
             TextView waittingOrderStore = convertView.findViewById(R.id.waittingOrderStoreName);
             TextView waittingOrderOrderDate = convertView.findViewById(R.id.waittingOrderOrderDate);
             TextView waittingOrderTotalCast = convertView.findViewById(R.id.waittingOrderTotalCast);
-            Button cancelBtn = convertView.findViewById(R.id.cancelBtn);
+            TextView cancelBtn = convertView.findViewById(R.id.cancelBtn);
 
             waittingOrderStore.setText(storeName);
             waittingOrderOrderDate.setText(orderDate);
@@ -178,7 +178,7 @@ public class UserOrderAdapter extends BaseExpandableListAdapter {
                  TextView doneOrderWithoutFeedbackStore = convertView.findViewById(R.id.doneOrderWithoutFeedbackStoreName);
                  TextView doneOrderWithoutFeedbackOrderDate = convertView.findViewById(R.id.doneOrderWithoutFeedbackOrderDate);
                  TextView doneOrderWithoutFeedbackTotalCast = convertView.findViewById(R.id.doneOrderWithoutFeedbackTotalCast);
-                 Button feedbackBtn = convertView.findViewById(R.id.feedbackBtn);
+                 TextView feedbackBtn = convertView.findViewById(R.id.feedbackBtn);
 
                  doneOrderWithoutFeedbackStore.setText(storeName);
                  doneOrderWithoutFeedbackOrderDate.setText(orderDate);

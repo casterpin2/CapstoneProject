@@ -234,6 +234,12 @@ public class CartAdapter extends BaseExpandableListAdapter {
 
                     }
                 });
+                builder.setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                });
                 builder.show();
             }
         });

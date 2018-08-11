@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/white"
     >
     <RelativeLayout
         android:id="@+id/waittingOrderLayout"
@@ -39,8 +40,8 @@
                     android:id="@+id/waittingOrderStoreName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="15dp"
-                    android:textColor="@color/darkGrey"
+                    android:textSize="16dp"
+                    android:textColor="@color/colorBlack"
                     android:ellipsize="end"
                     android:paddingRight="3dp"
                     android:maxLines="2"
@@ -71,14 +72,14 @@
                 android:layout_gravity="center"
                 android:paddingLeft="3dp">
 
-                <Button
+                <TextView
                     android:id="@+id/cancelBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/login_button"
+                    android:textColor="@color/lb_more"
                     android:text="Hủy đơn hàng"
-                    android:textColor="@color/white"
-                    android:textSize="10dp"/>
+                    android:textSize="13dp"
+                    android:gravity="center"/>
             </RelativeLayout>
 
         </LinearLayout>
@@ -220,14 +221,13 @@
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center">
-                    <Button
+                    <TextView
                         android:id="@+id/feedbackBtn"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Đánh giá"
-                        android:background="@drawable/login_button"
-                        android:textColor="@color/white"
-                        android:textSize="11dp"/>
+                        android:textColor="@color/lb_more"
+                        android:textSize="13dp"/>
                 </RelativeLayout>
             </LinearLayout>
         </LinearLayout>
