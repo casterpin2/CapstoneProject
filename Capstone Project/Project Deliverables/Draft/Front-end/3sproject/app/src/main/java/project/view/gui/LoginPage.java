@@ -93,7 +93,7 @@ public class LoginPage extends AppCompatActivity {
                 String password = MD5Library.md5(passwordValue.getText().toString().trim());
                 Call<Login> call = mAPI.login(username,password);
 
-                new CallAPI().execute(call);
+                new LoginTo3S().execute(call);
 
 
             }
@@ -128,7 +128,7 @@ public class LoginPage extends AppCompatActivity {
                 try {
                     Log.d("facebookId",profile.getId()+"");
                     Call<Login> call = mAPI.loginFB(user, profile.getId());
-                    new CallAPI().execute(call);
+                    new LoginTo3S().execute(call);
                 } catch(Exception e){
 
                 }
@@ -230,7 +230,7 @@ public class LoginPage extends AppCompatActivity {
     }
 
     /////////////////////////////////////////////////////API////////////////////////////////////////////////////////////////
-    private class CallAPI extends AsyncTask<Call, Void, Login> {
+    private class LoginTo3S extends AsyncTask<Call, Void, Login> {
         @Override
         protected void onPreExecute() {
             loadingBar.setVisibility(View.VISIBLE);

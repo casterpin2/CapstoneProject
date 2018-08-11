@@ -113,7 +113,7 @@ public interface APIService {
     Call<List<Product>> getProductbyType(@Query("typeId") int typeId);
 
     @GET("informationUser")
-    Call<User> getInfotmation(@Query("userId") int userId);
+    Call<User> getInformation(@Query("userId") int userId);
 
     @PUT("updateInformation")
     Call<User> updateInfotmation(@Body User user);
