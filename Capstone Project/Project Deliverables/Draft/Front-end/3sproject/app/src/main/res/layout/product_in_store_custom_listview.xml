@@ -136,7 +136,7 @@
                     android:layout_height="24dp"
                     android:layout_weight="2"
                     android:gravity="center"
-                    android:src="@drawable/edit_white"
+                    android:src="@drawable/bottom_button"
                     android:layout_centerInParent="true"/>
             </RelativeLayout>
             <RelativeLayout

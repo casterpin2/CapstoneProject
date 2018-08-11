@@ -52,7 +52,9 @@
 
         <activity
             android:name=".gui.StoreInformationPage"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar" >
+
+        </activity>
         <activity android:name=".gui.RegisterStorePage" />
         <activity
             android:name=".gui.UserInformationPage"
@@ -62,7 +64,9 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".gui.StoreManagementOrderPage"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar" >
+
+        </activity>
         <activity
             android:name=".gui.UserManagementOrderPage"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -72,8 +76,6 @@
         <activity android:name=".gui.NearbyStorePage" />
         <activity android:name=".gui.ProductDetailPage" />
         <activity android:name=".gui.OrderPage" />
-        <activity android:name=".gui.ProductInStoreByUserDisplayPage" />
-
         <!-- Facebook -->
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
@@ -115,6 +117,7 @@
         <activity android:name=".gui.UserFeedbackPage"
             android:windowSoftInputMode="adjustResize"
             android:theme="@style/AppTheme.NoActionBar">
+
         </activity>
 
     </application>
