@@ -275,9 +275,9 @@ public class LoginPage extends AppCompatActivity {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         if (dataSnapshot.exists()) {
-                            if (dataSnapshot.getValue(String.class).equalsIgnoreCase(android_id))
-                                return;
-                            myRef.setValue(android_id);
+                            if (!dataSnapshot.getValue(String.class).equalsIgnoreCase(android_id)) {
+                                myRef.setValue(android_id);
+                            }
                             startActivity(toHomePage);
                             finishAffinity();
                             finish();
