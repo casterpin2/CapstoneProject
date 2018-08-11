@@ -10,7 +10,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:weightSum="4"
+        android:weightSum="2"
         android:orientation="horizontal">
         <LinearLayout
             android:id="@+id/categoryFilterLayout"
@@ -43,25 +43,23 @@
             <!--</RelativeLayout>-->
         </LinearLayout>
         <LinearLayout
-            android:id="@+id/filterLayout"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_weight="3"
-            android:gravity="center">
+                android:id="@+id/sortLayout"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:gravity="center">
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/sort"
+                    android:layout_gravity="center"/>
+                <Spinner
+                    android:id="@+id/spinnerSort"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </LinearLayout>
 
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/sort"
-                android:layout_gravity="center"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingLeft="8dp"
-                android:paddingRight="8dp"
-                android:textSize="14dp"
-                android:text="Sắp xếp"/>
-        </LinearLayout>
+
     </LinearLayout>
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"
@@ -76,6 +74,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
+        android:layout_gravity="center"
         android:visibility="invisible"/>
 
 </LinearLayout>

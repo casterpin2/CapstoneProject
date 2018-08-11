@@ -123,9 +123,8 @@ public class CartPage extends AppCompatActivity {
                             re.child("phone").setValue(cart.getPhone());
                             re.child("isFeedback").setValue("false");
                             re.child("image_path").setValue(cart.getImage_path());
-                            re.child("totalPrice").setValue(phoneListAdapter.getTotal());
+//                            re.child("totalPrice").setValue(phoneListAdapter.getTotal());
                             re.child("orderDetail").setValue(cart.getCartDetail());
-
                         }
                         Toast.makeText(CartPage.this,"Thêm sản phẩm thành công",Toast.LENGTH_LONG).show();
                         Intent intent = new Intent(CartPage.this,UserManagementOrderPage.class);

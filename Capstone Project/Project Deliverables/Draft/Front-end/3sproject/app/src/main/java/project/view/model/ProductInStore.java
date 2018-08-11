@@ -1,11 +1,13 @@
 package project.view.model;
 
+import android.support.annotation.NonNull;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 
-public class ProductInStore {
+public class ProductInStore implements Comparable<ProductInStore> {
     @SerializedName("product_id")
     @Expose
     private int productID;
@@ -121,18 +123,12 @@ public class ProductInStore {
         this.promotionPercent = promotionPercent;
     }
 
-    public static ArrayList<ProductInStore> getExample() {
-        ArrayList<ProductInStore> productList = new ArrayList<>();
-        productList.add(new ProductInStore(1,"Đồ ăn thức uống, rất nhiều thực phẩm chức năng 128Gb màu bạc xám nhưng lại rất là to con và địt mẹ, quan trong jalf ... cho bố m cái","haha.png","đồ ăn","hải hà",134000,1.2));
-        productList.add(new ProductInStore(2,"ahahah","haha.png","đồ ăn","hải hà",134000,1.2));
-        productList.add(new ProductInStore(3,"đâsdsadasdas","haha.png","đồ ăn","hải hà",134000,1.2));
-        productList.add(new ProductInStore(4,"đâsdasdas","haha.png","đồ ăn","hải hà",134000,1.2));
-        productList.add(new ProductInStore(5,"đâsdasdas","haha.png","đồ ăn","hải hà",134000,1.2));
-        productList.add(new ProductInStore(6,"đâsdasdas","haha.png","đồ ăn","hải hà",134000,1.2));
-        return productList;
-
-
-
-
+    public int compareTo(ProductInStore productInStore) {
+        if (getProductPrice() == productInStore.getProductPrice())
+            return 0;
+        else if (getProductPrice() > productInStore.getProductPrice())
+            return 1;
+        else
+            return -1;
     }
 }
