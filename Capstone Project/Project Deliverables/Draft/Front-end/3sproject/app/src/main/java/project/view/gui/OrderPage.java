@@ -30,6 +30,8 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.Status;
@@ -58,6 +60,7 @@ import project.objects.User;
 import project.retrofit.ApiUtils;
 import project.view.model.OrderDetail;
 import project.view.R;
+import project.view.model.Product;
 import project.view.util.Formater;
 import retrofit2.Call;
 import retrofit2.Response;
@@ -95,7 +98,10 @@ public class OrderPage extends BasePage implements OnMapReadyCallback{
     private String handleLocationPlace = "";
     private User user;
     private boolean isCart;
-    private String price;
+    private long price;
+    private long salesPrice;
+    private double promotion;
+    private Product product;
     //Calendar
     private int mYear, mMonth, mDay, mHour, mMinute;
 
@@ -125,14 +131,17 @@ public class OrderPage extends BasePage implements OnMapReadyCallback{
         setContentView(R.layout.activity_order_fast);
 
         isCart = getIntent().getBooleanExtra("isCart", true);
-        price = getIntent().getStringExtra("price");
+        price = (long)getIntent().getDoubleExtra("price",0);
+        promotion = getIntent().getDoubleExtra("promotion",0.0);
+        Toast.makeText(OrderPage.this, price + " " + promotion, Toast.LENGTH_LONG).show();
         mapping();
         if (isCart) {
+            String priceInCart = getIntent().getStringExtra("priceInCart");
             productDetailLayout.setVisibility(View.GONE);
-            etBuyerName.setEnabled(false);
-            etPhone.setEnabled(false);
             getSupportActionBar().setTitle("Đặt hàng");
+            sumOrder.setText(Formater.formatDoubleToMoney(String.valueOf(priceInCart)));
         } else {
+            product = new Gson().fromJson(getIntent().getStringExtra("product"),Product.class);
             productDetailLayout.setVisibility(View.VISIBLE);
             getSupportActionBar().setTitle("Đặt hàng nhanh");
         }
@@ -150,6 +159,8 @@ public class OrderPage extends BasePage implements OnMapReadyCallback{
             String buyerPhone = user.getPhone();
             etBuyerName.setText(buyerName);
             etPhone.setText(buyerPhone);
+            etBuyerName.setEnabled(false);
+            etPhone.setEnabled(false);
         } else {
             etBuyerName.setText("");
             etPhone.setText("");
@@ -168,39 +179,47 @@ public class OrderPage extends BasePage implements OnMapReadyCallback{
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         order = new OrderDetail();
-        productName.setText("");
+        if (product != null && isCart == false) {
 
-        productPrice.setText(Formater.formatDoubleToMoney(String.valueOf(0.0)));
-        productPrice.setPaintFlags(productPrice.getPaintFlags()| Paint.STRIKE_THRU_TEXT_FLAG);
+            productName.setText(product.getProduct_name());
 
-        promotionPercent.setText(Formater.formatDoubleToInt(String.valueOf(0.0)));
+            productPrice.setText(Formater.formatDoubleToMoney(String.valueOf(price)));
 
-        salePrice.setText(Formater.formatDoubleToMoney(String.valueOf(getSalesPrice(0, 1.0))));
+            productPrice.setPaintFlags(productPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
 
-        sumOrder.setText(price);
+            promotionPercent.setText(Formater.formatDoubleToInt(String.valueOf(promotion)));
 
-        productQuantity.setText(String.valueOf(1));
+            salesPrice = getSalesPrice(price, promotion);
 
-        if (userID == 0) {
+            salePrice.setText(Formater.formatDoubleToMoney(String.valueOf(salesPrice)));
 
-        } else {
+            sumOrder.setText(Formater.formatDoubleToMoney(String.valueOf(salesPrice)));
 
+            productQuantity.setText(String.valueOf(1));
+
+            Glide.with(OrderPage.this /* context */)
+                    .using(new FirebaseImageLoader())
+                    .load(storageReference.child(product.getImage_path()))
+                    .skipMemoryCache(true)
+                    .into(productImage);
+
+            increaseBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    increaseQuantity();
+                }
+            });
+
+            decreaseBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    decreaseQuantity();
+                }
+            });
+        } else if (product == null && isCart == false){
+            defaultView();
+            Toast.makeText(OrderPage.this, "Có lỗi xảy ra !!!", Toast.LENGTH_SHORT).show();
         }
-
-        increaseBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                increaseQuantity();
-            }
-        });
-
-        decreaseBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                decreaseQuantity();
-            }
-        });
-
         orderDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -312,6 +331,8 @@ public class OrderPage extends BasePage implements OnMapReadyCallback{
                     stringBuilder.append(location.getDistrict()+" ");
                     stringBuilder.append(location.getCounty()+" ");
                     stringBuilder.append(location.getCity()+" ");
+                    intent.putExtra("longtitude",autoLongtitude);
+                    intent.putExtra("latitude",autoLatitude);
                     intent.putExtra("address",stringBuilder.toString().replaceAll("null","").replaceAll("0", "").replaceAll("Unnamed Road", "").replaceAll("\\s+", " ").trim());
                 } else {
                     longtitude = 0.0;
@@ -325,7 +346,23 @@ public class OrderPage extends BasePage implements OnMapReadyCallback{
                     stringBuilder.append(location.getDistrict()+" ");
                     stringBuilder.append(location.getCounty()+" ");
                     stringBuilder.append(location.getCity()+" ");
+                    intent.putExtra("longtitude",handleLatitude);
+                    intent.putExtra("latitude",handleLongtitude);
                     intent.putExtra("address",stringBuilder.toString().replaceAll("null","").replaceAll("0", "").replaceAll("Unnamed Road", "").replaceAll("\\s+", " ").trim());
+                }
+                if ( isCart == false ){
+                    int storeId = getIntent().getIntExtra("storeID",0);
+                    String storeName = getIntent().getStringExtra("storeName");
+                    String storePhone = getIntent().getStringExtra("phone");
+                    String image_path = getIntent().getStringExtra("image_path");
+                    intent.putExtra("userId",userID);
+                    intent.putExtra("price",salesPrice);
+                    intent.putExtra("totalPrice",salesPrice * quantity);
+                    intent.putExtra("storeName", storeName);
+                    intent.putExtra("storePhone", storePhone);
+                    intent.putExtra("image_path", image_path);
+                    intent.putExtra("storeID", storeId);
+                    intent.putExtra("quantity",Integer.parseInt(productQuantity.getText().toString()));
                 }
                 intent.putExtra("deliverTime",orderDateTime);
                 intent.putExtra("phone",phone);
@@ -345,10 +382,8 @@ public class OrderPage extends BasePage implements OnMapReadyCallback{
 
 
     public long getSalesPrice(long productPrice, double promotionPercent){
-        double salePriceDouble = 0.0;
-        long salePriceLong = (long) salePriceDouble;
-        long displayPrice = 0;
-        return  displayPrice;
+
+        return  (long)(productPrice - (productPrice * promotionPercent /100));
     }
 
     public void mapping(){
@@ -375,16 +410,18 @@ public class OrderPage extends BasePage implements OnMapReadyCallback{
 
 
     public void increaseQuantity() {
+        decreaseBtn.setEnabled(true);
         int quantity = Integer.parseInt(productQuantity.getText().toString());
         quantity = quantity + 1;
         productQuantity.setText(String.valueOf(quantity));
-        //sumOrder.setText(Formater.formatDoubleToMoney(String.valueOf((getSalesPrice(productDetail.getProductPrice(), productDetail.getPromotionPercent()))* quantity)));
+        sumOrder.setText(Formater.formatDoubleToMoney(String.valueOf((salesPrice * quantity))));
     }
 
     public void decreaseQuantity() {
         int quantity = Integer.parseInt(productQuantity.getText().toString());
         quantity = quantity - 1;
         productQuantity.setText(String.valueOf(quantity));
+        sumOrder.setText(Formater.formatDoubleToMoney(String.valueOf((salesPrice * quantity))));
         //sumOrder.setText(Formater.formatDoubleToMoney(String.valueOf((getSalesPrice(productDetail.getProductPrice(), productDetail.getPromotionPercent()))* quantity)));
         if (quantity == 0) {
             AlertDialog.Builder builder = new AlertDialog.Builder(OrderPage.this);
@@ -401,6 +438,7 @@ public class OrderPage extends BasePage implements OnMapReadyCallback{
             builder.setNegativeButton(R.string.alertdialog_cancelButton, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
+                    increaseQuantity();
                     return;
                 }
             });
@@ -552,7 +590,36 @@ public class OrderPage extends BasePage implements OnMapReadyCallback{
             return location;
         }
     }
+    private void defaultView(){
 
+        productName.setText("");
+
+        productPrice.setText(Formater.formatDoubleToMoney(String.valueOf(0.0)));
+
+        productPrice.setPaintFlags(productPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+
+        promotionPercent.setText(Formater.formatDoubleToInt(String.valueOf(0.0)));
+
+        salePrice.setText(Formater.formatDoubleToMoney(String.valueOf(getSalesPrice(0, 1.0))));
+
+        //sumOrder.setText(price);
+
+        productQuantity.setText(String.valueOf(1));
+
+        increaseBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                increaseQuantity();
+            }
+        });
+
+        decreaseBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                decreaseQuantity();
+            }
+        });
+    }
     private void turnOnLocation(){
         final LocationListener locationListener = new LocationListener() {
             public void onLocationChanged(Location location) {

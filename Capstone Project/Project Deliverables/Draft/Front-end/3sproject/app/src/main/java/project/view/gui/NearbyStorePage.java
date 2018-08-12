@@ -1,8 +1,11 @@
 package project.view.gui;
 
 import android.app.ActionBar;
+import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.MatrixCursor;
 import android.graphics.drawable.ColorDrawable;
@@ -16,6 +19,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.widget.CursorAdapter;
 import android.support.v4.widget.SimpleCursorAdapter;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
@@ -56,7 +60,10 @@ import java.util.List;
 import project.retrofit.ApiUtils;
 import project.view.R;
 import project.view.adapter.NearByStoreListViewAdapter;
+import project.view.model.Cart;
+import project.view.model.CartDetail;
 import project.view.model.NearByStore;
+import project.view.model.Product;
 import project.view.util.CustomInterface;
 import retrofit2.Call;
 import retrofit2.Response;
@@ -90,7 +97,7 @@ public class NearbyStorePage extends BasePage implements OnMapReadyCallback {
     public boolean isLoading;
     boolean limitData = false;
     int page = 1;
-
+    private Product p;
     private String productName;
 
     @Override
@@ -135,6 +142,8 @@ public class NearbyStorePage extends BasePage implements OnMapReadyCallback {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("");
         int productId = getIntent().getIntExtra("productId",-1);
+        String image_path = getIntent().getStringExtra("image_path");
+        p = new Product(productId,productName,image_path);
         turnOnLocation();
         if (productId != -1) {
             NearByStoreAsynTask asynTask = new NearByStoreAsynTask();
@@ -152,41 +161,19 @@ public class NearbyStorePage extends BasePage implements OnMapReadyCallback {
         });
         String sourceString = "Cửa hàng quanh đây có <b>" + productName + "</b> ";
         textContent.setText(Html.fromHtml(sourceString));
-//        nearByStore = getIntent().getStringArrayListExtra("listStore");
-//
-//        if (nearByStore != null){
-//            for (int i = 0 ; i < nearByStore.size() ; i++){
-//                NearByStore store = new Gson().fromJson(nearByStore.get(i),NearByStore.class);
-//                list.add(store);
-//            }
-//        }
-
-        adapter = new NearByStoreListViewAdapter(NearbyStorePage.this, R.layout.nearby_store_page_custom_list_view, list);
+        adapter = new NearByStoreListViewAdapter(NearbyStorePage.this, R.layout.nearby_store_page_custom_list_view, list,p);
         storeListView.setAdapter(adapter);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-
-//        onMapReady(mMap);
-
-        //lazy loading
-
-        //mHandle = new MyHandle();
         LayoutInflater li = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         footerView = li.inflate(R.layout.footer_loading_listview_lazy_loading, null);
 
         storeListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                double storeLat = nearbyStoreList.get(position).getLatitude();
-//                double storeLng = nearbyStoreList.get(position).getLongtitude();
-//                Toast.makeText(NearbyStorePage.this, "Lat: " + storeLat + "----- Lng: " + storeLng + "----- id: " + id, Toast.LENGTH_SHORT).show();
-//                LatLng chosenStore = new LatLng(storeLat, storeLng);
-//                mMap.moveCamera(CameraUpdateFactory.newLatLng(chosenStore));
-//                Toast.makeText(NearbyStorePage.this, "Done!", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -198,14 +185,6 @@ public class NearbyStorePage extends BasePage implements OnMapReadyCallback {
 
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-//                int count = list.size();
-//                if (view.getLastVisiblePosition() == totalItemCount - 1 && count == (page * 10) && isLoading == false && (page == 1 || page == 2)) {
-////                    Log.d("","Loading");
-//                    isLoading = true;
-//                    Thread thread = new ThreadgetMoreData();
-//                    thread.start();
-//                    adapter.notifyDataSetChanged();
-//                }
             }
         });
 
@@ -218,29 +197,6 @@ public class NearbyStorePage extends BasePage implements OnMapReadyCallback {
         LatLng myLocation = new LatLng(latitude, longtitude);
         googleMap.addMarker(new MarkerOptions().position(myLocation).title("Vị trí của bạn"));
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(myLocation));
-
-
-//        Bitmap.Config conf = Bitmap.Config.ARGB_8888;
-//        Bitmap bmp = Bitmap.createBitmap(100, 100, conf);
-//        Canvas canvas1 = new Canvas(bmp);
-//
-//// paint defines the text color, stroke width and size
-//        Paint color = new Paint();
-//        color.setTextSize(35);
-//        color.setColor(getResources().getColor(R.color.colorApplication));
-
-
-// modify canvas
-
-//        view = (FrameLayout)findViewById(R.id.storeMarker);
-//        view.setDrawingCacheEnabled(true);
-//        view.buildDrawingCache();
-//        Bitmap storeBitmap = view.getDrawingCache();
-//        storeName = findViewById(R.id.storeName);
-//        storeImage = findViewById(R.id.storeImage);
-//        storeImage.setBackgroundResource(R.drawable.add);
-
-
     }
 
 
@@ -466,13 +422,13 @@ public class NearbyStorePage extends BasePage implements OnMapReadyCallback {
         @Override
         protected void onPostExecute(List<NearByStore> listNearByStore) {
             super.onPostExecute(listNearByStore);
+            list.clear();
             loadingBar.setVisibility(View.INVISIBLE);
             if (listNearByStore != null) {
                 for (NearByStore near : listNearByStore) {
                     list.add(near);
                 }
-                adapter = new NearByStoreListViewAdapter(NearbyStorePage.this, R.layout.nearby_store_page_custom_list_view, listNearByStore);
-                storeListView.setAdapter(adapter);
+                adapter.notifyDataSetChanged();
                 changeLocation(mMap);
             } else {
                 Toast.makeText(NearbyStorePage.this,"Có lỗi xảy ra!!!",Toast.LENGTH_LONG).show();
@@ -550,6 +506,68 @@ public class NearbyStorePage extends BasePage implements OnMapReadyCallback {
                     }
                 }
 
+            }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == 2) {
+            if (resultCode == Activity.RESULT_OK) {
+                final String address = data.getStringExtra("address");
+                final String deliverTime = data.getStringExtra("deliverTime");
+                final int storeId = data.getIntExtra("storeID",0);
+                final int userId = data.getIntExtra("userId",0);
+                final String storeName = data.getStringExtra("storeName");
+                final long totalPrice = data.getLongExtra("totalPrice",0);
+                final long price = data.getLongExtra("price",0);
+                String userName = data.getStringExtra("userName");
+                final String storePhone = data.getStringExtra("storePhone");
+                final String image_path = data.getStringExtra("image_path");
+                String phone = data.getStringExtra("phone");
+                final double longtitude = data.getDoubleExtra("longtitude",0.0);
+                final double latitude = data.getDoubleExtra("latitude",0.0);
+                final int quantity = data.getIntExtra("quantity",0);
+                final DatabaseReference reference = database.getReference().child("ordersUser").child(String.valueOf(userId));
+                reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            String key = reference.push().getKey();
+                            DatabaseReference re = reference.child(key);
+                            re.child("address").setValue(address);
+                            re.child("latitude").setValue(latitude);
+                            re.child("longtitude").setValue(longtitude);
+                            re.child("deliverTime").setValue(deliverTime);
+                            re.child("storeId").setValue(storeId);
+                            re.child("storeName").setValue(storeName);
+                            re.child("status").setValue("waitting");
+                            re.child("phone").setValue(storePhone);
+                            re.child("isFeedback").setValue("false");
+                            re.child("totalPrice").setValue(totalPrice);
+                            re.child("orderDetail").child(String.valueOf(p.getProduct_id())).child("productId").setValue(p.getProduct_id());
+                            re.child("orderDetail").child(String.valueOf(p.getProduct_id())).child("productName").setValue(p.getProduct_name());
+                            re.child("orderDetail").child(String.valueOf(p.getProduct_id())).child("image_path").setValue(p.getImage_path());
+                            re.child("orderDetail").child(String.valueOf(p.getProduct_id())).child("quantity").setValue(quantity);
+                            re.child("orderDetail").child(String.valueOf(p.getProduct_id())).child("unitPrice").setValue(price);
+                        AlertDialog.Builder builder = new AlertDialog.Builder(NearbyStorePage.this);
+                        builder.setTitle("Đặt hàng");
+                        builder.setMessage("Bạn đã đặt hàng thành công");
+
+                        builder.setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                return;
+                            }
+                        });
+                        builder.show();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
             }
         }
     }

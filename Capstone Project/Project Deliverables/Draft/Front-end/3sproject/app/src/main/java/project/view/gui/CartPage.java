@@ -122,7 +122,7 @@ public class CartPage extends BasePage {
 
                 Intent intent = new Intent(CartPage.this,OrderPage.class);
                 intent.putExtra("isCart",true);
-                intent.putExtra("price",totalCart.getText().toString());
+                intent.putExtra("priceInCart",String.valueOf(phoneListAdapter.getTotal()));
                 startActivityForResult(intent,1);
             }
         });
@@ -137,6 +137,8 @@ public class CartPage extends BasePage {
                 final String deliverTime = data.getStringExtra("deliverTime");
                 String userName = data.getStringExtra("userName");
                 String phone = data.getStringExtra("phone");
+                final double longtitude = data.getDoubleExtra("longtitude",0.0);
+                final double latitude = data.getDoubleExtra("latitude",0.0);
                 final DatabaseReference reference = database.getReference().child("ordersUser").child(String.valueOf(userId));
                 reference.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -145,6 +147,8 @@ public class CartPage extends BasePage {
                             String key = reference.push().getKey();
                             DatabaseReference re = reference.child(key);
                             re.child("address").setValue(address);
+                            re.child("latitude").setValue(latitude);
+                            re.child("longtitude").setValue(longtitude);
                             re.child("deliverTime").setValue(deliverTime);
                             re.child("storeId").setValue(cart.getStoreId());
                             re.child("storeName").setValue(cart.getStoreName());
@@ -182,9 +186,6 @@ public class CartPage extends BasePage {
 
                     }
                 });
-            }
-            else{
-                Toast.makeText(this, "Có lỗi xảy ra!!!", Toast.LENGTH_SHORT).show();
             }
         }
     }

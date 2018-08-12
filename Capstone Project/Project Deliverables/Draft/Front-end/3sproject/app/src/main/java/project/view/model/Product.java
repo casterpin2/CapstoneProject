@@ -56,6 +56,14 @@ public class Product implements Serializable{
     @Expose
     private String storeName;
 
+    public Product(int product_id, String product_name, String image_path) {
+        this.product_id = product_id;
+        this.product_name = product_name;
+        this.image_path = image_path;
+        this.price = price;
+        this.promotion = promotion;
+    }
+
     public int getQuantity() {
         return quantity;
     }

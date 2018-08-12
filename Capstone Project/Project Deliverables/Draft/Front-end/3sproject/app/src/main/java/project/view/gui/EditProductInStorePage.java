@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -23,6 +24,11 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageReference;
 
 import java.io.IOException;
@@ -34,6 +40,8 @@ import project.firebase.Firebase;
 import project.retrofit.ApiUtils;
 import project.view.R;
 import project.view.adapter.ProductInStoreCustomListViewAdapter;
+import project.view.model.Cart;
+import project.view.model.CartDetail;
 import project.view.model.ProductInStore;
 import project.view.util.CustomInterface;
 import project.view.util.Formater;
@@ -49,7 +57,9 @@ public class EditProductInStorePage extends BasePage {
     private ImageView imageView;
     private ScrollView scroll;
     private RelativeLayout main_layout;
-
+    private String productNameValue;
+    private FirebaseDatabase database = FirebaseDatabase.getInstance();
+    private DatabaseReference myRef;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,7 +76,7 @@ public class EditProductInStorePage extends BasePage {
             }
         });
 
-        final String productNameValue = getIntent().getStringExtra("productName");
+        productNameValue = getIntent().getStringExtra("productName");
         final String productImageLink = getIntent().getStringExtra("productImageLink");
         final int productIDValue = getIntent().getIntExtra("productID", -1);
         final int storeIDValue = getIntent().getIntExtra("storeID",-1);
@@ -148,15 +158,40 @@ public class EditProductInStorePage extends BasePage {
                         promotionPercentErrorMessage.setText(getResources().getString(R.string.promotionOption));
 
                     } else {
-                        long priceLong = Long.parseLong(productPrice.getText().toString().replaceAll(",+", "").replaceAll("\\.+", "").replaceAll("đ","").trim());
-                        double promotionValue = Double.parseDouble(promotionPercent.getText().toString());
+                        final long priceLong = Long.parseLong(productPrice.getText().toString().replaceAll(",+", "").replaceAll("\\.+", "").replaceAll("đ","").trim());
+                        final double promotionValue = Double.parseDouble(promotionPercent.getText().toString());
                         promotionPercentErrorMessage.setText("");
                         if (productPriceValue == priceLong && promotionPercentValue == promotionValue ) {
                             Toast.makeText(EditProductInStorePage.this, getResources().getString(R.string.unchange), Toast.LENGTH_SHORT).show();
 
                         } else {
-                            Call<Boolean> call = ApiUtils.getAPIService().editProductInStore(storeIDValue,productIDValue,priceLong,promotionValue);
-                            new EditProduct().execute(call);
+                            myRef = database.getReference().child("cart");
+                            myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
+                                        String userId = dataSnapshot1.getKey();
+                                        for (DataSnapshot dataSnapshot2 :dataSnapshot1.getChildren()){
+                                            Cart cart = dataSnapshot2.getValue(Cart.class);
+                                            Object[] cartDetails = cart.getCartDetail().values().toArray();
+                                            for(int i = 0 ; i < cartDetails.length;i++) {
+                                                String productId = String.valueOf(((CartDetail)cartDetails[i]).getProductId());
+                                                if (((CartDetail)cartDetails[i]).getProductId() == productIDValue){
+                                                    myRef.child(userId).child(String.valueOf(cart.getStoreId())).child("cartDetail").child(productId).child("unitPrice").setValue(priceLong-(priceLong*promotionValue/100));
+                                                }
+                                            }
+                                        }
+                                    }
+                                    Call<Boolean> call = ApiUtils.getAPIService().editProductInStore(storeIDValue,productIDValue,priceLong,promotionValue);
+                                    new EditProduct().execute(call);
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+                                    Toast.makeText(EditProductInStorePage.this,"Có lỗi xảy ra !!!",Toast.LENGTH_LONG).show();
+                                }
+                            });
+
                         }
 
                     }
@@ -254,6 +289,7 @@ public class EditProductInStorePage extends BasePage {
                 Toast.makeText(EditProductInStorePage.this,"Có lỗi xảy ra !!!",Toast.LENGTH_LONG).show();
                 return;
             } else {
+                Toast.makeText(EditProductInStorePage.this,"Sửa thông tin " + productNameValue + " thành công",Toast.LENGTH_LONG).show();
                 finish();
             }
             super.onPostExecute(result);
