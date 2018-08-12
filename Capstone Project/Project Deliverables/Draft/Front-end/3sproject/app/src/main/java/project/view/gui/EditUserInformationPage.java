@@ -6,7 +6,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,6 +21,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -63,7 +66,10 @@ public class EditUserInformationPage extends BasePage {
     String[] genderName = {"Chưa xác định", "Nam", "Nữ"};
     private String storeUser;
     private APIService mApi;
-    SharedPreferences pre;
+    private SharedPreferences pre;
+    private LinearLayout changeImageLayout;
+    private static final int IMAGE_CODE = 100;
+    private Uri imageURI;
     User us;
     boolean checkCall = false;
     @Override
@@ -258,7 +264,26 @@ public class EditUserInformationPage extends BasePage {
             }
         });
 
+        changeImageLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openGalery();
+            }
+        });
+    }
 
+    private void openGalery(){
+        Intent toGallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+        startActivityForResult(toGallery,IMAGE_CODE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK && requestCode == IMAGE_CODE){
+            imageURI = data.getData();
+            profile_image.setImageURI(imageURI);
+        }
     }
 
     private void mapping() {
@@ -277,6 +302,7 @@ public class EditUserInformationPage extends BasePage {
         cancelBtn = findViewById(R.id.cancelBtn);
         backBtn = findViewById(R.id.backBtn);
         genderSpinner = findViewById(R.id.genderSpinner);
+        changeImageLayout = findViewById(R.id.changeImage);
 
     }
 
