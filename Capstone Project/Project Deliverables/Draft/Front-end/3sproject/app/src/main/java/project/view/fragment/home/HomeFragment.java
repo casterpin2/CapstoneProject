@@ -204,7 +204,7 @@ public class HomeFragment extends Fragment {
 
         //sale
         apiService = APIService.retrofit.create(APIService.class);
-        final Call<List<Product>> callSale = apiService.getSaleProduct();
+        final Call<List<Product>> callSale = apiService.getSaleProductTop20();
         new SaleData().execute(callSale);
       return view;
     }

@@ -3,8 +3,10 @@ package project.view.gui;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.AsyncTask;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -17,19 +19,24 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
 import org.w3c.dom.Text;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import project.view.R;
 import project.view.adapter.SaleProductCustomCardviewAdapter;
+import project.view.model.Item;
 import project.view.model.Product;
 import project.view.util.CustomInterface;
 import project.view.util.GridSpacingItemDecoration;
+import retrofit2.Call;
+import retrofit2.Response;
 
 public class SaleProductDisplayPage extends BasePage {
 
@@ -135,6 +142,47 @@ public class SaleProductDisplayPage extends BasePage {
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public class ProductSales extends AsyncTask<Call,Void,List<Product>> {
+        private View view;
+        public ProductSales(View view) {
+            this.view = view;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            //loadingBar.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected void onPostExecute(List<Product> result) {
+            super.onPostExecute(result);
+            if (result == null) {
+                Toast.makeText(SaleProductDisplayPage.this,"Có lỗi xảy ra !!!!",Toast.LENGTH_LONG).show();
+                return;
+            }
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            super.onProgressUpdate(values);
+        }
+
+        @Override
+        protected List<Product> doInBackground(Call... calls) {
+            try {
+                Call<List<Product>> call = calls[0];
+                Response<List<Product>> response = call.execute();
+                return response.body();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (Exception e) {
+                Toast.makeText(SaleProductDisplayPage.this,"Có lỗi xảy ra !!!!",Toast.LENGTH_LONG).show();
+            }
+            return null;
         }
     }
 }

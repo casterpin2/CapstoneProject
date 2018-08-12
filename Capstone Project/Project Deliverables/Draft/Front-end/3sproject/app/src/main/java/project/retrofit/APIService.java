@@ -10,7 +10,6 @@ import project.view.model.Item;
 import project.view.model.Product;
 import project.view.model.Category;
 import project.view.model.Login;
-import project.view.model.ProductInStore;
 import project.view.model.ResultRegister;
 import project.view.model.Store;
 import project.view.model.NearByStore;
