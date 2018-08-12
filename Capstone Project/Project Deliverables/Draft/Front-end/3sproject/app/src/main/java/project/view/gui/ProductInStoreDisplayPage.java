@@ -36,7 +36,6 @@ import project.retrofit.ApiUtils;
 import project.view.R;
 import project.view.adapter.ProductInStoreCustomListViewAdapter;
 import project.view.model.Product;
-import project.view.model.ProductInStore;
 import project.view.util.CustomInterface;
 import project.view.util.ProductInStoreCompareableDecrease;
 import project.view.util.ProductInStoreCompareableIncrease;

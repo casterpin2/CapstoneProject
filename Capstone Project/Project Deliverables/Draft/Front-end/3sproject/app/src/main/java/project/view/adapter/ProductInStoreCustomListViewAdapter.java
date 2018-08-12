@@ -7,7 +7,6 @@ import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,7 +36,6 @@ import project.view.gui.ProductDetailPage;
 import project.view.model.Cart;
 import project.view.model.CartDetail;
 import project.view.model.Product;
-import project.view.model.ProductInStore;
 import project.view.util.Formater;
 import retrofit2.Call;
 import retrofit2.Response;
@@ -161,7 +159,6 @@ public class ProductInStoreCustomListViewAdapter extends ArrayAdapter<Product> {
         viewHolder.editBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 Intent toEditProductInformationPage = new Intent(getContext(), EditProductInStorePage.class);
                 toEditProductInformationPage.putExtra("productName", productList.get(position).getProduct_name());
                 toEditProductInformationPage.putExtra("productID", productList.get(position).getProduct_id());
