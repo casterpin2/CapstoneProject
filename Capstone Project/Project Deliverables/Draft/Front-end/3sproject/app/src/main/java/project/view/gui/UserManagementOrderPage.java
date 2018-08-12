@@ -164,6 +164,8 @@ public class UserManagementOrderPage extends BasePage {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_management);
+        CustomInterface.setStatusBarColor(this);
+
         userId = getIntent().getIntExtra("userID",-1);
         getSupportActionBar().setTitle("Quản lý đơn hàng");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
