@@ -56,7 +56,7 @@ public class ProductTypeDisplayListViewAdapter extends BaseAdapter {
         if (view  == null){
             LayoutInflater li;
             li = LayoutInflater.from(getContext());
-            view = li.inflate(R.layout.product_type_display_custom_cardview, null);
+            view = li.inflate(R.layout.product_brand_display_custom_listview, null);
             holder = new ProductTypeDisplayListViewAdapter.ViewHolder();
             holder.productImage = (ImageView) view.findViewById(R.id.productImage);
             holder.productName = (TextView) view.findViewById(R.id.productName);

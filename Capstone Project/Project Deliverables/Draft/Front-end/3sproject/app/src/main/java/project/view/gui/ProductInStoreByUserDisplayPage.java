@@ -2,15 +2,17 @@ package project.view.gui;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,7 +24,11 @@ import com.google.firebase.storage.StorageReference;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import project.firebase.Firebase;
 import project.retrofit.APIService;
@@ -30,7 +36,6 @@ import project.retrofit.ApiUtils;
 import project.view.R;
 import project.view.adapter.ProductInStoreByUserCustomListViewAdapter;
 import project.view.model.Product;
-import project.view.model.ProductInStore;
 import project.view.model.Store;
 import project.view.util.CustomInterface;
 import project.view.util.Formater;
@@ -55,12 +60,23 @@ public class ProductInStoreByUserDisplayPage extends BasePage {
     private Spinner spinnerCategory,spinnerSort;
     private LinearLayout sortLayout;
     private StorageReference storageReference = Firebase.getFirebase();
+    private List<Product> products;
+    private CoordinatorLayout main_layout;
+    private ArrayAdapter<String> dataAdapter;
+    private SearchView searchView ;
+    private List<Product> tempProductInStore;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_in_store_by_user_display_page);
         findView();
-
+        main_layout.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                CustomInterface.hideKeyboard(view,getBaseContext());
+                return false;
+            }
+        });
         imgBarCode.setVisibility(View.INVISIBLE);
         CustomInterface.setStatusBarColor(this);
         storeName = getIntent().getStringExtra("storeName");
@@ -85,19 +101,45 @@ public class ProductInStoreByUserDisplayPage extends BasePage {
                 finish();
             }
         });
-
-        addItemsOnSpinner();
+        //searchView.setQueryHint("Tìm trong "+storeName);
+       // addItemsOnSpinner();
         addSortItem();
 
     }
 
-    public void addItemsOnSpinner() {
+//    public void addItemsOnSpinner() {
+//        List<String> list = new ArrayList<String>();
+//        list.add("Tất cả sản phẩm");
+//        list.add("Đồ uống");
+//        list.add("Đồ ăn");
+//        list.add("Đồ gia dụng");
+//        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,
+//                android.R.layout.simple_spinner_item, list);
+//        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        spinnerCategory.setAdapter(dataAdapter);
+//    }
+
+    public void addCategoryFilter(){
+        HashMap<String,Integer> categoryFilter = new HashMap<>();
+        for(Product product : products) {
+
+            if (categoryFilter.containsKey(product.getCategory_name())) {
+                categoryFilter.put(product.getCategory_name(), categoryFilter.get(product.getCategory_name())+1);
+            }else {
+                categoryFilter.put(product.getCategory_name(), 1);
+            }
+        }
+        Set set = categoryFilter.entrySet();
+        Iterator i = set.iterator();
         List<String> list = new ArrayList<String>();
         list.add("Tất cả sản phẩm");
-        list.add("Đồ uống");
-        list.add("Đồ ăn");
-        list.add("Đồ gia dụng");
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,
+        while(i.hasNext()) {
+            Map.Entry me = (Map.Entry)i.next();
+            list.add(me.getKey()+"");
+//            System.out.print(me.getKey() + ": ");
+//            System.out.println(me.getValue());
+        }
+        dataAdapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_spinner_item, list);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerCategory.setAdapter(dataAdapter);
@@ -123,6 +165,8 @@ public class ProductInStoreByUserDisplayPage extends BasePage {
         sortLayout = findViewById(R.id.sortLayout);
         spinnerSort = findViewById(R.id.spinnerSort);
         backdrop = findViewById(R.id.backdrop);
+        main_layout = findViewById(R.id.main_layout);
+     //   searchView = findViewById(R.id.searchViewQuery);
     }
 
     public class ProductInStoreList extends AsyncTask<Call,List<Product>,Void> {
@@ -139,14 +183,27 @@ public class ProductInStoreByUserDisplayPage extends BasePage {
         @Override
         protected void onProgressUpdate(List<Product>... values) {
             super.onProgressUpdate(values);
-            final List<Product> productInStores = values[0];
+            products = values[0];
+            tempProductInStore = new ArrayList<>();
+            for (Product product : products){
+                tempProductInStore.add(product);
+
+            }
+
+            productInStoreByUserCustomListViewAdapter = new ProductInStoreByUserCustomListViewAdapter(ProductInStoreByUserDisplayPage.this, tempProductInStore,store);
+            RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(ProductInStoreByUserDisplayPage.this, 2);
+            recycler_view.setLayoutManager(mLayoutManager);
+            recycler_view.addItemDecoration(new GridSpacingItemDecoration(2, Formater.dpToPx(2,getResources()), true));
+            recycler_view.setItemAnimator(new DefaultItemAnimator());
+            recycler_view.setAdapter(productInStoreByUserCustomListViewAdapter);
+            addCategoryFilter();
             spinnerSort.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                     if(adapterView.getItemAtPosition(i).toString().equals("Giá từ thấp tới cao")) {
-                        Collections.sort(productInStores,new ProductInStoreCompareableDecrease());
+                        Collections.sort(tempProductInStore,new ProductInStoreCompareableDecrease());
                     }else if(adapterView.getItemAtPosition(i).toString().equals("Giá từ cao xuống thấp")){
-                        Collections.sort(productInStores,new ProductInStoreCompareableIncrease());
+                        Collections.sort(tempProductInStore,new ProductInStoreCompareableIncrease());
                     }
                     productInStoreByUserCustomListViewAdapter.notifyDataSetChanged();
                 }
@@ -157,12 +214,30 @@ public class ProductInStoreByUserDisplayPage extends BasePage {
                 }
             });
 
-            productInStoreByUserCustomListViewAdapter = new ProductInStoreByUserCustomListViewAdapter(ProductInStoreByUserDisplayPage.this, productInStores,store);
-            RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(ProductInStoreByUserDisplayPage.this, 2);
-            recycler_view.setLayoutManager(mLayoutManager);
-            recycler_view.addItemDecoration(new GridSpacingItemDecoration(2, Formater.dpToPx(2,getResources()), true));
-            recycler_view.setItemAnimator(new DefaultItemAnimator());
-            recycler_view.setAdapter(productInStoreByUserCustomListViewAdapter);
+            spinnerCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                    tempProductInStore.clear();
+                    if("Tất cả sản phẩm".equals(adapterView.getItemAtPosition(i).toString())){
+                        for (Product product : products){
+                            tempProductInStore.add(product);
+                        }
+                    } else {
+                        for (Product product : products) {
+                            Toast.makeText(getBaseContext(),adapterView.getItemAtPosition(i).toString(),Toast.LENGTH_LONG).show();
+                            if (product.getCategory_name().equals(adapterView.getItemAtPosition(i).toString())) {
+                                tempProductInStore.add(product);
+                            }
+                        }
+                    }
+                    productInStoreByUserCustomListViewAdapter.notifyDataSetChanged();
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+
+                }
+            });
         }
 
         @Override

@@ -136,7 +136,7 @@ public class ProductInStoreCustomListViewAdapter extends ArrayAdapter<Product> {
             }
         });
         final Product product = productList.get(position);
-        convertView.setOnClickListener(new View.OnClickListener() {
+        viewHolder.productImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 boolean isStoreProduct = true;

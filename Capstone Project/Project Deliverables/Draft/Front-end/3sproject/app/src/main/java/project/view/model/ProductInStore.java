@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 
-public class ProductInStore implements Comparable<ProductInStore> {
+public class ProductInStore{
     @SerializedName("product_id")
     @Expose
     private int productID;
@@ -121,14 +121,5 @@ public class ProductInStore implements Comparable<ProductInStore> {
 
     public void setPromotionPercent(double promotionPercent) {
         this.promotionPercent = promotionPercent;
-    }
-
-    public int compareTo(ProductInStore productInStore) {
-        if (getProductPrice() == productInStore.getProductPrice())
-            return 0;
-        else if (getProductPrice() > productInStore.getProductPrice())
-            return 1;
-        else
-            return -1;
     }
 }
