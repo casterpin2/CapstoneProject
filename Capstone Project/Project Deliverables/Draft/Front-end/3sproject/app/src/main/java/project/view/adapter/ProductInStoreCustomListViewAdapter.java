@@ -76,14 +76,14 @@ public class ProductInStoreCustomListViewAdapter extends ArrayAdapter<Product> {
     @NonNull
     @Override
     public View getView(final int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        ProductInStoreCustomListViewAdapter.ViewHolder viewHolder;
+        ProductInStoreViewHolder viewHolder;
         if (convertView == null) {
             LayoutInflater inflater = LayoutInflater.from(context);
             convertView = inflater.inflate(R.layout.product_in_store_custom_listview, parent, false);
-            viewHolder = new ProductInStoreCustomListViewAdapter.ViewHolder(convertView);
+            viewHolder = new ProductInStoreViewHolder(convertView);
             convertView.setTag(viewHolder);
         } else {
-            viewHolder = (ProductInStoreCustomListViewAdapter.ViewHolder)convertView.getTag();
+            viewHolder = (ProductInStoreViewHolder)convertView.getTag();
         }
 
         viewHolder.productName.setText(productList.get(position).getProduct_name());
@@ -187,7 +187,7 @@ public class ProductInStoreCustomListViewAdapter extends ArrayAdapter<Product> {
         return convertView;
     }
 
-    private static class ViewHolder {
+    private static class ProductInStoreViewHolder {
         TextView productName;
         TextView productPrice;
         TextView productPromotion;
@@ -195,7 +195,7 @@ public class ProductInStoreCustomListViewAdapter extends ArrayAdapter<Product> {
         ImageView deleteBtn;
         ImageView editBtn;
 
-        public ViewHolder(View view) {
+        public ProductInStoreViewHolder(View view) {
             productImage = (ImageView) view.findViewById(R.id.productImage);
             productName = (TextView) view.findViewById(R.id.productName);
             productPrice =(TextView) view.findViewById(R.id.productPrice);
