@@ -41,10 +41,10 @@ public class StoreOrderManagementAdapter extends ArrayAdapter<OrderDetail> {
             if(convertView==null){
                 convertView = LayoutInflater.from(context).inflate(R.layout.item_store_order_management, parent, false);
                 viewHolder = new ViewHolder();
-                viewHolder.tvCusName = convertView.findViewById(R.id.tvCusName);
-                viewHolder.tvAddress = convertView.findViewById(R.id.tvAddress);
+                viewHolder.tvCustomerName = convertView.findViewById(R.id.tvCustomerName);
+                viewHolder.tvDeliveryAddress = convertView.findViewById(R.id.tvDeliveryAddress);
                 viewHolder.tvOrderDate = convertView.findViewById(R.id.tvOrderDate);
-                viewHolder.tvPrice = convertView.findViewById(R.id.tvPrice);
+                viewHolder.tvTotalOrder = convertView.findViewById(R.id.tvTotalOrder);
                 viewHolder.btnDetail = convertView.findViewById(R.id.btnDetail);
                 convertView.setTag(viewHolder);
             } else {
@@ -52,10 +52,10 @@ public class StoreOrderManagementAdapter extends ArrayAdapter<OrderDetail> {
             }
             final OrderDetail order = orderDetails.get(position);
 
-            viewHolder.tvCusName.setText(order.getUserName());
-            viewHolder.tvAddress.setText(order.getAddress());
+            viewHolder.tvCustomerName.setText(order.getUserName());
+            viewHolder.tvDeliveryAddress.setText(order.getAddress());
             viewHolder.tvOrderDate.setText(order.getOrderDateTime().toString());
-            viewHolder.tvPrice.setText(formater.formatDoubleToMoney(order.getFinalPrice()+""));
+            viewHolder.tvTotalOrder.setText(formater.formatDoubleToMoney(order.getFinalPrice()+""));
 
             viewHolder.btnDetail.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -69,7 +69,7 @@ public class StoreOrderManagementAdapter extends ArrayAdapter<OrderDetail> {
         }
 
         public class ViewHolder {
-            TextView tvCusName, tvAddress,tvOrderDate,tvPrice;
+            TextView tvCustomerName, tvDeliveryAddress,tvOrderDate,tvTotalOrder;
             Button btnDetail;
         }
     }

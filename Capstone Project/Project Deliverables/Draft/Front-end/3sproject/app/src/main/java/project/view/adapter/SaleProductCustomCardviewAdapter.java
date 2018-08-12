@@ -55,7 +55,7 @@ public class SaleProductCustomCardviewAdapter extends RecyclerView.Adapter<SaleP
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.sale_product_display_page_custom_cardview, parent, false);
+                .inflate(R.layout.product_display_custom_cardview, parent, false);
 
         return new MyViewHolder(itemView);
     }

@@ -35,6 +35,7 @@ import project.view.R;
 import project.view.gui.StoreInformationPage;
 import project.view.model.Cart;
 import project.view.model.CartDetail;
+import project.view.util.Formater;
 
 public class CartAdapter extends BaseExpandableListAdapter {
 
@@ -66,7 +67,7 @@ public class CartAdapter extends BaseExpandableListAdapter {
             }
             totalPrice += count;
         }
-        return formatDoubleToMoney(String.valueOf(totalPrice));
+        return Formater.formatDoubleToMoney(String.valueOf(totalPrice));
     }
 
     public CartAdapter(Context context, List<Cart> list, int userId) {
@@ -143,7 +144,7 @@ public class CartAdapter extends BaseExpandableListAdapter {
         }
         //totalPrice = 0;
         totalPrice += count;
-        totalTV.setText(formatDoubleToMoney(String.valueOf(count)));
+        totalTV.setText(Formater.formatDoubleToMoney(String.valueOf(count)));
         return convertView;
     }
 
@@ -169,7 +170,7 @@ public class CartAdapter extends BaseExpandableListAdapter {
         final TextView quantityTv = (TextView) convertView.findViewById(R.id.quantity);
         quantityTv.setText(String.valueOf(quantity));
         TextView priceTv = (TextView) convertView.findViewById(R.id.price);
-        priceTv.setText(formatDoubleToMoney(String.valueOf(price)));
+        priceTv.setText(Formater.formatDoubleToMoney(String.valueOf(price)));
         final Button decreaseBtn = (Button) convertView.findViewById(R.id.decreaseBtn);
         final ImageView productImage = (ImageView) convertView.findViewById(R.id.productImage);
         Glide.with(context /* context */)
@@ -233,6 +234,12 @@ public class CartAdapter extends BaseExpandableListAdapter {
 
                     }
                 });
+                builder.setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                });
                 builder.show();
             }
         });
@@ -245,26 +252,6 @@ public class CartAdapter extends BaseExpandableListAdapter {
         return false;
     }
 
-    public static String formatDoubleToMoney(String price) {
-
-        NumberFormat format =
-                new DecimalFormat("#,##0.00");// #,##0.00 ¤ (¤:// Currency symbol)
-        format.setCurrency(Currency.getInstance(Locale.US));//Or default locale
-
-        price = (!TextUtils.isEmpty(price)) ? price : "0";
-        price = price.trim();
-        price = format.format(Double.parseDouble(price));
-        price = price.replaceAll(",", "\\.");
-
-        if (price.endsWith(".00")) {
-            int centsIndex = price.lastIndexOf(".00");
-            if (centsIndex != -1) {
-                price = price.substring(0, centsIndex);
-            }
-        }
-        price = String.format("%s đ", price);
-        return price;
-    }
 
     public void increaseQuantity(TextView quantityTV) {
         int quantity = Integer.parseInt(quantityTV.getText().toString());

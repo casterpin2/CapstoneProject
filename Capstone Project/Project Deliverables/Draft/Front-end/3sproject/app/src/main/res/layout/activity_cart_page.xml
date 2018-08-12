@@ -55,21 +55,33 @@
         android:layout_height="wrap_content"
         android:visibility="invisible"
         >
-    <TextView
-        android:id="@+id/notification"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Giỏ hàng không có đơn hàng!"
-        android:textSize="20dp"
-        />
-    <Button
-        android:id="@+id/shoppingBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Bắt đầu mua sắm"
-        android:textSize="15dp"
-        android:layout_below="@+id/notification"
-        android:layout_centerHorizontal="true"/>
+        <ImageView
+            android:id="@+id/emptyBox"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/empty_box"/>
+        <TextView
+            android:id="@+id/notification"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Giỏ hàng của bạn trống!"
+            android:textSize="20dp"
+            android:textColor="@color/contentBadgeTitle"
+            android:layout_below="@id/emptyBox"
+            android:layout_marginBottom="16dp"/>
+        <Button
+            android:id="@+id/shoppingBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Bắt đầu mua sắm"
+            android:textSize="15dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:textColor="@color/colorApplication"
+            android:layout_below="@+id/notification"
+            android:background="@drawable/border_button"
+            android:layout_centerHorizontal="true"/>
     </RelativeLayout>
     <ProgressBar
         android:id="@+id/loadingBar"

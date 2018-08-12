@@ -37,7 +37,7 @@ import project.view.R;
 import project.view.model.Store;
 import project.view.util.Formater;
 
-public class ProductInStoreByUserCustomListViewAdapter extends RecyclerView.Adapter<ProductInStoreByUserCustomListViewAdapter.MyViewHolder> {
+public class ProductInStoreByUserCustomCardViewAdapter extends RecyclerView.Adapter<ProductInStoreByUserCustomCardViewAdapter.MyViewHolder> {
 
     private Context mContext;
     private List<Product> productInStores;
@@ -75,7 +75,7 @@ public class ProductInStoreByUserCustomListViewAdapter extends RecyclerView.Adap
     }
 
 
-    public ProductInStoreByUserCustomListViewAdapter(Context mContext, List<Product> productInStores,Store store) {
+    public ProductInStoreByUserCustomCardViewAdapter(Context mContext, List<Product> productInStores, Store store) {
         this.mContext = mContext;
         this.productInStores = productInStores;
         this.store = store;
@@ -87,9 +87,9 @@ public class ProductInStoreByUserCustomListViewAdapter extends RecyclerView.Adap
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.sale_product_display_page_custom_cardview, parent, false);
+                .inflate(R.layout.product_display_custom_cardview, parent, false);
 
-        return new ProductInStoreByUserCustomListViewAdapter.MyViewHolder(itemView);
+        return new ProductInStoreByUserCustomCardViewAdapter.MyViewHolder(itemView);
     }
 
     @Override
