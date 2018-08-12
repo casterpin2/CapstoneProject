@@ -81,6 +81,8 @@ public class ProductTypeDisplayListViewAdapter extends BaseAdapter {
                     int productId = product.getProduct_id();
                     Intent toNearByStorePage = new Intent(getContext(), NearbyStorePage.class);
                     toNearByStorePage.putExtra("productId",productId);
+                    toNearByStorePage.putExtra("productName",product.getProduct_name());
+                    toNearByStorePage.putExtra("image_path",product.getImage_path());
                     getContext().startActivity(toNearByStorePage);
                 }
             });

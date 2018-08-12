@@ -18,6 +18,11 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.gson.Gson;
 
@@ -29,6 +34,8 @@ import project.retrofit.ApiUtils;
 import project.view.gui.EditProductInStorePage;
 import project.view.R;
 import project.view.gui.ProductDetailPage;
+import project.view.model.Cart;
+import project.view.model.CartDetail;
 import project.view.model.Product;
 import project.view.model.ProductInStore;
 import project.view.util.Formater;
@@ -41,6 +48,8 @@ public class ProductInStoreCustomListViewAdapter extends ArrayAdapter<Product> {
     private List<Product> productList;
     private StorageReference storageReference = Firebase.getFirebase();
     private int storeID;
+    private FirebaseDatabase database = FirebaseDatabase.getInstance();
+    private DatabaseReference myRef;
 
     public int getStoreID() {
         return storeID;
@@ -103,9 +112,40 @@ public class ProductInStoreCustomListViewAdapter extends ArrayAdapter<Product> {
                 builder.setPositiveButton(R.string.alertdialog_acceptButton, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Log.d("storeid",String.valueOf(storeID));
-                        Call<Boolean> call = ApiUtils.getAPIService().deleteProductInStore(storeID,productList.get(position).getProduct_id());
-                        new DeleteProduct(position).execute(call);
+                        myRef = database.getReference().child("cart");
+                        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
+                                    String userId = dataSnapshot1.getKey();
+                                    for (DataSnapshot dataSnapshot2 :dataSnapshot1.getChildren()){
+                                        long storeCount = dataSnapshot2.getChildrenCount();
+                                        Cart cart = dataSnapshot2.getValue(Cart.class);
+                                        Object[] cartDetails = cart.getCartDetail().values().toArray();
+                                        for(int i = 0 ; i < cartDetails.length;i++) {
+                                            String productId = String.valueOf(((CartDetail)cartDetails[i]).getProductId());
+                                            if (((CartDetail)cartDetails[i]).getProductId() == productList.get(position).getProduct_id()){
+                                                if (cartDetails.length == 1) {
+                                                    myRef.child(userId).child(String.valueOf(cart.getStoreId())).removeValue();
+                                                }
+                                                if (cartDetails.length == 1 && storeCount == 1) {
+                                                    myRef.child(userId).removeValue();
+                                                } else {
+                                                    myRef.child(userId).child(String.valueOf(cart.getStoreId())).child("cartDetail").child(productId).removeValue();
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                Call<Boolean> call = ApiUtils.getAPIService().deleteProductInStore(storeID,productList.get(position).getProduct_id());
+                                new DeleteProduct(position).execute(call);
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+                                Toast.makeText(context,"Có lỗi xảy ra !!!",Toast.LENGTH_LONG).show();
+                            }
+                        });
                     }
                 });
                 builder.setNegativeButton(R.string.alertdialog_cancelButton, new DialogInterface.OnClickListener() {
@@ -124,7 +164,7 @@ public class ProductInStoreCustomListViewAdapter extends ArrayAdapter<Product> {
 
                 Intent toEditProductInformationPage = new Intent(getContext(), EditProductInStorePage.class);
                 toEditProductInformationPage.putExtra("productName", productList.get(position).getProduct_name());
-                toEditProductInformationPage.putExtra("productID", productList.get(position).getProduct_name());
+                toEditProductInformationPage.putExtra("productID", productList.get(position).getProduct_id());
                 toEditProductInformationPage.putExtra("storeID", storeID);
                 toEditProductInformationPage.putExtra("categoryName", productList.get(position).getCategory_name());
                 toEditProductInformationPage.putExtra("brandName", productList.get(position).getBrand_name());
@@ -212,8 +252,10 @@ public class ProductInStoreCustomListViewAdapter extends ArrayAdapter<Product> {
                 Toast.makeText(context,"Có lỗi xảy ra !!!",Toast.LENGTH_LONG).show();
                 return;
             } else {
+                Toast.makeText(context,"Xóa sản phẩm thành công",Toast.LENGTH_LONG).show();
                 productList.remove(index);
                 ProductInStoreCustomListViewAdapter.this.notifyDataSetChanged();
+
             }
             super.onPostExecute(result);
 

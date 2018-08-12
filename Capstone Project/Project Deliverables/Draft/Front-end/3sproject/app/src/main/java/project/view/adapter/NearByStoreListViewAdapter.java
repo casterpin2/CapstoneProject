@@ -1,6 +1,7 @@
 package project.view.adapter;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
@@ -20,9 +21,11 @@ import java.util.List;
 import project.firebase.Firebase;
 import project.view.gui.MainActivity;
 import project.view.R;
+import project.view.gui.OrderPage;
 import project.view.gui.ProductInStoreByUserDisplayPage;
 import project.view.gui.StoreInformationPage;
 import project.view.model.NearByStore;
+import project.view.model.Product;
 import project.view.util.Formater;
 
 public class NearByStoreListViewAdapter extends BaseAdapter {
@@ -32,6 +35,7 @@ public class NearByStoreListViewAdapter extends BaseAdapter {
     private List<NearByStore> storeList;
     private int layout;
     private StorageReference storageReference = Firebase.getFirebase();
+    private Product product;
     @Override
     public int getCount() {
         return storeList.size();
@@ -47,10 +51,11 @@ public class NearByStoreListViewAdapter extends BaseAdapter {
         return 0;
     }
 
-    public NearByStoreListViewAdapter(Context context, int layout, List<NearByStore> storeList) {
+    public NearByStoreListViewAdapter(Context context, int layout, List<NearByStore> storeList,Product product) {
         this.context = context;
         this.layout = layout;
         this.storeList = storeList;
+        this.product = product;
     }
     @SuppressLint("ResourceAsColor")
     @Override
@@ -104,9 +109,16 @@ public class NearByStoreListViewAdapter extends BaseAdapter {
                     @Override
                     public void onClick(View v) {
 
-                        Intent intent = new Intent(getContext(), MainActivity.class);
+                        Intent intent = new Intent(getContext(), OrderPage.class);
+                        intent.putExtra("isCart", false);
+                        intent.putExtra("product",new Gson().toJson(product));
+                        intent.putExtra("price",store.getPrice());
+                        intent.putExtra("promotion",store.getPromotion());
+                        intent.putExtra("storeID", store.getId());
                         intent.putExtra("storeName", store.getName());
-                        getContext().startActivity(intent);
+                        intent.putExtra("phone", store.getPhone());
+                        intent.putExtra("image_path", store.getImage_path());
+                        ((Activity) getContext()).startActivityForResult(intent,2);
                     }
                 });
                 view.setOnClickListener(new View.OnClickListener() {
