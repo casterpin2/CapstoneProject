@@ -183,6 +183,8 @@ public class ProductDetailPage extends BasePage {
                     int productId = product.getProduct_id();
                     Intent toNearByStorePage = new Intent(ProductDetailPage.this, NearbyStorePage.class);
                     toNearByStorePage.putExtra("productId",productId);
+                    toNearByStorePage.putExtra("productName",product.getProduct_name());
+                    toNearByStorePage.putExtra("image_path",product.getImage_path());
                     startActivity(toNearByStorePage);
                 }
             });
@@ -303,7 +305,11 @@ public class ProductDetailPage extends BasePage {
                     myRef.child("storeId").setValue(store.getId());
                     myRef.child("storeName").setValue(String.valueOf(store.getName()));
                     myRef.child("image_path").setValue(String.valueOf(store.getImage_path()));
-                    CartDetail cartDetail  = new CartDetail(product.getProduct_id(),product.getProduct_name(),1,product.getPrice(),product.getImage_path());
+                    double price =  product.getPrice();
+                    if(product.getPromotion()!=0){
+                        price = product.getPrice()*product.getPromotion();
+                    }
+                    CartDetail cartDetail  = new CartDetail(product.getProduct_id(),product.getProduct_name(),1,price,product.getImage_path());
                     myRef.child("cartDetail").child(String.valueOf(product.getProduct_id())).setValue(cartDetail);
                     Toast.makeText(ProductDetailPage.this, "Thêm sản phẩm vào giỏ hàng thành công", Toast.LENGTH_SHORT).show();
                 } else {
@@ -311,10 +317,21 @@ public class ProductDetailPage extends BasePage {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             if (!dataSnapshot.exists()){
-                                CartDetail cartDetail  = new CartDetail(product.getProduct_id(),product.getProduct_name(),1,product.getPrice(),product.getImage_path());
+                                double price =  product.getPrice();
+                                if(product.getPromotion()!=0){
+                                    price = product.getPrice()-(product.getPrice()*product.getPromotion()/100);
+                                }
+                                CartDetail cartDetail  = new CartDetail(product.getProduct_id(),product.getProduct_name(),1,price,product.getImage_path());
                                 myRef.child("cartDetail").child(String.valueOf(product.getProduct_id())).setValue(cartDetail);
                                 Toast.makeText(ProductDetailPage.this, "Thêm sản phẩm vào giỏ hàng thành công", Toast.LENGTH_SHORT).show();
                             } else {
+                                double price =  product.getPrice();
+                                if(product.getPromotion()!=0){
+                                    price = product.getPrice()-(product.getPrice()*product.getPromotion()/100);
+                                }
+                                if (price != dataSnapshot.child("unitPrice").getValue(Double.class)){
+                                    myRef.child("cartDetail").child(String.valueOf(product.getProduct_id())).child("unitPrice").setValue(price);
+                                }
                                 myRef.child("cartDetail").child(String.valueOf(product.getProduct_id())).child("quantity").setValue((long)dataSnapshot.child("quantity").getValue()+1);
                                 Toast.makeText(ProductDetailPage.this, "Thêm sản phẩm vào giỏ hàng thành công", Toast.LENGTH_SHORT).show();
                             }

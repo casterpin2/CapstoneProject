@@ -224,7 +224,6 @@ public class ProductInStoreByUserDisplayPage extends BasePage {
                         }
                     } else {
                         for (Product product : products) {
-                            Toast.makeText(getBaseContext(),adapterView.getItemAtPosition(i).toString(),Toast.LENGTH_LONG).show();
                             if (product.getCategory_name().equals(adapterView.getItemAtPosition(i).toString())) {
                                 tempProductInStore.add(product);
                             }
