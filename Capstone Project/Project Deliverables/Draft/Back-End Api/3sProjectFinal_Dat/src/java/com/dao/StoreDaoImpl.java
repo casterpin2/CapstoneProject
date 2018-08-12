@@ -12,6 +12,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -245,7 +247,7 @@ public class StoreDaoImpl extends BaseDao implements StoreDao {
                 se.setImage_path(rs.getString("path"));
                 se.setRegisterLog(rs.getString("registerLogFormat"));
                 se.setUser_name(rs.getNString("full_name"));
-                se.setAddress(rs.getString("apartment_number")+" "+rs.getString("street")+" "+rs.getString("county")+" "+rs.getString("district")+" "+rs.getString("city"));
+                se.setAddress(rs.getString("apartment_number") + " " + rs.getString("street") + " " + rs.getString("county") + " " + rs.getString("district") + " " + rs.getString("city"));
                 se.setAddress(se.getAddress().replaceAll("0", "").replaceAll("Unnamed Road", "").replaceAll("\\s+", " ").replaceAll("null", "").trim());
                 return se;
             }
@@ -256,5 +258,141 @@ public class StoreDaoImpl extends BaseDao implements StoreDao {
             closeConnect(conn, pre, null);
         }
         return null;
+    }
+
+    @Override
+    public StoreEntites updateStore(StoreEntites store, LocationEntites location) throws SQLException {
+        Connection conn = null;
+        PreparedStatement pre = null;
+        ResultSet rs = null;
+        boolean checkUpdateStore = false;
+        boolean checkUpdateLocation = false;
+        StoreEntites storeData = null;
+        int locationId = 0;
+        try {
+            String sql = "Update Store set name =? ,phone =? where id = ?";
+            conn = getConnection();
+            conn.setAutoCommit(false);
+            pre = conn.prepareStatement(sql);
+            pre.setString(1, store.getName());
+            pre.setString(2, store.getPhone());
+            pre.setInt(3, store.getId());
+            int updateSuccess = pre.executeUpdate();
+            if (updateSuccess > 0) {
+                conn.commit();
+                checkUpdateStore = true;
+
+            } else {
+                conn.rollback();
+                conn.setAutoCommit(true);
+            }
+            if (checkLocation(location)) {
+                checkUpdateLocation = updateLocationByStore(conn, location, store.getLocation_id());
+            } else {
+                checkUpdateLocation = true;
+            }
+
+            if (checkUpdateLocation && checkUpdateStore) {
+                storeData = getStore(conn, store, store.getImage_path());
+            }
+        } finally {
+            closeConnect(conn, pre, rs);
+        }
+
+        return storeData;
+    }
+
+    public boolean updateLocationByStore(Connection conn, LocationEntites location, int locationId) throws SQLException {
+        PreparedStatement pre = null;
+        try {
+            String updateLocation = "Update Location set apartment_number =? , street =?, county =? , district =?,city =? , longitude =?,latitude=? where id =?";
+            conn.setAutoCommit(false);
+            pre = conn.prepareStatement(updateLocation);
+            pre.setString(1, location.getApartment_number());
+            pre.setString(2, location.getStreet());
+            pre.setString(3, location.getCounty());
+            pre.setString(4, location.getDistrict());
+            pre.setString(5, location.getCity());
+            pre.setString(6, location.getLongitude());
+            pre.setString(7, location.getLatitude());
+            pre.setInt(8, locationId);
+            int checkUpdateLocation = pre.executeUpdate();
+            if (checkUpdateLocation > 0) {
+                conn.commit();
+                return true;
+            } else {
+                conn.rollback();
+                conn.setAutoCommit(true);
+            }
+        } finally {
+            closeConnect(null, pre, null);
+        }
+        return false;
+    }
+
+    public StoreEntites getStore(Connection conn, StoreEntites storeData, String imgPath) {
+        PreparedStatement pre = null;
+        ResultSet rs = null;
+        StoreEntites store = null;
+        String sql = "SELECT s.id as storeId,s.user_id,s.location_id,s.name as nameStore,\n"
+                + "                 s.phone,s.status,l.apartment_number,l.street,l.district,l.county,\n"
+                + "                l.city,l.latitude,l.longitude \n"
+                + "                FROM Store s JOIN Location as l on s.location_id = l.id where s.id =?";
+        try {
+            pre = conn.prepareStatement(sql);
+            pre.setInt(1, storeData.getId());
+            rs = pre.executeQuery();
+            if (rs.next()) {
+                store = new StoreEntites();
+                store.setId(rs.getInt("storeId"));
+                if (rs.getString("apartment_number") != null) {
+                    store.setAddress(rs.getString("apartment_number") + " " + rs.getString("street") + " " + rs.getString("county") + " " + rs.getString("city"));
+                } else {
+                    store.setAddress(rs.getString("street") + " " + rs.getString("county") + " " + rs.getString("city"));
+                }
+
+                store.setImage_path(imgPath);
+                store.setLatitude(rs.getString("latitude"));
+                store.setLongtitude(rs.getString("longitude"));
+                store.setName(rs.getString("nameStore"));
+                store.setPhone(rs.getString("phone"));
+                store.setStatus(rs.getInt("status"));
+                store.setUser_id(rs.getInt("user_id"));
+                store.setLocation_id(rs.getInt("location_id"));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(StoreDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            closeConnect(null, pre, rs);
+        }
+        return store;
+
+    }
+
+    public boolean checkLocation(LocationEntites location) {
+        boolean check = false;
+        if(location.getApartment_number()!=null){
+            check = true;
+        }
+        if(location.getCity()!=null){
+            check = true;
+        }
+        if(location.getCounty()!=null){
+            check = true;
+        }
+        if(location.getDistrict()!=null){
+            check = true;
+        }
+        if(location.getLatitude()!=null){
+            check = true;
+        }
+        if(location.getLongitude()!=null){
+            check = true;
+        }
+        if(location.getStreet()!=null){
+            check = true;
+        }
+        
+        return check;
     }
 }

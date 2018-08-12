@@ -32,5 +32,6 @@ public interface UserService {
     //update 
     public UserEntites updateInformation(UserEntites user) throws SQLException;
     public UserEntites informationUser(int userId) throws SQLException;
-  
+    public UserEntites getPhoneNumberOfUser(String username) throws SQLException;
+    public boolean changePassword(String username,String password) throws SQLException;
 }

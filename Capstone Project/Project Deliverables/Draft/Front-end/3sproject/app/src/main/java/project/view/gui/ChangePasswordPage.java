@@ -1,6 +1,8 @@
 package project.view.gui;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -15,10 +17,17 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import project.retrofit.APIService;
+import project.retrofit.ApiUtils;
 import project.view.R;
 import project.view.util.CustomInterface;
+import project.view.util.MD5Library;
 import project.view.util.Regex;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ChangePasswordPage extends BasePage{
     private  Button btnChangePass;
@@ -26,7 +35,9 @@ public class ChangePasswordPage extends BasePage{
     private TextInputEditText oldPass, newPass, confirmPass;
     private ProgressBar loadingBar;
     private RelativeLayout main_layout;
-
+    private APIService apiService;
+    private String username;
+    
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,7 +59,7 @@ public class ChangePasswordPage extends BasePage{
         loadingBar = (ProgressBar) findViewById(R.id.loadingBar);
         loadingBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorApplication), android.graphics.PorterDuff.Mode.MULTIPLY);
 
-
+        username = getIntent().getStringExtra("username");
         newPass.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -63,15 +74,31 @@ public class ChangePasswordPage extends BasePage{
             @Override
             public void onClick(View v) {
                 confirmPassword(newPass.getText().toString(),confirmPass.getText().toString());
-                if(oldPass.getText().toString().isEmpty()){
-                    tvOldPass.setText(R.string.error_empty);
-                }
                 if(newPass.getText().toString().isEmpty()){
                     tvNewPass.setText(R.string.error_empty);
                 }
                 if(confirmPass.getText().toString().isEmpty()){
                     tvConfirmPass.setText(R.string.error_empty);
                 }
+                apiService = ApiUtils.getAPIService();
+                String password = MD5Library.md5(newPass.getText().toString());
+
+                apiService.requestChangePassword(username, password).enqueue(new Callback<Boolean>() {
+                    @Override
+                    public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                        if(response.isSuccessful()){
+                            Toast.makeText(ChangePasswordPage.this, "Thay đổi thông tin thành công", Toast.LENGTH_LONG).show();
+                            Intent toLoginPage = new Intent(getBaseContext(),LoginPage.class);
+                            toLoginPage.putExtra("username",username);
+                            startActivity(toLoginPage);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Boolean> call, Throwable t) {
+
+                    }
+                });
             }
         });
     }
@@ -110,4 +137,5 @@ public class ChangePasswordPage extends BasePage{
         } else
             tvNewPass.setText("");
     }
+
 }

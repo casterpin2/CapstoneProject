@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
@@ -39,26 +41,51 @@ public class StoreController {
         JsonFactory factory = new JsonFactory();
         factory.enable(JsonParser.Feature.ALLOW_SINGLE_QUOTES);
         ObjectMapper mapper = new ObjectMapper(factory);
-        HashMap<String,String> Obj = mapper.readValue(storeJSON, HashMap.class);
+        HashMap<String, String> Obj = mapper.readValue(storeJSON, HashMap.class);
         String storeObj = Obj.get("store");
         String locationObj = Obj.get("location");
         StoreEntites store = mapper.readValue(storeObj, StoreEntites.class);
         LocationEntites location = mapper.readValue(locationObj, LocationEntites.class);
-        StoreEntites result = this.store.registerStore(store,location);
+        StoreEntites result = this.store.registerStore(store, location);
         return result;
     }
+
     @RequestMapping(value = "/deleteProductInStore", method = RequestMethod.DELETE, produces = "application/json;")
-    public boolean deleteProductInStore(@RequestParam("storeId") int storeId,@RequestParam("productId") int productId) throws SQLException, ClassNotFoundException, IOException {
+    public boolean deleteProductInStore(@RequestParam("storeId") int storeId, @RequestParam("productId") int productId) throws SQLException, ClassNotFoundException, IOException {
         return store.deleteProductInStore(storeId, productId);
     }
-    
+
     @RequestMapping(value = "/editProductInStore", method = RequestMethod.PUT, produces = "application/json;")
-    public boolean editProductInStore(@RequestParam("storeId") int storeId,@RequestParam("productId") int productId,@RequestParam("price") double price,@RequestParam("promotion") double promotion) throws SQLException, ClassNotFoundException, IOException {
+    public boolean editProductInStore(@RequestParam("storeId") int storeId, @RequestParam("productId") int productId, @RequestParam("price") double price, @RequestParam("promotion") double promotion) throws SQLException, ClassNotFoundException, IOException {
         return store.editProductInStore(storeId, productId, price, promotion);
     }
-    
+
     @RequestMapping(value = "/getStoreById", method = RequestMethod.GET, produces = "application/json;")
     public StoreEntites getStoreById(@RequestParam("storeId") int storeId) throws SQLException, ClassNotFoundException, IOException {
         return store.getStoreById(storeId);
     }
+
+    @RequestMapping(value = "/updateStore", method = RequestMethod.PUT, produces = "application/json")
+    public StoreEntites updateInformationStore(@RequestBody String storeJson) {
+        StoreEntites storeData = null;
+        LocationEntites locationData = null;
+        StoreEntites storeReusult = null;
+        try {
+            JsonFactory factory = new JsonFactory();
+            factory.enable(JsonParser.Feature.ALLOW_SINGLE_QUOTES);
+            ObjectMapper mapper = new ObjectMapper(factory);
+            HashMap<String, String> Obj = mapper.readValue(storeJson, HashMap.class);
+            String storeObj = Obj.get("store");
+            String locationObj = Obj.get("location");
+            storeData = mapper.readValue(storeObj, StoreEntites.class);
+            locationData = mapper.readValue(locationObj, LocationEntites.class);          
+            storeReusult = store.updateStore(storeData, locationData);
+        } catch (Exception ex) {
+            Logger.getLogger(StoreController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return storeReusult;
+    }
+    
+    
+
 }

@@ -18,4 +18,5 @@ public interface StoreService {
     public StoreEntites  getStoreById(int storeId) throws SQLException;
     public boolean deleteProductInStore(int storeId,int productId) throws SQLException;
     public boolean editProductInStore(int storeId,int productId,double price,double promotion) throws SQLException;
+    public StoreEntites updateStore(StoreEntites store,LocationEntites location) throws SQLException;
 }

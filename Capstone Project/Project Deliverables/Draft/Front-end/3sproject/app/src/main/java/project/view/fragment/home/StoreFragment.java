@@ -7,13 +7,17 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import project.view.gui.EditStoreInformationPage;
@@ -50,10 +54,12 @@ public class StoreFragment extends Fragment {
     private View view;
     private Store store;
     private User user;
-    private Button btnManagermentProduct,btnManagermentOrder, loginBtn, registerStoreBtn;
+    private Button btnManagermentProduct, btnManagermentOrder, loginBtn, registerStoreBtn;
     private StorageReference storageReference = Firebase.getFirebase();
     private SwipeRefreshLayout mainLayout;
-
+    private FragmentManager supportFragmentManager;
+    private final int RESULT_CODE = 2222;
+    private final int REQUEST_CODE = 1111;
     public StoreFragment() {
         // Required empty public constructor
     }
@@ -64,24 +70,24 @@ public class StoreFragment extends Fragment {
                              Bundle savedInstanceState) {
         String userJSON = getArguments().getString("userJSON");
         String storeJSON = getArguments().getString("storeJSON");
-        if (userJSON .isEmpty()){
+        if (userJSON.isEmpty()) {
             user = new User();
             store = new Store();
         } else {
-            user = new Gson().fromJson(userJSON,User.class);
-            store = new Gson().fromJson(storeJSON,Store.class);
+            user = new Gson().fromJson(userJSON, User.class);
+            store = new Gson().fromJson(storeJSON, Store.class);
         }
         storeID = store.getId();
         hasStore = user.getHasStore();
         userID = user.getId();
 
         if (isNetworkAvailable() == true && hasStore == 1 && userID != 0 && storeID != 0) {
-            view = inflater.inflate(R.layout.fragment_store,container,false);
+            view = inflater.inflate(R.layout.fragment_store, container, false);
             findViewInStoreFragment();
             registerDate.setText(store.getRegisterLog());
             storeName.setText(store.getName());
             phoneText.setText(store.getPhone());
-            address.setText(store.getAddress().replaceAll("null","").replaceAll("\\s+"," "));
+            address.setText(store.getAddress().replaceAll("null", "").replaceAll("\\s+", " "));
             ownerName.setText(user.getFirst_name() + " " + user.getLast_name());
             latitude = getActivity().getIntent().getDoubleExtra("latitude", 0.0);
             longtitude = getActivity().getIntent().getDoubleExtra("longtitude", 0.0);
@@ -123,22 +129,22 @@ public class StoreFragment extends Fragment {
                     toEditStoreInformation.putExtra("registerDate", registerDate.getText().toString());
                     toEditStoreInformation.putExtra("longtitude", longtitude);
                     toEditStoreInformation.putExtra("latitude", latitude);
-                    getActivity().startActivity(toEditStoreInformation);
+                    startActivityForResult(toEditStoreInformation, REQUEST_CODE);
                 }
             });
-        } else if (isNetworkAvailable() == true && hasStore == 0 && userID != 0){
-            view = inflater.inflate(R.layout.no_has_store_store_fragment_home_page_layout,container,false);
+        } else if (isNetworkAvailable() == true && hasStore == 0 && userID != 0) {
+            view = inflater.inflate(R.layout.no_has_store_store_fragment_home_page_layout, container, false);
             findViewInNoHaveStoreLayout();
             registerStoreBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent toRegisterStorePage = new Intent(getContext(), RegisterStorePage.class);
-                    toRegisterStorePage.putExtra("user_id",user.getId());
+                    toRegisterStorePage.putExtra("user_id", user.getId());
                     startActivity(toRegisterStorePage);
                 }
             });
         } else if (isNetworkAvailable() == true && userID == 0) {
-            view = inflater.inflate(R.layout.no_loginned_store_fragment_home_page_layout,container,false);
+            view = inflater.inflate(R.layout.no_loginned_store_fragment_home_page_layout, container, false);
             findViewInNoLoginnedLayout();
             loginBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -147,9 +153,8 @@ public class StoreFragment extends Fragment {
                     startActivity(toLoginPage);
                 }
             });
-        }
-        else if (isNetworkAvailable() == false){
-            view = inflater.inflate(R.layout.no_have_internet_store_fragment_home_page_layout,container,false);
+        } else if (isNetworkAvailable() == false) {
+            view = inflater.inflate(R.layout.no_have_internet_store_fragment_home_page_layout, container, false);
             findViewInNoHaveInternetLayout();
             errorImage.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -161,7 +166,7 @@ public class StoreFragment extends Fragment {
         return view;
     }
 
-    private void findViewInStoreFragment(){
+    private void findViewInStoreFragment() {
         storeName = view.findViewById(R.id.storeName);
         ownerName = view.findViewById(R.id.ownerName);
         address = view.findViewById(R.id.address);
@@ -183,14 +188,15 @@ public class StoreFragment extends Fragment {
                 .into(storeImg);
     }
 
-    private void findViewInNoLoginnedLayout(){
+    private void findViewInNoLoginnedLayout() {
         loginBtn = view.findViewById(R.id.loginBtn);
     }
 
-    private void findViewInNoHaveStoreLayout(){
+    private void findViewInNoHaveStoreLayout() {
         registerStoreBtn = view.findViewById(R.id.registerStoreBtn);
     }
-    private void findViewInNoHaveInternetLayout(){
+
+    private void findViewInNoHaveInternetLayout() {
         errorImage = view.findViewById(R.id.errorImage);
     }
 
@@ -210,7 +216,7 @@ public class StoreFragment extends Fragment {
 
     }
 
-    private void stopRefresh(){
+    private void stopRefresh() {
 
         mainLayout.setRefreshing(false);
     }
@@ -220,6 +226,28 @@ public class StoreFragment extends Fragment {
                 = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE && resultCode == RESULT_CODE) {
+            String userJSON = data.getStringExtra("userData");
+            String storeJSON = data.getStringExtra("storeData");
+            if (userJSON.isEmpty()) {
+                user = new User();
+                store = new Store();
+            } else {
+                user = new Gson().fromJson(userJSON, User.class);
+                store = new Gson().fromJson(storeJSON, Store.class);
+            }
+            registerDate.setText(store.getRegisterLog());
+            storeName.setText(store.getName());
+            phoneText.setText(store.getPhone());
+            address.setText(store.getAddress().replaceAll("null", "").replaceAll("\\s+", " "));
+            ownerName.setText(user.getFirst_name() + " " + user.getLast_name());
+            latitude = getActivity().getIntent().getDoubleExtra("latitude", 0.0);
+            longtitude = getActivity().getIntent().getDoubleExtra("longtitude", 0.0);
+        }
     }
 
 }
