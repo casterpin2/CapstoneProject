@@ -1,112 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="15dp"
-    android:layout_marginBottom="15dp"
     android:background="@color/colorWhite"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp"
     android:orientation="vertical">
     <!--product avatar-->
-    <TextView
+    <!--<TextView
         android:id="@+id/productName"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:background="@color/colorWhite"
         android:textColor="@color/colorBlack"
-        android:text="thaddddng"
+        android:text="Tên sản phẩm"
         android:textSize="17dp"
         android:textAlignment="center"
-        android:layout_marginTop="10dp"
         android:ellipsize="end"
         android:maxLines="3"
-        android:padding="10dp"
-        
-        />
+        android:padding="10dp" />-->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <RelativeLayout
-            android:layout_width="0dp"
-            android:layout_height="120dp"
-            android:layout_weight="1">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
-            <ImageView
+         <ImageView
                 android:id="@+id/productImage"
-                android:layout_width="110dp"
-                android:layout_height="110dp"
+                android:layout_width="128dp"
+                android:layout_height="112dp"
                 android:layout_centerInParent="true"
                 android:src="@drawable/images"
-                android:scaleType="centerInside"
-                />
-        </RelativeLayout>
+                android:scaleType="centerInside" />
 
         <!--product information-->
         <RelativeLayout
-            android:layout_width="0dp"
-            android:layout_weight="2"
-            android:layout_height="120dp"
-            android:layout_gravity="center"
-            android:layout_marginLeft="20dp">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center">
 
             <RelativeLayout
                 android:layout_width="wrap_content"
-                android:layout_height="100dp"
+                android:layout_height="match_parent"
                 android:layout_centerVertical="true">
-
-
-
+                <TextView
+                    android:id="@+id/productName"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:background="@color/colorWhite"
+                    android:textColor="@color/colorApplication"
+                    android:text="Tên sản phẩm"
+                    android:textSize="16dp"
+                    android:ellipsize="end"
+                    android:maxLines="2" />
                 <LinearLayout
+                    android:layout_marginTop="4dp"
                     android:id="@+id/productBrandLinearLayout"
-                    android:layout_width="fill_parent"
-                    android:layout_height="30dp"
-                    android:layout_below="@+id/productCategoryLinearLayout"
-                    android:layout_marginRight="10dp">
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/productName">
 
                     <TextView
                         android:id="@+id/brandText"
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="2"
-                        android:text="Nhãn hiệu"
+                        android:text="Nhãn hiệu:"
                         android:textColor="@color/colorBlack"
-                        android:textSize="13dp" />
+                        android:textSize="14dp" />
                     <TextView
                         android:id="@+id/productBrand"
                         android:layout_height="wrap_content"
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:singleLine="true"
                         android:ellipsize="marquee"
-                        android:text="Evoqđasadsadasdasdasdasdasue"
-                        android:textSize="15dp"
-                        android:textColor="@color/colorApplication"
-                        android:layout_weight="3"
-
-                        />
+                        android:paddingLeft="16dp"
+                        android:text="Lavie"
+                        android:textSize="14dp"
+                        android:textColor="@color/lb_more" />
                 </LinearLayout>
-                <LinearLayout
+                <RelativeLayout
                     android:id="@+id/test"
-                    android:layout_width="fill_parent"
-                    android:layout_height="40dp"
-                    android:layout_below="@+id/productBrandLinearLayout"
-                    android:layout_marginRight="10dp">
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="bottom|center"
+                    android:layout_below="@+id/productBrandLinearLayout">
 
                     <Button
-
                         android:id="@+id/findNearByBtn"
                         android:layout_width="wrap_content"
                         android:layout_height="40dp"
                         android:background="@drawable/border_button"
-                        android:gravity="center"
                         android:text="Tìm cửa hàng"
+                        android:paddingRight="16dp"
+                        android:paddingLeft="16dp"
                         android:textColor="@color/colorApplication"
-                        android:textSize="13dp"
+                        android:textSize="10dp"
                         android:onClick="intentToCartPageFromListView"
-                        android:includeFontPadding="false"
-                        android:padding="10dp"/>
-
-
-                </LinearLayout>
-
+                        android:includeFontPadding="false"/>
+                </RelativeLayout>
             </RelativeLayout>
         </RelativeLayout>
     </LinearLayout>

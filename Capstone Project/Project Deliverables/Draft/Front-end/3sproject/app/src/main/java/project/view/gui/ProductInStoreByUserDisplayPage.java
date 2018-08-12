@@ -34,7 +34,7 @@ import project.firebase.Firebase;
 import project.retrofit.APIService;
 import project.retrofit.ApiUtils;
 import project.view.R;
-import project.view.adapter.ProductInStoreByUserCustomListViewAdapter;
+import project.view.adapter.ProductInStoreByUserCustomCardViewAdapter;
 import project.view.model.Product;
 import project.view.model.Store;
 import project.view.util.CustomInterface;
@@ -54,7 +54,7 @@ public class ProductInStoreByUserDisplayPage extends BasePage {
     private Store store;
     private APIService mAPI;
     private RecyclerView recycler_view;
-    private ProductInStoreByUserCustomListViewAdapter productInStoreByUserCustomListViewAdapter;
+    private ProductInStoreByUserCustomCardViewAdapter productInStoreByUserCustomListViewAdapter;
     private ImageView backBtn,backdrop;
     private TextView tvStoreName;
     private Spinner spinnerCategory,spinnerSort;
@@ -190,7 +190,7 @@ public class ProductInStoreByUserDisplayPage extends BasePage {
 
             }
 
-            productInStoreByUserCustomListViewAdapter = new ProductInStoreByUserCustomListViewAdapter(ProductInStoreByUserDisplayPage.this, tempProductInStore,store);
+            productInStoreByUserCustomListViewAdapter = new ProductInStoreByUserCustomCardViewAdapter(ProductInStoreByUserDisplayPage.this, tempProductInStore,store);
             RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(ProductInStoreByUserDisplayPage.this, 2);
             recycler_view.setLayoutManager(mLayoutManager);
             recycler_view.addItemDecoration(new GridSpacingItemDecoration(2, Formater.dpToPx(2,getResources()), true));
