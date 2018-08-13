@@ -390,7 +390,7 @@ public class NearbyStorePage extends BasePage implements OnMapReadyCallback {
 //                googleMap.addMarker(new MarkerOptions().position(myLocation).title("Vị trí của bạn"));
                 googleMap.getUiSettings().setCompassEnabled(false);
                 googleMap.getUiSettings().setRotateGesturesEnabled(false);
-                googleMap.setMinZoomPreference(14.0f);
+                googleMap.setMinZoomPreference(12.0f);
                 googleMap.setMaxZoomPreference(22.0f);
                 for (int i = 0; i < list.size(); i++) {
                     storeLongtitude = list.get(i).getLongitude();

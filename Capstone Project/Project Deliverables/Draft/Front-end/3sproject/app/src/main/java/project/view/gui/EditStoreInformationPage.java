@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
+import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.support.v4.app.ActivityCompat;
@@ -47,7 +48,6 @@ import project.retrofit.APIService;
 import project.retrofit.ApiUtils;
 import project.view.R;
 import project.view.fragment.home.StoreFragment;
-import project.view.model.Location;
 import project.view.model.Store;
 import project.view.model.StoreInformation;
 import project.view.util.CustomInterface;
@@ -266,6 +266,7 @@ public class EditStoreInformationPage extends BasePage implements OnMapReadyCall
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
         } else {
             android.location.Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+
             if (location != null) {
                 autoLatitude = location.getLatitude();
                 autoLongtitude = location.getLongitude();
@@ -285,25 +286,28 @@ public class EditStoreInformationPage extends BasePage implements OnMapReadyCall
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        getIntentFromStoreInformationPage();
 
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
         } else {
-            android.location.Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-            if (location != null) {
+            Location locationLibary = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+
+            if (locationLibary != null) {
                 double latitude = storeLatitude;
                 double longtitude = storeLongtitude;
 
-//                 Add a marker in Ha Noi and move the camer
+//                 Add a marker in Ha Noi and move the camera
                 LatLng storeAddress = new LatLng(latitude, longtitude);
-                mMap.addMarker(new MarkerOptions().position(storeAddress).title("Vị trí của bạn"));
+                mMap.addMarker(new MarkerOptions().position(storeAddress).title("Vị trí hiện tại của cửa hàng").snippet(address));
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(storeAddress));
-                mMap.setMinZoomPreference(10.0f);
-
+                mMap.setMinZoomPreference(12.0f);
+                mMap.setMaxZoomPreference(22.0f);
             }
 
         }
+
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

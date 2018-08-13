@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:weightSum="10">
+    <ImageView
+        android:id="@+id/productImage"
+        android:layout_width="0dp"
+        android:layout_weight="2"
+        android:layout_height="70dp"
+        android:src="@drawable/product"
+        android:scaleType="fitCenter"
+        android:layout_gravity="center"/>
+    <TextView
+        android:id="@+id/productNameTV"
+        android:layout_width="0dp"
+        android:layout_weight="6"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textSize="15dp"
+        android:textColor="@color/darkGrey"
+        android:text="Sản phẩm này là đm"
+        android:layout_marginLeft="10dp"
+        />
+    <TextView
+        android:id="@+id/quantityTV"
+        android:layout_width="0dp"
+        android:layout_weight="2"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textSize="15dp"
+        android:textAlignment="center"
+        android:textColor="@color/darkGrey"
+        android:text="1000"
+        android:layout_marginLeft="10dp"
+        />
+
+</LinearLayout>

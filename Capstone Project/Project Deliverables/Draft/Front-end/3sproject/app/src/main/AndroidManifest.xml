@@ -76,11 +76,12 @@
         </activity>
         <activity
             android:name=".gui.UserManagementOrderPage">
+        </activity>
+        <activity android:name=".gui.OrderDetailMapPage"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity android:name=".gui.OrderDetailPage">
 
         </activity>
-        <activity
-            android:name=".gui.OrderDetailManagementPage"
-            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".gui.NearbyStorePage" />
         <activity android:name=".gui.ProductDetailPage" />
         <activity android:name=".gui.OrderPage">

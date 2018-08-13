@@ -244,12 +244,13 @@ public class LoginPage extends AppCompatActivity {
     private class LoginTo3S extends AsyncTask<Call, Void, Login> {
         @Override
         protected void onPreExecute() {
-            loadingBar.setVisibility(View.VISIBLE);
             super.onPreExecute();
+            loadingBar.setVisibility(View.VISIBLE);
         }
 
         @Override
         protected void onPostExecute(Login result) {
+            super.onPostExecute(result);
             if (result == null){
                 errorMessage.setText("Có lỗi xảy ra ");
                 loadingBar.setVisibility(View.INVISIBLE);
@@ -278,11 +279,13 @@ public class LoginPage extends AppCompatActivity {
                             if (!dataSnapshot.getValue(String.class).equalsIgnoreCase(android_id)) {
                                 myRef.setValue(android_id);
                             }
+                            loadingBar.setVisibility(View.INVISIBLE);
                             startActivity(toHomePage);
                             finishAffinity();
                             finish();
                         } else{
                             myRef.setValue(android_id);
+                            loadingBar.setVisibility(View.INVISIBLE);
                             startActivity(toHomePage);
                             finishAffinity();
                             finish();
@@ -294,10 +297,7 @@ public class LoginPage extends AppCompatActivity {
 
                     }
                 });
-
             }
-            loadingBar.setVisibility(View.INVISIBLE);
-            super.onPostExecute(result);
         }
 
         @Override

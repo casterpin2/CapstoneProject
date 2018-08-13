@@ -89,8 +89,8 @@ public class StoreFragment extends Fragment {
             phoneText.setText(store.getPhone());
             address.setText(store.getAddress().replaceAll("null", "").replaceAll("\\s+", " "));
             ownerName.setText(user.getFirst_name() + " " + user.getLast_name());
-            latitude = getActivity().getIntent().getDoubleExtra("latitude", 0.0);
-            longtitude = getActivity().getIntent().getDoubleExtra("longtitude", 0.0);
+            latitude = Double.parseDouble(store.getLatitude());
+            longtitude = Double.parseDouble(store.getLongtitude());
 
             mainLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override

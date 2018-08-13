@@ -14,7 +14,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import project.view.R;
-import project.view.gui.OrderDetailManagementPage;
+import project.view.gui.OrderDetailPage;
 import project.view.model.OrderDetail;
 import project.view.util.Formater;
 
@@ -60,7 +60,7 @@ public class StoreOrderManagementAdapter extends ArrayAdapter<OrderDetail> {
             viewHolder.btnDetail.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent goToOrderDetail = new Intent(context, OrderDetailManagementPage.class);
+                    Intent goToOrderDetail = new Intent(context, OrderDetailPage.class);
                     goToOrderDetail.putExtra("orderID",order.getOrderID());
                     context.startActivity(goToOrderDetail);
                 }

@@ -524,7 +524,8 @@ public class OrderPage extends BasePage implements OnMapReadyCallback{
 //                 Add a marker in Ha Noi and move the camer
                 LatLng hanoi = new LatLng(latitude, longtitude);
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(hanoi));
-                mMap.setMinZoomPreference(10.0f);
+                mMap.setMinZoomPreference(12.0f);
+                mMap.setMaxZoomPreference(22.0f);
 
             }
 

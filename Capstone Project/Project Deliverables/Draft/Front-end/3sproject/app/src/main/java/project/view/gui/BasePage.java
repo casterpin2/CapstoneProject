@@ -55,7 +55,7 @@ public class BasePage extends AppCompatActivity {
             if (dataSnapshot.exists()){
                 AlertDialog.Builder builder = new AlertDialog.Builder(BasePage.this);
                 builder.setTitle("Cảnh báo đăng nhập");
-                builder.setMessage("Có người vừa đăng nhập tài khoản này");
+                builder.setMessage("Tài khoản cửa bạn đã đăng nhập ở một phiên khác. Vui lòng kiểm tra lại!");
 
                 builder.setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
                     @Override
