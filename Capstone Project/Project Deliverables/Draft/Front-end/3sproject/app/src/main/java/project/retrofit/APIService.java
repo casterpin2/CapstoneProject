@@ -11,6 +11,7 @@ import project.view.model.Product;
 import project.view.model.Category;
 import project.view.model.Login;
 import project.view.model.ResultRegister;
+import project.view.model.SmsResultEntities;
 import project.view.model.Store;
 import project.view.model.NearByStore;
 import project.view.model.Type;
@@ -122,4 +123,13 @@ public interface APIService {
 
     @GET("userSearchBarcode")
     Call<List<Product>> userSearchBarcode(@Query("barcode") String barcode);
+
+    @PUT("updateStore")
+    Call<Store> updateStore(@Body HashMap<String,String> map);
+    @GET("getCodeVerifyUser")
+    Call<SmsResultEntities> getCodeVerify(@Query("username") String username);
+    @GET("verifyUserWithCode")
+    Call<Boolean> confirmOTP(@Query("code") String code,@Query("phone") String phone);
+    @PUT("changePassword")
+    Call<Boolean> requestChangePassword(@Query("username") String username,@Query("password") String password);
 }

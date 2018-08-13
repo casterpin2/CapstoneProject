@@ -70,6 +70,16 @@ public class UserServiceImpl implements UserService{
         return dao.informationUser(userId);
     }
 
+    @Override
+    public UserEntites getPhoneNumberOfUser(String username) throws SQLException {
+        return dao.getPhoneNumberOfUser(username);
+    }
+
+    @Override
+    public boolean changePassword(String username, String password) throws SQLException {
+       return dao.changePassword(username, password);
+    }
+
    
     
 }

@@ -569,4 +569,52 @@ public class UserDaoImpl extends BaseDao implements UserDao {
         }
         return us;
     }
+
+    @Override
+    public UserEntites getPhoneNumberOfUser(String username) throws SQLException {
+        String sql ="SELECT phone,username FROM User where username =?";
+        Connection conn =null;
+        PreparedStatement pre =null;
+        ResultSet rs =null;
+        UserEntites us = null;
+        try{
+            conn = getConnection();
+            pre = conn.prepareStatement(sql);
+            pre.setString(1, username);
+            rs = pre.executeQuery();
+            if(rs.next()){
+                us = new UserEntites();
+                us.setUserName(rs.getString("username"));
+                us.setPhone(rs.getString("phone"));              
+            }
+        }finally{
+            closeConnect(conn, pre, rs);
+        }
+        return us;
+    }
+
+    @Override
+    public boolean changePassword(String username, String password) throws SQLException {
+        Connection conn = null;
+        PreparedStatement pre =null;
+        try{
+            String sql ="Update User set password = ? where username =?";
+            conn = getConnection();
+            conn.setAutoCommit(false);
+            pre = conn.prepareStatement(sql);
+            pre.setString(1, password);
+            pre.setString(2, username);
+            int countUpdate = pre.executeUpdate();
+            if(countUpdate>0){
+                conn.commit();
+                return true;
+            }else{
+                conn.rollback();
+                conn.setAutoCommit(true);
+            }
+        }finally{
+            closeConnect(conn, pre, null);
+        }
+        return false;
+    }
 }

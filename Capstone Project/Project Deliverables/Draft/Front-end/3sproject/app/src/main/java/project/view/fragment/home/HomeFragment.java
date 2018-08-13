@@ -1,10 +1,13 @@
 package project.view.fragment.home;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
@@ -17,6 +20,8 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -24,6 +29,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -80,7 +86,6 @@ public class HomeFragment extends Fragment {
     private CardView searchLayout;
     private Toolbar toolbar;
     private NestedScrollView  scroll;
-
     public HomeFragment() {
 
     }
@@ -147,6 +152,22 @@ public class HomeFragment extends Fragment {
        /* Timer timer = new Timer();
         timer.scheduleAtFixedRate(new MyTimerTask(), 2000, 4000);
 */
+
+       scroll.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+           @Override
+           public void onScrollChanged() {
+               Log.d("StupidScrollView", "Scroll positionY: " + scroll.getScrollY());
+               swipeRefreshLayout.setEnabled(true);
+               if (scroll.getScrollY() == 0) {
+                   Log.d("StupidScrollView", "Scroll en: " + scroll.getScrollY());
+                   swipeRefreshLayout.setEnabled(true);
+               }
+               else{
+                   Log.d("StupidScrollView", "Scroll dis: " + scroll.getScrollY());
+                   swipeRefreshLayout.setEnabled(false);
+               }
+           }
+       });
 
        searchLayout.setOnClickListener(new View.OnClickListener() {
            @Override
@@ -220,6 +241,7 @@ public class HomeFragment extends Fragment {
         tv_more_sale = view.findViewById(R.id.tv_more_sale);
         recyclerViewSaleProduct= view.findViewById(R.id.list_sale);
         toolbar = (Toolbar) view.findViewById(R.id.toolbar);
+        swipeRefreshLayout = view.findViewById(R.id.swipeToRefesh);
     }
 
     private class CategoryData extends AsyncTask<Call, List<Category>, Void>{
@@ -242,9 +264,11 @@ public class HomeFragment extends Fragment {
 
             recyclerViewCategories = view.findViewById(R.id.list_category);
             categoryAdapter = new CategoryRecycleViewAdapter(categoryList,getContext());
+            recyclerViewCategories.setNestedScrollingEnabled(false);
             recyclerViewCategories.setAdapter(categoryAdapter);
             linearLayoutManagerCategory  = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
             recyclerViewCategories.setLayoutManager(linearLayoutManagerCategory);
+
         }
 
         @Override
@@ -333,6 +357,7 @@ public class HomeFragment extends Fragment {
 
             RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getContext(), 2);
             recyclerViewSaleProduct.setLayoutManager(mLayoutManager);
+            recyclerViewSaleProduct.setNestedScrollingEnabled(false);
             recyclerViewSaleProduct.addItemDecoration(new GridSpacingItemDecoration(2, Formater.dpToPx(2,getResources()), true));
             recyclerViewSaleProduct.setItemAnimator(new DefaultItemAnimator());
             recyclerViewSaleProduct.setAdapter(saleProductCustomCardviewAdapter);

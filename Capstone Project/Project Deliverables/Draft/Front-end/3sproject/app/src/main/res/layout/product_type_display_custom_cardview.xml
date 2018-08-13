@@ -8,7 +8,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:layout_margin="@dimen/card_margin"
         android:elevation="3dp"
         card_view:cardCornerRadius="@dimen/card_album_radius">
 
@@ -23,8 +22,7 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
                 android:src="@drawable/images"
-                android:scaleType="centerInside"
-                />
+                android:scaleType="centerInside" />
 
             <TextView
                 android:id="@+id/productName"
@@ -40,7 +38,7 @@
                 android:layout_centerVertical="true"
                 android:gravity="center_vertical"
                 android:ellipsize="marquee"
-                android:text="Điện thoại Samsung"
+                android:text="Điện thoại"
                 android:textStyle="bold"/>
             <TextView
                 android:id="@+id/findNearByBtn"
@@ -52,9 +50,6 @@
                 android:gravity="center"
                 android:textSize="16dp"
                 android:text="Tìm cửa hàng"/>
-
         </RelativeLayout>
-
     </android.support.v7.widget.CardView>
-
 </LinearLayout>

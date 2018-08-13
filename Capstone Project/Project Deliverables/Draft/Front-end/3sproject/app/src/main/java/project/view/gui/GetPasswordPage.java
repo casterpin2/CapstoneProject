@@ -15,15 +15,21 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import project.retrofit.APIService;
+import project.retrofit.ApiUtils;
 import project.view.R;
+import project.view.model.SmsResultEntities;
 import project.view.util.CustomInterface;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class GetPasswordPage extends AppCompatActivity {
     private RelativeLayout main_layout;
     private TextView tvSendCodeMess;
-    private TextInputEditText etPhoneNumber;
+    private TextInputEditText etUsername;
     private Button btn;
-
+    private APIService apiService;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,11 +50,11 @@ public class GetPasswordPage extends AppCompatActivity {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if ("".equals(etPhoneNumber.getText())){
+                if ("".equals(etUsername.getText())){
                     tvSendCodeMess.setText(R.string.error_empty);
-                }else if(etPhoneNumber.getText().length()<10
-                        ||etPhoneNumber.getText().length()>=12){
-                    tvSendCodeMess.setText(R.string.error_validate_phone);
+                }else if(etUsername.getText().length()<10
+                        ||etUsername.getText().length()>=12){
+                    tvSendCodeMess.setText(R.string.error_validate_username);
                 }
                 else{
                     tvSendCodeMess.setText("");
@@ -58,17 +64,39 @@ public class GetPasswordPage extends AppCompatActivity {
                     TextView content2 = v.findViewById(R.id.tvContent2);
                     Button btnOK = v.findViewById(R.id.btnOK);
                     Button btnCancle = v.findViewById(R.id.btnCancle);
-                    content1.setText("Đây có phải số điện thoại bạn đã đăng kí tài khoản không?");
-                    content2.setText(etPhoneNumber.getText());
+                    content1.setText("Đây có phải tài khoản mà bạn đã đăng kí tài khoản không?");
+                    content2.setText(etUsername.getText());
                     builder.setView(v);
                     final AlertDialog alertDialog = builder.create();
                     btnOK.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             tvSendCodeMess.setText("");
-                            Intent toOTPCodePage = new Intent(getBaseContext(),OTPCodePage.class);
-                            startActivity(toOTPCodePage);
+                            apiService = ApiUtils.getAPIService();
+
                             alertDialog.hide();
+                            apiService.getCodeVerify(etUsername.getText().toString()).enqueue(new Callback<SmsResultEntities>() {
+                                @Override
+                                public void onResponse(Call<SmsResultEntities> call, Response<SmsResultEntities> response) {
+                                    if(response.body()!=null){
+                                        Intent toOTPCodePage = new Intent(getBaseContext(),OTPCodePage.class);
+                                        toOTPCodePage.putExtra("phone",response.body().getPhoneUser());
+                                        toOTPCodePage.putExtra("user",response.body().getUsername());
+                                        startActivity(toOTPCodePage);
+                                        alertDialog.hide();
+                                    }else {
+                                        Toast.makeText(GetPasswordPage.this, "Sai thông tin tài khoản", Toast.LENGTH_LONG).show();
+
+                                    }
+
+                                }
+
+                                @Override
+                                public void onFailure(Call<SmsResultEntities> call, Throwable t) {
+
+                                }
+                            });
+
                         }
                     });
 
@@ -91,7 +119,7 @@ public class GetPasswordPage extends AppCompatActivity {
     private void findView(){
         main_layout = findViewById(R.id.main_layout);
         tvSendCodeMess = findViewById(R.id.tvSendMess);
-        etPhoneNumber = findViewById(R.id.etPhoneNumber);
+        etUsername = findViewById(R.id.etUsername);
         btn = findViewById(R.id.btn);
     }
 
