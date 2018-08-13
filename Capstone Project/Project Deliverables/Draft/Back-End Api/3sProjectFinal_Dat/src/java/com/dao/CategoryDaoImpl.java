@@ -6,6 +6,7 @@
 package com.dao;
 
 import com.entites.CategoryEntities;
+import com.entites.ProductAddEntites;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -70,6 +71,40 @@ public class CategoryDaoImpl extends BaseDao implements CategoryDao {
                 category.setCategoryPath(rs.getNString("categoryImage"));
                 category.setCount(rs.getInt("countProduct"));
                 list.add(category);
+            }
+        } finally {
+            closeConnect(conn, pre, rs);
+        }
+        return list;
+    }
+
+    @Override
+    public List<ProductAddEntites> getProductInCategory(int page, int categoryId) throws SQLException {
+        Connection conn = null;
+        PreparedStatement pre = null;
+        ResultSet rs = null;
+        List<ProductAddEntites> list = null;
+        try {
+            list = new ArrayList<>();
+            conn = getConnection();
+            pre = conn.prepareStatement("select a.id,a.name,a.description,a.brand_name,a.type_name,b.path from\n" +
+"(select a.*,b.image_id from\n" +
+"(select a.type_name,a.brand_name,b.id,b.name,b.description from\n" +
+"(select a.type_name,a.tb_id,b.name as brand_name from\n" +
+"(select a.*,b.id as tb_id,b.brand_id from\n" +
+"(select id,name as type_name,category_id from Type where category_id = ?) a, Type_Brand b WHERE a.id =b.type_id) a , Brand b where a.brand_id = b.id) a , Product b where a.tb_id = b.type_brand_id) a , Image_Product b where a.id = b.product_id) a , Image b where a.image_id = b.id order by id limit ?,10");
+            pre.setInt(2, page*10);
+            pre.setInt(1, categoryId);
+            rs = pre.executeQuery();
+            while (rs.next()) {
+                ProductAddEntites product = new ProductAddEntites();
+                product.setProduct_id(rs.getInt("id"));
+                product.setProduct_name(rs.getString("name"));
+                product.setBrand_name(rs.getString("brand_name"));
+                product.setDescription(rs.getNString("description"));
+                product.setImage_path(rs.getString("path"));
+                product.setType_name(rs.getNString("type_name"));
+                list.add(product);
             }
         } finally {
             closeConnect(conn, pre, rs);

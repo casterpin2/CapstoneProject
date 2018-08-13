@@ -6,8 +6,10 @@
 package com.service;
 
 import com.entites.CategoryEntities;
+import com.entites.ProductAddEntites;
 import java.sql.SQLException;
 import java.util.List;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  *
@@ -16,6 +18,6 @@ import java.util.List;
 public interface CategoryService {
 
     public List<CategoryEntities> listCategory() throws SQLException;
-
+    public List<ProductAddEntites> getProductInCategory(@RequestParam("page")int page,@RequestParam("categoryId") int categoryId) throws SQLException;
     public List<CategoryEntities> listCategoryTop10() throws SQLException;
 }

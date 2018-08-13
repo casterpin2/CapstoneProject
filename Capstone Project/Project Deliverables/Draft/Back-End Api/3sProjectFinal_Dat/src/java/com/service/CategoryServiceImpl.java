@@ -7,6 +7,7 @@ package com.service;
 
 import com.dao.CategoryDao;
 import com.entites.CategoryEntities;
+import com.entites.ProductAddEntites;
 import java.sql.SQLException;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,11 @@ public class CategoryServiceImpl implements CategoryService{
     @Override
     public List<CategoryEntities> listCategoryTop10() throws SQLException {
         return dao.listCategoryTop10();
+    }
+
+    @Override
+    public List<ProductAddEntites> getProductInCategory(int page, int categoryId) throws SQLException {
+        return dao.getProductInCategory(page, categoryId);
     }
     
 }

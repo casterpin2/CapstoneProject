@@ -146,7 +146,7 @@ public class ProductDaoImpl extends BaseDao implements ProductDao {
             list = new ArrayList<>();
             conn = getConnection();
 
-            pre = conn.prepareStatement(SQL + " limit 1,20");
+            pre = conn.prepareStatement(SQL + " limit 0,20");
             pre.setInt(1, number);
             rs = pre.executeQuery();
             while (rs.next()) {
