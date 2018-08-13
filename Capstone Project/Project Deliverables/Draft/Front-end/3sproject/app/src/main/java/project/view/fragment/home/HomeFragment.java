@@ -157,6 +157,7 @@ public class HomeFragment extends Fragment {
            @Override
            public void onScrollChanged() {
                Log.d("StupidScrollView", "Scroll positionY: " + scroll.getScrollY());
+               swipeRefreshLayout = view.findViewById(R.id.swipeToRefesh);
                swipeRefreshLayout.setEnabled(true);
                if (scroll.getScrollY() == 0) {
                    Log.d("StupidScrollView", "Scroll en: " + scroll.getScrollY());

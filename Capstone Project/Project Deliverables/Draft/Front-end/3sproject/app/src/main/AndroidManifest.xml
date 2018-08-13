@@ -49,6 +49,7 @@
             android:name=".gui.ProductCategoryDisplayPage">
 
         </activity>
+
         <activity android:name=".gui.ProductInStoreDisplayPage" />
         <activity android:name=".gui.EditProductInStorePage" />
         <activity
@@ -130,6 +131,7 @@
         </activity>
         <activity android:name=".gui.ProductInStoreByUserDisplayPage"
             android:theme="@style/AppTheme.NoActionBar"></activity>
+
     </application>
 
 </manifest>

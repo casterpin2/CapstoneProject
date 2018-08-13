@@ -31,6 +31,7 @@ import project.firebase.Firebase;
 import project.objects.User;
 import project.view.gui.CartPage;
 import project.view.gui.ChangePasswordPage;
+import project.view.gui.ResetPasswordPage;
 import project.view.gui.HomePage;
 import project.view.gui.LoginPage;
 import project.view.R;

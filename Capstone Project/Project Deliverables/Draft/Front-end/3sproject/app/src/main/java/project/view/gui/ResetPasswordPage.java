@@ -14,8 +14,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.Map;
-
 import project.retrofit.APIService;
 import project.retrofit.ApiUtils;
 import project.view.R;
@@ -26,24 +24,21 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ChangePasswordPage  extends BasePage{
-    private Button btnChangePass;
-    private TextView tvOldPass, tvConfirmPass,tvNewPass;
-    private TextInputEditText oldPass, newPass, confirmPass;
-    private TextInputLayout etPasswordLayout;
+public class ResetPasswordPage extends BasePage{
+    private  Button btnChangePass;
+    private TextView  tvConfirmPass,tvNewPass;
+    private TextInputEditText  newPass, confirmPass;
     private ProgressBar loadingBar;
     private RelativeLayout main_layout;
     private APIService apiService;
     private String username;
-    private  Regex regex;
-    private boolean isNewPass = false ,isOldPass = false,isConfirm = false;
-
+    private Regex regex;
+    private boolean isNewPass = false ,isConfirm = false;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_password);
         findView();
-        regex= new Regex();
         CustomInterface.setStatusBarColor(this);
         getSupportActionBar().setTitle(R.string.title_change_password);
         if (getSupportActionBar() != null){
@@ -57,27 +52,18 @@ public class ChangePasswordPage  extends BasePage{
                 return false;
             }
         });
+
+        regex= new Regex();
+
         loadingBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorApplication), android.graphics.PorterDuff.Mode.MULTIPLY);
+
         username = getIntent().getStringExtra("username");
 
-        oldPass.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if(!hasFocus) {
-                   isOldPass = regex.isPassWord(oldPass.getText().toString());
-                   if(!isOldPass){
-                       tvOldPass.setText(R.string.error_validate_password);
-                   }else {
-                       tvOldPass.setText("");
-                   }
-                }
-            }
-        });
         newPass.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if(!hasFocus) {
-                 isNewPass = regex.isPassWord(newPass.getText().toString());
+                    isNewPass = regex.isPassWord(newPass.getText().toString());
                     if(!isNewPass){
                         tvNewPass.setText(R.string.error_validate_password);
                     }else {
@@ -100,50 +86,55 @@ public class ChangePasswordPage  extends BasePage{
                 }
             }
         });
+
         btnChangePass.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 if(!isNewPass){
                     tvNewPass.setText(R.string.error_validate_password);
                 }
                 if(!isConfirm){
                     tvConfirmPass.setText(R.string.error_validate_password);
                 }
-                if(!isOldPass){
-                    tvOldPass.setText(R.string.error_validate_password);
-                }
-
-             if (isConfirm && isNewPass && isOldPass) {
+                if (isConfirm && isNewPass) {
                     if(!newPass.getText().toString().equals(confirmPass.getText().toString())){
                         tvConfirmPass.setText(R.string.error_confirm_password);
                     }else {
                         tvConfirmPass.setText("");
-                        Toast.makeText(getBaseContext(),"Code",Toast.LENGTH_LONG).show();
+                        apiService = ApiUtils.getAPIService();
+                        String password = MD5Library.md5(newPass.getText().toString());
 
-                        //code vao day
+                        apiService.requestChangePassword(username, password).enqueue(new Callback<Boolean>() {
+                            @Override
+                            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                                if(response.isSuccessful()){
+                                    Toast.makeText(ResetPasswordPage.this, "Thay đổi thông tin thành công", Toast.LENGTH_LONG).show();
+                                    Intent toLoginPage = new Intent(getBaseContext(),LoginPage.class);
+                                    toLoginPage.putExtra("username",username);
+                                    startActivity(toLoginPage);
+                                }
+                            }
 
+                            @Override
+                            public void onFailure(Call<Boolean> call, Throwable t) {
 
-
+                            }
+                        });
                     }
                 }
             }
         });
-
-
     }
 
     private void findView(){
         main_layout = findViewById(R.id.main_layout);
-        tvOldPass = findViewById(R.id.tvOldPass);
         tvNewPass = findViewById(R.id.tvNewPassword);
         tvConfirmPass = findViewById(R.id.tvConfirmPass);
-        btnChangePass = findViewById(R.id.btnChangePass);
-        loadingBar = (ProgressBar) findViewById(R.id.loadingBar);
-        oldPass = findViewById(R.id.etOldPassword);
         newPass = findViewById(R.id.etNewPassword);
         confirmPass = findViewById(R.id.etConfirmPass);
-        etPasswordLayout= findViewById(R.id.etPasswordLayout);
-        etPasswordLayout.setVisibility(View.VISIBLE);
+        btnChangePass = findViewById(R.id.btnChangePass);
+        loadingBar = (ProgressBar) findViewById(R.id.loadingBar);
     }
 
     @Override
@@ -154,4 +145,7 @@ public class ChangePasswordPage  extends BasePage{
         }
         return super.onOptionsItemSelected(item);
     }
+
+
+
 }
