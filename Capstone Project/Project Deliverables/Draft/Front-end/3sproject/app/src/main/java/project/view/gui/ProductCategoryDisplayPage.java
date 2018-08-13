@@ -51,7 +51,7 @@ public class ProductCategoryDisplayPage extends BasePage implements ProductInCat
         if (categoryId != -1) {
             getSupportActionBar().setTitle(categoryName);
         } else {
-            Toast.makeText(ProductCategoryDisplayPage.this, "Có lỗi xảy ra !!!",Toast.LENGTH_LONG).show();
+            //Toast.makeText(ProductCategoryDisplayPage.this, "Có lỗi xảy ra !!!",Toast.LENGTH_LONG).show();
             return;
         }
         mLayoutManager = new GridLayoutManager(this, 2);
@@ -74,12 +74,15 @@ public class ProductCategoryDisplayPage extends BasePage implements ProductInCat
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                if(productsLoadMore == null && emulatorLoadMoreFaild){
+                if(productsLoadMore == null && emulatorLoadMoreFaild && page !=0){
                     adapter.onLoadMoreFailed();
                     emulatorLoadMoreFaild = false;
                     return;
                 }
-                if (product.size() %2 != 0) {adapter.onReachEnd();return;}
+                if (product.size() %2 != 0) {
+                    adapter.onReachEnd();
+                    return;
+                }
                 if(productsLoadMore.size() == 0){
                     adapter.onReachEnd();
                     return;
@@ -123,14 +126,11 @@ public class ProductCategoryDisplayPage extends BasePage implements ProductInCat
         protected void onPostExecute(List<Product> aVoid) {
             productsLoadMore = aVoid;
             if (productsLoadMore == null){
+                adapter.onReachEnd();
                 Toast.makeText(ProductCategoryDisplayPage.this, "Có lỗi xảy ra !!!",Toast.LENGTH_LONG).show();
                 return;
             }
-            if (page != 0) {
-                loadMore(page);
-            } else {
-                adapter.add(productsLoadMore);
-            }
+            loadMore(page);
             if (page == 0 && productsLoadMore != null){
                 recyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener(mLayoutManager){
                     @Override

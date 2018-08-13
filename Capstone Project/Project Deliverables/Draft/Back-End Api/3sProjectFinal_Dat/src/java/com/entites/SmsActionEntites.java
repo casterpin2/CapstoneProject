@@ -11,14 +11,14 @@ import java.io.Serializable;
  *
  * @author Tuyen
  */
-public class SMSActionEntites implements Serializable{
+public class SmsActionEntites implements Serializable{
 
     private String to;
     private String phone;
     private String content;
     private String app_id;
 
-    public SMSActionEntites() {
+    public SmsActionEntites() {
     }
 
     public String getTo() {
