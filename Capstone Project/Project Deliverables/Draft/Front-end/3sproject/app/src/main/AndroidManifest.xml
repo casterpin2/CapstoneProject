@@ -45,6 +45,10 @@
         <activity
             android:name=".gui.ChangePasswordPage"
             android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".gui.ProductCategoryDisplayPage">
+
+        </activity>
         <activity android:name=".gui.ProductInStoreDisplayPage" />
         <activity android:name=".gui.EditProductInStorePage" />
         <activity
