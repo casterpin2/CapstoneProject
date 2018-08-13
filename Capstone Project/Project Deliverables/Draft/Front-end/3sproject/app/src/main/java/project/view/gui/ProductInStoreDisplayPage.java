@@ -38,6 +38,7 @@ import project.view.adapter.ProductInStoreCustomListViewAdapter;
 import project.view.model.Product;
 import project.view.model.ProductInStore;
 import project.view.util.CustomInterface;
+import project.view.util.ProductFilter;
 import project.view.util.ProductInStoreCompareableDecrease;
 import project.view.util.ProductInStoreCompareableIncrease;
 import retrofit2.Call;
@@ -56,9 +57,8 @@ public class ProductInStoreDisplayPage extends BasePage {
     private RelativeLayout main_layout;
     private ProgressBar loadingBar;
     private Spinner spinnerCategory,spinnerSort;
-    private LinearLayout sortLayout;
     private List<Product> productInStores;
-    private ArrayAdapter<String> dataAdapter;
+    private ProductFilter productFilter;
 
     public ProductInStoreDisplayPage() {
     }
@@ -81,6 +81,7 @@ public class ProductInStoreDisplayPage extends BasePage {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_in_store_display_page);
         findView();
+        productFilter = new ProductFilter();
         adapter = new ProductInStoreCustomListViewAdapter(ProductInStoreDisplayPage.this,R.layout.search_product_page_custom_list_view, tempList);
         CustomInterface.setStatusBarColor(this);
         main_layout.setOnTouchListener(new View.OnTouchListener() {
@@ -98,56 +99,17 @@ public class ProductInStoreDisplayPage extends BasePage {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         storeID = getIntent().getIntExtra("storeID", -1);
         mAPI = ApiUtils.getAPIService();
-        addSortItem();
+       // addSortItem();
     }
 
-    public void addCategoryFilter(){
-        HashMap<String,Integer> categoryFilter = new HashMap<>();
-        for(Product product : tempList) {
-            if (categoryFilter.containsKey(product.getCategory_name())) {
-                categoryFilter.put(product.getCategory_name(), categoryFilter.get(product.getCategory_name())+1);
-            }else {
-                categoryFilter.put(product.getCategory_name(), 1);
-            }
-        }
-        Set set = categoryFilter.entrySet();
-        Iterator i = set.iterator();
-        List<String> list = new ArrayList<String>();
-        list.add("Tất cả sản phẩm");
-        while(i.hasNext()) {
-            Map.Entry me = (Map.Entry)i.next();
-            list.add(me.getKey()+"");
-//            System.out.print(me.getKey() + ": ");
-//            System.out.println(me.getValue());
-        }
-        dataAdapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_item, list);
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerCategory.setAdapter(dataAdapter);
-    }
-
-
-    public void addSortItem() {
-        List<String> list = new ArrayList<String>();
-        list.add("Sắp xếp");
-        list.add("Giá từ thấp tới cao");
-        list.add("Giá từ cao xuống thấp");
-        dataAdapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_item, list);
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerSort.setAdapter(dataAdapter);
-    }
     private void findView(){
         loadingBar = (ProgressBar) findViewById(R.id.loadingBar);
         spinnerCategory = findViewById(R.id.spinnerCategory);
-        sortLayout = findViewById(R.id.sortLayout);
         spinnerSort = findViewById(R.id.spinnerSort);
         main_layout = findViewById(R.id.main_layout);
         searchView = findViewById(R.id.searchViewQuery);
     }
     private class ProductInStoreList extends AsyncTask<Call, Void, Void> {
-
-
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -170,15 +132,17 @@ public class ProductInStoreDisplayPage extends BasePage {
         protected Void doInBackground(Call... calls) {
             try {
                 productInStores = new ArrayList<>();
+
                 Call<List<Product>> call = calls[0];
                 final Response<List<Product>> response = call.execute();
                 for (int i = 0; i < response.body().size(); i++) {
                     productInStores.add(response.body().get(i));
                 }
-                for (Product product : productInStores){
-                    tempList.add(product);
+                if(productInStores!=null){
+                    for (Product product : productInStores){
+                        tempList.add(product);
+                    }
                 }
-
 
                 runOnUiThread(new Runnable() {
                     @Override
@@ -195,6 +159,10 @@ public class ProductInStoreDisplayPage extends BasePage {
                         } else {
                             nullMessage.setText("");
                             theListView.setVisibility(View.VISIBLE);
+                        }
+                        if(productInStores != null){
+                            productFilter.setSortItem(ProductInStoreDisplayPage.this,spinnerSort);
+                            productFilter.setCategoryFilter(productInStores,ProductInStoreDisplayPage.this,spinnerCategory);
                         }
 
                         theListView. setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -221,9 +189,9 @@ public class ProductInStoreDisplayPage extends BasePage {
                         spinnerSort.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                             @Override
                             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                                if(adapterView.getItemAtPosition(i).toString().equals("Giá từ thấp tới cao")) {
+                                if(adapterView.getItemAtPosition(i).toString().equals(productFilter.FROM_LOW_COST)) {
                                     Collections.sort(tempList,new ProductInStoreCompareableDecrease());
-                                }else if(adapterView.getItemAtPosition(i).toString().equals("Giá từ cao xuống thấp")){
+                                }else if(adapterView.getItemAtPosition(i).toString().equals(productFilter.FROM_HIGH_COST)){
                                     Collections.sort(tempList,new ProductInStoreCompareableIncrease());
                                 }
                                 adapter.notifyDataSetChanged();
@@ -234,17 +202,21 @@ public class ProductInStoreDisplayPage extends BasePage {
 
                             }
                         });
-                        addCategoryFilter();
                         spinnerCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                             @Override
                             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                                 tempList.clear();
-                                if("Tất cả sản phẩm".equals(adapterView.getItemAtPosition(i).toString())){
-
+                                if(productFilter.ALL_PRODUCT.equals(adapterView.getItemAtPosition(i).toString())){
                                     for (Product product : productInStores){
                                         tempList.add(product);
                                     }
-                                } else {
+                                }else if(productFilter.SALE_PRODUCT.equals(adapterView.getItemAtPosition(i).toString())) {
+                                    for (Product product : productInStores) {
+                                        if (product.getPromotion()!=0) {
+                                            tempList.add(product);
+                                        }
+                                    }
+                                }else {
 
                                     for (Product product : productInStores) {
                                         if (product.getCategory_name().equals(adapterView.getItemAtPosition(i).toString())) {
@@ -272,7 +244,6 @@ public class ProductInStoreDisplayPage extends BasePage {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                // app icon in action bar clicked; go home
                 finish();
             default:
                 return super.onOptionsItemSelected(item);
@@ -285,9 +256,6 @@ public class ProductInStoreDisplayPage extends BasePage {
         MenuItem itemSearch = menu.findItem(R.id.search_view);
         final List<Product> searchedProduct = new ArrayList<>();
         searchView = (SearchView) itemSearch.getActionView();
-
-//        searchView.setLayoutParams(new ActionBar.LayoutParams(Gravity.LEFT));
-//        searchView.setSearchableInfo(true);
         searchView.clearFocus();
         searchView.setQueryHint("Tìm trong cửa hàng");
 

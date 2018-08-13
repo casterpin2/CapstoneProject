@@ -40,6 +40,7 @@ import project.view.R;
 import project.view.model.Category;
 import project.view.model.Item;
 import project.view.util.CustomInterface;
+import project.view.util.Formater;
 import project.view.util.GridSpacingItemDecoration;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -115,17 +116,12 @@ public class CategoryDisplayPage extends BasePage {
             }
         });
         apiService = ApiUtils.getAPIService();
-
-        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-
         categoryList = new ArrayList<>();
 
         apiService = APIService.retrofit.create(APIService.class);
         final Call<List<Category>> callCategory = apiService.getCategory();
         new CategoryDisplayData().execute(callCategory);
-        //Toast.makeText(this, categoryList.size()+ " ", Toast.LENGTH_SHORT).show();
-
-        try {
+       try {
             Glide.with(this).load(R.drawable.cover).into((ImageView) findViewById(R.id.backdrop));
         } catch (Exception e) {
             e.printStackTrace();
@@ -138,13 +134,7 @@ public class CategoryDisplayPage extends BasePage {
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         imgBack = findViewById(R.id.backBtn);
         imgBarCode = findViewById(R.id.imgBarCode);
-    }
-    /**
-     * Converting dp to pixel
-     */
-    private int dpToPx(int dp) {
-        Resources r = getResources();
-        return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics()));
+        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
     }
 
     @Override
@@ -181,7 +171,7 @@ public class CategoryDisplayPage extends BasePage {
 
             RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(CategoryDisplayPage.this, 2);
             recyclerView.setLayoutManager(mLayoutManager);
-            recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(10), true));
+            recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, Formater.dpToPx(10,getResources()), true));
             recyclerView.setItemAnimator(new DefaultItemAnimator());
             recyclerView.setAdapter(adapter);
             loadingBar.setVisibility(View.INVISIBLE);

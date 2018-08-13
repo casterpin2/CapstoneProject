@@ -5,13 +5,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.google.firebase.storage.StorageReference;
 import com.google.gson.Gson;
@@ -19,11 +17,9 @@ import com.google.gson.Gson;
 import java.util.List;
 
 import project.firebase.Firebase;
-import project.view.gui.MainActivity;
 import project.view.R;
 import project.view.gui.OrderPage;
 import project.view.gui.ProductInStoreByUserDisplayPage;
-import project.view.gui.StoreInformationPage;
 import project.view.model.NearByStore;
 import project.view.model.Product;
 import project.view.util.Formater;
@@ -61,7 +57,7 @@ public class NearByStoreListViewAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View view = convertView;
-        ViewHolder holder;
+        NearbyStorePageViewHolder holder;
         final NearByStore store = storeList.get(position);
         if (convertView != null)
             return convertView;
@@ -70,7 +66,7 @@ public class NearByStoreListViewAdapter extends BaseAdapter {
                 LayoutInflater li;
                 li = LayoutInflater.from(getContext());
                 view = li.inflate(R.layout.nearby_store_page_custom_list_view, null);
-                holder = new ViewHolder();
+                holder = new NearbyStorePageViewHolder();
                 holder.storeName = (TextView) view.findViewById(R.id.storeName);
                 holder.storeAddress = (TextView) view.findViewById(R.id.storeAddress);
                 holder.distance = (TextView) view.findViewById(R.id.distance);
@@ -81,7 +77,7 @@ public class NearByStoreListViewAdapter extends BaseAdapter {
 
                 view.setTag(holder);
             } else {
-                holder = (ViewHolder) view.getTag();
+                holder = (NearbyStorePageViewHolder) view.getTag();
             }
 
             if (store != null) {
@@ -142,7 +138,7 @@ public class NearByStoreListViewAdapter extends BaseAdapter {
         return context;
     }
 
-    public class ViewHolder{
+    public class NearbyStorePageViewHolder {
         TextView storeName;
         TextView storeAddress;
         TextView distance;
