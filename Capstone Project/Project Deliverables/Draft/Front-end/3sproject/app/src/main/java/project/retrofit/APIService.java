@@ -46,6 +46,9 @@ public interface APIService {
     @GET("category")
     Call<List<Category>> getCategory();
 
+
+    @GET("category/products")
+    Call<List<Product>> getProductInCategory(@Query("page") int page, @Query("categoryId") int categoryId);
     //Store//
 
     @DELETE("deleteProductInStore")
