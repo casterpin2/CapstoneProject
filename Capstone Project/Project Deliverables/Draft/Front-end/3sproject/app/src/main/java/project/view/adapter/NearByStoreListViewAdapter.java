@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,17 +12,21 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.google.firebase.storage.StorageReference;
 import com.google.gson.Gson;
 
 import java.util.List;
 
 import project.firebase.Firebase;
+import project.objects.User;
 import project.view.R;
 import project.view.gui.OrderPage;
 import project.view.gui.ProductInStoreByUserDisplayPage;
 import project.view.model.NearByStore;
 import project.view.model.Product;
+import project.view.model.Store;
 import project.view.util.Formater;
 
 public class NearByStoreListViewAdapter extends BaseAdapter {
@@ -32,6 +37,9 @@ public class NearByStoreListViewAdapter extends BaseAdapter {
     private int layout;
     private StorageReference storageReference = Firebase.getFirebase();
     private Product product;
+    private Store store;
+    private Store myStore;
+    private User user;
     @Override
     public int getCount() {
         return storeList.size();
@@ -48,10 +56,12 @@ public class NearByStoreListViewAdapter extends BaseAdapter {
     }
 
     public NearByStoreListViewAdapter(Context context, int layout, List<NearByStore> storeList,Product product) {
+
         this.context = context;
         this.layout = layout;
         this.storeList = storeList;
         this.product = product;
+        restoringPreferences();
     }
     @SuppressLint("ResourceAsColor")
     @Override
@@ -104,7 +114,12 @@ public class NearByStoreListViewAdapter extends BaseAdapter {
                 holder.orderBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
+                        if (myStore!= null ){
+                            if (myStore.getId() == store.getId()) {
+                                Toast.makeText(context, "Cửa hàng của bạn, không thể đặt hàng", Toast.LENGTH_LONG).show();
+                                return;
+                            }
+                        }
                         Intent intent = new Intent(getContext(), OrderPage.class);
                         intent.putExtra("isCart", false);
                         intent.putExtra("product",new Gson().toJson(product));
@@ -148,5 +163,11 @@ public class NearByStoreListViewAdapter extends BaseAdapter {
         Button orderBtn;
 
     }
-
+    private void restoringPreferences(){
+        SharedPreferences pre = context.getSharedPreferences("authentication", Context.MODE_PRIVATE);
+        String userJSON = pre.getString("user", "");
+        user = new Gson().fromJson(userJSON,User.class);
+        String storeJSON = pre.getString("store", "");
+        myStore = new Gson().fromJson(storeJSON,Store.class);
+    }
 }

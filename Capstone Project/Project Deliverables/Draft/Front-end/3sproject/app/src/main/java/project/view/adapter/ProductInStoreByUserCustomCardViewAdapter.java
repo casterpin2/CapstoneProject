@@ -167,13 +167,19 @@ public class ProductInStoreByUserCustomCardViewAdapter extends RecyclerView.Adap
     }
 
     private void addProductToCart(final Product product){
+        if (user == null) {
+            Toast.makeText(mContext, "Bạn chưa đăng nhập", Toast.LENGTH_SHORT).show();
+            return;
+        }
         if (store == null){
             Toast.makeText(mContext, "Có lỗi xảy ra!!!", Toast.LENGTH_SHORT).show();
             return;
         }
-        if (myStore.getId() == store.getId()){
-            Toast.makeText(mContext, "Cửa hàng của bạn, không thể thêm vào giỏ hàng", Toast.LENGTH_LONG).show();
-            return;
+        if (myStore!= null){
+            if (myStore.getId() == store.getId()) {
+                Toast.makeText(mContext, "Cửa hàng của bạn, không thể thêm vào giỏ hàng", Toast.LENGTH_LONG).show();
+                return;
+            }
         }
         myRef = database.getReference().child("cart").child(String.valueOf(user.getId())).child(String.valueOf(store.getId()));
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
