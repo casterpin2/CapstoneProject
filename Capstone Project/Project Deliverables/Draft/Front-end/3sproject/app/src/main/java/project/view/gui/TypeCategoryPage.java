@@ -21,6 +21,7 @@ import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -56,7 +57,7 @@ public class TypeCategoryPage extends BasePage {
     private ImageButton imgBack,imgBarCode;
     private List<Type> searchedProduct = new ArrayList<>();
     private CoordinatorLayout main_layout;
-
+    private Button btnViewAll;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -114,6 +115,16 @@ public class TypeCategoryPage extends BasePage {
         imgBack = findViewById(R.id.backBtn);
         imgBarCode = findViewById(R.id.imgBarCode);
         tv_brand_title = (TextView) findViewById(R.id.tv_brand_title);
+        btnViewAll = (Button) findViewById(R.id.btnAll);
+        btnViewAll.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(TypeCategoryPage.this,ProductCategoryDisplayPage.class);
+                intent.putExtra("categoryId",categoryId);
+                intent.putExtra("categoryName",getIntent().getStringExtra("categoryName"));
+                startActivity(intent);
+            }
+        });
     }
       /**
      * Converting dp to pixel

@@ -143,10 +143,7 @@ public class SearchProductAddToStore extends BasePage {
             }
         });
         loadingBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorApplication), android.graphics.PorterDuff.Mode.MULTIPLY);
-
         mAPI = ApiUtils.getAPIService();
-        // create custom adapter that holds elements and their state (we need hold a id's of unfolded elements for reusable elements)
-//callAPI(query,page);
         if (searchedProductList == null) {
             searchedProductList = new ArrayList<>();
         }
@@ -465,39 +462,6 @@ public class SearchProductAddToStore extends BasePage {
             return;
         }
         if (query.isEmpty()) return;
-//        mAPI.getProducts(query,page).enqueue(new Callback<List<Item>>() {
-//            @Override
-//            public void onResponse(Call<List<Item>> call, Response<List<Item>> response) {
-//                //searchedProductList.clear();
-//                if (response != null && response.body().size() != 0 ) {
-//                    //theListView.removeFooterView(footerView);
-//                    for (int i = 0; i < response.body().size(); i++) {
-//                        Item item = response.body().get(i);
-//                        if (checkID(item.getProduct_id()))
-//                            searchedProductList.add(item);
-//                    }
-//                } else {
-//                    //theListView.removeFooterView(footerView);
-//                    limitData = true;
-//                }
-//                //searchedProductList = response.body();
-//                adapter.notifyDataSetChanged();
-//                if(searchedProductList.isEmpty()) {
-//                    TextView nullMessage = findViewById(R.id.nullMessage);
-//                    nullMessage.setText("Không có sản phẩm nào phù hợp!");
-//                    theListView.setVisibility(View.INVISIBLE);
-//                } else {
-//                    TextView nullMessage = findViewById(R.id.nullMessage);
-//                    nullMessage.setText("");
-//                    theListView.setVisibility(View.VISIBLE);
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<List<Item>> call, Throwable t) {
-//                Toast.makeText(SearchProductAddToStore.this, "Something Wrong", Toast.LENGTH_LONG).show();
-//            }
-//        });
         Call<List<Item>> call = mAPI.getProducts(query,page,storeID);
         new ProductListWithName().execute(call);
     }
@@ -512,7 +476,6 @@ public class SearchProductAddToStore extends BasePage {
                     theListView.addFooterView(footerView);
                     break;
                 case 1:
-                    //adapter.addListItemToAdapter((ArrayList<Item>)msg.obj);
                     theListView.removeFooterView(footerView);
                     getMoreData();
                     isLoading = false;
@@ -524,14 +487,8 @@ public class SearchProductAddToStore extends BasePage {
     }
 
     public void getMoreData(){
-        //List<Item> addList = new ArrayList<>();
-
-        Log.d("page",String.valueOf(page));
         callAPI(query, page);
         page ++;
-        //addList = searchedProductList;
-
-        //return addList;
     }
 
 

@@ -64,6 +64,11 @@ public class Product implements Serializable{
         this.promotion = promotion;
     }
 
+    public Product(String product_name, String image_path) {
+        this.product_name = product_name;
+        this.image_path = image_path;
+    }
+
     public int getQuantity() {
         return quantity;
     }
