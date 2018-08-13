@@ -135,7 +135,11 @@ public class ProductDetailPage extends BasePage {
                         return;
                     }
                     if (myStore != null){
-
+                        if (myStore.getId() == store.getId()) {
+                            Toast.makeText(ProductDetailPage.this, "Cửa hàng của bạn, không thể đặt hàng", Toast.LENGTH_LONG).show();
+                            return;
+                        }
+                    }
                         AlertDialog.Builder builder = new AlertDialog.Builder(ProductDetailPage.this);
                         builder.setTitle("Thêm sản phẩm vào giỏ hàng");
                         builder.setMessage("Bạn có chắc chắn muốn thêm sản phẩm này vào cửa hàng không?");
@@ -156,7 +160,7 @@ public class ProductDetailPage extends BasePage {
                             }
                         });
                         builder.show();
-                    }
+
                 }
             });
         }
