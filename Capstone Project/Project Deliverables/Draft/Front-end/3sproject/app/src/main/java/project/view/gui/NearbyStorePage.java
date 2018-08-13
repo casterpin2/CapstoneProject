@@ -32,6 +32,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -73,7 +74,7 @@ public class NearbyStorePage extends BasePage implements OnMapReadyCallback {
     private NearByStoreListViewAdapter adapter;
     private List<String> nearByStore = new ArrayList<>();
     private List<NearByStore> list = new ArrayList<>();
-    private RelativeLayout main_layout;
+    private LinearLayout main_layout;
     private GoogleMap mMap;
     private LocationManager locationManager;
     private int productId;
