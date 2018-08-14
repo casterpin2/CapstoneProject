@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main_layout"
+    android:layout_below="@id/rellay1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".gui.EditUserInformationPage">
+    <RelativeLayout
+        android:id="@+id/main_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
         <RelativeLayout
                 android:id="@+id/rellay1"
                 android:layout_width="match_parent"
@@ -73,15 +77,12 @@
                     android:src="@drawable/btn_back" />
 
             </RelativeLayout>
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="fill_parent"
-        android:layout_below="@id/rellay1">
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="16dp"
             android:layout_marginLeft="16dp"
+            android:layout_below="@+id/rellay1"
             android:layout_marginRight="16dp">
 
                 <android.support.design.widget.TextInputLayout
@@ -241,6 +242,6 @@
                     android:text="Hủy thay đổi"
                     android:textColor="@color/colorWhite" />
             </RelativeLayout>
-    </ScrollView>
-</RelativeLayout>
+    </RelativeLayout>
+</ScrollView>
 

@@ -171,11 +171,11 @@ public class ProductInStoreByUserDisplayPage extends BasePage {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                     tempProductInStore.clear();
-                    if(productFilter.ALL_PRODUCT.equals(adapterView.getItemAtPosition(i).toString())){
+                    if(adapterView.getItemAtPosition(i).toString().contains(productFilter.ALL_PRODUCT)){
                         for (Product product : products){
                             tempProductInStore.add(product);
                         }
-                    }else if(productFilter.SALE_PRODUCT.equals(adapterView.getItemAtPosition(i).toString())){
+                    }else if(adapterView.getItemAtPosition(i).toString().contains(productFilter.SALE_PRODUCT)){
                         for (Product product : products) {
                             if (product.getPromotion()!=0) {
                                 tempProductInStore.add(product);
@@ -184,7 +184,7 @@ public class ProductInStoreByUserDisplayPage extends BasePage {
 
                     }else{
                         for (Product product : products) {
-                            if (product.getCategory_name().equals(adapterView.getItemAtPosition(i).toString())) {
+                            if (adapterView.getItemAtPosition(i).toString().contains(product.getCategory_name())) {
                                 tempProductInStore.add(product);
                             }
                         }

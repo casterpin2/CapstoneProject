@@ -13,40 +13,31 @@ import java.util.Locale;
 public class Formater {
 
     public static String formatDoubleToMoney(String price) {
-
-        NumberFormat format =
-                new DecimalFormat("#,##0.00");// #,##0.00 ¤ (¤:// Currency symbol)
-        format.setCurrency(Currency.getInstance(Locale.US));//Or default locale
-
-        price = (!TextUtils.isEmpty(price)) ? price : "0";
-        price = price.trim();
-        price = format.format(Double.parseDouble(price));
-        price = price.replaceAll(",", "\\.");
-
-        if (price.endsWith(".00")) {
-            int centsIndex = price.lastIndexOf(".00");
-            if (centsIndex != -1) {
-                price = price.substring(0, centsIndex);
-            }
-        }
-        price = String.format("%s đ", price);
-        return price;
+        Double p = Double.parseDouble(price);
+        Locale localeVN = new Locale("vi", "VN");
+        NumberFormat currencyVN = NumberFormat.getCurrencyInstance(localeVN);
+        String str1 = currencyVN.format(p);
+        return str1;
     }
-
-//    public static String convertLongToString (long needConvert) {
-//        String formattedString = null;
-//        try {
+//    public static String formatDoubleToMoney(String price) {
 //
-//            DecimalFormat formatter = (DecimalFormat) NumberFormat.getInstance(Locale.US);
-//            formatter.applyPattern("#,###,###,###");
-//            formattedString = formatter.format(needConvert);
+//        NumberFormat format =
+//                new DecimalFormat("#,##0.00");// #,##0.00 ¤ (¤:// Currency symbol)
+//        format.setCurrency(Currency.getInstance(Locale.US));//Or default locale
 //
-//            //setting text after format to EditText
+//        price = (!TextUtils.isEmpty(price)) ? price : "0";
+//        price = price.trim();
+//        price = format.format(Double.parseDouble(price));
+//        price = price.replaceAll(",", "\\.");
 //
-//        } catch (NumberFormatException nfe) {
-//            nfe.printStackTrace();
+//        if (price.endsWith(".00")) {
+//            int centsIndex = price.lastIndexOf(".00");
+//            if (centsIndex != -1) {
+//                price = price.substring(0, centsIndex);
+//            }
 //        }
-//        return formattedString;
+//        price = String.format("%s đ", price);
+//        return price;
 //    }
 
     public static String formatDoubleToInt(String price) {
@@ -72,7 +63,6 @@ public class Formater {
 
 
     public static int dpToPx(int dp,Resources r) {
-     //   Resources r = getResources();
         return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics()));
     }
 }

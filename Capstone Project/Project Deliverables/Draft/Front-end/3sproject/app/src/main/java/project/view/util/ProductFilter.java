@@ -1,8 +1,12 @@
 package project.view.util;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,6 +27,7 @@ public class ProductFilter {
     }
     public void setCategoryFilter(List<Product> products, Context context, Spinner categorySpinner){
         HashMap<String,Integer> categoryFilter = new HashMap<>();
+        int saleCount=0;
         for(Product product : products) {
 
             if (categoryFilter.containsKey(product.getCategory_name())) {
@@ -30,15 +35,20 @@ public class ProductFilter {
             }else {
                 categoryFilter.put(product.getCategory_name(), 1);
             }
+
+            if (product.getPromotion()!=0){
+                saleCount++;
+            }
         }
+
         Set set = categoryFilter.entrySet();
         Iterator i = set.iterator();
         List<String> list = new ArrayList<String>();
-        list.add(ALL_PRODUCT);
-        list.add(SALE_PRODUCT);
+        list.add(ALL_PRODUCT+" ("+products.size()+")");
+        list.add(SALE_PRODUCT+" ("+saleCount+")");
         while(i.hasNext()) {
             Map.Entry me = (Map.Entry)i.next();
-            list.add(me.getKey()+"");
+            list.add(me.getKey()+" ("+me.getValue()+")");
         }
         arrayAdapter = new ArrayAdapter<String>(context,
                 android.R.layout.simple_spinner_item, list);
@@ -47,12 +57,45 @@ public class ProductFilter {
     }
 
     public void setSortItem(Context context,Spinner spinnerSort){
-        List<String> list = new ArrayList<String>();
+        final List<String> list = new ArrayList<String>();
         list.add("Sắp xếp theo giá bán");
         list.add(FROM_LOW_COST);
         list.add(FROM_HIGH_COST);
         arrayAdapter = new ArrayAdapter<String>(context,
-                android.R.layout.simple_spinner_item, list);
+                android.R.layout.simple_spinner_item, list){
+            @Override
+            public boolean isEnabled(int position){
+                if(list.get(position).equals("Sắp xếp theo giá bán"))
+                {
+                    //Disable the third item of spinner.
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+
+            @Override
+            public View getDropDownView(int position, View convertView, ViewGroup parent)
+            {
+                View spinnerview = super.getDropDownView(position, convertView, parent);
+
+                TextView spinnertextview = (TextView) spinnerview;
+
+                if(list.get(position).equals("Sắp xếp theo giá bán")) {
+
+                    //Set the disable spinner item color fade .
+                    spinnertextview.setTextColor(Color.parseColor("#bcbcbb"));
+                }
+                else {
+
+                    spinnertextview.setTextColor(Color.BLACK);
+
+                }
+                return spinnerview;
+            }
+        };
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerSort.setAdapter(arrayAdapter);
     }
@@ -70,10 +113,10 @@ public class ProductFilter {
         Set set = brandFilter.entrySet();
         Iterator i = set.iterator();
         List<String> list = new ArrayList<String>();
-        list.add(ALL_PRODUCT);
+        list.add(ALL_PRODUCT+" ("+ products.size()+")");
         while(i.hasNext()) {
             Map.Entry me = (Map.Entry)i.next();
-            list.add(me.getKey()+"");
+            list.add(me.getKey()+" ("+me.getValue()+")");
         }
         arrayAdapter = new ArrayAdapter<String>(context,
                 android.R.layout.simple_spinner_item, list);

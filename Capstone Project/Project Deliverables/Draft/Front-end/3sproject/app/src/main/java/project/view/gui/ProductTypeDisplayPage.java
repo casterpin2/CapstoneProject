@@ -111,13 +111,13 @@ public class ProductTypeDisplayPage extends BasePage {
                     @Override
                     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                         tempProduct.clear();
-                        if(productFilter.ALL_PRODUCT.equals(adapterView.getItemAtPosition(i).toString())){
+                        if(adapterView.getItemAtPosition(i).toString().contains(productFilter.ALL_PRODUCT)){
                             for (Product product : productList){
                                 tempProduct.add(product);
                             }
                         }else{
                             for (Product product : productList) {
-                                if (product.getBrand_name().equals(adapterView.getItemAtPosition(i).toString())) {
+                                if (adapterView.getItemAtPosition(i).toString().contains(product.getBrand_name())) {
                                     tempProduct.add(product);
                                 }
                             }
