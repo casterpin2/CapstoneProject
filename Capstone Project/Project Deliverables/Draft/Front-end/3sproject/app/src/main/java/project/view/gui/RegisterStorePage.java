@@ -471,10 +471,10 @@ public class RegisterStorePage extends BasePage implements OnMapReadyCallback {
                             location.setStreet(a.getLong_name());
                         }
                         if (a.getTypes()[j].equalsIgnoreCase("administrative_area_level_2")) {
-                            location.setCounty(a.getLong_name());
+                            location.setDistrict(a.getLong_name());
                         }
                         if (a.getTypes()[j].equalsIgnoreCase("administrative_area_level_3")) {
-                            location.setDistrict(a.getLong_name());
+                            location.setCounty(a.getLong_name());
                         }
                         if (a.getTypes()[j].equalsIgnoreCase("administrative_area_level_1")) {
                             location.setCity(a.getLong_name());

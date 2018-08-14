@@ -91,7 +91,6 @@ public class NearbyStorePage extends BasePage implements OnMapReadyCallback {
     double latitude = 0.0;
     double longtitude = 0.0;
     final static int REQUEST_LOCATION = 1;
-
     //lazy loading
     public Handler mHandle;
     public View footerView;
@@ -142,15 +141,11 @@ public class NearbyStorePage extends BasePage implements OnMapReadyCallback {
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorApplication)));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("");
-        int productId = getIntent().getIntExtra("productId",-1);
+        productId = getIntent().getIntExtra("productId",-1);
         String image_path = getIntent().getStringExtra("image_path");
         p = new Product(productId,productName,image_path);
         turnOnLocation();
-        if (productId != -1) {
-            NearByStoreAsynTask asynTask = new NearByStoreAsynTask();
-            Call<List<NearByStore>> call = ApiUtils.getAPIService().nearByStore(productId, String.valueOf(latitude), String.valueOf(longtitude));
-            asynTask.execute(call);
-        }
+
 
         main_layout = findViewById(R.id.main_layout);
         main_layout.setOnTouchListener(new View.OnTouchListener() {
@@ -198,6 +193,11 @@ public class NearbyStorePage extends BasePage implements OnMapReadyCallback {
         LatLng myLocation = new LatLng(latitude, longtitude);
         googleMap.addMarker(new MarkerOptions().position(myLocation).title("Vị trí của bạn"));
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(myLocation));
+        if (productId != -1) {
+            NearByStoreAsynTask asynTask = new NearByStoreAsynTask();
+            Call<List<NearByStore>> call = ApiUtils.getAPIService().nearByStore(productId, String.valueOf(latitude), String.valueOf(longtitude));
+            asynTask.execute(call);
+        }
     }
 
 
@@ -523,10 +523,10 @@ public class NearbyStorePage extends BasePage implements OnMapReadyCallback {
                 final String storeName = data.getStringExtra("storeName");
                 final long totalPrice = data.getLongExtra("totalPrice",0);
                 final long price = data.getLongExtra("price",0);
-                String userName = data.getStringExtra("userName");
+                final String userName = data.getStringExtra("userName");
                 final String storePhone = data.getStringExtra("storePhone");
                 final String image_path = data.getStringExtra("image_path");
-                String phone = data.getStringExtra("phone");
+                final String phone = data.getStringExtra("phone");
                 final double longtitude = data.getDoubleExtra("longtitude",0.0);
                 final double latitude = data.getDoubleExtra("latitude",0.0);
                 final int quantity = data.getIntExtra("quantity",0);
@@ -536,21 +536,36 @@ public class NearbyStorePage extends BasePage implements OnMapReadyCallback {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             String key = reference.push().getKey();
                             DatabaseReference re = reference.child(key);
+                            DatabaseReference referenceStore = database.getReference().child("ordersStore").child(String.valueOf(storeId)).child(key);
                             re.child("address").setValue(address);
+                        referenceStore.child("address").setValue(address);
                             re.child("latitude").setValue(latitude);
+                        referenceStore.child("latitude").setValue(latitude);
                             re.child("longtitude").setValue(longtitude);
+                        referenceStore.child("longtitude").setValue(longtitude);
                             re.child("deliverTime").setValue(deliverTime);
+                        referenceStore.child("deliverTime").setValue(deliverTime);
                             re.child("storeId").setValue(storeId);
                             re.child("storeName").setValue(storeName);
                             re.child("status").setValue("waitting");
+                        referenceStore.child("status").setValue("waitting");
                             re.child("phone").setValue(storePhone);
+                        referenceStore.child("userId").setValue(userId);
+                        referenceStore.child("phone").setValue(phone);
+                        referenceStore.child("userName").setValue(userName);
                             re.child("isFeedback").setValue("false");
                             re.child("totalPrice").setValue(totalPrice);
+                        referenceStore.child("totalPrice").setValue(totalPrice);
                             re.child("orderDetail").child(String.valueOf(p.getProduct_id())).child("productId").setValue(p.getProduct_id());
+                        referenceStore.child("orderDetail").child(String.valueOf(p.getProduct_id())).child("productId").setValue(p.getProduct_id());
                             re.child("orderDetail").child(String.valueOf(p.getProduct_id())).child("productName").setValue(p.getProduct_name());
+                        referenceStore.child("orderDetail").child(String.valueOf(p.getProduct_id())).child("productName").setValue(p.getProduct_name());
                             re.child("orderDetail").child(String.valueOf(p.getProduct_id())).child("image_path").setValue(p.getImage_path());
+                        referenceStore.child("orderDetail").child(String.valueOf(p.getProduct_id())).child("image_path").setValue(p.getImage_path());
                             re.child("orderDetail").child(String.valueOf(p.getProduct_id())).child("quantity").setValue(quantity);
+                        referenceStore.child("orderDetail").child(String.valueOf(p.getProduct_id())).child("quantity").setValue(quantity);
                             re.child("orderDetail").child(String.valueOf(p.getProduct_id())).child("unitPrice").setValue(price);
+                        referenceStore.child("orderDetail").child(String.valueOf(p.getProduct_id())).child("unitPrice").setValue(price);
                         AlertDialog.Builder builder = new AlertDialog.Builder(NearbyStorePage.this);
                         builder.setTitle("Đặt hàng");
                         builder.setMessage("Bạn đã đặt hàng thành công");
