@@ -80,6 +80,8 @@ public class UserServiceImpl implements UserService{
        return dao.changePassword(username, password);
     }
 
-   
-    
+    @Override
+    public HashMap<String, Object> loginG(UserEntites user, String GId) throws SQLException {
+        return dao.loginG(user, GId);
+    }  
 }

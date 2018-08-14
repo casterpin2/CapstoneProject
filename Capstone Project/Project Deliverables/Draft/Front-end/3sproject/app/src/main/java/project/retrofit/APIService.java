@@ -33,6 +33,9 @@ public interface APIService {
     @POST("loginFB")
     Call<Login> loginFB(@Body User user,
                         @Query("FBId") String FBId);
+    @POST("loginGoogle")
+    Call<Login> loginGoogle(@Body User user,
+                        @Query("GId") String FBId);
     ////////////////////////////////////////////////
 
     @GET("brands")

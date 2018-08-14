@@ -106,6 +106,12 @@ public class UserFragment extends Fragment {
                             .diskCacheStrategy(DiskCacheStrategy.NONE)
                             .skipMemoryCache(true)
                             .into(profile_image);
+                }if (userAvatarPath.contains("google")) {
+                    Glide.with(getContext() /* context */)
+                            .load(userAvatarPath)
+                            .diskCacheStrategy(DiskCacheStrategy.NONE)
+                            .skipMemoryCache(true)
+                            .into(profile_image);
                 } else {
                     Glide.with(getContext() /* context */)
                             .using(new FirebaseImageLoader())

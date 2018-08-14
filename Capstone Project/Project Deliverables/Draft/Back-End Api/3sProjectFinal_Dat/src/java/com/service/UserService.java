@@ -29,6 +29,7 @@ public interface UserService {
     //Đăng nhập
     public HashMap<String,Object> login(String username,String password) throws SQLException;
     public HashMap<String,Object> loginFB(UserEntites user,String FBId) throws SQLException;
+    public HashMap<String,Object> loginG(UserEntites user,String GId) throws SQLException;
     //update 
     public UserEntites updateInformation(UserEntites user) throws SQLException;
     public UserEntites informationUser(int userId) throws SQLException;

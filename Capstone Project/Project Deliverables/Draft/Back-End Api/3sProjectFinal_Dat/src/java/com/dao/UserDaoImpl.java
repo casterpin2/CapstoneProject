@@ -39,6 +39,14 @@ public class UserDaoImpl extends BaseDao implements UserDao {
             + "(SELECT a.*,b.image_id as store_image_id FROM\n"
             + "(SELECT a.*,b.path as user_image_path FROM \n"
             + "(SELECT a.id as user_id,username,a.password,full_name,email,device_id,role_id,a.phone as user_phone,dateOfBirth,hasStore,gender,a.image_id as user_image_id,b.`location_id`, b.`phone` as store_phone, `status`,b.name,b.id as store_id , DATE_FORMAT(registerLog,\"%d/%m/%Y\")  as registerLogFormat FROM (SELECT * FROM User WHERE facebook_id = ?) as a , Store b WHERE a.id = b.user_id) a , Image b WHERE a.user_image_id = b.id) a , Image_Store b WHERE a.store_id = b.store_id) a , Image b WHERE a.store_image_id = b.id";
+    
+    private String QUERY_LOGIN_GOOGLE = "SELECT a.*,b.path as store_image_path FROM\n"
+            + "(SELECT a.*,b.image_id as store_image_id FROM\n"
+            + "(SELECT a.*,b.path as user_image_path FROM \n"
+            + "(SELECT a.id as user_id,username,a.password,full_name,email,device_id,role_id,a.phone as user_phone,dateOfBirth,hasStore,gender,a.image_id as user_image_id,b.`location_id`, b.`phone` as store_phone, `status`,b.name,b.id as store_id , DATE_FORMAT(registerLog,\"%d/%m/%Y\")  as registerLogFormat FROM (SELECT * FROM User WHERE google_id = ?) as a , Store b WHERE a.id = b.user_id) a , Image b WHERE a.user_image_id = b.id) a , Image_Store b WHERE a.store_id = b.store_id) a , Image b WHERE a.store_image_id = b.id";
+    
+    private String INSERT_ACCOUNT_GOOGLE = "INSERT INTO User(full_name,email,hasStore,role_id,google_id,image_id) VALUES (?,?,0,2,?,?)";
+    
     private String QUERY_LOCATION = "SELECT * FROM Location WHERE id = ?";
 
     private String INSERT_ACCOUNT_FB = "INSERT INTO User(full_name,email,hasStore,role_id,facebook_id,image_id) VALUES (?,?,0,2,?,?)";
@@ -617,5 +625,114 @@ public class UserDaoImpl extends BaseDao implements UserDao {
             closeConnect(conn, pre, null);
         }
         return false;
+    }
+
+    @Override
+    public HashMap<String, Object> loginG(UserEntites user, String GId) throws SQLException {
+        HashMap<String, Object> hashMap = new HashMap<>();
+        StoreEntites store = null;
+        UserEntites us = null;
+        Connection conn = null;
+        PreparedStatement pre = null;
+        ResultSet rs = null;
+        try {
+            conn = getConnection();
+            pre = conn.prepareStatement(QUERY_LOGIN_GOOGLE);
+            pre.setString(1, GId);
+            rs = pre.executeQuery();
+            if (rs.next()) {
+                us = new UserEntites();
+                us.setUserID(rs.getInt("user_id"));
+                us.setUserName(rs.getString("username"));
+                us.setDeviceId(rs.getString("device_id"));
+                us.setFirstName("");
+                us.setLastName(rs.getString("full_name"));
+                us.setEmail(rs.getString("email"));
+                us.setHasStore(rs.getInt("hasStore"));
+                us.setGender(rs.getString("gender"));
+                us.setDateOfBirth(rs.getString("dateOfBirth"));
+                us.setPhone(rs.getString("user_phone"));
+                us.setImage_path(rs.getString("user_image_path"));
+                hashMap.put("user", us);
+                store = new StoreEntites();
+                store.setImage_path(rs.getString("store_image_path"));
+                store.setName(rs.getString("name"));
+                store.setId(rs.getInt("store_id"));
+                store.setPhone(rs.getString("store_phone"));
+                store.setStatus(rs.getInt("status"));
+                store.setUser_id(rs.getInt("user_id"));
+                store.setRegisterLog(rs.getString("registerLogFormat"));
+                store.setLocation_id(rs.getInt("location_id"));
+                if (rs.getInt("hasStore") == 1) {
+                    pre = conn.prepareStatement(QUERY_LOCATION);
+                    pre.setInt(1, store.getLocation_id());
+                    rs = pre.executeQuery();
+                    rs.next();
+                    store.setAddress(rs.getString("apartment_number") + " " + rs.getString("street") + " " + rs.getString("county") + " " + rs.getString("district") + " " + rs.getString("city"));
+                    store.setAddress(store.getAddress().replaceAll("0", "").replaceAll("Unnamed Road", "").replaceAll("\\s+", " ").replaceAll("null", "").trim());
+                    store.setLatitude(rs.getString("latitude"));
+                    store.setLongtitude(rs.getString("longitude"));
+                }
+                hashMap.put("store", store);
+            } else {
+                int user_id = 0;
+                int image_id = 0;
+                int store_id = 0;
+                pre = conn.prepareStatement(INSERT_IMAGE);
+                pre.setString(1, "Ảnh của user GId : " + GId);
+                pre.setString(2, user.getImage_path());
+                if (pre.executeUpdate() == 0) {
+                    conn.rollback();
+                    conn.setAutoCommit(true);
+                    return null;
+                }
+                pre = conn.prepareStatement(QUERY_GET_MAX_IMAGE_ID);
+                rs = pre.executeQuery();
+                if (rs.next()) {
+                    image_id = rs.getInt("MAX(id)");
+                }
+                pre = conn.prepareStatement(INSERT_ACCOUNT_GOOGLE);
+                pre.setString(1,user.getLastName());
+                pre.setString(2, user.getEmail());
+                pre.setString(3, GId);
+                pre.setInt(4, image_id);
+                if (pre.executeUpdate() == 0) {
+                    conn.rollback();
+                    conn.setAutoCommit(true);
+                    return null;
+                } else {
+                    pre = conn.prepareStatement(QUERY_GET_MAX_USER_ID);
+                    rs = pre.executeQuery();
+                    if (rs.next()) {
+                        user_id = rs.getInt("MAX(id)");
+                    }
+                }
+                pre = conn.prepareStatement(INSERT_STORE);
+                pre.setInt(1, user_id);
+                if (pre.executeUpdate() == 0) {
+                    conn.rollback();
+                    conn.setAutoCommit(true);
+                    return null;
+                } else {
+                    pre = conn.prepareStatement(QUERY_GET_MAX_STORE_ID);
+                    rs = pre.executeQuery();
+                    if (rs.next()) {
+                        store_id = rs.getInt("MAX(id)");
+                    }
+                    pre = conn.prepareStatement(INSERT_IMAGE_STORE);
+                    pre.setInt(1, store_id);
+                    if (pre.executeUpdate() == 0) {
+                        conn.rollback();
+                        conn.setAutoCommit(true);
+                        return null;
+                    }
+                }
+                hashMap.put("user", user);
+                hashMap.put("store", new StoreEntites(store_id, "", user_id, "", "", 0));
+            }
+        } finally {
+            closeConnect(conn, pre, rs);
+        }
+        return hashMap;
     }
 }

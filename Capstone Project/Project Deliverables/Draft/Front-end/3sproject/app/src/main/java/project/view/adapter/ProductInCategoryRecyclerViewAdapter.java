@@ -1,6 +1,7 @@
 package project.view.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import com.google.firebase.storage.StorageReference;
 
 import project.firebase.Firebase;
 import project.view.R;
+import project.view.gui.NearbyStorePage;
 import project.view.model.Product;
 
 public class ProductInCategoryRecyclerViewAdapter extends LoadMoreRecyclerViewAdapter {
@@ -35,13 +37,23 @@ public class ProductInCategoryRecyclerViewAdapter extends LoadMoreRecyclerViewAd
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof ItemViewHolder) {
-            Product product = mDataList.get(position);
+            final Product product = mDataList.get(position);
             ((ItemViewHolder) holder).productName.setText(product.getProduct_name());
             Glide.with(mInflater.getContext() /* context */)
                     .using(new FirebaseImageLoader())
                     .load(storageReference.child(mDataList.get(position).getImage_path()))
                     .skipMemoryCache(true)
                     .into(((ItemViewHolder) holder).productImage);
+            ((ItemViewHolder) holder).findNearByBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent toNearByStorePage = new Intent(mInflater.getContext(), NearbyStorePage.class);
+                    toNearByStorePage.putExtra("productId",product.getProduct_id());
+                    toNearByStorePage.putExtra("productName",product.getProduct_name());
+                    toNearByStorePage.putExtra("image_path",product.getImage_path());
+                    mInflater.getContext().startActivity(toNearByStorePage);
+                }
+            });
         }
         super.onBindViewHolder(holder, position);
     }

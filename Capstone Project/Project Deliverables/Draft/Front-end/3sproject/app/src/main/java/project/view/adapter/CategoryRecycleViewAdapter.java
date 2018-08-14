@@ -31,11 +31,6 @@ public class CategoryRecycleViewAdapter extends RecyclerView.Adapter<CategoryRec
     private LayoutInflater layoutInflater;
     private StorageReference storageReference = Firebase.getFirebase();
 
-//    public CategoryRecycleViewAdapter(Context context, List<Category> datas) {
-//        context = context;
-//        categories = datas;
-//        layoutInflater = LayoutInflater.from(context);
-//    }
 
     public CategoryRecycleViewAdapter(List<Category> categories, Context context) {
         this.categories = categories;

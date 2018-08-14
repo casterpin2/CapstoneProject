@@ -85,6 +85,15 @@ public class UserController {
         UserEntites us = mapper.readValue(userJSON, UserEntites.class);
         return user.loginFB(us, FBid);
     }
+    
+    @RequestMapping(value = "/loginGoogle", method = RequestMethod.POST, produces = "application/json")
+    public HashMap<String, Object> loginGoogle(@RequestBody String userJSON, @RequestParam("GId") String Gid) throws SQLException, IOException {
+        JsonFactory factory = new JsonFactory();
+        factory.enable(JsonParser.Feature.ALLOW_SINGLE_QUOTES);
+        ObjectMapper mapper = new ObjectMapper(factory);
+        UserEntites us = mapper.readValue(userJSON, UserEntites.class);
+        return user.loginG(us, Gid);
+    }
 
     @RequestMapping(value = "/userSearchProduct", method = RequestMethod.GET, produces = "application/json")
     public List<ProductAddEntites> userSearchProduct(@RequestParam("productName") String productName, @RequestParam("page") int page) throws SQLException, IOException {
