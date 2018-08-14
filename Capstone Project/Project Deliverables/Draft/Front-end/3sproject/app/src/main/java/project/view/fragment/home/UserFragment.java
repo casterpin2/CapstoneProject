@@ -19,6 +19,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -144,8 +145,9 @@ public class UserFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     Intent toChangePasswordScreen = new Intent(getContext(), ChangePasswordPage.class);
-                    toChangePasswordScreen.putExtra("userID", userID);
-                    getContext().startActivity(toChangePasswordScreen);
+                    toChangePasswordScreen.putExtra("username", user.getUsername());
+
+                    startActivityForResult(toChangePasswordScreen,113);
                 }
             });
 

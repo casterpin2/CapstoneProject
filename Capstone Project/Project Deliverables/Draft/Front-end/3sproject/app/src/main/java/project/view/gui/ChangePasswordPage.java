@@ -1,10 +1,14 @@
 package project.view.gui;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -14,11 +18,16 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.api.Api;
+import com.google.gson.Gson;
+
 import java.util.Map;
 
+import project.objects.User;
 import project.retrofit.APIService;
 import project.retrofit.ApiUtils;
 import project.view.R;
+import project.view.fragment.home.UserFragment;
 import project.view.util.CustomInterface;
 import project.view.util.MD5Library;
 import project.view.util.Regex;
@@ -26,61 +35,77 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ChangePasswordPage  extends BasePage{
+public class ChangePasswordPage extends BasePage {
     private Button btnChangePass;
-    private TextView tvOldPass, tvConfirmPass,tvNewPass;
+    private TextView tvOldPass, tvConfirmPass, tvNewPass;
     private TextInputEditText oldPass, newPass, confirmPass;
     private TextInputLayout etPasswordLayout;
     private ProgressBar loadingBar;
     private RelativeLayout main_layout;
     private APIService apiService;
     private String username;
-    private  Regex regex;
-    private boolean isNewPass = false ,isOldPass = false,isConfirm = false;
-
+    private Regex regex;
+    private boolean isNewPass = false, isOldPass = false, isConfirm = false;
+    private String paswordValidator;
+    private boolean checkPassword = true;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_password);
         findView();
-        regex= new Regex();
+        regex = new Regex();
         CustomInterface.setStatusBarColor(this);
         getSupportActionBar().setTitle(R.string.title_change_password);
-        if (getSupportActionBar() != null){
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
         main_layout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                CustomInterface.hideKeyboard(view,getBaseContext());
+                CustomInterface.hideKeyboard(view, getBaseContext());
                 return false;
             }
         });
+
         loadingBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorApplication), android.graphics.PorterDuff.Mode.MULTIPLY);
         username = getIntent().getStringExtra("username");
 
         oldPass.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(!hasFocus) {
-                   isOldPass = regex.isPassWord(oldPass.getText().toString());
-                   if(!isOldPass){
-                       tvOldPass.setText(R.string.error_validate_password);
-                   }else {
-                       tvOldPass.setText("");
-                   }
+                if (!hasFocus) {
+                    isOldPass = regex.isPassWord(oldPass.getText().toString());
+                    if (!isOldPass) {
+                        tvOldPass.setText(R.string.error_validate_password);
+                    } else {
+                        tvOldPass.setText("");
+                    }
+                    SharedPreferences pre = getSharedPreferences("authentication", Context.MODE_PRIVATE);
+                    String userJSON = pre.getString("user", "");
+
+                    if(userJSON!=null && !userJSON.isEmpty()){
+                        User usCheckPassword = new Gson().fromJson(userJSON, User.class);
+                        apiService = ApiUtils.getAPIService();
+                        Call<User> call = apiService.getInformation(usCheckPassword.getId());
+                        new ValidatorPassword().execute(call);
+                    }
+                    if(!checkPassword){
+                        tvOldPass.setText(R.string.error_old_pass);
+                    } else {
+                        tvOldPass.setText("");
+                    }
                 }
             }
         });
         newPass.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(!hasFocus) {
-                 isNewPass = regex.isPassWord(newPass.getText().toString());
-                    if(!isNewPass){
+                if (!hasFocus) {
+                    isNewPass = regex.isPassWord(newPass.getText().toString());
+                    if (!isNewPass) {
                         tvNewPass.setText(R.string.error_validate_password);
-                    }else {
+                    } else {
                         tvNewPass.setText("");
                     }
                 }
@@ -90,11 +115,11 @@ public class ChangePasswordPage  extends BasePage{
         confirmPass.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(!hasFocus){
+                if (!hasFocus) {
                     isConfirm = regex.isPassWord(confirmPass.getText().toString());
-                    if(!isConfirm){
+                    if (!isConfirm) {
                         tvConfirmPass.setText(R.string.error_validate_password);
-                    }else {
+                    } else {
                         tvConfirmPass.setText("");
                     }
                 }
@@ -103,28 +128,49 @@ public class ChangePasswordPage  extends BasePage{
         btnChangePass.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!isNewPass){
+                if (!isNewPass) {
                     tvNewPass.setText(R.string.error_validate_password);
                 }
-                if(!isConfirm){
+                if (!isConfirm) {
                     tvConfirmPass.setText(R.string.error_validate_password);
                 }
-                if(!isOldPass){
+                if (!isOldPass) {
                     tvOldPass.setText(R.string.error_validate_password);
                 }
 
-             if (isConfirm && isNewPass && isOldPass) {
-                    if(!newPass.getText().toString().equals(confirmPass.getText().toString())){
+                if (isConfirm && isNewPass && isOldPass) {
+                    if (!newPass.getText().toString().equals(confirmPass.getText().toString())) {
                         tvConfirmPass.setText(R.string.error_confirm_password);
-                    }else {
+                    } else {
                         tvConfirmPass.setText("");
-                        Toast.makeText(getBaseContext(),"Code",Toast.LENGTH_LONG).show();
+                        if (getIntent().getStringExtra("username") != null && !getIntent().getStringExtra("username").isEmpty()) {
+                            username = getIntent().getStringExtra("username");
+                        }
+                        if(username!=null && !username.isEmpty()){
+                            apiService = ApiUtils.getAPIService();
+                            String password = MD5Library.md5(newPass.getText().toString());
+                            apiService.requestChangePassword(username,password).enqueue(new Callback<Boolean>() {
+                                @Override
+                                public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                                    if(response.isSuccessful()){
+                                        Toast.makeText(ChangePasswordPage.this, "Thay đổi mật khẩu thành công.", Toast.LENGTH_LONG).show();
+                                        Intent backToUserFragment = new Intent(ChangePasswordPage.this, UserFragment.class);
+                                        tvOldPass.setText("");
+                                        oldPass.setText("");
+                                        confirmPass.setText("");
+                                        setResult(223,backToUserFragment);
+                                        finish();
+                                    }
 
-                        //code vao day
+                                }
 
-
-
-                    }
+                                @Override
+                                public void onFailure(Call<Boolean> call, Throwable t) {
+                                    Toast.makeText(ChangePasswordPage.this, "Đã có lỗi xảy ra.", Toast.LENGTH_LONG).show();
+                                }
+                            });
+                        }
+                        }
                 }
             }
         });
@@ -132,7 +178,7 @@ public class ChangePasswordPage  extends BasePage{
 
     }
 
-    private void findView(){
+    private void findView() {
         main_layout = findViewById(R.id.main_layout);
         tvOldPass = findViewById(R.id.tvOldPass);
         tvNewPass = findViewById(R.id.tvNewPassword);
@@ -142,7 +188,7 @@ public class ChangePasswordPage  extends BasePage{
         oldPass = findViewById(R.id.etOldPassword);
         newPass = findViewById(R.id.etNewPassword);
         confirmPass = findViewById(R.id.etConfirmPass);
-        etPasswordLayout= findViewById(R.id.etPasswordLayout);
+        etPasswordLayout = findViewById(R.id.etPasswordLayout);
         etPasswordLayout.setVisibility(View.VISIBLE);
     }
 
@@ -153,5 +199,41 @@ public class ChangePasswordPage  extends BasePage{
             finish();
         }
         return super.onOptionsItemSelected(item);
+    }
+    public class ValidatorPassword extends AsyncTask<Call,Void,User>{
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected void onPostExecute(User user) {
+            super.onPostExecute(user);
+            String md5Pass = MD5Library.md5(oldPass.getText().toString());
+            if(!md5Pass.equals(user.getPassword())){
+                checkPassword = false;
+            }else {
+                checkPassword = true;
+            }
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            super.onProgressUpdate(values);
+        }
+
+        @Override
+        protected User doInBackground(Call... calls) {
+            try{
+                Call<User> call = calls[0];
+                Response<User> response = call.execute();
+                if(response.body()!=null){
+                    return response.body();
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            return null;
+        }
     }
 }

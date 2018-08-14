@@ -545,7 +545,7 @@ public class UserDaoImpl extends BaseDao implements UserDao {
         ResultSet rs =null;
         UserEntites us = null;
         try{
-            String sql ="SELECT us.id,us.full_name,us.email,us.hasStore,us.gender,us.dateOfBirth,us.phone,img.path,us.device_id,us.username"
+            String sql ="SELECT us.id,us.full_name,us.email,us.hasStore,us.gender,us.dateOfBirth,us.phone,img.path,us.device_id,us.username,us.password"
                     + " FROM User us JOIN Image img on us.image_id = img.id where us.id = ?";
             conn= getConnection();
             pre = conn.prepareStatement(sql);
@@ -563,6 +563,7 @@ public class UserDaoImpl extends BaseDao implements UserDao {
                 us.setUserName(rs.getString("username"));
                 us.setDateOfBirth(rs.getString("dateOfBirth"));
                 us.setGender(rs.getString("gender"));
+                us.setPassword(rs.getString("password"));
             }
         }finally{
             closeConnect(conn, pre, rs);
