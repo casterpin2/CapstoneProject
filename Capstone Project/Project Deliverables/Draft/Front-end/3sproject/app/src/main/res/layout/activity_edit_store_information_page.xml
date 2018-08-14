@@ -187,7 +187,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/map"
-                android:text="Đăng kí"
+                android:text="Lưu thay đổi"
                 android:background="@drawable/login_button"
                 android:textColor="@color/colorWhite"
                 android:layout_marginTop="10dp"/>

@@ -130,6 +130,7 @@ public class UserInformationPage extends BasePage {
             txtGender.setText(gender);
             nameDisplay = txtName.getText().toString();
          //   savingPreferences(name, phone, email, gender, dob);
+            Toast.makeText(UserInformationPage.this, "Thay đổi thông tin thành công!", Toast.LENGTH_SHORT).show();
         }
         else if (requestCode == REQUEST_PROFILE_CODE && resultCode == 201) {
             Toast.makeText(UserInformationPage.this, "Thông tin không thay đổi", Toast.LENGTH_SHORT).show();

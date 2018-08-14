@@ -43,7 +43,7 @@
     <string name="btn_add">Thêm</string>
     <string name="close">Đóng</string>
     <string name="addSuccessful">Thêm sản phẩm thành công</string>
-    <string name="promotionOption">Chiết khấu phải ở trong khoảng từ 0% tới 100%!!</string>
+    <string name="promotionOption">Chiết khấu không thể vượt quá mức 100%</string>
     <string name="searhProductAddToStorePageTitle">Tìm kiếm sản phẩm</string>
 
     <!-- TODO: placeholder text in cart product to store -->

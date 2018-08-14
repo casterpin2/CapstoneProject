@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
@@ -38,8 +39,10 @@ import com.google.gson.Gson;
 import com.suke.widget.SwitchButton;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 import project.googleMapAPI.Address;
 import project.googleMapAPI.Address_Component;
@@ -132,8 +135,8 @@ public class EditStoreInformationPage extends BasePage implements OnMapReadyCall
             public void onCheckedChanged(SwitchButton view, boolean isChecked) {
                 if(view.isChecked()) {
                     turnOnLocation();
-                    handleAddressLayout.setEnabled(false);
-                    handleAddressText.setText("Vị trí hiện tại của bạn");
+                    handleAddressText.setText("Vị trí hiện tại");
+
                 } else {
                     setAutoLatitude(0.0);
                     setAutoLongtitude(0.0);
@@ -145,9 +148,12 @@ public class EditStoreInformationPage extends BasePage implements OnMapReadyCall
                         mMap.setMinZoomPreference(10.0f);
                         mMap.setMaxZoomPreference(10.1f);
                     } else {
-                        markerToMap(handleLongtitude,handleLatitude,mMap,"Vị trí đăng kí");
+                        markerToMap(handleLongtitude,handleLatitude,mMap,"Vị trí đăng kí",handleLocationPlace);
                     }
-
+                }
+                if (switch_button.isChecked() == false && handleAddressText.getText().toString().length() == 0) {
+                    markerToMap(storeLongtitude,storeLatitude,mMap,"Vị trí hiện tại của cửa hàng",address);
+                    handleAddressText.setText(address);
                 }
             }
 
@@ -170,6 +176,10 @@ public class EditStoreInformationPage extends BasePage implements OnMapReadyCall
             }
 
         });
+
+        if (switch_button.isChecked() == false && handleAddressText.getText().toString().length() == 0) {
+            markerToMap(storeLongtitude,storeLatitude,mMap,"Vị trí hiện tại của cửa hàng", address);
+        }
 
         updateInformationStore.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -228,7 +238,6 @@ public class EditStoreInformationPage extends BasePage implements OnMapReadyCall
         handleAddressLayout = (RelativeLayout) findViewById(R.id.handleAddressLayout);
         switch_button = (SwitchButton) findViewById(R.id.switch_button);
         updateInformationStore = findViewById(R.id.updateBtn);
-        updateInformationStore.setText("Thay dổi");
     }
 
     public void getIntentFromStoreInformationPage() {
@@ -275,7 +284,7 @@ public class EditStoreInformationPage extends BasePage implements OnMapReadyCall
 //                mAPI = ApiUtils.getAPIServiceMap();
 //                final Call<GoogleMapJSON> call = mAPI.getLocation(stringBuilder.toString(),GOOGLE_MAP_KEY);
 //                new RegisterStorePage.CallMapAPI().execute(call);
-                markerToMap(autoLongtitude, autoLatitude, mMap, "Ví trí của bạn");
+                markerToMap(autoLongtitude, autoLatitude, mMap, getResources().getString(R.string.yourGPS),"");
             } else {
                 Toast.makeText(this, "Chưa có vị trí định vị!!", Toast.LENGTH_SHORT).show();
             }
@@ -300,7 +309,7 @@ public class EditStoreInformationPage extends BasePage implements OnMapReadyCall
 
 //                 Add a marker in Ha Noi and move the camera
                 LatLng storeAddress = new LatLng(latitude, longtitude);
-                mMap.addMarker(new MarkerOptions().position(storeAddress).title("Vị trí hiện tại của cửa hàng").snippet(address));
+                mMap.addMarker(new MarkerOptions().position(storeAddress).title("Vị trí hiện tại của cửa hàng").snippet(address)).showInfoWindow();
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(storeAddress));
                 mMap.setMinZoomPreference(12.0f);
                 mMap.setMaxZoomPreference(22.0f);
@@ -340,11 +349,11 @@ public class EditStoreInformationPage extends BasePage implements OnMapReadyCall
                     mAPI = ApiUtils.getAPIServiceMap();
                     final Call<GoogleMapJSON> call = mAPI.getLocation(stringBuilder.toString(),GOOGLE_MAP_KEY);
                     new CallMapAPI().execute(call);
-                    markerToMap(handleLongtitude, handleLatitude, mMap, "Vị trí đăng kí");
+                    markerToMap(handleLongtitude, handleLatitude, mMap, "Vị trí đăng kí",handleLocationPlace);
                 } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
                     Status status = PlaceAutocomplete.getStatus(this, data);
                     // TODO: Handle the error.
-                    Toast.makeText(EditStoreInformationPage.this, "An error occurred: " + status, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(EditStoreInformationPage.this, "Có lỗi xảy ra:  " + status, Toast.LENGTH_SHORT).show();
 
                 } else if (resultCode == RESULT_CANCELED) {
                     // The user canceled the operation.
@@ -352,16 +361,13 @@ public class EditStoreInformationPage extends BasePage implements OnMapReadyCall
             }
         }
     }
-    public void markerToMap(double longtitude, double latitude, GoogleMap mMap, String markerContent) {
-        markerContent = "";
+    public void markerToMap(double longtitude, double latitude, GoogleMap mMap, String markerContent, String addressString) {
         LatLng myLocation = new LatLng(latitude, longtitude);
         mMap.clear();
-        mMap.addMarker(new MarkerOptions().position(myLocation).title(markerContent));
+        mMap.addMarker(new MarkerOptions().position(myLocation).title(markerContent).snippet(addressString)).showInfoWindow();
         mMap.moveCamera(CameraUpdateFactory.newLatLng(myLocation));
-        mMap.setMinZoomPreference(15);
-        mMap.setMaxZoomPreference(25);
-        mMap.getUiSettings().isMyLocationButtonEnabled();
-        mMap.getUiSettings().setScrollGesturesEnabled(false);
+        mMap.setMinZoomPreference(12);
+        mMap.setMaxZoomPreference(22);
     }
     private void turnOnLocation(){
         final android.location.LocationListener locationListener = new android.location.LocationListener() {
@@ -408,7 +414,7 @@ public class EditStoreInformationPage extends BasePage implements OnMapReadyCall
                         mAPI = ApiUtils.getAPIServiceMap();
                         final Call<GoogleMapJSON> call = mAPI.getLocation(stringBuilder.toString(),GOOGLE_MAP_KEY);
                         new CallMapAPI().execute(call);
-                        markerToMap(autoLongtitude, autoLatitude, mMap, "Ví trí của bạn");
+                        markerToMap(autoLongtitude, autoLatitude, mMap, getResources().getString(R.string.yourGPS),"");
                     }
                 }
             }
@@ -430,7 +436,7 @@ public class EditStoreInformationPage extends BasePage implements OnMapReadyCall
                         mAPI = ApiUtils.getAPIServiceMap();
                         final Call<GoogleMapJSON> call = mAPI.getLocation(stringBuilder.toString(),GOOGLE_MAP_KEY);
                         new CallMapAPI().execute(call);
-                        markerToMap(autoLongtitude, autoLatitude, mMap, getResources().getString(R.string.yourGPS));
+                        markerToMap(autoLongtitude, autoLatitude, mMap, getResources().getString(R.string.yourGPS),"");
                     }
                 }
 
