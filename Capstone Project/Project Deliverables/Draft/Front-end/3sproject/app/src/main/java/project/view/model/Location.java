@@ -100,14 +100,25 @@ public class Location {
 
     @Override
     public String toString() {
-        return "Location{" +
-                "apartment_number=" + apartment_number +
-                ", street='" + street + '\'' +
-                ", county='" + county + '\'' +
-                ", district='" + district + '\'' +
-                ", city='" + city + '\'' +
-                ", latitude='" + latitude + '\'' +
-                ", longitude='" + longitude + '\'' +
-                '}';
+        String checkNull = "CANCEL";
+        if (apartment_number != null) {
+            checkNull = "OK";
+        }
+        if(county != null ){
+            checkNull = "OK";
+        }
+        if(district != null ){
+            checkNull = "OK";
+        }
+        if(city != null ){
+            checkNull = "OK";
+        }
+        if(latitude != null ){
+            checkNull = "OK";
+        }
+        if(longitude != null ){
+            checkNull = "OK";
+        }
+        return checkNull;
     }
 }
