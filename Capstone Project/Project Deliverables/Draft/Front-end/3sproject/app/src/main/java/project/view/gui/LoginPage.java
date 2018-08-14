@@ -29,6 +29,10 @@ import com.facebook.FacebookException;
 import com.facebook.Profile;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -43,7 +47,10 @@ import project.objects.User;
 import project.retrofit.APIService;
 import project.retrofit.ApiUtils;
 import project.view.R;
-import project.view.fragment.home.HomeFragment;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import project.view.model.Store;
 import project.view.model.Login;
 import project.view.util.CustomInterface;
@@ -63,12 +70,15 @@ public class LoginPage extends AppCompatActivity {
     private RelativeLayout  main_layout;
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference myRef;
+    private GoogleSignInClient mGoogleSignInClient;
+    private static final int RC_SIGN_IN = 9001;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_page);
         findView();
+        configGoogleLogin();
         mAPI = ApiUtils.getAPIService();
         callbackManager = CallbackManager.Factory.create();
         getSupportActionBar().setTitle(getResources().getString(R.string.login_page_login3SBtn));
@@ -230,14 +240,19 @@ public class LoginPage extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        if (requestCode == RC_SIGN_IN) {
-//            // The Task returned from this call is always completed, no need to attach
-//            // a listener.
-//            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-//            handleSignInResult(task);
-//        }
-        callbackManager.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RC_SIGN_IN) {
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            try {
+                // Google Sign In was successful, authenticate with Firebase
+                GoogleSignInAccount account = task.getResult(ApiException.class);
+            } catch (ApiException e) {
+                // Google Sign In failed, update UI appropriately
+
+            }
+            return;
+        }
+        callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
     /////////////////////////////////////////////////////API////////////////////////////////////////////////////////////////
@@ -258,6 +273,7 @@ public class LoginPage extends AppCompatActivity {
             }
             if (result.getUser().getId() == 0) {
                 errorMessage.setText("Tên tài khoản hoặc mật khẩu không đúng, xin vui lòng đăng nhập lại");
+                loadingBar.setVisibility(View.INVISIBLE);
             }else {
                 //Toast.makeText(LoginPage.this, LoginPage.login.getUser().toString(), Toast.LENGTH_LONG).show();
                 User user = result.getUser();
@@ -327,5 +343,27 @@ public class LoginPage extends AppCompatActivity {
             editor.putString("user", new Gson().toJson(user));
             editor.putString("store", new Gson().toJson(store));
             editor.commit();
+    }
+
+    private void configGoogleLogin() {
+        // Configure sign-in to request the user_profile's ID, email address, and basic
+        // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+        loginGPBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                signIn();
+            }
+        });
+    }
+
+    private void signIn() {
+        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+        startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 }

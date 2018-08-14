@@ -285,25 +285,26 @@ public class OrderDetailPage extends BasePage {
                 if (order != null) {
                     ref = database.getReference().child("ordersUser").child(String.valueOf(order.getUserId())).child(orderId);
                     ref.addValueEventListener(changeListener1);
-                }
-                usernameTV.setText(order.getUserName());
-                phoneTV.setText(order.getPhone());
-                totalTV.setText(Formater.formatDoubleToMoney(String.valueOf(order.getTotalPrice())));
-                deliveryTimeTV.setText(order.getDeliverTime());
-                deliveryAddressTV.setText(order.getAddress());
-                Object[] orderDetails = order.getOrderDetail().values().toArray();
-                for(int i = 0 ; i < orderDetails.length;i++) {
-                    CartDetail cartDetail = (CartDetail)orderDetails[i];
-                    Product p = new Product();
-                    p.setImage_path(cartDetail.getImage_path());
-                    p.setProduct_name(cartDetail.getProductName());
-                    p.setQuantity(cartDetail.getQuantity());
-                    p.setPrice((long)cartDetail.getUnitPrice());
-                    p.setQuantity(cartDetail.getQuantity());
-                    p.setProduct_id(cartDetail.getProductId());
-                    p.setStore_id(store.getId());
-                    productList.add(p);
-                    adapter.notifyDataSetChanged();
+
+                    usernameTV.setText(order.getUserName());
+                    phoneTV.setText(order.getPhone());
+                    totalTV.setText(Formater.formatDoubleToMoney(String.valueOf(order.getTotalPrice())));
+                    deliveryTimeTV.setText(order.getDeliverTime());
+                    deliveryAddressTV.setText(order.getAddress());
+                    Object[] orderDetails = order.getOrderDetail().values().toArray();
+                    for (int i = 0; i < orderDetails.length; i++) {
+                        CartDetail cartDetail = (CartDetail) orderDetails[i];
+                        Product p = new Product();
+                        p.setImage_path(cartDetail.getImage_path());
+                        p.setProduct_name(cartDetail.getProductName());
+                        p.setQuantity(cartDetail.getQuantity());
+                        p.setPrice((long) cartDetail.getUnitPrice());
+                        p.setQuantity(cartDetail.getQuantity());
+                        p.setProduct_id(cartDetail.getProductId());
+                        p.setStore_id(store.getId());
+                        productList.add(p);
+                        adapter.notifyDataSetChanged();
+                    }
                 }
             }
         @Override
@@ -325,6 +326,8 @@ public class OrderDetailPage extends BasePage {
                     public void onClick(DialogInterface dialog, int which) {
                         Intent intent = new Intent(OrderDetailPage.this,StoreManagementOrderPage.class);
                         intent.putExtra("storeId",store.getId());
+                        myRef.removeEventListener(changeListener);
+                        ref.removeEventListener(changeListener1);
                         startActivity(intent);
                         finish();
                     }

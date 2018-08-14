@@ -159,10 +159,10 @@ public class ProductInStoreDisplayPage extends BasePage {
                             nullMessage.setText("");
                             theListView.setVisibility(View.VISIBLE);
                         }
-                        if(productInStores != null){
-                            productFilter.setSortItem(ProductInStoreDisplayPage.this,spinnerSort);
-                            productFilter.setCategoryFilter(productInStores,ProductInStoreDisplayPage.this,spinnerCategory);
-                        }
+//                        if(productInStores != null){
+//                            productFilter.setSortItem(ProductInStoreDisplayPage.this,spinnerSort);
+//                            productFilter.setCategoryFilter(productInStores,ProductInStoreDisplayPage.this,spinnerCategory);
+//                        }
 
                         theListView. setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override

@@ -36,7 +36,7 @@ public class UserManagementOrderPage extends BasePage {
     DatabaseReference myRef;
     private int userId;
     private Button shoppingBtn;
-
+    private String status;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_management);
@@ -111,22 +111,27 @@ public class UserManagementOrderPage extends BasePage {
             if (dataSnapshot.exists()) {
                 noOrder.setVisibility(View.INVISIBLE);
                 for (DataSnapshot dttSnapshot2 : dataSnapshot.getChildren()) {
-                    order = dttSnapshot2.getValue(Order.class);
-                    if (order.getStatus().equalsIgnoreCase("cancel"));
-                    {
-                        Log.d("order", order.toString());
-                        order.setOrderId(dttSnapshot2.getKey());
-                        list.add(order);
-                        for (int i = 0; i < list.size(); i++) {
-                            orderListView.expandGroup(i);
+                    Order order = dttSnapshot2.getValue(Order.class);
+                    if (order != null && order.getStatus()!= null) {
+                        status = order.getStatus();
+                        if (status.equals("cancel") == false) {
+                            order.setOrderId(dttSnapshot2.getKey());
+                            list.add(order);
+                            for (int i = 0; i < list.size(); i++) {
+                                orderListView.expandGroup(i);
+                            }
+                            adapter.notifyDataSetChanged();
                         }
-                        adapter.notifyDataSetChanged();
                     }
                 }
             } else {
                 list.clear();
                 //buyLinearLayout.setVisibility(View.INVISIBLE);
                 //loadingBar.setVisibility(View.INVISIBLE);
+                adapter.notifyDataSetChanged();
+                noOrder.setVisibility(View.VISIBLE);
+            }
+            if (list.size() == 0){
                 adapter.notifyDataSetChanged();
                 noOrder.setVisibility(View.VISIBLE);
             }

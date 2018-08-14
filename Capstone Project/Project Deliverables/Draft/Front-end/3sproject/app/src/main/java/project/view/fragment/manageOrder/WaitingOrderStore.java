@@ -39,7 +39,7 @@ public class WaitingOrderStore extends Fragment {
         super.onResume();
         if (storeId != -1) {
             myRef = database.getReference().child("ordersStore").child(String.valueOf(storeId));
-            myRef.addValueEventListener(changeListener);
+            myRef.orderByChild("status").equalTo("waitting").addValueEventListener(changeListener);
         } else {
             Toast.makeText(getContext(), "Không có người dùng", Toast.LENGTH_LONG).show();
         }
@@ -72,14 +72,10 @@ public class WaitingOrderStore extends Fragment {
             if (dataSnapshot.exists()) {
                 for (final DataSnapshot dttSnapshot2 : dataSnapshot.getChildren()) {
                     order = dttSnapshot2.getValue(Order.class);
-                    if (order != null && order.getStatus() !=null){
-                        if (order.getStatus().equalsIgnoreCase("waitting")) {
                             Log.d("order", order.toString());
                             order.setOrderId(dttSnapshot2.getKey());
                             list.add(order);
-                        }
                     adapter.notifyDataSetChanged();
-                    }
                 }
             } else {
                 list.clear();
