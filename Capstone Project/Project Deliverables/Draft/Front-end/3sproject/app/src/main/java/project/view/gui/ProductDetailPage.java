@@ -50,11 +50,19 @@ public class ProductDetailPage extends BasePage {
     private TextView productNotInStoreName, productNotInStoreCategoryName, productNotInStoreBrandName, productNotInStoreDesc, storeNameTV;
     private Button addToCartBtn, findStoreBtn, editProductInStore;
     private LinearLayout isNotProductInStoreLayout, isProductInStoreLayout, productDetailLayout, storeNameLayout;
-    private Product product;
-    private int storeID;
-    private String storeName;
-    private boolean isStoreProduct;
-    private boolean isStoreSee;
+
+    private Product product; //intent
+
+    private int storeID; //intent
+
+    private String storeName; //intent nếu là isStoreProduct == true và isStoreSee == false
+
+    private boolean isStoreProduct; //intent
+
+    private boolean isStoreSee; //intent
+
+    private int productId; //intent
+
     private ProgressBar loadingBar;
     private User user;
     private Store myStore;
@@ -63,22 +71,37 @@ public class ProductDetailPage extends BasePage {
     private Store store;
     private LocationManager locationManager;
     final static int REQUEST_LOCATION = 1;
+
+
     private StorageReference storageReference = Firebase.getFirebase();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_describe_product);
         mapping();
+        storeID = getIntent().getIntExtra("storeID", -1);
+        isStoreProduct = getIntent().getBooleanExtra("isStoreProduct", false);
+        isStoreSee = getIntent().getBooleanExtra("isStoreSee", false);
         product = new Gson().fromJson(getIntent().getStringExtra("product"),Product.class);
+        if (product != null){
+            getView();
+        }
+        else {
+            productId = getIntent().getIntExtra("productId", -1);
+            Call<Product> call = ApiUtils.getAPIService().getProductById(productId,storeID);
+            new GetProductById().execute(call);
+        }
+
+
+    }
+
+    public void getView(){
         getSupportActionBar().setTitle(product.getProduct_name());
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorApplication)));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         restoringPreferences();
-        CustomInterface.setStatusBarColor(this);
+        CustomInterface.setStatusBarColor(ProductDetailPage.this);
         loadingBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorApplication), android.graphics.PorterDuff.Mode.MULTIPLY);
-        storeID = getIntent().getIntExtra("storeID", -1);
-        isStoreProduct = getIntent().getBooleanExtra("isStoreProduct", false);
-        isStoreSee = getIntent().getBooleanExtra("isStoreSee", false);
         setLayout(isStoreProduct,isNotProductInStoreLayout,isProductInStoreLayout, productDetailLayout, findStoreBtn);
         Glide.with(ProductDetailPage.this /* context */)
                 .using(new FirebaseImageLoader())
@@ -134,32 +157,33 @@ public class ProductDetailPage extends BasePage {
                         Toast.makeText(ProductDetailPage.this, "Bạn chưa đăng nhập", Toast.LENGTH_LONG).show();
                         return;
                     }
-                    if (myStore != null){
-                        if (myStore.getId() == store.getId()) {
+                    if (myStore != null && storeID != -1){
+                        if (myStore.getId() == storeID) {
                             Toast.makeText(ProductDetailPage.this, "Cửa hàng của bạn, không thể đặt hàng", Toast.LENGTH_LONG).show();
                             return;
                         }
                     }
-                        AlertDialog.Builder builder = new AlertDialog.Builder(ProductDetailPage.this);
-                        builder.setTitle("Thêm sản phẩm vào giỏ hàng");
-                        builder.setMessage("Bạn có chắc chắn muốn thêm sản phẩm này vào cửa hàng không?");
+                    AlertDialog.Builder builder = new AlertDialog.Builder(ProductDetailPage.this);
+                    builder.setTitle("Thêm sản phẩm vào giỏ hàng");
+                    builder.setMessage("Bạn có chắc chắn muốn thêm sản phẩm này vào cửa hàng không?");
 
-                        builder.setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                Call<Store> call = ApiUtils.getAPIService().getStoreById(storeID);
-                                new GetStoreById().execute(call);
-                                return;
-                            }
-                        });
+                    builder.setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Call<Store> call = ApiUtils.getAPIService().getStoreById(storeID);
+                            new GetStoreById().execute(call);
+                            return;
+                        }
+                    });
 
-                        builder.setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                return;
-                            }
-                        });
-                        builder.show();
+                    builder.setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            return;
+                        }
+                    });
+                    builder.show();
+
 
                 }
             });
@@ -181,9 +205,7 @@ public class ProductDetailPage extends BasePage {
                 }
             });
         }
-
     }
-
     public void mapping(){
         productImage = (ImageView) findViewById(R.id.productImage);
         salePriceText = (TextView) findViewById(R.id.salePrice);
@@ -268,6 +290,42 @@ public class ProductDetailPage extends BasePage {
             try {
                 Call<Store> call = calls[0];
                 Response<Store> response = call.execute();
+                return response.body();
+            } catch (IOException e) {
+            }
+            return null;
+        }
+    }
+
+    private class GetProductById extends AsyncTask<Call, Void, Product> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected void onPostExecute(final Product product1) {
+            if (product1 == null) {
+                Toast.makeText(ProductDetailPage.this, "Có lỗi xảy ra!!!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            product = product1;
+            getView();
+            super.onPostExecute(product1);
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            super.onProgressUpdate(values);
+
+        }
+
+        @Override
+        protected Product doInBackground(Call... calls) {
+            try {
+                Call<Product> call = calls[0];
+                Response<Product> response = call.execute();
                 return response.body();
             } catch (IOException e) {
             }

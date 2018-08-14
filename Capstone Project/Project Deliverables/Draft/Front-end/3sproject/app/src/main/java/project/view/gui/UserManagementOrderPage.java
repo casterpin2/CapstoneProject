@@ -88,7 +88,9 @@ public class UserManagementOrderPage extends BasePage {
     @Override
     protected void onPause() {
         super.onPause();
-        myRef.removeEventListener(changeListener);
+        if (userId != -1) {
+            myRef.removeEventListener(changeListener);
+        }
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -110,15 +112,16 @@ public class UserManagementOrderPage extends BasePage {
                 noOrder.setVisibility(View.INVISIBLE);
                 for (DataSnapshot dttSnapshot2 : dataSnapshot.getChildren()) {
                     order = dttSnapshot2.getValue(Order.class);
-                    Log.d("order",order.toString());
-                    order.setOrderId(dttSnapshot2.getKey());
-                    list.add(order);
-                    for (int i = 0; i < list.size(); i++) {
-                        orderListView.expandGroup(i);
-
+                    if (order.getStatus().equalsIgnoreCase("cancel"));
+                    {
+                        Log.d("order", order.toString());
+                        order.setOrderId(dttSnapshot2.getKey());
+                        list.add(order);
+                        for (int i = 0; i < list.size(); i++) {
+                            orderListView.expandGroup(i);
+                        }
+                        adapter.notifyDataSetChanged();
                     }
-                    adapter.notifyDataSetChanged();
-
                 }
             } else {
                 list.clear();

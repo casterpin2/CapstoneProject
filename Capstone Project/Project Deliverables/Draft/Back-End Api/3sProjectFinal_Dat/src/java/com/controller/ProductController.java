@@ -5,9 +5,7 @@
  */
 package com.controller;
 
-import com.entites.JsonUtil;
 import com.entites.ProductAddEntites;
-import com.entites.StoreEntites;
 import com.service.ProductService;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -77,5 +75,10 @@ public class ProductController {
        @RequestMapping(value = "/userSearchBarcode", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
     public List<ProductAddEntites> getProductWithBarcodebyUser(@RequestParam("barcode") String query) throws SQLException {
         return product.findProductWithUser(query);
+    }
+    
+     @RequestMapping(value = "/getProductById", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
+    public ProductAddEntites getProductById(@RequestParam("productId") int productId,@RequestParam("storeId") int storeId) throws SQLException {
+        return product.getProductById(productId,storeId);
     }
 }

@@ -10,6 +10,24 @@ public class Order {
     private double totalPrice;
     private String deliverTime;
     private String address;
+    private int storeId;
+    private String phone;
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public int getStoreId() {
+        return storeId;
+    }
+
+    public void setStoreId(int storeId) {
+        this.storeId = storeId;
+    }
 
     public String getAddress() {
         return address;
@@ -56,6 +74,45 @@ public class Order {
 
     public void setOrderDetail(HashMap<String, CartDetail> orderDetail) {
         this.orderDetail = orderDetail;
+    }
+    private double longtitude;
+
+    private double latitude;
+
+    private String userName;
+
+    private int userId;
+
+    public double getLongtitude() {
+        return longtitude;
+    }
+
+    public void setLongtitude(double longtitude) {
+        this.longtitude = longtitude;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     public Order() {

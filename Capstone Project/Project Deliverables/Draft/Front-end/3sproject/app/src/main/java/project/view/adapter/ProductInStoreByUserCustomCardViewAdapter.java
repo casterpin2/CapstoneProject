@@ -125,6 +125,7 @@ public class ProductInStoreByUserCustomCardViewAdapter extends RecyclerView.Adap
                 intent.putExtra("isStoreProduct",true);
                 intent.putExtra("isStoreSee",false);
                 intent.putExtra("storeID",getStore().getId());
+                intent.putExtra("storeName",getStore().getName());
                 mContext.startActivity(intent);
             }
         });

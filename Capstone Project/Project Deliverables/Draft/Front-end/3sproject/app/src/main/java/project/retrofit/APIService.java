@@ -74,6 +74,8 @@ public interface APIService {
     @GET("getProductForAdd")
     Call<List<Item>> getProducts(@Query("query") String query, @Query("page") int page,@Query("storeId") int storeId);
 
+    @GET("getProductById")
+    Call<Product> getProductById(@Query("productId") int productId, @Query("storeId") int storeId);
     //Store//
     public static final Retrofit retrofit = new Retrofit.Builder()
             .baseUrl("http://150.95.111.195:8080/3sProjectFinal/api/")
@@ -126,10 +128,13 @@ public interface APIService {
 
     @PUT("updateStore")
     Call<Store> updateStore(@Body HashMap<String,String> map);
+
     @GET("getCodeVerifyUser")
     Call<SmsResultEntities> getCodeVerify(@Query("username") String username);
+
     @GET("verifyUserWithCode")
     Call<Boolean> confirmOTP(@Query("code") String code,@Query("phone") String phone);
+
     @PUT("changePassword")
     Call<Boolean> requestChangePassword(@Query("username") String username,@Query("password") String password);
 }

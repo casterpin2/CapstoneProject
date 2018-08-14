@@ -351,6 +351,7 @@ public class OrderPage extends BasePage implements OnMapReadyCallback{
                     intent.putExtra("address",stringBuilder.toString().replaceAll("null","").replaceAll("0", "").replaceAll("Unnamed Road", "").replaceAll("\\s+", " ").trim());
                 }
                 if ( isCart == false ){
+                    // Phan nay danh cho order fast
                     int storeId = getIntent().getIntExtra("storeID",0);
                     String storeName = getIntent().getStringExtra("storeName");
                     String storePhone = getIntent().getStringExtra("phone");
@@ -367,6 +368,7 @@ public class OrderPage extends BasePage implements OnMapReadyCallback{
                 intent.putExtra("deliverTime",orderDateTime);
                 intent.putExtra("phone",phone);
                 intent.putExtra("userName",userName);
+                intent.putExtra("user_image",user.getImage_path());
                 setResult(Activity.RESULT_OK,intent);
                 finish();
             }

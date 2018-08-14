@@ -14,6 +14,7 @@ import java.util.List;
  * @author AHBP
  */
 public interface ProductService {
+        public ProductAddEntites getProductById(int productId,int storeId) throws SQLException;
      public List<ProductAddEntites> getProductForAdd(String query,int page,int storeId) throws SQLException;
      public boolean  insertProdcut(ProductAddEntites p,int storeId) throws SQLException;
      public List<ProductAddEntites> getProductSaleList(int number) throws SQLException;

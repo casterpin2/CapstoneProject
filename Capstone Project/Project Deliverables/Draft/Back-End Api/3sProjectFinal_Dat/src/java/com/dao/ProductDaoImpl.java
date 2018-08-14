@@ -298,4 +298,41 @@ public class ProductDaoImpl extends BaseDao implements ProductDao {
         return list;
     }
 
+    @Override
+    public ProductAddEntites getProductById(int productId,int storeId) throws SQLException {
+        Connection conn = null;
+        PreparedStatement pre =null;
+        ResultSet rs =null;
+        ProductAddEntites pro = null;
+        try{
+            conn = getConnection();
+            pre = conn.prepareStatement("select a.*,b.path from\n" +
+"(select a.*,b.image_id from\n" +
+"(select a.*,b.name as brand_name from\n" +
+"(select a.*,b.name as category_name from\n" +
+"(select a.*,b.name as type_name,b.category_id from\n" +
+"(select a.price,a.promotion,a.product_id,a.name,a.description,b.type_id,b.brand_id from\n" +
+"(select a.price,a.promotion,a.product_id,b.name,b.description,b.type_brand_id from\n" +
+"(select * from Product_Store WHERE product_id = ? and store_id = ?) a , Product b WHERE a.product_id = b.id) a , Type_Brand b WHERE a.type_brand_id = b.id) a ,Type b WHERE a.type_id = b.id) a , Category b WHERE a.category_id = b.id) a , Brand b WHERE a.brand_id = b.id) a , Image_Product b WHERE a.product_id = b.product_id) a, Image b WHERE a.image_id = b.id");
+            pre.setInt(1, productId);
+            pre.setInt(2, storeId);
+            rs= pre.executeQuery();
+            if (rs.next()) {
+                pro = new ProductAddEntites();
+                pro.setProduct_id(rs.getInt("product_id"));
+                pro.setProduct_name(rs.getString("name"));
+                pro.setBrand_name(rs.getString("brand_name"));
+                pro.setDescription(rs.getString("description"));
+                pro.setCategory_name(rs.getString("category_name"));
+                pro.setImage_path(rs.getString("path"));
+                pro.setType_name(rs.getString("type_name"));
+                pro.setPrice(rs.getDouble("price"));
+                pro.setPromotion(rs.getDouble("promotion"));
+            }
+        }finally{
+            closeConnect(conn, pre, rs);
+        }
+        return pro;
+    }
+
 }

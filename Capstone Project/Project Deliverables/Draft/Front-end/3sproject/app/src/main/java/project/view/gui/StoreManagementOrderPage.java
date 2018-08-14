@@ -13,12 +13,27 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ExpandableListView;
+import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import project.view.adapter.UserOrderAdapter;
 import project.view.fragment.manageOrder.DoingOrderStore;
 import project.view.fragment.manageOrder.DoneOrderStore;
 import project.view.fragment.manageOrder.WaitingOrderStore;
 import project.view.R;
+import project.view.model.Order;
 import project.view.util.CustomInterface;
 
 public class StoreManagementOrderPage extends BasePage {
@@ -28,6 +43,22 @@ public class StoreManagementOrderPage extends BasePage {
     private ViewPager mViewPager;
     private Toolbar toolbar;
     private TabLayout tabLayout;
+
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    DatabaseReference myRef;
+    private int storeId;
+    private Order order;
+    private List<Order> list = new ArrayList<>();
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+
+    }
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,7 +66,11 @@ public class StoreManagementOrderPage extends BasePage {
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle(R.string.title_order_management);
-
+        storeId = getIntent().getIntExtra("storeId" , -1);
+        if (storeId == -1) {
+            Toast.makeText(this, "Có lỗi xảy ra!!!", Toast.LENGTH_SHORT).show();
+            return;
+        }
         CustomInterface.setStatusBarColor(this);
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         setSupportActionBar(toolbar);
@@ -96,15 +131,22 @@ public class StoreManagementOrderPage extends BasePage {
 
         @Override
         public Fragment getItem(int position) {
+            Bundle bundle = new Bundle();
             switch(position){
                 case 0:
                     WaitingOrderStore waitingOrder = new WaitingOrderStore();
+                    bundle.putInt("storeId", storeId);
+                    waitingOrder.setArguments(bundle);
                     return waitingOrder;
                 case 1:
                     DoingOrderStore doing = new DoingOrderStore();
+                    bundle.putInt("storeId", storeId);
+                    doing.setArguments(bundle);
                     return doing;
                 case 2:
                     DoneOrderStore done = new DoneOrderStore();
+                    bundle.putInt("storeId", storeId);
+                    done.setArguments(bundle);
                     return done;
             }
             return null;
@@ -130,5 +172,6 @@ public class StoreManagementOrderPage extends BasePage {
         }
         return super.onOptionsItemSelected(item);
     }
+
 }
 

@@ -17,16 +17,17 @@ import java.util.List;
 import project.view.gui.OrderDetailPage;
 import project.view.R;
 import project.view.gui.StoreInformationPage;
+import project.view.model.Order;
 import project.view.model.OrderDetail;
 import project.view.util.Formater;
 
-public class OrderManagementAdapter extends ArrayAdapter<OrderDetail> {
+public class OrderManagementAdapter extends ArrayAdapter<Order> {
     private Context context;
     private int resource;
-    private List<OrderDetail> arrContact;
+    private List<Order> arrContact;
     private Formater formater;
 
-    public OrderManagementAdapter(Context context, int resource, ArrayList<OrderDetail> arrContact) {
+    public OrderManagementAdapter(Context context, int resource, List<Order> arrContact) {
         super(context, resource, arrContact);
         this.context = context;
         this.resource = resource;
@@ -50,19 +51,19 @@ public class OrderManagementAdapter extends ArrayAdapter<OrderDetail> {
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-        final OrderDetail order = arrContact.get(position);
+        final Order order = arrContact.get(position);
 
         viewHolder.tvStoreName.setText(order.getStoreName());
-        viewHolder.tvPrice.setText(formater.formatDoubleToMoney(String.valueOf(order.getFinalPrice()+"")));
+        viewHolder.tvPrice.setText(formater.formatDoubleToMoney(String.valueOf(order.getTotalPrice()+"")));
 
-        viewHolder.tvOrderDate.setText(order.getOrderDateTime().toString());
+        viewHolder.tvOrderDate.setText(order.getDeliverTime().toString());
 
         viewHolder.tvStoreName.setPaintFlags(viewHolder.tvStoreName.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         viewHolder.imgInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent goToOrderDetail = new Intent(context, OrderDetailPage.class);
-                goToOrderDetail.putExtra("orderID",order.getOrderID());
+                goToOrderDetail.putExtra("orderID",order.getOrderId());
                 context.startActivity(goToOrderDetail);
             }
         });
@@ -71,7 +72,7 @@ public class OrderManagementAdapter extends ArrayAdapter<OrderDetail> {
             public void onClick(View v) {
                 //Toast.makeText(context,"Go to product in store",Toast.LENGTH_SHORT).show();
                 Intent goToProductInStore = new Intent(context, StoreInformationPage.class);
-                goToProductInStore.putExtra("storeID",order.getStoreID());
+                goToProductInStore.putExtra("storeID",order.getStoreId());
                 context.startActivity(goToProductInStore);
             }
         });

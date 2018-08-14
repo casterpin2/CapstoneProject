@@ -113,7 +113,7 @@ public class StoreFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     Intent toStoreManagementOrder = new Intent(getContext(), StoreManagementOrderPage.class);
-                    toStoreManagementOrder.putExtra("storeID", storeID);
+                    toStoreManagementOrder.putExtra("storeId", storeID);
                     getActivity().startActivity(toStoreManagementOrder);
                 }
             });

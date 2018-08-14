@@ -88,7 +88,9 @@ public class CartPage extends BasePage {
     @Override
     protected void onPause() {
         super.onPause();
-        myRef.removeEventListener(changeListener);
+        if (userId != -1) {
+            myRef.removeEventListener(changeListener);
+        }
     }
 
     @Override
@@ -100,6 +102,9 @@ public class CartPage extends BasePage {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         CustomInterface.setStatusBarColor(CartPage.this);
         userId = getIntent().getIntExtra("userID",-1);
+        if ( userId == -1 ) {
+            return;
+        }
         lvPhones = (ExpandableListView) findViewById(R.id.phone_list);
         noCart = (RelativeLayout) findViewById(R.id.noCart);
         totalCart = (TextView) findViewById(R.id.totalCart);
@@ -135,8 +140,9 @@ public class CartPage extends BasePage {
             if (resultCode == Activity.RESULT_OK) {
                 final String address = data.getStringExtra("address");
                 final String deliverTime = data.getStringExtra("deliverTime");
-                String userName = data.getStringExtra("userName");
-                String phone = data.getStringExtra("phone");
+                final String userImage = data.getStringExtra("user_image");
+                final String userName = data.getStringExtra("userName");
+                final String phone = data.getStringExtra("phone");
                 final double longtitude = data.getDoubleExtra("longtitude",0.0);
                 final double latitude = data.getDoubleExtra("latitude",0.0);
                 final DatabaseReference reference = database.getReference().child("ordersUser").child(String.valueOf(userId));
@@ -146,16 +152,26 @@ public class CartPage extends BasePage {
                         for (Cart cart : list) {
                             String key = reference.push().getKey();
                             DatabaseReference re = reference.child(key);
+                            DatabaseReference referenceStore = database.getReference().child("ordersStore").child(String.valueOf(cart.getStoreId())).child(key);
                             re.child("address").setValue(address);
+                            referenceStore.child("address").setValue(address);
                             re.child("latitude").setValue(latitude);
+                            referenceStore.child("latitude").setValue(latitude);
                             re.child("longtitude").setValue(longtitude);
+                            referenceStore.child("longtitude").setValue(longtitude);
                             re.child("deliverTime").setValue(deliverTime);
+                            referenceStore.child("deliverTime").setValue(deliverTime);
                             re.child("storeId").setValue(cart.getStoreId());
                             re.child("storeName").setValue(cart.getStoreName());
                             re.child("status").setValue("waitting");
+                            referenceStore.child("status").setValue("waitting");
                             re.child("phone").setValue(cart.getPhone());
+                            referenceStore.child("phone").setValue(phone);
                             re.child("isFeedback").setValue("false");
                             re.child("image_path").setValue(cart.getImage_path());
+                            referenceStore.child("image_path").setValue(userImage);
+                            referenceStore.child("userName").setValue(userName);
+                            referenceStore.child("userId").setValue(userId);
                             Object[] cartDetails = cart.getCartDetail().values().toArray();
                             double price = 0;
                             for(int i = 0 ; i < cartDetails.length;i++) {
@@ -163,7 +179,9 @@ public class CartPage extends BasePage {
                                 price += cartDetail.getUnitPrice() * cartDetail.getQuantity();
                             }
                             re.child("totalPrice").setValue(price);
+                            referenceStore.child("totalPrice").setValue(price);
                             re.child("orderDetail").setValue(cart.getCartDetail());
+                            referenceStore.child("orderDetail").setValue(cart.getCartDetail());
 
                         }
                         DatabaseReference re = database.getReference().child("cart").child(String.valueOf(userId));

@@ -98,7 +98,7 @@ public class UserOrderAdapter extends BaseExpandableListAdapter {
         RelativeLayout doneOrderWithFeedbackLayout = convertView.findViewById(R.id.doneOrderWithFeedback);
 
         String orderStatus = ((Order) getGroup(groupPosition)).getStatus();
-
+        final int storeId = ((Order) getGroup(groupPosition)).getStoreId();
         if (orderStatus.equalsIgnoreCase("waitting")) {
             waittingOrderLayout.setVisibility(View.VISIBLE);
             processingOrderLayout.setVisibility(View.INVISIBLE);
@@ -126,6 +126,8 @@ public class UserOrderAdapter extends BaseExpandableListAdapter {
                         public void onClick(DialogInterface dialog, int which) {
                             FirebaseDatabase database = FirebaseDatabase.getInstance();
                             final DatabaseReference myRef = database.getReference().child("ordersUser").child(String.valueOf(userId)).child(orderId);
+                            final DatabaseReference myRef1 = database.getReference().child("ordersStore").child(String.valueOf(storeId)).child(orderId);
+                            myRef1.removeValue();
                             myRef.removeValue();
                             return;
                         }

@@ -61,5 +61,10 @@ public class ProductServiceImpl implements ProductService{
         return dao.findProductWithUser(query);
     }
 
+    @Override
+    public ProductAddEntites getProductById(int productId,int storeId) throws SQLException {
+        return dao.getProductById(productId,storeId);
+    }
+
 
 }

@@ -16,6 +16,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -35,8 +36,9 @@ public class OrderDetailMapPage extends AppCompatActivity implements OnMapReadyC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_detail_map_page);
         TweakUI.makeTransparent(OrderDetailMapPage.this);
-
+        turnOnLocation();
         backBtn = (Button) findViewById(R.id.backBtn);
+
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -61,21 +63,30 @@ public class OrderDetailMapPage extends AppCompatActivity implements OnMapReadyC
 
         } else {
             Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-
+            LatLng myLocation = new LatLng(latitude, longtitude);
+            googleMap.addMarker(new MarkerOptions().position(myLocation).title("Vị trí của bạn"));
+            googleMap.moveCamera(CameraUpdateFactory.newLatLng(myLocation));
             if (location != null) {
-                double orderLatitude = 21.028511;
-                double orderLongtitude = 105.804817;
-
-//                 Add a marker in Ha Noi and move the camera
-                LatLng orderAddress = new LatLng(orderLatitude, orderLongtitude);
-                mMap.addMarker(new MarkerOptions().position(orderAddress).title("Địa chỉ giao hàng"));
-                mMap.moveCamera(CameraUpdateFactory.newLatLng(orderAddress));
-                mMap.setMinZoomPreference(12.0f);
-                mMap.setMaxZoomPreference(22.0f);
-
+                latitude = getIntent().getDoubleExtra("latitude",0.0);
+                longtitude = getIntent().getDoubleExtra("longtitude",0.0);
+                if (latitude != 0.0 && longtitude != 0.0){
+                    changeLocation(mMap);
+                }
             }
 
         }
+    }
+
+    public void changeLocation (GoogleMap googleMap) {
+        double storeLongtitude = longtitude;
+        double storeLatitude = latitude;
+        LatLng orderAddress = new LatLng(storeLatitude, storeLongtitude);
+        googleMap.getUiSettings().setCompassEnabled(false);
+        googleMap.getUiSettings().setRotateGesturesEnabled(false);
+        googleMap.setMinZoomPreference(12.0f);
+        googleMap.setMaxZoomPreference(22.0f);
+        googleMap.addMarker(new MarkerOptions().position(orderAddress).title("Địa chỉ giao hàng").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+        googleMap.moveCamera(CameraUpdateFactory.newLatLng(orderAddress));
     }
 
     private void turnOnLocation(){

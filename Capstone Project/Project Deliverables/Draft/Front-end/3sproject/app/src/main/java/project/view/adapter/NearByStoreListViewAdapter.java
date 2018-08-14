@@ -69,9 +69,6 @@ public class NearByStoreListViewAdapter extends BaseAdapter {
         View view = convertView;
         NearbyStorePageViewHolder holder;
         final NearByStore store = storeList.get(position);
-        if (convertView != null)
-            return convertView;
-        else {
             if (view == null) {
                 LayoutInflater li;
                 li = LayoutInflater.from(getContext());
@@ -144,7 +141,7 @@ public class NearByStoreListViewAdapter extends BaseAdapter {
                         getContext().startActivity(toProductInStoreByUser);
                     }
                 });
-            }
+
         }
         return view;
     }
