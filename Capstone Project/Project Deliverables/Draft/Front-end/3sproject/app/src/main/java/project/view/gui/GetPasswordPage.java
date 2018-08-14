@@ -20,6 +20,8 @@ import project.retrofit.ApiUtils;
 import project.view.R;
 import project.view.model.SmsResultEntities;
 import project.view.util.CustomInterface;
+import project.view.util.Formater;
+import project.view.util.Regex;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -52,11 +54,10 @@ public class GetPasswordPage extends AppCompatActivity {
             public void onClick(View view) {
                 if ("".equals(etUsername.getText())){
                     tvSendCodeMess.setText(R.string.error_empty);
-                }else if(etUsername.getText().length()<10
-                        ||etUsername.getText().length()>=12){
-                    tvSendCodeMess.setText(R.string.error_validate_username);
                 }
-                else{
+                if(!new Regex().isUserName(etUsername.getText().toString())){
+                    tvSendCodeMess.setText(R.string.error_validate_username);
+                }else{
                     tvSendCodeMess.setText("");
                     AlertDialog.Builder builder = new AlertDialog.Builder(GetPasswordPage.this);
                     View v = getLayoutInflater().inflate(R.layout.dialog_custom,null);
@@ -64,7 +65,7 @@ public class GetPasswordPage extends AppCompatActivity {
                     TextView content2 = v.findViewById(R.id.tvContent2);
                     Button btnOK = v.findViewById(R.id.btnOK);
                     Button btnCancle = v.findViewById(R.id.btnCancle);
-                    content1.setText("Đây có phải tài khoản mà bạn đã đăng kí tài khoản không?");
+                    content1.setText("Đây có phải tài khoản mà bạn đã đăng kí không?");
                     content2.setText(etUsername.getText());
                     builder.setView(v);
                     final AlertDialog alertDialog = builder.create();
@@ -73,7 +74,6 @@ public class GetPasswordPage extends AppCompatActivity {
                         public void onClick(View view) {
                             tvSendCodeMess.setText("");
                             apiService = ApiUtils.getAPIService();
-
                             alertDialog.hide();
                             apiService.getCodeVerify(etUsername.getText().toString()).enqueue(new Callback<SmsResultEntities>() {
                                 @Override
@@ -106,9 +106,6 @@ public class GetPasswordPage extends AppCompatActivity {
                             alertDialog.hide();
                         }
                     });
-
-
-
                     alertDialog.show();
                 }
             }

@@ -1,6 +1,5 @@
 package project.view.gui;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
@@ -67,7 +66,7 @@ public class OTPCodePage extends AppCompatActivity {
                     public void onResponse(Call<Boolean> call, Response<Boolean> response) {
                         if(response.isSuccessful()){
 
-                            Intent toChangePasswordPage = new Intent(getBaseContext(),ChangePasswordPage.class);
+                            Intent toChangePasswordPage = new Intent(getBaseContext(),ResetPasswordPage.class);
                             toChangePasswordPage.putExtra("username",username);
                             startActivity(toChangePasswordPage);
                         }
