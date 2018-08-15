@@ -1,11 +1,13 @@
 package project.view.gui;
 
+import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -121,13 +123,15 @@ public class LoginPage extends AppCompatActivity {
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 String username = usernameValue.getText().toString().trim();
                 String password = MD5Library.md5(passwordValue.getText().toString().trim());
+                if (username.isEmpty() || passwordValue.getText().toString().trim().isEmpty()){
+                    errorMessage.setText("Bạn phải nhập username và password");
+                    return;
+                }
                 Call<Login> call = mAPI.login(username,password);
-
                 new LoginTo3S().execute(call);
-
-
             }
         });
         loginFBBtn.setOnClickListener(new View.OnClickListener() {
@@ -243,7 +247,20 @@ public class LoginPage extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                finish();
+                Intent upIntent = NavUtils.getParentActivityIntent(this);
+                if (NavUtils.shouldUpRecreateTask(this, upIntent)) {
+                    // This activity is NOT part of this app's task, so create a new task
+                    // when navigating up, with a synthesized back stack.
+                    TaskStackBuilder.create(this)
+                            // Add all of this activity's parents to the back stack
+                            .addNextIntentWithParentStack(upIntent)
+                            // Navigate up to the closest parent
+                            .startActivities();
+                } else {
+                    // This activity is part of this app's task, so simply
+                    // navigate up to the logical parent activity.
+                    NavUtils.navigateUpTo(this, upIntent);
+                }
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -390,4 +407,5 @@ public class LoginPage extends AppCompatActivity {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
+
 }

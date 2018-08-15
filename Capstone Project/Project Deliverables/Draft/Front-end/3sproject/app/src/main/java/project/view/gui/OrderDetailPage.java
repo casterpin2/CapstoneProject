@@ -84,10 +84,10 @@ public class OrderDetailPage extends BasePage {
     @Override
     protected void onPause() {
         super.onPause();
-        if (!orderId.isEmpty() && store != null) {
+//        if (!orderId.isEmpty() && store != null) {
             myRef.removeEventListener(changeListener);
             ref.removeEventListener(changeListener1);
-        }
+//        }
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {

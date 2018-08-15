@@ -23,7 +23,8 @@
         <activity android:name=".gui.MainActivity" />
         <activity
             android:name=".gui.LoginPage"
-            android:noHistory="true">
+            android:noHistory="true"
+            android:parentActivityName=".gui.HomePage">
 
         </activity>
         <activity android:name=".gui.SearchProductAddToStore" />

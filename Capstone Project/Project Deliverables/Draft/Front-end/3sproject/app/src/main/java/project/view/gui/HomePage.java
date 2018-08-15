@@ -1,6 +1,7 @@
 package project.view.gui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
@@ -30,10 +31,15 @@ public class HomePage extends BasePage{
     private String userJSON;
     private String storeJSON;
     private ViewPagerAdapter adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        boolean isIntent = getIntent().getBooleanExtra("isLogin", false);
+        if (isIntent){
+            startActivity(new Intent(HomePage.this,LoginPage.class));
+        }
         getAuthen();
         //Initializing viewPager
         viewPager = (ViewPager) findViewById(R.id.viewpager);
@@ -99,16 +105,9 @@ public class HomePage extends BasePage{
     }
 
     private void getAuthen(){
-        savingPreferences();
         restoringPreferences();
     }
-    private void savingPreferences(){
-        Bundle bundle = getIntent().getExtras();
-        if (bundle.getString("user") != null) {
-            userJSON = bundle.getString("user");
-            storeJSON = bundle.getString("store");
-        }
-    }
+
 
     private void restoringPreferences(){
         if (userJSON == null) {

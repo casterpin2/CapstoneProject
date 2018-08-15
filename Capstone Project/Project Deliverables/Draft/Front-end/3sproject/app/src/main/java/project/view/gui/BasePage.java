@@ -53,6 +53,7 @@ public class BasePage extends AppCompatActivity {
             final String android_id = Secure.getString(BasePage.this.getContentResolver(),
                     Secure.ANDROID_ID);
             if (dataSnapshot.exists()){
+                final boolean[] isIntent = {false};
                 AlertDialog.Builder builder = new AlertDialog.Builder(BasePage.this);
                 builder.setTitle("Cảnh báo đăng nhập");
                 builder.setMessage("Tài khoản cửa bạn đã đăng nhập ở một phiên khác. Vui lòng kiểm tra lại!");
@@ -60,6 +61,7 @@ public class BasePage extends AppCompatActivity {
                 builder.setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        isIntent[0] = true;
                         logout();
                         return;
                     }
@@ -71,6 +73,7 @@ public class BasePage extends AppCompatActivity {
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
+                            if (isIntent[0] == false)
                             logout();
                         }
                     },10000);
@@ -103,8 +106,9 @@ public class BasePage extends AppCompatActivity {
         editor.putString("store", "");
         //chấp nhận lưu xuống file
         editor.commit();
-        Intent intent = new Intent(BasePage.this, LoginPage.class);
+        Intent intent = new Intent(BasePage.this, HomePage.class);
+        intent.putExtra("isLogin",true);
         startActivity(intent);
-        finishAffinity();
+        finish();
     }
 }
