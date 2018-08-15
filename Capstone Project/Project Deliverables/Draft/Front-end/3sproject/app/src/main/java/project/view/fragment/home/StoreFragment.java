@@ -231,22 +231,25 @@ public class StoreFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE && resultCode == RESULT_CODE) {
-            String userJSON = data.getStringExtra("userData");
-            String storeJSON = data.getStringExtra("storeData");
-            if (userJSON.isEmpty()) {
-                user = new User();
-                store = new Store();
-            } else {
-                user = new Gson().fromJson(userJSON, User.class);
-                store = new Gson().fromJson(storeJSON, Store.class);
+            String checkData = data.getStringExtra("data");
+            if(!checkData.equals("NO")){
+                String userJSON = data.getStringExtra("userData");
+                String storeJSON = data.getStringExtra("storeData");
+                if (userJSON.isEmpty()) {
+                    user = new User();
+                    store = new Store();
+                } else {
+                    user = new Gson().fromJson(userJSON, User.class);
+                    store = new Gson().fromJson(storeJSON, Store.class);
+                }
+                registerDate.setText(store.getRegisterLog());
+                storeName.setText(store.getName());
+                phoneText.setText(store.getPhone());
+                address.setText(store.getAddress().replaceAll("null", "").replaceAll("\\s+", " "));
+                ownerName.setText(user.getFirst_name() + " " + user.getLast_name());
+                latitude = getActivity().getIntent().getDoubleExtra("latitude", 0.0);
+                longtitude = getActivity().getIntent().getDoubleExtra("longtitude", 0.0);
             }
-            registerDate.setText(store.getRegisterLog());
-            storeName.setText(store.getName());
-            phoneText.setText(store.getPhone());
-            address.setText(store.getAddress().replaceAll("null", "").replaceAll("\\s+", " "));
-            ownerName.setText(user.getFirst_name() + " " + user.getLast_name());
-            latitude = getActivity().getIntent().getDoubleExtra("latitude", 0.0);
-            longtitude = getActivity().getIntent().getDoubleExtra("longtitude", 0.0);
         }
     }
 

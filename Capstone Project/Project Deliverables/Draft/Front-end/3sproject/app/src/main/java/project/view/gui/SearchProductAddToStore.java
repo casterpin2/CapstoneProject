@@ -308,41 +308,46 @@ public class SearchProductAddToStore extends BasePage {
                     public void onClick(DialogInterface dialog, int which) {
 
                         if (priceValue_optionDialog.getText().toString().length() == 0) {
-                            promotionPercentErrorMessage_optionDialog.setText(R.string.error_empty);
+                            priceErrorMessage_optionDialog.setText(R.string.error_empty);
                         } else {
                             priceErrorMessage_optionDialog.setText("");
                         }
-                        if (promotionPercent_optionDialog.getText().toString().length() == 0) {
-                            promotionPercent_optionDialog.setText(String.valueOf(0));
-                        } else {
-                            promotionPercentErrorMessage_optionDialog.setText("");
-                        }
-                        if (priceValue_optionDialog.getText().toString().length() > 0 ) {
-                            if (Double.parseDouble(promotionPercent_optionDialog.getText().toString()) > 100.00 || Double.parseDouble(promotionPercent_optionDialog.getText().toString()) < 0.00) {
-                                promotionPercentErrorMessage_optionDialog.setText(R.string.promotionOption);
+                        if (priceValue_optionDialog.getText().toString().length() > 0  ) {
+                            long priceLong = 0;
+                            double promotionPercent = 0.0;
+                            if (promotionPercent_optionDialog.getText().toString().length() > 0) {
+                                priceLong = Long.parseLong(priceValue_optionDialog.getText().toString().replaceAll(",", ""));
+                                if (Double.parseDouble(promotionPercent_optionDialog.getText().toString()) > 100.00 || Double.parseDouble(promotionPercent_optionDialog.getText().toString()) < 0.00) {
+                                    promotionPercentErrorMessage_optionDialog.setText(R.string.promotionOption);
+                                } else {
+                                    promotionPercentErrorMessage_optionDialog.setText("");
+                                }
+                                promotionPercent = Double.parseDouble(promotionPercent_optionDialog.getText().toString());
                             } else {
-                                long priceLong = Long.parseLong(priceValue_optionDialog.getText().toString().replaceAll(",", ""));
-                                double promotionPercent = Double.parseDouble(promotionPercent_optionDialog.getText().toString());
-                                promotionPercentErrorMessage_optionDialog.setText("");
-                                Item p = productList.get(position);
-                                p.setPromotion(promotionPercent);
-                                p.setPrice(priceLong);
-                                //counter_fab.setCount(addedProductList.size());
+                                promotionPercent = Double.parseDouble("0");
+                            }
 
-                                Call<Boolean> call = mAPI.insertProduct(p, storeID);
-                                new AddProduct(p.getProduct_id(), finalView).execute(call);
-                                // Log.d("Test add product", new Gson().toJson(p));
+
+                            if (promotionPercent_optionDialog.getText().toString().length() == 0) {
+                                promotionPercent = 0;
+                            }
+                            Item p = productList.get(position);
+                            p.setPromotion(promotionPercent);
+                            p.setPrice(priceLong);
+                            //counter_fab.setCount(addedProductList.size());
+
+                            Call<Boolean> call = mAPI.insertProduct(p, storeID);
+                            new AddProduct(p.getProduct_id(), finalView).execute(call);
+                            // Log.d("Test add product", new Gson().toJson(p));
 //                                searchedProductList.remove(searchedProductList.get(position));
 //                                adapter.notifyDataSetChanged();
-                                optionDialog.dismiss();
-                                informationDialog.dismiss();
+                            optionDialog.dismiss();
+                            informationDialog.dismiss();
 
-                            }
-                        }
-//                        } else {
+                        } else {
 //                            priceErrorMessage_optionDialog.setText(R.string.error_empty);
 //                            promotionPercentErrorMessage_optionDialog.setText(R.string.error_empty);
-//                        }
+                        }
 
 
 

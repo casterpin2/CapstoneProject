@@ -49,7 +49,7 @@ public class ProductDetailPage extends BasePage {
     private TextView salePriceText, productPriceText, promotionPercentText, productNameText, categoryNameText, brandNameText, productDescText;
     private TextView productNotInStoreName, productNotInStoreCategoryName, productNotInStoreBrandName, productNotInStoreDesc, storeNameTV;
     private Button addToCartBtn, findStoreBtn, editProductInStore;
-    private LinearLayout isNotProductInStoreLayout, isProductInStoreLayout, productDetailLayout, storeNameLayout;
+    private LinearLayout isNotProductInStoreLayout, isProductInStoreLayout, productDetailLayout, storeNameLayout, isProductSaleLayout;
 
     private Product product; //intent
 
@@ -130,6 +130,9 @@ public class ProductDetailPage extends BasePage {
                     }
                 });
             } else {
+                if (product.getPromotion() == 0.0){
+                    isProductSaleLayout.setVisibility(View.VISIBLE);
+                }
                 storeName = getIntent().getStringExtra("storeName");
                 storeNameLayout.setVisibility(View.VISIBLE);
                 storeNameTV.setText(storeName);
@@ -224,6 +227,7 @@ public class ProductDetailPage extends BasePage {
         loadingBar = (ProgressBar) findViewById(R.id.loadingBar);
         editProductInStore = (Button) findViewById(R.id.editProductInStore);
         storeNameTV = (TextView) findViewById(R.id.storeName);
+        isProductSaleLayout = (LinearLayout) findViewById(R.id.isProductSaleLayout);
 
         productNotInStoreCategoryName = (TextView) findViewById(R.id.productNotInStoreCategoryName);
         productNotInStoreBrandName = (TextView) findViewById(R.id.productNotInStoreBrandName);

@@ -11,6 +11,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -437,13 +438,40 @@ public class RegisterStorePage extends BasePage implements OnMapReadyCallback {
 
         @Override
         protected void onPostExecute(project.view.model.Location location1) {
-
+            super.onPostExecute(location1);
+            boolean check = false;
             location.setStreet(location1.getStreet());
             location.setCity(location1.getCity());
             location.setDistrict(location1.getDistrict());
             location.setCounty(location1.getCounty());
             location.setApartment_number(location1.getApartment_number());
-            super.onPostExecute(location1);
+
+            if(location.getCity() != null) {
+                check = true;
+            } else if(location.getStreet() != null) {
+                check = true;
+            } else if(location.getDistrict() != null) {
+                check = true;
+            } else if(location.getCounty() != null) {
+                check = true;
+            } else if(location.getApartment_number() != null) {
+                check = true;
+            }
+
+            if(check){
+                loadingBar.setVisibility(View.INVISIBLE);
+            }
+            final boolean finalCheck = check;
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+
+                    if (!finalCheck) {
+                        Toast.makeText(RegisterStorePage.this, "Có lỗi khi định vị vị trí của bạn", Toast.LENGTH_SHORT).show();
+                        loadingBar.setVisibility(View.INVISIBLE);
+                    }
+                }
+            },10000);
         }
 
         @Override

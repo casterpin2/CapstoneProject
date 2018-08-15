@@ -199,6 +199,13 @@
                 android:layout_below="@+id/autoAddressLayout"
                 tools:context=".TestMap"
                 android:layout_marginTop="5dp"/>
+            <ProgressBar
+                android:id="@+id/loadingBar"
+                style="?android:attr/progressBarStyleInverse"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:visibility="invisible"/>
         </RelativeLayout>
 
     </RelativeLayout>
