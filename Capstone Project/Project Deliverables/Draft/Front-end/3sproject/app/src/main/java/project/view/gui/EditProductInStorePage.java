@@ -153,7 +153,7 @@ public class EditProductInStorePage extends BasePage {
                         promotionPercentErrorMessage.setText(getResources().getString(R.string.promotionOption));
 
                     } else {
-                        final long priceLong = Long.parseLong(productPrice.getText().toString().replaceAll(",+", "").replaceAll("\\.+", "").replaceAll("đ","").trim());
+                        final long priceLong = Long.parseLong(productPrice.getText().toString().replaceAll(",+", "").replaceAll("\\.+", "").replaceAll("₫","").replaceAll("\\s+","").trim());
                         final double promotionValue = Double.parseDouble(promotionPercent.getText().toString());
                         promotionPercentErrorMessage.setText("");
                         if (productPriceValue == priceLong && promotionPercentValue == promotionValue ) {
