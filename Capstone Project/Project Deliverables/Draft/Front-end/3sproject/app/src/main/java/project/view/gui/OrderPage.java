@@ -15,6 +15,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -25,6 +26,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -102,6 +104,8 @@ public class OrderPage extends BasePage implements OnMapReadyCallback{
     private long salesPrice;
     private double promotion;
     private Product product;
+    private ProgressBar loadingBar;
+    private boolean checkLocation = false;
     //Calendar
     private int mYear, mMonth, mDay, mHour, mMinute;
 
@@ -369,6 +373,11 @@ public class OrderPage extends BasePage implements OnMapReadyCallback{
                 intent.putExtra("phone",phone);
                 intent.putExtra("userName",userName);
                 intent.putExtra("user_image",user.getImage_path());
+                if (checkLocation == false){
+                    setResult(Activity.RESULT_CANCELED,intent);
+                    finish();
+                    return;
+                }
                 setResult(Activity.RESULT_OK,intent);
                 finish();
             }
@@ -408,6 +417,7 @@ public class OrderPage extends BasePage implements OnMapReadyCallback{
         orderDate = (EditText) findViewById(R.id.orderDate);
         orderTime = (EditText) findViewById(R.id.orderTime);
         productDetailLayout = (RelativeLayout) findViewById(R.id.productDetailOrderPageLayout);
+        loadingBar = findViewById(R.id.loadingBar);
     }
 
 
@@ -539,17 +549,49 @@ public class OrderPage extends BasePage implements OnMapReadyCallback{
 
         @Override
         protected void onPreExecute() {
+
             super.onPreExecute();
+            orderBtn.setEnabled(false);
+            loadingBar.setVisibility(View.VISIBLE);
+
         }
 
         @Override
         protected void onPostExecute(project.view.model.Location location1) {
 
+            checkLocation = false;
             location.setStreet(location1.getStreet());
             location.setCity(location1.getCity());
             location.setDistrict(location1.getDistrict());
             location.setCounty(location1.getCounty());
             location.setApartment_number(location1.getApartment_number());
+
+            if(location.getCity() != null) {
+                checkLocation = true;
+            } else if(location.getStreet() != null) {
+                checkLocation = true;
+            } else if(location.getDistrict() != null) {
+                checkLocation = true;
+            } else if(location.getCounty() != null) {
+                checkLocation = true;
+            } else if(location.getApartment_number() != null) {
+                checkLocation = true;
+            }
+
+            if(checkLocation){
+                orderBtn.setEnabled(true);
+                loadingBar.setVisibility(View.INVISIBLE);
+            }
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (!checkLocation) {
+                        orderBtn.setEnabled(true);
+                        Toast.makeText(OrderPage.this, "Có lỗi khi định vị vị trí của bạn", Toast.LENGTH_SHORT).show();
+                        loadingBar.setVisibility(View.INVISIBLE);
+                    }
+                }
+            },10000);
             super.onPostExecute(location1);
         }
 

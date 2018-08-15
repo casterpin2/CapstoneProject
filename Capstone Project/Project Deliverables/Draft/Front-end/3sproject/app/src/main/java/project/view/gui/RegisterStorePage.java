@@ -81,6 +81,7 @@ public class RegisterStorePage extends BasePage implements OnMapReadyCallback {
     private String result = "";
     private RelativeLayout main_layout;
     private ProgressBar loadingBar;
+    private boolean checkLocation = false;
     private boolean isPhone = false,isStoreName = false,isLocation=false;
 
     public void setAutoLatitude(double autoLatitude) {
@@ -434,12 +435,14 @@ public class RegisterStorePage extends BasePage implements OnMapReadyCallback {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            registerBtn.setEnabled(false);
+            loadingBar.setVisibility(View.VISIBLE);
         }
 
         @Override
         protected void onPostExecute(project.view.model.Location location1) {
             super.onPostExecute(location1);
-            boolean check = false;
+            checkLocation = false;
             location.setStreet(location1.getStreet());
             location.setCity(location1.getCity());
             location.setDistrict(location1.getDistrict());
@@ -447,27 +450,28 @@ public class RegisterStorePage extends BasePage implements OnMapReadyCallback {
             location.setApartment_number(location1.getApartment_number());
 
             if(location.getCity() != null) {
-                check = true;
+                checkLocation = true;
             } else if(location.getStreet() != null) {
-                check = true;
+                checkLocation = true;
             } else if(location.getDistrict() != null) {
-                check = true;
+                checkLocation = true;
             } else if(location.getCounty() != null) {
-                check = true;
+                checkLocation = true;
             } else if(location.getApartment_number() != null) {
-                check = true;
+                checkLocation = true;
             }
 
-            if(check){
+            if(checkLocation){
+                registerBtn.setEnabled(true);
                 loadingBar.setVisibility(View.INVISIBLE);
             }
-            final boolean finalCheck = check;
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
 
-                    if (!finalCheck) {
+                    if (!checkLocation) {
                         Toast.makeText(RegisterStorePage.this, "Có lỗi khi định vị vị trí của bạn", Toast.LENGTH_SHORT).show();
+                        registerBtn.setEnabled(true);
                         loadingBar.setVisibility(View.INVISIBLE);
                     }
                 }
@@ -521,11 +525,16 @@ public class RegisterStorePage extends BasePage implements OnMapReadyCallback {
         protected void onPreExecute() {
             super.onPreExecute();
             loadingBar.setVisibility(View.VISIBLE);
+
         }
 
         @Override
         protected void onPostExecute(Store result) {
             super.onPostExecute(result);
+            if (checkLocation == false) {
+                Toast.makeText(RegisterStorePage.this, "Chưa định vị được vị trí của bạn", Toast.LENGTH_LONG).show();
+                return;
+            }
             if (result != null) {
                 loadingBar.setVisibility(View.INVISIBLE);
                 Toast.makeText(RegisterStorePage.this, "Đăng kí cửa hàng thành công", Toast.LENGTH_LONG).show();

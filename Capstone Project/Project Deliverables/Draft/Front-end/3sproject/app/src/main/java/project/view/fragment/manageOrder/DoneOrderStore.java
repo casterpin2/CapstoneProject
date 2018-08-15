@@ -83,7 +83,7 @@ public class DoneOrderStore extends Fragment {
                 list.clear();
                 //buyLinearLayout.setVisibility(View.INVISIBLE);
                 //loadingBar.setVisibility(View.INVISIBLE);
-//                adapter.notifyDataSetChanged();
+                adapter.notifyDataSetChanged();
 //                noOrder.setVisibility(View.VISIBLE);
             }
         }

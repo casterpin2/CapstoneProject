@@ -100,13 +100,7 @@ public class UserFragment extends Fragment {
             tvUserName.setText(fullName);
             userAvatarPath = user.getImage_path();
             if (!userAvatarPath.isEmpty()) {
-                if (userAvatarPath.contains("graph")) {
-                    Glide.with(getContext() /* context */)
-                            .load(userAvatarPath)
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                            .skipMemoryCache(true)
-                            .into(profile_image);
-                }if (userAvatarPath.contains("google")) {
+                if (userAvatarPath.contains("graph") || userAvatarPath.contains("google")) {
                     Glide.with(getContext() /* context */)
                             .load(userAvatarPath)
                             .diskCacheStrategy(DiskCacheStrategy.NONE)

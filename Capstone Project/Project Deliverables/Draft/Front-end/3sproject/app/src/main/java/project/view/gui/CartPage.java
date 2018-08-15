@@ -204,6 +204,8 @@ public class CartPage extends BasePage{
 
                     }
                 });
+            } if (resultCode == Activity.RESULT_CANCELED){
+                Toast.makeText(this, "Chưa định vị được vị trí của bạn", Toast.LENGTH_LONG).show();
             }
         }
     }

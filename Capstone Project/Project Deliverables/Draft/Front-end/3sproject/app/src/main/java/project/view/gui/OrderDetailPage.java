@@ -16,6 +16,7 @@ import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.LinearLayout;
@@ -84,10 +85,10 @@ public class OrderDetailPage extends BasePage {
     @Override
     protected void onPause() {
         super.onPause();
-//        if (!orderId.isEmpty() && store != null) {
+        if (!orderId.isEmpty() && store != null) {
             myRef.removeEventListener(changeListener);
             ref.removeEventListener(changeListener1);
-//        }
+        }
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,14 +142,16 @@ public class OrderDetailPage extends BasePage {
                 builder.setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        myRef.child("status").setValue("doing");
-                        DatabaseReference myRef1 = database.getReference().child("ordersUser").child(String.valueOf(order.getUserId())).child(orderId);
-                        myRef1.child("status").setValue("processing");
-                        Intent intent = new Intent(OrderDetailPage.this,StoreManagementOrderPage.class);
-                        intent.putExtra("storeId",store.getId());
-                        startActivity(intent);
-                        finish();
-                        // viết code nhận đơn hàng ở đấy
+                        if (order == null ){
+                            Toast.makeText(OrderDetailPage.this, "Người dùng đã hủy đơn hàng này", Toast.LENGTH_SHORT).show();
+                            finish();
+                        } else {
+                            myRef.child("status").setValue("doing");
+                            DatabaseReference myRef1 = database.getReference().child("ordersUser").child(String.valueOf(order.getUserId())).child(orderId);
+                            myRef1.child("status").setValue("processing");
+                            finish();
+                            // viết code nhận đơn hàng ở đấy
+                        }
                     }
                 });
 
@@ -171,15 +174,17 @@ public class OrderDetailPage extends BasePage {
                 builder.setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        myRef.removeValue();
-                        DatabaseReference myRef1 = database.getReference().child("ordersUser").child(String.valueOf(order.getUserId())).child(orderId);
-                        myRef1.child("status").setValue("cancel");
-                        Intent intent = new Intent(OrderDetailPage.this,StoreManagementOrderPage.class);
-                        intent.putExtra("storeId",store.getId());
-                        startActivity(intent);
-                        myRef.removeEventListener(changeListener);
-                        ref.removeEventListener(changeListener1);
-                        finish();
+                        if (order == null ){
+                            Toast.makeText(OrderDetailPage.this, "Người dùng đã hủy đơn hàng này", Toast.LENGTH_SHORT).show();
+                            finish();
+                        } else {
+                            myRef.removeValue();
+                            DatabaseReference myRef1 = database.getReference().child("ordersUser").child(String.valueOf(order.getUserId())).child(orderId);
+                            myRef1.child("status").setValue("cancel");
+                            myRef.removeEventListener(changeListener);
+                            ref.removeEventListener(changeListener1);
+                            finish();
+                        }
                         // viết code từ chối nhận ở đấy
                     }
                 });
@@ -203,14 +208,15 @@ public class OrderDetailPage extends BasePage {
                 builder.setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        // viết code đóng đơn hàng ở đấy
-                        myRef.child("status").setValue("done");
-                        DatabaseReference myRef1 = database.getReference().child("ordersUser").child(String.valueOf(order.getUserId())).child(orderId);
-                        myRef1.child("status").setValue("done");
-                        Intent intent = new Intent(OrderDetailPage.this,StoreManagementOrderPage.class);
-                        intent.putExtra("storeId",store.getId());
-                        startActivity(intent);
-                        finish();
+                        if (order == null || String.valueOf(order.getUserId()) == null){
+                            Toast.makeText(OrderDetailPage.this, "Người dùng đã hủy đơn hàng này", Toast.LENGTH_SHORT).show();
+                            finish();
+                        } else {
+                            myRef.child("status").setValue("done");
+                            DatabaseReference myRef1 = database.getReference().child("ordersUser").child(String.valueOf(order.getUserId())).child(orderId);
+                            myRef1.child("status").setValue("done");
+                            finish();
+                        }
                     }
                 });
 
@@ -317,23 +323,27 @@ public class OrderDetailPage extends BasePage {
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
             if (!dataSnapshot.exists()){
-                final AlertDialog.Builder builder = new AlertDialog.Builder(OrderDetailPage.this);
-                builder.setTitle("Đóng đơn hàng");
-                builder.setMessage("Người dùng vừa hủy đơn hàng này");
+                try {
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(OrderDetailPage.this);
+                    builder.setTitle("Đóng đơn hàng");
+                    builder.setMessage("Người dùng vừa hủy đơn hàng này");
 
-                builder.setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = new Intent(OrderDetailPage.this,StoreManagementOrderPage.class);
-                        intent.putExtra("storeId",store.getId());
-                        myRef.removeEventListener(changeListener);
-                        ref.removeEventListener(changeListener1);
-                        startActivity(intent);
-                        finish();
-                    }
-                });
-                builder.setCancelable(false);
-                builder.show();
+                    builder.setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent intent = new Intent(OrderDetailPage.this, StoreManagementOrderPage.class);
+                            intent.putExtra("storeId", store.getId());
+                            myRef.removeEventListener(changeListener);
+                            ref.removeEventListener(changeListener1);
+                            startActivity(intent);
+                            finish();
+                        }
+                    });
+                    builder.setCancelable(false);
+                    builder.show();
+                } catch (WindowManager.BadTokenException e){
+                    finish();
+                }
             }
         }
         @Override

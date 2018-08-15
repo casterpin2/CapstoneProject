@@ -68,7 +68,6 @@ public class StoreOrderManagementAdapter extends ArrayAdapter<Order> {
                     goToOrderDetail.putExtra("orderId",order.getOrderId());
                     goToOrderDetail.putExtra("is" + orderType +"Order",true);
                     context.startActivity(goToOrderDetail);
-                    ((Activity)context).finish();
                 }
             });
             return convertView;

@@ -584,6 +584,8 @@ public class NearbyStorePage extends BasePage implements OnMapReadyCallback {
 
                     }
                 });
+            } if (resultCode == Activity.RESULT_CANCELED){
+                Toast.makeText(this, "Chưa định vị được vị trí của bạn", Toast.LENGTH_LONG).show();
             }
         }
     }
