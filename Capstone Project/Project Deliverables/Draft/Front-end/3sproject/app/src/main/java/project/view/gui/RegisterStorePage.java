@@ -81,7 +81,7 @@ public class RegisterStorePage extends BasePage implements OnMapReadyCallback {
     private String result = "";
     private RelativeLayout main_layout;
     private ProgressBar loadingBar;
-    private boolean isPhone = false,isStoreName = false,isLoction=false;
+    private boolean isPhone = false,isStoreName = false,isLocation=false;
 
     public void setAutoLatitude(double autoLatitude) {
         this.autoLatitude = autoLatitude;
@@ -200,11 +200,11 @@ public class RegisterStorePage extends BasePage implements OnMapReadyCallback {
         registerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isLoction = true;
+                isLocation = true;
 
                 if((handleLongtitude==0&&handleLatitude==0)&&(autoLatitude==0||autoLongtitude==0)){
                     tvLocationError.setText("Chưa xác định được vị trí của bạn.");
-                    isLoction = false;
+                    isLocation = false;
                 }
                 else {
                     tvLocationError.setText("");
@@ -216,7 +216,7 @@ public class RegisterStorePage extends BasePage implements OnMapReadyCallback {
                     tvPhoneError.setText(R.string.error_validate_phone);
                 }
 
-                if(isPhone&&isStoreName&&isLoction) {
+                if(isPhone&&isStoreName&&isLocation) {
                     String storeName = etStoreName.getText().toString().trim();
                     String phone = etPhone.getText().toString().trim();
                     int user_id = getIntent().getIntExtra("user_id", 0);

@@ -83,13 +83,13 @@ public class UserSearchProductListViewCustomAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View view = convertView;
-        ViewHolder holder;
+        SearchProductViewHolder holder;
         final Product product = productList.get(position);
         if (view  == null){
             LayoutInflater li;
             li = LayoutInflater.from(getContext());
             view = li.inflate(R.layout.user_search_product_page_custom_list_view, null);
-            holder = new ViewHolder();
+            holder = new SearchProductViewHolder();
             holder.productName = (TextView) view.findViewById(R.id.productName);
             holder.brandName = (TextView) view.findViewById(R.id.productBrand);
             holder.productImage =(ImageView) view.findViewById(R.id.productImage);
@@ -97,7 +97,7 @@ public class UserSearchProductListViewCustomAdapter extends BaseAdapter {
 
             view.setTag(holder);
         }else{
-            holder = (ViewHolder) view.getTag();
+            holder = (SearchProductViewHolder) view.getTag();
         }
 
         if(product != null) {
@@ -140,7 +140,7 @@ public class UserSearchProductListViewCustomAdapter extends BaseAdapter {
         return context;
     }
 
-    public class ViewHolder{
+    public class SearchProductViewHolder{
         TextView productName;
         TextView brandName;
         ImageView productImage;
