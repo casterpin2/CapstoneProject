@@ -10,8 +10,6 @@
         android:id="@+id/orderList"
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
-        android:dividerHeight="3dp"
-        android:divider="@android:color/darker_gray"
         android:layout_above="@+id/buyLinearLayout"
         android:layout_marginBottom="5dp"
         />

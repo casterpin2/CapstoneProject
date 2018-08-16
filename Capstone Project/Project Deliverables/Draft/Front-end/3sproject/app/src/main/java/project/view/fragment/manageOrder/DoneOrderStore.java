@@ -48,6 +48,12 @@ public class DoneOrderStore extends Fragment {
         } else {
             Toast.makeText(getContext(), "Không có người dùng", Toast.LENGTH_LONG).show();
         }
+        if (list.isEmpty()) {
+            noOrderLayout.setVisibility(View.VISIBLE);
+            noOrderText.setText("Không có đơn hàng đợi xử lý");
+        }else {
+            noOrderLayout.setVisibility(View.INVISIBLE);
+        }
     }
 
     @Override
@@ -95,6 +101,8 @@ public class DoneOrderStore extends Fragment {
             if (list.isEmpty() == true){
                 noOrderLayout.setVisibility(View.VISIBLE);
                 noOrderText.setText("Không có đơn hàng đã xử lý");
+            }else {
+                noOrderLayout.setVisibility(View.INVISIBLE);
             }
         }
 
