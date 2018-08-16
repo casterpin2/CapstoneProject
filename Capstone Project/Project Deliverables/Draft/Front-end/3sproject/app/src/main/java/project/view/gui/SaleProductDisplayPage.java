@@ -91,7 +91,7 @@ public class SaleProductDisplayPage extends BasePage {
 
         apiService = APIService.retrofit.create(APIService.class);
         final Call<List<Product>> callSale = apiService.getSaleProduct();
-        new SaleProductDisplayPage.SaleData().execute(callSale);
+        new SaleProductDisplayPage.SaleProductDisplayData().execute(callSale);
     }
 
     private void findView(){
@@ -119,7 +119,7 @@ public class SaleProductDisplayPage extends BasePage {
         CustomInterface.setStatusBarColor(this);
     }
 
-    public class SaleData extends AsyncTask<Call,List<Product>,Void>{
+    public class SaleProductDisplayData extends AsyncTask<Call,List<Product>,Void>{
         @Override
         protected void onPreExecute() {
             super.onPreExecute();

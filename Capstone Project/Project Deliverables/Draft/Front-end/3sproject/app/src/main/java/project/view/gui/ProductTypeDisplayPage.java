@@ -62,7 +62,7 @@ public class ProductTypeDisplayPage extends BasePage {
         if (typeID != -1) {
             getSupportActionBar().setTitle(typeName);
             Call<List<Product>> call = ApiUtils.getAPIService().getProductbyType(typeID);
-            new GetData().execute(call);
+            new GetProductType().execute(call);
         } else {
             Toast.makeText(ProductTypeDisplayPage.this, "Có lỗi xảy ra !!!",Toast.LENGTH_LONG).show();
         }
@@ -90,7 +90,7 @@ public class ProductTypeDisplayPage extends BasePage {
         }
     }
 
-    private class GetData extends AsyncTask<Call, Void, List<Product>> {
+    private class GetProductType extends AsyncTask<Call, Void, List<Product>> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
