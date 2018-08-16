@@ -32,7 +32,7 @@ public class SaleProductCustomCardviewAdapter extends RecyclerView.Adapter<SaleP
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView promotionPercent, productName, storeName, originalPrice, promotionPrice;
-        public ImageView productImage;
+        public ImageView productImage,imgAddCard;
 
         public MyViewHolder(View view) {
             super(view);
@@ -42,6 +42,8 @@ public class SaleProductCustomCardviewAdapter extends RecyclerView.Adapter<SaleP
             originalPrice = (TextView) view.findViewById(R.id.originalPrice);
             promotionPrice = (TextView) view.findViewById(R.id.promotionPrice);
             productImage = (ImageView) view.findViewById(R.id.productImage);
+            imgAddCard = view.findViewById(R.id.imgAddCard);
+            imgAddCard.setVisibility(View.INVISIBLE);
         }
     }
 

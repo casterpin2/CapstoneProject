@@ -26,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.stats.internal.G;
 import com.google.firebase.storage.StorageReference;
 
 import org.w3c.dom.Text;
@@ -63,7 +64,7 @@ public class SaleProductDisplayPage extends BasePage {
     private Store store;
     private APIService apiService;
     private RecyclerView recycler_view;
-    private ImageView backBtn,backdrop;
+    private ImageView backBtn, backdrop, imgAddCard;
     private TextView tvStoreName;
     private Spinner spinnerCategory,spinnerSort;
     private StorageReference storageReference = Firebase.getFirebase();
@@ -103,6 +104,7 @@ public class SaleProductDisplayPage extends BasePage {
         backdrop = findViewById(R.id.backdrop);
         main_layout = findViewById(R.id.main_layout);
         searchView = findViewById(R.id.searchViewQuery);
+
     }
     private void customView(){
         main_layout.setOnTouchListener(new View.OnTouchListener() {

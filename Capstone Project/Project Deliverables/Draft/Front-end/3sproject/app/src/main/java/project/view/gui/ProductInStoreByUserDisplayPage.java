@@ -1,5 +1,6 @@
 package project.view.gui;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
@@ -37,6 +38,7 @@ import project.view.R;
 import project.view.adapter.ProductInStoreByUserCustomCardViewAdapter;
 import project.view.model.Product;
 import project.view.model.Store;
+import project.view.model.StoreInformation;
 import project.view.util.CustomInterface;
 import project.view.util.Formater;
 import project.view.util.GridSpacingItemDecoration;
@@ -65,6 +67,8 @@ public class ProductInStoreByUserDisplayPage extends BasePage {
     private SearchView searchView ;
     private List<Product> tempProductInStore;
     private ProductFilter productFilter;
+    private LinearLayout storeNameLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,6 +98,14 @@ public class ProductInStoreByUserDisplayPage extends BasePage {
                 finish();
             }
         });
+        storeNameLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent toStoreInfo = new Intent(getBaseContext(), StoreInformationPage.class);
+                toStoreInfo.putExtra("storeID",storeID);
+                startActivity(toStoreInfo);
+            }
+        });
     }
 
     private void customView(){
@@ -118,6 +130,7 @@ public class ProductInStoreByUserDisplayPage extends BasePage {
         backdrop = findViewById(R.id.backdrop);
         main_layout = findViewById(R.id.main_layout);
         searchView = findViewById(R.id.searchViewQuery);
+        storeNameLayout = findViewById(R.id.storeNameLayout);
     }
 
     public class ProductInStoreList extends AsyncTask<Call,List<Product>,Void> {
