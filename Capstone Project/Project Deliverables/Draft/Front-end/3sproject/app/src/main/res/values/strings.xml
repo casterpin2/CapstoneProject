@@ -81,10 +81,10 @@
     <string name="btn_save_change">Lưu thay đổi</string>
     <string name="title_change_password">Đổi mật khẩu</string>
     <string name="error_password_not_match">Mật khẩu nhập lại không khớp</string>
-    <string name="error_validate_username">Tên người dùng không chứa kí tự đặc biệt, có nhiều hơn 6 kí tự và ít hơn 30 kí tự!</string>
+    <string name="error_validate_username">Tên người dùng không chứa kí tự đặc biệt, có nhiều hơn 6 kí tự và ít hơn 30 kí tự</string>
     <string name="error_validate_name">Tên hiển thị không chứa kí tự đặc biêt, có nhiều hơn 6 kí tự và ít hơn 30 kí tự</string>
     <string name="error_validate_username_exists">Tên người dùng đã tồn tại</string>
-    <string name="error_validate_password">Mật khẩu phải bao gồm kí tự đặng biệt, kí tự chữ số, có nhiều hơn 8 kí tự và ít hơn 20 kí tự</string>
+    <string name="error_validate_password">Mật khẩu phải bao gồm kí tự đặc biệt, kí tự chữ số, có nhiều hơn 8 kí tự và ít hơn 20 kí tự</string>
     <string name="error_validate_phone">Số điện thoại phải có độ dài 10 kí tự  hoặc 11 kí tự</string>
     <string name="error_validate_email">Email không hợp lệ</string>
     <string name="error_confirm_password">Mật khẩu nhập lại không khớp</string>

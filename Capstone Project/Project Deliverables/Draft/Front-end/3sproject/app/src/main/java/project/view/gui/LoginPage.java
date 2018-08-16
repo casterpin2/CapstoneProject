@@ -303,12 +303,12 @@ public class LoginPage extends AppCompatActivity {
         protected void onPostExecute(Login result) {
             super.onPostExecute(result);
             if (result == null){
-                Toast.makeText(LoginPage.this,"Có lỗi xảy ra",Toast.LENGTH_LONG).show();
+                errorMessage.setText("Không có kết nối. Vui lòng thử lại");
                 loadingBar.setVisibility(View.INVISIBLE);
                 return;
-            }
+            } errorMessage.setText("");
             if (result.getUser().getId() == 0) {
-                errorMessage.setText("Tên tài khoản hoặc mật khẩu không đúng, xin vui lòng đăng nhập lại");
+                errorMessage.setText("Tên tài khoản hoặc mật khẩu không đúng. Vui lòng đăng nhập lại");
                 loadingBar.setVisibility(View.INVISIBLE);
             }else {
                 //Toast.makeText(LoginPage.this, LoginPage.login.getUser().toString(), Toast.LENGTH_LONG).show();

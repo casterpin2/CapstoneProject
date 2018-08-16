@@ -10,6 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
@@ -35,6 +37,8 @@ public class DoingOrderStore extends Fragment {
     private Order order;
     private List<Order> list = new ArrayList<>();
     private StoreOrderManagementAdapter adapter;
+    private TextView noOrderText;
+    private RelativeLayout noOrderLayout;
     @Override
     public void onResume() {
         super.onResume();
@@ -58,6 +62,8 @@ public class DoingOrderStore extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_order_management,container,false);
+        noOrderText = view.findViewById(R.id.noOrderText);
+        noOrderLayout = view.findViewById(R.id.noOrderLayout);
         lvOrder = view.findViewById(R.id.lv_order);
         storeId = getArguments().getInt("storeId",-1);
         adapter = new StoreOrderManagementAdapter(getContext(),R.layout.item_store_order_management,list,"Processing");
@@ -87,6 +93,10 @@ public class DoingOrderStore extends Fragment {
                 //loadingBar.setVisibility(View.INVISIBLE);
                 adapter.notifyDataSetChanged();
 //                noOrder.setVisibility(View.VISIBLE);
+            }
+            if (list.isEmpty() == true){
+                noOrderLayout.setVisibility(View.VISIBLE);
+                noOrderText.setText("Không có đơn hàng đang xử lý");
             }
         }
 

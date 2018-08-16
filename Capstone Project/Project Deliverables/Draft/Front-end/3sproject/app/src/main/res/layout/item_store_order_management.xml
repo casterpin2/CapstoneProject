@@ -26,13 +26,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Số 120 ngõ gì gì đó ở Hà Nội mà mày không biết tới đâu con chóHà Nội, Việt Nam"
-            android:textSize="15dp" />
+            android:textSize="13dp" />
         <TextView
             android:id="@+id/tvOrderDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="13:04, 28/07/2018"
-            android:textSize="15dp" />
+            android:textSize="13dp" />
     </LinearLayout>
 
 
