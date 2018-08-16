@@ -3,6 +3,7 @@ package project.view.fragment.home;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -37,12 +38,13 @@ import project.view.gui.RegisterStorePage;
 import project.view.gui.StoreManagementOrderPage;
 import project.view.model.Store;
 import project.view.model.StoreInformation;
+import project.view.util.NetworkStateReceiver;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class StoreFragment extends Fragment {
+public class StoreFragment extends Fragment  implements NetworkStateReceiver.NetworkStateReceiverListener {
     private Context context;
     private TextView storeName, ownerName, address, registerDate, phoneText, tv_count_smile, tv_count_sad;
     private ImageView storeImg, btnEdit, errorImage;
@@ -60,6 +62,7 @@ public class StoreFragment extends Fragment {
     private FragmentManager supportFragmentManager;
     private final int RESULT_CODE = 2222;
     private final int REQUEST_CODE = 1111;
+    private NetworkStateReceiver networkStateReceiver;
     public StoreFragment() {
         // Required empty public constructor
     }
@@ -80,6 +83,11 @@ public class StoreFragment extends Fragment {
         storeID = store.getId();
         hasStore = user.getHasStore();
         userID = user.getId();
+
+        //check network available
+        networkStateReceiver = new NetworkStateReceiver();
+        networkStateReceiver.addListener(this);
+        getContext().registerReceiver(networkStateReceiver, new IntentFilter(android.net.ConnectivityManager.CONNECTIVITY_ACTION));
 
         if (isNetworkAvailable() == true && hasStore == 1 && userID != 0 && storeID != 0) {
             view = inflater.inflate(R.layout.fragment_store, container, false);
@@ -166,6 +174,17 @@ public class StoreFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void networkAvailable() {
+
+    }
+
+    @Override
+    public void networkUnavailable() {
+        Toast.makeText(getContext(), "Vui lòng kiểm tra kết nối mạng", Toast.LENGTH_LONG).show();
+    }
+
+
     private void findViewInStoreFragment() {
         storeName = view.findViewById(R.id.storeName);
         ownerName = view.findViewById(R.id.ownerName);
@@ -213,7 +232,8 @@ public class StoreFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-
+        networkStateReceiver.removeListener(this);
+        getContext().unregisterReceiver(networkStateReceiver);
     }
 
     private void stopRefresh() {

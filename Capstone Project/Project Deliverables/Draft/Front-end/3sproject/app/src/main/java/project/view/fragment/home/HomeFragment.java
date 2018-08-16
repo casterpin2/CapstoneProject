@@ -3,9 +3,11 @@ package project.view.fragment.home;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -46,6 +48,7 @@ import java.util.List;
 import project.firebase.Firebase;
 import project.retrofit.APIService;
 import project.view.gui.BarcodeActivity;
+import project.view.gui.HomePage;
 import project.view.gui.SaleProductDisplayPage;
 import project.view.model.Brand;
 import project.view.gui.BrandDisplayPage;
@@ -60,6 +63,7 @@ import project.view.adapter.CategoryRecycleViewAdapter;
 import project.view.adapter.SliderImageViewPagerAdapter;
 import project.view.util.Formater;
 import project.view.util.GridSpacingItemDecoration;
+import project.view.util.NetworkStateReceiver;
 import retrofit2.Call;
 import retrofit2.Response;
 
@@ -67,15 +71,15 @@ import retrofit2.Response;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class HomeFragment extends Fragment {
-    private RecyclerView recyclerViewCategories,recyclerViewBrands, recyclerViewSaleProduct;
+public class HomeFragment extends Fragment implements NetworkStateReceiver.NetworkStateReceiverListener {
+    private RecyclerView recyclerViewCategories, recyclerViewBrands, recyclerViewSaleProduct;
     private CategoryRecycleViewAdapter categoryAdapter;
     BrandRecycleViewAdapter brandAdapter;
     private SaleProductCustomCardviewAdapter saleProductCustomCardviewAdapter;
     private APIService apiService;
     private SwipeRefreshLayout swipeRefreshLayout;
     private LinearLayoutManager linearLayoutManagerCategory;
-    private TextView tv_more_category,tv_more_brand,tv_more_sale;
+    private TextView tv_more_category, tv_more_brand, tv_more_sale;
     private View view;
     ViewPager viewPager;
     LinearLayout sliderDotspanel;
@@ -85,7 +89,12 @@ public class HomeFragment extends Fragment {
     private ImageButton imgBarCode;
     private CardView searchLayout;
     private Toolbar toolbar;
-    private NestedScrollView  scroll;
+    private NestedScrollView scroll;
+    private Call<List<Category>> callCategory;
+    private Call<List<Brand>> callBrand;
+    private Call<List<Product>> callSale;
+    private NetworkStateReceiver networkStateReceiver;
+
     public HomeFragment() {
 
     }
@@ -95,98 +104,39 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-       // TweakUI.makeTransparent(this.getActivity());
-        view = inflater.inflate(R.layout.fragment_home,container,false);
+        view = inflater.inflate(R.layout.fragment_home, container, false);
         findView();
-        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         setHasOptionsMenu(true);
         scroll.setVerticalScrollBarEnabled(false);
         scroll.setHorizontalScrollBarEnabled(false);
         viewPager.requestFocus();
+        apiService = APIService.retrofit.create(APIService.class);
+        refreshData();
+        sliderImage();
 
-        SliderImageViewPagerAdapter viewPagerAdapter = new SliderImageViewPagerAdapter(getContext());
+        //check network available
+        networkStateReceiver = new NetworkStateReceiver();
+        networkStateReceiver.addListener(this);
+        getContext().registerReceiver(networkStateReceiver, new IntentFilter(android.net.ConnectivityManager.CONNECTIVITY_ACTION));
 
-        viewPager.setAdapter(viewPagerAdapter);
-
-        dotscount = viewPagerAdapter.getCount();
-        dots = new ImageView[dotscount];
-
-        for(int i = 0; i < dotscount; i++){
-
-            dots[i] = new ImageView(getContext());
-            dots[i].setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.nonactive_dot));
-
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-
-            params.setMargins(8, 0, 8, 0);
-
-            sliderDotspanel.addView(dots[i], params);
-
-        }
-
-        dots[0].setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.active_dot));
-
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        searchLayout.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-
-                for(int i = 0; i< dotscount; i++){
-                    dots[i].setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.nonactive_dot));
-                }
-
-                dots[position].setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.active_dot));
-
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
+            public void onClick(View view) {
+                Intent toUserSearchProduct = new Intent(getContext(), UserSearchProductPage.class);
+                startActivity(toUserSearchProduct);
             }
         });
 
-       /* Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new MyTimerTask(), 2000, 4000);
-*/
+        imgBarCode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent toBarCode = new Intent(getContext(), BarcodeActivity.class);
+                toBarCode.putExtra("home", 3);
+                startActivity(toBarCode);
 
-       scroll.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
-           @Override
-           public void onScrollChanged() {
-               Log.d("StupidScrollView", "Scroll positionY: " + scroll.getScrollY());
-               swipeRefreshLayout = view.findViewById(R.id.swipeToRefesh);
-               swipeRefreshLayout.setEnabled(true);
-               if (scroll.getScrollY() == 0) {
-                   Log.d("StupidScrollView", "Scroll en: " + scroll.getScrollY());
-                   swipeRefreshLayout.setEnabled(true);
-               }
-               else{
-                   Log.d("StupidScrollView", "Scroll dis: " + scroll.getScrollY());
-                   swipeRefreshLayout.setEnabled(false);
-               }
-           }
-       });
-
-       searchLayout.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View view) {
-               Intent toUserSearchProduct = new Intent(getContext(), UserSearchProductPage.class);
-               startActivity(toUserSearchProduct);
-           }
-       });
-
-       imgBarCode.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View v) {
-               Intent toBarCode = new Intent(getContext(), BarcodeActivity.class);
-               toBarCode.putExtra("home",3);
-               startActivity(toBarCode);
-
-           }
-       });
+            }
+        });
 
         tv_more_category.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -213,39 +163,130 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        apiService = APIService.retrofit.create(APIService.class);
-        final Call<List<Category>> callCategory = apiService.getCategory();
+
+        callCategory = apiService.getCategory();
         new CategoryData().execute(callCategory);
-        //categorié
 
-
-        //brand
-        apiService = APIService.retrofit.create(APIService.class);
-        final Call<List<Brand>> callBrand = apiService.getBrandsTop5();
+        callBrand = apiService.getBrandsTop5();
         new BrandData().execute(callBrand);
 
-        //sale
-        apiService = APIService.retrofit.create(APIService.class);
-        final Call<List<Product>> callSale = apiService.getSaleProductTop20();
+        callSale = apiService.getSaleProductTop20();
         new SaleData().execute(callSale);
-      return view;
+        return view;
     }
 
-    private void findView(){
+
+    @Override
+    public void networkAvailable() {
+        callCategory = apiService.getCategory();
+        new CategoryData().execute(callCategory);
+        callBrand = apiService.getBrandsTop5();
+        new BrandData().execute(callBrand);
+        callSale = apiService.getSaleProductTop20();
+        new SaleData().execute(callSale);
+    }
+
+    @Override
+    public void networkUnavailable() {
+        Toast.makeText(getContext(), "Vui lòng kiểm tra kết nối mạng", Toast.LENGTH_LONG).show();
+    }
+
+    private void sliderImage() {
+        SliderImageViewPagerAdapter viewPagerAdapter = new SliderImageViewPagerAdapter(getContext());
+
+        viewPager.setAdapter(viewPagerAdapter);
+
+        dotscount = viewPagerAdapter.getCount();
+        dots = new ImageView[dotscount];
+
+        for (int i = 0; i < dotscount; i++) {
+
+            dots[i] = new ImageView(getContext());
+            dots[i].setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.nonactive_dot));
+
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+
+            params.setMargins(8, 0, 8, 0);
+
+            sliderDotspanel.addView(dots[i], params);
+
+        }
+
+        dots[0].setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.active_dot));
+
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+
+                for (int i = 0; i < dotscount; i++) {
+                    dots[i].setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.nonactive_dot));
+                }
+
+                dots[position].setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.active_dot));
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+    }
+
+    private void refreshData() {
+        scroll.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+            @Override
+            public void onScrollChanged() {
+                swipeRefreshLayout.setEnabled(true);
+                if (scroll.getScrollY() == 0) {
+                    swipeRefreshLayout.setEnabled(true);
+                    swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                        @Override
+                        public void onRefresh() {
+                            callCategory = apiService.getCategory();
+                            new CategoryData().execute(callCategory);
+                            callBrand = apiService.getBrandsTop5();
+                            new BrandData().execute(callBrand);
+                            callSale = apiService.getSaleProductTop20();
+                            new SaleData().execute(callSale);
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    swipeRefreshLayout.setRefreshing(false);
+                                }
+                            }, 4000);
+                        }
+                    });
+
+                } else {
+                    swipeRefreshLayout.setRefreshing(false);
+                    swipeRefreshLayout.setEnabled(false);
+                }
+            }
+        });
+    }
+
+    private void findView() {
         scroll = view.findViewById(R.id.scrollView);
         imgBarCode = view.findViewById(R.id.imgBarCode);
-        viewPager =view.findViewById(R.id.img_slider);
+        viewPager = view.findViewById(R.id.img_slider);
         searchLayout = view.findViewById(R.id.searchLayout);
         sliderDotspanel = view.findViewById(R.id.slider_dots);
         tv_more_category = view.findViewById(R.id.tv_more_category);
         tv_more_brand = view.findViewById(R.id.tv_more_brand);
         tv_more_sale = view.findViewById(R.id.tv_more_sale);
-        recyclerViewSaleProduct= view.findViewById(R.id.list_sale);
+        recyclerViewSaleProduct = view.findViewById(R.id.list_sale);
         toolbar = (Toolbar) view.findViewById(R.id.toolbar);
         swipeRefreshLayout = view.findViewById(R.id.swipeToRefesh);
+
     }
 
-    private class CategoryData extends AsyncTask<Call, List<Category>, Void>{
+    private class CategoryData extends AsyncTask<Call, List<Category>, Void> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -261,14 +302,13 @@ public class HomeFragment extends Fragment {
             super.onProgressUpdate(values);
             StorageReference storageReference = Firebase.getFirebase();
             List<Category> categoryList = values[0];
-
-
             recyclerViewCategories = view.findViewById(R.id.list_category);
-            categoryAdapter = new CategoryRecycleViewAdapter(categoryList,getContext());
+            categoryAdapter = new CategoryRecycleViewAdapter(categoryList, getContext());
             recyclerViewCategories.setNestedScrollingEnabled(false);
             recyclerViewCategories.setAdapter(categoryAdapter);
-            linearLayoutManagerCategory  = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+            linearLayoutManagerCategory = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
             recyclerViewCategories.setLayoutManager(linearLayoutManagerCategory);
+            recyclerViewBrands = view.findViewById(R.id.list_brand);
 
         }
 
@@ -279,7 +319,7 @@ public class HomeFragment extends Fragment {
                 Call<List<Category>> call = calls[0];
                 Response<List<Category>> response = call.execute();
                 List<Category> list = new ArrayList<>();
-                for(int i =0;i< response.body().size();i++){
+                for (int i = 0; i < response.body().size(); i++) {
                     list.add(response.body().get(i));
                 }
                 publishProgress(list);
@@ -290,7 +330,8 @@ public class HomeFragment extends Fragment {
             return null;
         }
     }
-    private class BrandData extends AsyncTask<Call, List<Brand>, Void>{
+
+    private class BrandData extends AsyncTask<Call, List<Brand>, Void> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -306,10 +347,7 @@ public class HomeFragment extends Fragment {
             super.onProgressUpdate(values);
             StorageReference storageReference = Firebase.getFirebase();
             List<Brand> brandList = values[0];
-
-
-            recyclerViewBrands = view.findViewById(R.id.list_brand);
-            brandAdapter = new BrandRecycleViewAdapter(brandList,getContext());
+            brandAdapter = new BrandRecycleViewAdapter(brandList, getContext());
             recyclerViewBrands.setAdapter(brandAdapter);
             linearLayoutManagerBrand = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
             recyclerViewBrands.setLayoutManager(linearLayoutManagerBrand);
@@ -322,7 +360,7 @@ public class HomeFragment extends Fragment {
                 Call<List<Brand>> call = calls[0];
                 Response<List<Brand>> response = call.execute();
                 List<Brand> list = new ArrayList<>();
-                for(int i =0;i< response.body().size();i++){
+                for (int i = 0; i < response.body().size(); i++) {
                     list.add(response.body().get(i));
                 }
                 publishProgress(list);
@@ -333,13 +371,17 @@ public class HomeFragment extends Fragment {
             return null;
         }
     }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
         Glide.get(getContext()).clearMemory();
+        networkStateReceiver.removeListener(this);
+        getContext().unregisterReceiver(networkStateReceiver);
 
     }
-    public class SaleData extends AsyncTask<Call,List<Product>,Void>{
+
+    public class SaleData extends AsyncTask<Call, List<Product>, Void> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -359,7 +401,7 @@ public class HomeFragment extends Fragment {
             RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getContext(), 2);
             recyclerViewSaleProduct.setLayoutManager(mLayoutManager);
             recyclerViewSaleProduct.setNestedScrollingEnabled(false);
-            recyclerViewSaleProduct.addItemDecoration(new GridSpacingItemDecoration(2, Formater.dpToPx(2,getResources()), true));
+            recyclerViewSaleProduct.addItemDecoration(new GridSpacingItemDecoration(2, Formater.dpToPx(2, getResources()), true));
             recyclerViewSaleProduct.setItemAnimator(new DefaultItemAnimator());
             recyclerViewSaleProduct.setAdapter(saleProductCustomCardviewAdapter);
         }
@@ -370,7 +412,7 @@ public class HomeFragment extends Fragment {
                 Call<List<Product>> call = calls[0];
                 Response<List<Product>> response = call.execute();
                 List<Product> list = new ArrayList<>();
-                for(int i =0 ; i< response.body().size();i++){
+                for (int i = 0; i < response.body().size(); i++) {
                     list.add(response.body().get(i));
                 }
                 publishProgress(list);
