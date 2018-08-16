@@ -54,33 +54,14 @@ public class ChangePasswordPage extends BasePage {
         setContentView(R.layout.activity_change_password);
         findView();
         regex = new Regex();
-        CustomInterface.setStatusBarColor(this);
-        getSupportActionBar().setTitle(R.string.title_change_password);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
-        }
-        main_layout.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                CustomInterface.hideKeyboard(view, getBaseContext());
-                return false;
-            }
-        });
-
-        loadingBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorApplication), android.graphics.PorterDuff.Mode.MULTIPLY);
+        customView();
         username = getIntent().getStringExtra("username");
 
         oldPass.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
-                    isOldPass = regex.isPassWord(oldPass.getText().toString());
-                    if (!isOldPass) {
-                        tvOldPass.setText(R.string.error_validate_password);
-                    } else {
-                        tvOldPass.setText("");
-                    }
+                    isOldPass = regex.checkPass(tvOldPass,oldPass);
                     SharedPreferences pre = getSharedPreferences("authentication", Context.MODE_PRIVATE);
                     String userJSON = pre.getString("user", "");
 
@@ -102,11 +83,12 @@ public class ChangePasswordPage extends BasePage {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
-                    isNewPass = regex.isPassWord(newPass.getText().toString());
-                    if (!isNewPass) {
-                        tvNewPass.setText(R.string.error_validate_password);
-                    } else {
-                        tvNewPass.setText("");
+                   isNewPass = regex.checkPass(tvNewPass,newPass);
+                   if(newPass.getText().toString().equals(oldPass.getText().toString())){
+                       isNewPass = false;
+                       tvOldPass.setText("Mật khẩu mới không được giống với mật khẩu cũ");
+                   }else {
+                       tvOldPass.setText("");
                     }
                 }
             }
@@ -116,11 +98,12 @@ public class ChangePasswordPage extends BasePage {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
-                    isConfirm = regex.isPassWord(confirmPass.getText().toString());
-                    if (!isConfirm) {
-                        tvConfirmPass.setText(R.string.error_validate_password);
+                    if (!newPass.getText().toString().equals(confirmPass.getText().toString())) {
+                        tvConfirmPass.setText(R.string.confirm_password);
+                        isConfirm = false;
                     } else {
                         tvConfirmPass.setText("");
+                        isConfirm = true;
                     }
                 }
             }
@@ -128,20 +111,17 @@ public class ChangePasswordPage extends BasePage {
         btnChangePass.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!isNewPass) {
-                    tvNewPass.setText(R.string.error_validate_password);
-                }
-                if (!isConfirm) {
-                    tvConfirmPass.setText(R.string.error_validate_password);
-                }
-                if (!isOldPass) {
-                    tvOldPass.setText(R.string.error_validate_password);
+                isOldPass = regex.checkPass(tvOldPass,oldPass);
+                isNewPass = regex.checkPass(tvNewPass,newPass);
+                if (!newPass.getText().toString().equals(confirmPass.getText().toString())) {
+                    tvConfirmPass.setText(R.string.confirm_password);
+                    isConfirm = false;
+                } else {
+                    tvConfirmPass.setText("");
+                    isConfirm = true;
                 }
 
-                if (isConfirm && isNewPass && isOldPass) {
-                    if (!newPass.getText().toString().equals(confirmPass.getText().toString())) {
-                        tvConfirmPass.setText(R.string.error_confirm_password);
-                    } else {
+                   if (isConfirm && isNewPass && isOldPass) {
                         tvConfirmPass.setText("");
                         if (getIntent().getStringExtra("username") != null && !getIntent().getStringExtra("username").isEmpty()) {
                             username = getIntent().getStringExtra("username");
@@ -170,12 +150,27 @@ public class ChangePasswordPage extends BasePage {
                                 }
                             });
                         }
-                        }
                 }
             }
         });
+    }
 
+    private void customView(){
+        CustomInterface.setStatusBarColor(this);
+        getSupportActionBar().setTitle(R.string.title_change_password);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
+        main_layout.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                CustomInterface.hideKeyboard(view, getBaseContext());
+                return false;
+            }
+        });
 
+        loadingBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorApplication), android.graphics.PorterDuff.Mode.MULTIPLY);
     }
 
     private void findView() {
