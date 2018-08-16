@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".gui.UserFeedbackPage">
-    <android.support.v4.widget.NestedScrollView
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <LinearLayout
@@ -45,6 +45,25 @@
                 android:textSize="16dp"
                 android:textColor="@color/colorBlack"
                 android:text="Bạn có gợi ý hoặc có những đóng góp về dịch vụ của cửa hàng chúng tôi. Vui lòng để lại ý kiến bên dưới." />
+
+          <LinearLayout
+              android:gravity="center"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="horizontal">
+              <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                  android:textSize="14dp"
+                android:text="Đánh giá cửa hàng: "/>
+              <TextView
+                  android:id="@+id/tvStoreName"
+                  android:textSize="14dp"
+                  android:textColor="@color/colorApplication"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:text="Tên cửa hàng"/>
+          </LinearLayout>
             <EditText
                 android:id="@+id/content"
                 android:layout_width="match_parent"
@@ -98,29 +117,27 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:padding="8dp"
-                        android:textColor="@color/colorApplication"
+                        android:textColor="@color/lb_more"
                         android:textSize="14dp"
                         android:text="Hài lòng"/>
                 </LinearLayout>
             </android.support.v7.widget.CardView>
-        <TextView
-            android:id="@+id/errorMessage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/errorMess"
-            android:layout_marginLeft="16dp"/>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="48dp"/>
+            <TextView
+                android:id="@+id/errorMessage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/errorMess"
+                android:layout_marginLeft="16dp"/>
+            <Button
+                android:layout_marginTop="32dp"
+                android:id="@+id/btn_send_feedback"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bottom_button"
+                android:text="Gửi phản hồi"
+                android:layout_alignParentBottom="true"
+                android:textColor="@color/colorWhite"/>
         </LinearLayout>
-    </android.support.v4.widget.NestedScrollView>
-    <Button
-        android:id="@+id/btn_send_feedback"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/bottom_button"
-        android:text="Gửi phản hồi"
-        android:layout_alignParentBottom="true"
-        android:textColor="@color/colorWhite"/>
-</RelativeLayout>
+    </RelativeLayout>
+
+</ScrollView>

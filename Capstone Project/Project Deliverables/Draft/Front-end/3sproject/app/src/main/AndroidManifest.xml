@@ -104,7 +104,6 @@
             android:name=".gui.UserSearchProductPage"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".gui.EditStoreInformationPage" />
-        <activity android:name=".gui.FeedbackPage" />
         <activity android:name=".gui.BarcodeActivity" />
         <activity
             android:name=".gui.WelcomePage"

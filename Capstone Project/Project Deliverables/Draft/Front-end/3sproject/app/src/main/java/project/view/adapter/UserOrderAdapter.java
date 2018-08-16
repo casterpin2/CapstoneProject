@@ -2,6 +2,7 @@ package project.view.adapter;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +27,7 @@ import java.util.List;
 import project.firebase.Firebase;
 import project.view.R;
 import project.view.gui.CartPage;
+import project.view.gui.UserFeedbackPage;
 import project.view.model.CartDetail;
 import project.view.model.Order;
 import project.view.model.OrderDetail;
@@ -188,7 +190,9 @@ public class UserOrderAdapter extends BaseExpandableListAdapter {
                  feedbackBtn.setOnClickListener(new View.OnClickListener() {
                      @Override
                      public void onClick(View view) {
-                         // đánh giá cửa hàng
+                         Intent toUserFeedBackPage = new Intent(context, UserFeedbackPage.class);
+                         toUserFeedBackPage.putExtra("orderId",orderId);
+                         context.startActivity(toUserFeedBackPage);
                      }
                  });
              }

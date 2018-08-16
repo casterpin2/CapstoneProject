@@ -27,6 +27,7 @@ public class UserFeedbackPage extends BasePage {
     private TextView tv_feedback_status, error_mess;
     private Button btn_send_feedback;
     private EditText content_feedback;
+    private int orderId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +45,9 @@ public class UserFeedbackPage extends BasePage {
                 return false;
             }
         });
+
+
+        orderId = getIntent().getIntExtra("orderId",-1);
         back_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -115,8 +119,8 @@ public class UserFeedbackPage extends BasePage {
         btnOK.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent toOTPCodePage = new Intent(getBaseContext(),OTPCodePage.class);
-                startActivity(toOTPCodePage);
+                Intent toHomePage = new Intent(getBaseContext(),HomePage.class);
+                startActivity(toHomePage);
                 alertDialog.hide();
             }
         });
