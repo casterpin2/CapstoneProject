@@ -64,6 +64,7 @@ import project.view.model.Store;
 import project.view.model.Login;
 import project.view.util.CustomInterface;
 import project.view.util.MD5Library;
+import project.view.util.Regex;
 import retrofit2.Call;
 import retrofit2.Response;
 
@@ -71,7 +72,7 @@ public class LoginPage extends AppCompatActivity {
 
     private ScrollView scroll;
     private Button loginBtn, loginFBBtn, loginGPBtn;
-    private TextView toForgetPasswordPage, toRegisterPage, errorMessage, usernameValue, passwordValue ;
+    private TextView toForgetPasswordPage, toRegisterPage, errorMessage,errorMessUserName, usernameValue, passwordValue ;
     private APIService mAPI;
     public static Login login = new Login();
     private CallbackManager callbackManager;
@@ -123,17 +124,17 @@ public class LoginPage extends AppCompatActivity {
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                String username = usernameValue.getText().toString().trim();
-                String password = MD5Library.md5(passwordValue.getText().toString().trim());
-                if (username.isEmpty() || passwordValue.getText().toString().trim().isEmpty()){
-                    errorMessage.setText("Bạn phải nhập username và password");
-                    return;
+                Regex regex = new Regex();
+                boolean isName = regex.checkPass(errorMessage,passwordValue);
+                boolean isPass = regex.checkUserName(errorMessUserName,usernameValue);
+                if(isName && isPass){
+                    Call<Login> call = mAPI.login(usernameValue.getText().toString(),MD5Library.md5(passwordValue.getText().toString()));
+                    new LoginTo3S().execute(call);
                 }
-                Call<Login> call = mAPI.login(username,password);
-                new LoginTo3S().execute(call);
             }
         });
+
+
         loginFBBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -241,6 +242,7 @@ public class LoginPage extends AppCompatActivity {
         loadingBar = (ProgressBar) findViewById(R.id.loadingBar);
         toForgetPasswordPage = findViewById(R.id.toForgetPasswordPageBtn);
         main_layout = findViewById(R.id.main_layout);
+        errorMessUserName = findViewById(R.id.errorMessageUsername);
     }
 
     @Override
@@ -301,7 +303,7 @@ public class LoginPage extends AppCompatActivity {
         protected void onPostExecute(Login result) {
             super.onPostExecute(result);
             if (result == null){
-                errorMessage.setText("Có lỗi xảy ra ");
+                Toast.makeText(LoginPage.this,"Có lỗi xảy ra",Toast.LENGTH_LONG).show();
                 loadingBar.setVisibility(View.INVISIBLE);
                 return;
             }

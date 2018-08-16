@@ -1,6 +1,12 @@
 package project.view.util;
 
+import android.support.design.widget.TextInputEditText;
+import android.widget.EditText;
+import android.widget.TextView;
+
 import java.util.regex.Pattern;
+
+import project.view.R;
 
 public class Regex {
 
@@ -36,4 +42,48 @@ public class Regex {
         return pattern.matcher(email).matches();
     }
 
+    public boolean checkPass(TextView tvPasswordError, TextView etPassword){
+        if(isPassWord(etPassword.getText().toString())){
+            tvPasswordError.setText("");
+            return true;
+        } else
+            tvPasswordError.setText(R.string.error_validate_password);
+        return false;
+    }
+
+
+    public boolean checkUserName(TextView tvUserNameError, TextView etUserName){
+        if(isUserName(etUserName.getText().toString())){
+            tvUserNameError.setText("");
+            return true;
+        } else
+            tvUserNameError.setText(R.string.error_validate_username);
+        return false;
+    }
+    public boolean checkDisplayName(TextView tvDisplayNameError, TextView etDisplayName){
+        if(isName(etDisplayName.getText().toString())){
+            tvDisplayNameError.setText("");
+            return true;
+        } else
+            tvDisplayNameError.setText(R.string.error_validate_username);
+        return false;
+    }
+
+    public boolean checkEmail(TextView tvEmailError, TextView etEmail){
+        if(isEmail(etEmail.getText().toString())){
+            tvEmailError.setText("");
+            return true;
+        } else
+            tvEmailError.setText(R.string.error_validate_email);
+        return false;
+    }
+
+    public boolean checkPhone(TextView tvPhone, TextView etPhone){
+        if(etPhone.getText().toString().length()<10||etPhone.getText().toString().length()>11){
+            tvPhone.setText(R.string.error_validate_phone);
+            return false;
+        } else
+            tvPhone.setText("");
+        return true;
+    }
 }

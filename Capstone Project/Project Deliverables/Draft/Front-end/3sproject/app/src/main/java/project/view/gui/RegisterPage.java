@@ -32,42 +32,39 @@ import retrofit2.Call;
 import retrofit2.Response;
 
 public class RegisterPage extends AppCompatActivity {
-    private TextInputEditText etUserName,etName, etPassword, etConfirmPass, etEmail, etPhoneNumber;
+    private TextView etUserName,etName, etPassword, etConfirmPass, etEmail, etPhoneNumber;
     private TextView tvUserName,tvName, tvPassword, tvConfirmPassword, tvEmail, tvPhoneNumber, toLoginPageBtn;
     private Button btnRegister;
-    private boolean isUserName,isName, isPassword, confirm, isEmail, isPhone = true;
+    private boolean isUserName = false,isName = false, isPassword = false, confirm = false, isEmail = false, isPhone = false;
     private APIService apiUserService;
     private User us;
     private Gson gson;
     private RelativeLayout main_layout;
+    private Regex regex;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
         findView();
-        main_layout.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                CustomInterface.hideKeyboard(view,getBaseContext());
-                return false;
-            }
-        });
-        CustomInterface.setStatusBarColor(this);
-        getSupportActionBar().setTitle(R.string.title_register_screen);
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorApplication)));
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        apiUserService = ApiUtils.getAPIService();
+        customView();
+
         us = new User();
+        regex = new Regex();
+        apiUserService = APIService.retrofit.create(APIService.class);
+
         etUserName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
-                    apiUserService = APIService.retrofit.create(APIService.class);
-                    final Call<Integer> call = apiUserService.vadilator(etUserName.getText().toString(), etEmail.getText().toString(), etPhoneNumber.getText().toString(), "username");
-                    new ValidatorUser().execute(call);
-                    checkUserName(etUserName.getText().toString());
+                    isUserName = regex.checkUserName(tvUserName,etUserName);
+                    if(isUserName) {
+                        apiUserService = ApiUtils.getAPIService();
+                        final Call<Integer> call = apiUserService.vadilator(etUserName.getText().toString(), etEmail.getText().toString(), etPhoneNumber.getText().toString(), "username");
+                        new ValidatorUser().execute(call);
+                    }
                 }
+
             }
         });
 
@@ -75,7 +72,7 @@ public class RegisterPage extends AppCompatActivity {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if(!hasFocus){
-                    checkName(etName.getText().toString());
+                    isName = regex.checkDisplayName(tvName,etName);
                 }
             }
         });
@@ -84,8 +81,7 @@ public class RegisterPage extends AppCompatActivity {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
-                    us.setPassword(etPassword.getText().toString());
-                    checkPassword(etPassword.getText().toString());
+                    isPassword = regex.checkPass(tvPassword,etPassword);
                 }
             }
         });
@@ -93,7 +89,13 @@ public class RegisterPage extends AppCompatActivity {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
-                    confirmPassword(etPassword.getText().toString(), etConfirmPass.getText().toString());
+                    if(etConfirmPass.getText().toString().equals(etPassword.getText().toString())){
+                        confirm = true;
+                        tvConfirmPassword.setText("");
+                    }
+                    else {
+                        tvConfirmPassword.setText(R.string.confirm_password);
+                    }
                 }
             }
         });
@@ -102,27 +104,25 @@ public class RegisterPage extends AppCompatActivity {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
-                    apiUserService = APIService.retrofit.create(APIService.class);
-                    final Call<Integer> call = apiUserService.vadilator(etUserName.getText().toString(), etEmail.getText().toString(), etPhoneNumber.getText().toString(), "email");
-                    new ValidatorUser().execute(call);
-                    checkEmail(etEmail.getText().toString());
+                    isEmail = regex.checkEmail(tvEmail,etEmail);
+                    if(isEmail) {
+                        apiUserService = ApiUtils.getAPIService();
+                        final Call<Integer> call = apiUserService.vadilator(etUserName.getText().toString(), etEmail.getText().toString(), etPhoneNumber.getText().toString(), "email");
+                        new ValidatorUser().execute(call);
+                    }
                 }
             }
         });
+
         etPhoneNumber.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-
                 if (!hasFocus) {
-
-                    apiUserService = APIService.retrofit.create(APIService.class);
-                    final Call<Integer> call = apiUserService.vadilator(etUserName.getText().toString(), etEmail.getText().toString(), etPhoneNumber.getText().toString(), "phone");
-                    new ValidatorUser().execute(call);
-                    if(etPhoneNumber.getText().toString().length()<10 || etPhoneNumber.getText().toString().length()>11){
-                        tvPhoneNumber.setText(R.string.length_phone);
-                        isPhone= true;
-                    }else{
-                        tvPhoneNumber.setText("");
+                    isPhone = regex.checkPhone(tvPhoneNumber,etPhoneNumber);
+                    if(isPhone) {
+                        apiUserService = ApiUtils.getAPIService();
+                        final Call<Integer> call = apiUserService.vadilator(etUserName.getText().toString(), etEmail.getText().toString(), etPhoneNumber.getText().toString(), "phone");
+                        new ValidatorUser().execute(call);
                     }
                 }
             }
@@ -139,31 +139,18 @@ public class RegisterPage extends AppCompatActivity {
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                confirmPassword(etPassword.getText().toString(), etConfirmPass.getText().toString());
-                if (etUserName.getText().toString().isEmpty()) {
-                    tvUserName.setText(R.string.error_empty);
+                isUserName = regex.checkUserName(tvUserName,etUserName);
+                isName = regex.checkDisplayName(tvName,etName);
+                isPassword = regex.checkPass(tvPassword,etPassword);
+                if(etConfirmPass.getText().toString().equals(etPassword.getText().toString())){
+                    confirm = true;
                 }
-                if(etName.getText().toString().isEmpty()){
-                    tvName.setText(R.string.error_empty);
+                else {
+                    tvConfirmPassword.setText(R.string.confirm_password);
                 }
-
-                if (etPassword.getText().toString().isEmpty()) {
-                    tvPassword.setText(R.string.error_empty);
-                }
-                if (etConfirmPass.getText().toString().isEmpty()) {
-                    tvConfirmPassword.setText(R.string.error_empty);
-                }
-                if (etEmail.getText().toString().isEmpty()) {
-                    tvEmail.setText(R.string.error_empty);
-                }
-                if (etPhoneNumber.getText().toString().isEmpty()) {
-                    tvPhoneNumber.setText(R.string.error_empty);
-                }
-
-
-
-                if (isUserName /*&& !isName && !isPassword && confirm*/&& isEmail && isPhone ) {
+                isEmail = regex.checkEmail(tvEmail,etEmail);
+                isPhone = regex.checkPhone(tvPhoneNumber,etPhoneNumber);
+                if (isUserName && isName && isPassword && confirm&& isEmail && isPhone ) {
                     us.setUsername(etUserName.getText().toString());
                     us.setPhone(etPhoneNumber.getText().toString().trim().replaceAll("\\s+",""));
                     StringTokenizer st = new StringTokenizer(etName.getText().toString().trim().replaceAll("\\s+"," ")," ");
@@ -179,11 +166,28 @@ public class RegisterPage extends AppCompatActivity {
                     gson = new Gson();
                     final Call<ResultRegister> call = apiUserService.registerUserNew(us);
                     RegisterUserAsyncTask1 asyncTask = new RegisterUserAsyncTask1();
-                    asyncTask.execute(call);
-
+                    if(call !=null) {
+                        asyncTask.execute(call);
+                    }else {
+                        Toast.makeText(getBaseContext(),"Có lỗi xảy ra", Toast.LENGTH_LONG).show();
+                    }
                 }
             }
         });
+    }
+
+    private void customView(){
+        main_layout.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                CustomInterface.hideKeyboard(view,getBaseContext());
+                return false;
+            }
+        });
+        CustomInterface.setStatusBarColor(this);
+        getSupportActionBar().setTitle(R.string.title_register_screen);
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorApplication)));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
@@ -213,51 +217,6 @@ public class RegisterPage extends AppCompatActivity {
         main_layout = findViewById(R.id.main_layout);
     }
 
-    private void checkUserName(final String input) {
-        Regex validate = new Regex();
-        isUserName = validate.isUserName(input);
-        if (!input.isEmpty() && !isUserName) {
-            tvUserName.setText(R.string.error_validate_username);
-        } else
-            tvUserName.setText("");
-    }
-
-    private void checkName(final String input) {
-        Regex validate = new Regex();
-        isName = validate.isName(input);
-        if (!input.isEmpty() && !isName) {
-            tvName.setText(R.string.error_validate_name);
-        } else
-            tvName.setText("");
-    }
-
-    private void confirmPassword(String pass, String passConfirm) {
-
-        confirm = pass.equals(passConfirm);
-        if (!confirm) {
-            tvConfirmPassword.setText(R.string.error_confirm_password);
-        } else
-            tvConfirmPassword.setText("");
-    }
-
-    private void checkPassword(String input) {
-        Regex validate = new Regex();
-        isPassword = validate.isPassWord(input);
-        if (!input.isEmpty() && !isPassword) {
-            tvPassword.setText(R.string.error_validate_password);
-        } else
-            tvPassword.setText("");
-    }
-
-    private void checkEmail(String input) {
-        Regex validate = new Regex();
-        isEmail = validate.isEmail(input);
-        if (!input.isEmpty() && !isEmail) {
-            tvEmail.setText(R.string.error_validate_email);
-        } else
-            tvEmail.setText("");
-    }
-
 
     private class ValidatorUser extends AsyncTask<Call, String, Void> {
         @Override
@@ -274,19 +233,23 @@ public class RegisterPage extends AppCompatActivity {
         protected void onProgressUpdate(String... values) {
             super.onProgressUpdate(values);
             String nameCheck = values[0];
-            switch (nameCheck){
-                case "1":
-                    tvUserName.setText(R.string.duplicate_username);
-                    isUserName = false;
-                    break;
-                case "2":
-                    tvEmail.setText(R.string.duplicate_email);
-                    isEmail = false;
-                    break;
-                case "3":
-                    isPhone = false;
-                    tvPhoneNumber.setText(R.string.duplicate_phone);
-                    break;
+            if(nameCheck!=null) {
+                switch (nameCheck) {
+                    case "1":
+                        tvUserName.setText(R.string.duplicate_username);
+                        isUserName = false;
+                        break;
+                    case "2":
+                        tvEmail.setText(R.string.duplicate_email);
+                        isEmail = false;
+                        break;
+                    case "3":
+                        isPhone = false;
+                        tvPhoneNumber.setText(R.string.duplicate_phone);
+                        break;
+                }
+            } else {
+                Toast.makeText(getBaseContext(),"Có lỗi xảy ra", Toast.LENGTH_LONG).show();
             }
         }
 
@@ -295,8 +258,12 @@ public class RegisterPage extends AppCompatActivity {
 
             try {
                 Call<Integer> call = calls[0];
-                Response<Integer> re = call.execute();
-                publishProgress(re.body()+"");
+                if(call!=null){
+                    Response<Integer> re = call.execute();
+                    publishProgress(re.body()+"");
+                } else {
+                    Toast.makeText(getBaseContext(),"Có lỗi xảy ra", Toast.LENGTH_LONG).show();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -310,9 +277,14 @@ public class RegisterPage extends AppCompatActivity {
         protected String doInBackground(Call... calls) {
             try {
                 Call<ResultRegister> call = calls[0];
-                Response<ResultRegister> re = call.execute();
+                if(call != null){
+                    Response<ResultRegister> re = call.execute();
 //            if (re.body() != null) {
-                return re.body().getResult();
+                    return re.body().getResult();
+                } else {
+                    Toast.makeText(getBaseContext(),"Có lỗi xảy ra", Toast.LENGTH_LONG).show();
+                }
+
 //            } else {
 //                return null;
 //            }

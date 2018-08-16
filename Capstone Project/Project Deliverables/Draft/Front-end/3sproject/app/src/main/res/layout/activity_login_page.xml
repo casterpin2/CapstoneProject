@@ -46,7 +46,14 @@
                             android:inputType="textAutoComplete"
                             android:singleLine="true"
                             android:textSize="13dp"/>
-
+                        <TextView android:id="@+id/errorMessageUsername"
+                            android:layout_height="wrap_content"
+                            android:layout_width="wrap_content"
+                            android:layout_below="@+id/password"
+                            android:layout_alignEnd="@+id/username"
+                            android:layout_alignStart="@+id/username"
+                            android:textColor="@color/colorRed"
+                            android:textSize="10dp"/>
 
                     </android.support.design.widget.TextInputLayout>
 
