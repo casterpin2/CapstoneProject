@@ -146,7 +146,7 @@ public class UserFragment extends Fragment {
                 public void onClick(View v) {
                     Intent toChangePasswordScreen = new Intent(getContext(), ChangePasswordPage.class);
                     toChangePasswordScreen.putExtra("username", user.getUsername());
-
+                    toChangePasswordScreen.putExtra("displayName", tvUserName.getText().toString());
                     startActivityForResult(toChangePasswordScreen,113);
                 }
             });
@@ -297,11 +297,13 @@ public class UserFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        String a = data.getStringExtra("nameDisplay");
+
         if (requestCode == 111 && resultCode == 222) {
             if (data.getStringExtra("nameDisplay") != null && !data.getStringExtra("nameDisplay").isEmpty()) {
                 tvUserName.setText(data.getStringExtra("nameDisplay"));
             }
         }
+
+
     }
 }

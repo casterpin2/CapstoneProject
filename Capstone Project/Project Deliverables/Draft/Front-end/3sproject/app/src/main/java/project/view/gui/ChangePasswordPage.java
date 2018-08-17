@@ -138,6 +138,7 @@ public class ChangePasswordPage extends BasePage {
                                         tvOldPass.setText("");
                                         oldPass.setText("");
                                         confirmPass.setText("");
+//                                        backToUserFragment.putExtra(getIntent().getStringExtra("displayName"),"");
                                         setResult(223,backToUserFragment);
                                         finish();
                                     }

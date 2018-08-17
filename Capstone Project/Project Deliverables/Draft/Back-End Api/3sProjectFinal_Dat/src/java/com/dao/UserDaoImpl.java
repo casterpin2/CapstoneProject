@@ -170,7 +170,7 @@ public class UserDaoImpl extends BaseDao implements UserDao {
         PreparedStatement pre = null;
         String result = "";
         try {
-            String sql = "INSERT INTO User (username, password, full_name, email, location_id, role_id, phone, hasStore,image_id) VALUES (?,?,?,?,?,?,?,?,?)";
+            String sql = "INSERT INTO User (username, password, full_name, email, role_id, phone, hasStore,image_id) VALUES (?,?,?,?,?,?,?,?)";
             conn = getConnection();
             conn.setAutoCommit(false);
             pre = conn.prepareStatement(sql);
@@ -179,10 +179,9 @@ public class UserDaoImpl extends BaseDao implements UserDao {
             pre.setString(3, us.getFirstName()+ " " + us.getLastName());
             pre.setString(4, us.getEmail());
             pre.setInt(5, 1);
-            pre.setInt(6, 1);
-            pre.setString(7, us.getPhone());
-            pre.setInt(8, 0);
-            pre.setInt(9, 51);
+            pre.setString(6, us.getPhone());
+            pre.setInt(7, 0);
+            pre.setInt(8, 51);
             int countInsert = pre.executeUpdate();
             if (countInsert > 0) {
 
