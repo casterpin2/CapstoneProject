@@ -130,6 +130,8 @@ public class NearbyStorePage extends BasePage implements OnMapReadyCallback {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nearby_store_page);
+
+        CustomInterface.setStatusBarColor(this);
         storeListView = findViewById(R.id.storeListView);
         textContent = findViewById(R.id.textContent);
         noHaveStore = findViewById(R.id.noHaveStore);

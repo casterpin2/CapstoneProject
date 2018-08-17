@@ -1,11 +1,17 @@
 package project.view.gui;
 
+import android.app.SearchManager;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -18,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import project.retrofit.ApiUtils;
+import project.view.adapter.ProductInStoreCustomListViewAdapter;
 import project.view.adapter.ProductTypeCustomCardViewAdapter;
 import project.view.R;
 import project.view.model.Product;
@@ -37,6 +44,10 @@ public class ProductTypeDisplayPage extends BasePage {
     private TextView filterLable;
     private Spinner spinnerCategory,spinnerBrand;
     ProductFilter productFilter;
+    private  List<Product> searchedProduct;
+    private SearchView searchView;
+    private String typeName;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,7 +56,7 @@ public class ProductTypeDisplayPage extends BasePage {
 
 
         int typeID = getIntent().getIntExtra("typeID", -1);
-        String typeName = getIntent().getStringExtra("typeName");
+        typeName = getIntent().getStringExtra("typeName");
         productList = new ArrayList<>();
         tempProduct = new ArrayList<>();
         adapter = new ProductTypeCustomCardViewAdapter(this, tempProduct);
@@ -76,15 +87,59 @@ public class ProductTypeDisplayPage extends BasePage {
         filterLable.setVisibility(View.VISIBLE);
         filterLable.setText("Thương hiệu");
         spinnerBrand = findViewById(R.id.spinnerSort);
+        searchView = findViewById(R.id.action_search);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.home_search_toolbar, menu);
+        MenuItem itemSearch = menu.findItem(R.id.action_search);
+        searchedProduct = new ArrayList<>();
+        searchView = (SearchView) itemSearch.getActionView();
+        searchView.clearFocus();
+        searchView.setQueryHint("Tìm trong " + typeName);
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+//        productList
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                searchedProduct.clear();
+                if(newText.equals("") || newText == null){
+                    adapter = new ProductTypeCustomCardViewAdapter(ProductTypeDisplayPage.this,tempProduct);
+                } else {
+                    for (int i = 0; i < tempProduct.size(); i++) {
+                        if(tempProduct.get(i).getProduct_name().toLowerCase().contains(newText.toLowerCase())) {
+                            searchedProduct.add(tempProduct.get(i));
+                        }
+                    }
+                    adapter = new ProductTypeCustomCardViewAdapter(ProductTypeDisplayPage.this, searchedProduct);
+                }
+                adapter.notifyDataSetChanged();
+                recyclerView.setAdapter(adapter);
+                return true;
+            }
+        });
+        return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case android.R.id.home:
-                // app icon in action bar clicked; go home
+            case android.R.id.home: {
                 finish();
                 return true;
+            }
+            case R.id.action_home:{
+                Intent toHomPage = new Intent(ProductTypeDisplayPage.this, HomePage.class);
+                startActivity(toHomPage);
+            }
             default:
                 return super.onOptionsItemSelected(item);
         }
