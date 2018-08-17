@@ -41,8 +41,7 @@ public class UserManagementOrderPage extends BasePage {
     private int userId;
     private Button shoppingBtn;
     private String status;
-
-    NetworkChangeReceiver mNetworkReceiver;
+    
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_management);
