@@ -58,7 +58,7 @@ public class BasePage extends AppCompatActivity {
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             if (deviceToken != null){
                                 reference.child("token").setValue(deviceToken);
-                                reference.child("hasNotification").setValue("false");
+                                reference.child("haveNotification").setValue("true");
                             }
                         }
 
@@ -88,6 +88,23 @@ public class BasePage extends AppCompatActivity {
         if (user != null){
             //startService();
             //Log.d("notification","abc");
+        }
+        if (store != null){
+            final DatabaseReference reference = database.getReference().child("notification").child(String.valueOf(store.getId()));
+            reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (deviceToken != null){
+                        reference.child("token").setValue(deviceToken);
+                        reference.child("haveNotification").setValue("false");
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
         }
         super.onStop();
     }

@@ -160,7 +160,7 @@ public class CartPage extends BasePage{
                 reference.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        for (Cart cart : list) {
+                        for (final Cart cart : list) {
                             String key = reference.push().getKey();
                             DatabaseReference re = reference.child(key);
                             DatabaseReference referenceStore = database.getReference().child("ordersStore").child(String.valueOf(cart.getStoreId())).child(key);
@@ -208,7 +208,7 @@ public class CartPage extends BasePage{
                                                 Log.d("da",new Gson().toJson(notification));
                                                 Toast.makeText(CartPage.this, notification.toString(), Toast.LENGTH_SHORT).show();
                                                 Call<ResultNotification> call = ApiUtils.getAPIServiceFirebaseMessage().sendNotification(notification,keyNotification,"application/json");
-                                                new PushNotification().execute(call);
+                                                new PushNotification(cart.getStoreId()).execute(call);
                                             }
                                         }
                                     }
@@ -288,6 +288,20 @@ public class CartPage extends BasePage{
     };
 
     public class PushNotification extends AsyncTask<Call,Void,ResultNotification> {
+        private int storeId;
+
+        public int getStoreId() {
+            return storeId;
+        }
+
+        public void setStoreId(int storeId) {
+            this.storeId = storeId;
+        }
+
+        public PushNotification(int storeId) {
+            this.storeId = storeId;
+        }
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -297,7 +311,9 @@ public class CartPage extends BasePage{
         protected void onPostExecute(ResultNotification result) {
             super.onPostExecute(result);
             if (result != null) {
-                Toast.makeText(CartPage.this, result.toString(), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(CartPage.this, result.toString(), Toast.LENGTH_SHORT).show();
+                DatabaseReference databaseReference = database.getReference().child("notification").child(String.valueOf(storeId)).child("haveNotification");
+                databaseReference.setValue("true");
             }
         }
 

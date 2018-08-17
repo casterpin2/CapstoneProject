@@ -24,6 +24,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
 import android.text.Html;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -52,6 +53,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -64,7 +66,11 @@ import project.view.adapter.NearByStoreListViewAdapter;
 import project.view.model.Cart;
 import project.view.model.CartDetail;
 import project.view.model.NearByStore;
+import project.view.model.Notification;
+import project.view.model.NotificationDetail;
 import project.view.model.Product;
+import project.view.model.ResultNotification;
+import project.view.model.StoreNotification;
 import project.view.util.CustomInterface;
 import retrofit2.Call;
 import retrofit2.Response;
@@ -99,7 +105,7 @@ public class NearbyStorePage extends BasePage implements OnMapReadyCallback {
     int page = 1;
     private Product p;
     private String productName;
-
+    private String keyNotification = "key=AAAAy6FA_UY:APA91bFZzblkVEFuOIabndkjShr6Vbvege_ZOOqjgBj6oK6ZiAK4284KlR5-1zkefS0GQL3SJSONX3vWf_iXaY0avSsiw505ndKIdnXcLo4-jjyNao1npqqfC0kXbIVio8m5Fqvc3VF3";
     @Override
     protected void onResume() {
         super.onResume();
@@ -568,6 +574,30 @@ public class NearbyStorePage extends BasePage implements OnMapReadyCallback {
                         referenceStore.child("orderDetail").child(String.valueOf(p.getProduct_id())).child("quantity").setValue(quantity);
                             re.child("orderDetail").child(String.valueOf(p.getProduct_id())).child("unitPrice").setValue(price);
                         referenceStore.child("orderDetail").child(String.valueOf(p.getProduct_id())).child("unitPrice").setValue(price);
+                        re = database.getReference().child("notification").child(String.valueOf(storeId));
+                        re.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                if (dataSnapshot.exists()) {
+                                    StoreNotification store = dataSnapshot.getValue(StoreNotification.class);
+                                    if (store != null && store.getHaveNotification() != null && store.getToken() != null){
+                                        if (store.getHaveNotification().equals("false")){
+                                            String token = store.getToken();
+                                            Notification notification = new Notification();
+                                            notification.setTo(token);
+                                            notification.setNotification(new NotificationDetail("alo","Đây là 3sproject"));
+                                            Call<ResultNotification> call = ApiUtils.getAPIServiceFirebaseMessage().sendNotification(notification,keyNotification,"application/json");
+                                            new PushNotification(storeId).execute(call);
+                                        }
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
                         AlertDialog.Builder builder = new AlertDialog.Builder(NearbyStorePage.this);
                         builder.setTitle("Đặt hàng");
                         builder.setMessage("Bạn đã đặt hàng thành công");
@@ -589,6 +619,53 @@ public class NearbyStorePage extends BasePage implements OnMapReadyCallback {
             } if (resultCode == Activity.RESULT_CANCELED){
                 Toast.makeText(this, "Chưa định vị được vị trí của bạn", Toast.LENGTH_LONG).show();
             }
+        }
+    }
+    public class PushNotification extends AsyncTask<Call,Void,ResultNotification> {
+        private int storeId;
+
+        public int getStoreId() {
+            return storeId;
+        }
+
+        public void setStoreId(int storeId) {
+            this.storeId = storeId;
+        }
+
+        public PushNotification(int storeId) {
+            this.storeId = storeId;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected void onPostExecute(ResultNotification result) {
+            super.onPostExecute(result);
+            if (result != null) {
+                //Toast.makeText(CartPage.this, result.toString(), Toast.LENGTH_SHORT).show();
+                DatabaseReference databaseReference = database.getReference().child("notification").child(String.valueOf(storeId)).child("haveNotification");
+                databaseReference.setValue("true");
+            }
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            super.onProgressUpdate(values);
+        }
+
+        @Override
+        protected ResultNotification doInBackground(Call... calls) {
+            try {
+                Call<ResultNotification> call = calls[0];
+                Response<ResultNotification> response = call.execute();
+                return response.body();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
         }
     }
 }
