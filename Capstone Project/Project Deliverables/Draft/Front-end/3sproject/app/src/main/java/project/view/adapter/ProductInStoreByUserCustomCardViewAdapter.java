@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -30,12 +31,18 @@ import java.util.List;
 
 import project.firebase.Firebase;
 import project.objects.User;
+import project.view.gui.CartPage;
+import project.view.gui.OTPCodePage;
 import project.view.gui.ProductDetailPage;
 import project.view.model.CartDetail;
 import project.view.model.Product;
 import project.view.R;
+import project.view.model.SmsResultEntities;
 import project.view.model.Store;
 import project.view.util.Formater;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ProductInStoreByUserCustomCardViewAdapter extends RecyclerView.Adapter<ProductInStoreByUserCustomCardViewAdapter.MyViewHolder> {
 
@@ -134,17 +141,19 @@ public class ProductInStoreByUserCustomCardViewAdapter extends RecyclerView.Adap
             public void onClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
                 builder.setTitle("Thêm sản phẩm vào giỏ hàng");
-                builder.setMessage("Bạn có chắc chắn muốn thêm sản phẩm này vào cửa hàng không?");
-
-                builder.setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
+                builder.setMessage("Sản phẩm đã đưuọc thêm vào giỏ hàng");
+                addProductToCart(product);
+                builder.setPositiveButton("Đi đến giỏ hàng", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        addProductToCart(product);
+                    Intent toCartPage = new Intent(mContext, CartPage.class);
+                    toCartPage.putExtra("userID",user.getId());
+                    mContext.startActivity(toCartPage);
                         return;
                     }
                 });
 
-                builder.setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
+                builder.setNegativeButton("Tiếp tục mua sắm", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         return;

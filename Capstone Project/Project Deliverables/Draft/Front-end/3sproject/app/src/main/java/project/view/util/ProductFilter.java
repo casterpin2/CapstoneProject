@@ -67,7 +67,6 @@ public class ProductFilter {
             public boolean isEnabled(int position){
                 if(list.get(position).equals("Sắp xếp theo giá bán"))
                 {
-                    //Disable the third item of spinner.
                     return false;
                 }
                 else

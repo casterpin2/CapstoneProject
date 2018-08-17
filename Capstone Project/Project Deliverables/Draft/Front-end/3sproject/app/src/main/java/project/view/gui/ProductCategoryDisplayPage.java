@@ -61,7 +61,7 @@ public class ProductCategoryDisplayPage extends BasePage implements ProductInCat
         adapter.set(product);
         recyclerView.setAdapter(adapter);
         Call<List<Product>> call = mAPI.getProductInCategory(currentPage,categoryId);
-        new ProductInCategoryList(0).execute(call);
+        new GetProductCategory(0).execute(call);
 
     }
 
@@ -107,10 +107,10 @@ public class ProductCategoryDisplayPage extends BasePage implements ProductInCat
 
     }
 
-    private class ProductInCategoryList extends AsyncTask<Call,Void,List<Product>> {
+    private class GetProductCategory extends AsyncTask<Call,Void,List<Product>> {
         private int page;
 
-        public ProductInCategoryList(int page) {
+        public GetProductCategory(int page) {
             this.page = page;
         }
 
@@ -138,7 +138,7 @@ public class ProductCategoryDisplayPage extends BasePage implements ProductInCat
                         Log.d("page" , page+"");
                         currentPage = page;
                         Call<List<Product>> call = mAPI.getProductInCategory(currentPage,categoryId);
-                        new ProductInCategoryList(page).execute(call);
+                        new GetProductCategory(page).execute(call);
                     }
                 });
             }

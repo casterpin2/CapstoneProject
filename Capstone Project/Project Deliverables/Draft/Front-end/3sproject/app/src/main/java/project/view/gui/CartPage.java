@@ -3,10 +3,12 @@ package project.view.gui;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -25,7 +27,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,8 +39,14 @@ import project.view.R;
 import project.view.adapter.CartAdapter;
 import project.view.model.Cart;
 import project.view.model.CartDetail;
+import project.view.model.Notification;
+import project.view.model.NotificationDetail;
+import project.view.model.ResultNotification;
+import project.view.model.Store;
+import project.view.model.StoreNotification;
 import project.view.util.CustomInterface;
 import retrofit2.Call;
+import retrofit2.Response;
 
 public class CartPage extends BasePage{
     private ExpandableListView lvPhones;
@@ -55,6 +65,7 @@ public class CartPage extends BasePage{
     private ProgressBar loadingBar;
     private LinearLayout buyLinearLayout;
     private int userId;
+    private String keyNotification = "key=AAAAy6FA_UY:APA91bFZzblkVEFuOIabndkjShr6Vbvege_ZOOqjgBj6oK6ZiAK4284KlR5-1zkefS0GQL3SJSONX3vWf_iXaY0avSsiw505ndKIdnXcLo4-jjyNao1npqqfC0kXbIVio8m5Fqvc3VF3";
     @Override
     protected void onResume() {
         super.onResume();
@@ -182,14 +193,38 @@ public class CartPage extends BasePage{
                             referenceStore.child("totalPrice").setValue(price);
                             re.child("orderDetail").setValue(cart.getCartDetail());
                             referenceStore.child("orderDetail").setValue(cart.getCartDetail());
+                            re = database.getReference().child("notification").child(String.valueOf(cart.getStoreId()));
+                            re.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    if (dataSnapshot.exists()) {
+                                        StoreNotification store = dataSnapshot.getValue(StoreNotification.class);
+                                        if (store != null && store.getHaveNotification() != null && store.getToken() != null){
+                                            if (store.getHaveNotification().equals("false")){
+                                                String token = store.getToken();
+                                                Notification notification = new Notification();
+                                                notification.setTo(token);
+                                                notification.setNotification(new NotificationDetail("alo","Đây là 3sproject"));
+                                                Log.d("da",new Gson().toJson(notification));
+                                                Toast.makeText(CartPage.this, notification.toString(), Toast.LENGTH_SHORT).show();
+                                                Call<ResultNotification> call = ApiUtils.getAPIServiceFirebaseMessage().sendNotification(notification,keyNotification,"application/json");
+                                                new PushNotification().execute(call);
+                                            }
+                                        }
+                                    }
+                                }
 
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
                         }
                         DatabaseReference re = database.getReference().child("cart").child(String.valueOf(userId));
                         re.removeValue();
                         AlertDialog.Builder builder = new AlertDialog.Builder(CartPage.this);
                         builder.setTitle("Đặt hàng");
                         builder.setMessage("Bạn đã đặt hàng thành công");
-
                         builder.setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -197,11 +232,12 @@ public class CartPage extends BasePage{
                             }
                         });
                         builder.show();
+
                     }
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                        Toast.makeText(CartPage.this, "Có lỗi xảy ra!!!", Toast.LENGTH_LONG).show();
                     }
                 });
             } if (resultCode == Activity.RESULT_CANCELED){
@@ -212,9 +248,6 @@ public class CartPage extends BasePage{
 
 
     private ValueEventListener changeListener = new ValueEventListener() {
-
-
-
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
             checkoutAllBtn.setEnabled(false);
@@ -254,22 +287,35 @@ public class CartPage extends BasePage{
         }
     };
 
-    public void startService(){
+    public class PushNotification extends AsyncTask<Call,Void,ResultNotification> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
 
-        String input  = "FAFSA";
-        Intent intent = new Intent(this,NotificationService.class);
-        intent.putExtra("inputExtra",input);
-        startService(intent);
-    }
+        @Override
+        protected void onPostExecute(ResultNotification result) {
+            super.onPostExecute(result);
+            if (result != null) {
+                Toast.makeText(CartPage.this, result.toString(), Toast.LENGTH_SHORT).show();
+            }
+        }
 
-    public void stopService(){
-        Intent intent = new Intent(this,NotificationService.class);
-        stopService(intent);
-    }
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            super.onProgressUpdate(values);
+        }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        startService();
+        @Override
+        protected ResultNotification doInBackground(Call... calls) {
+            try {
+                Call<ResultNotification> call = calls[0];
+                Response<ResultNotification> response = call.execute();
+                return response.body();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
     }
 }

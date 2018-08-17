@@ -70,6 +70,50 @@
     },
     {
       "client_info": {
+        "mobilesdk_app_id": "1:874583752006:android:02f485690dd6c0dc",
+        "android_client_info": {
+          "package_name": "project.firebase"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "874583752006-lr8f20o1ad580gf0hrooo6velk7a8kfu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "project.firebase",
+            "certificate_hash": "7123e0ac67dc703caab427cf3a48f33829beb703"
+          }
+        },
+        {
+          "client_id": "874583752006-brnvjv841o09kvtp1vkuacsdjbh4jms3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDT_npuv_COxoycRoEsLWqg1pvtHyIHP3Y"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "874583752006-l3ibrpt2vdt631u7ottf9ls70pctbtgr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:874583752006:android:1fdc54020b87d036",
         "android_client_info": {
           "package_name": "project.view"
@@ -102,7 +146,7 @@
           "status": 2,
           "other_platform_oauth_client": [
             {
-              "client_id": "874583752006-brnvjv841o09kvtp1vkuacsdjbh4jms3.apps.googleusercontent.com",
+              "client_id": "874583752006-l3ibrpt2vdt631u7ottf9ls70pctbtgr.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

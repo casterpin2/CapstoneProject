@@ -11,14 +11,19 @@ public class ApiUtils {
 
     public static final String BASE_URL_GOOGLE_MAP = "https://maps.googleapis.com/maps/api/geocode/";
 
+    public static final String BASE_URL_FIREBASE = "https://fcm.googleapis.com/fcm/";
+
     public static APIService getAPIService() {
 
         return RetrofitClient.getClient(BASE_URL).create(APIService.class);
     }
 
-    //Đạt
     public static APIService getAPIServiceMap() {
 
         return RetrofitClient.getClient(BASE_URL_GOOGLE_MAP).create(APIService.class);
+    }
+
+    public static APIService getAPIServiceFirebaseMessage() {
+        return RetrofitClient.getClient(BASE_URL_FIREBASE).create(APIService.class);
     }
 }

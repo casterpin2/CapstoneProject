@@ -1,7 +1,11 @@
 package project.view.gui;
 
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -37,6 +41,8 @@ public class UserManagementOrderPage extends BasePage {
     private int userId;
     private Button shoppingBtn;
     private String status;
+
+    NetworkChangeReceiver mNetworkReceiver;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_management);
@@ -67,29 +73,33 @@ public class UserManagementOrderPage extends BasePage {
     @Override
     protected void onResume() {
         super.onResume();
-
-        if (userId != -1) {
-            myRef = database.getReference().child("ordersUser").child(String.valueOf(userId));
-            adapter = new UserOrderAdapter(UserManagementOrderPage.this, list,userId);
-            orderListView.setAdapter(adapter);
-            myRef.addValueEventListener(changeListener);
-        } else {
-            Toast.makeText(this, "Không có người dùng", Toast.LENGTH_LONG).show();
-        }
-        orderListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
-            @Override
-            public boolean onGroupClick(ExpandableListView expandableListView, View view, int i, long l) {
-                return true;
+        if (isNetworkAvailable()) {
+            if (userId != -1) {
+                myRef = database.getReference().child("ordersUser").child(String.valueOf(userId));
+                adapter = new UserOrderAdapter(UserManagementOrderPage.this, list, userId);
+                orderListView.setAdapter(adapter);
+                myRef.addValueEventListener(changeListener);
+            } else {
+                Toast.makeText(this, "Không có người dùng", Toast.LENGTH_LONG).show();
             }
-        });
-
+            orderListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+                @Override
+                public boolean onGroupClick(ExpandableListView expandableListView, View view, int i, long l) {
+                    return true;
+                }
+            });
+        } else {
+            Toast.makeText(this, "Không có kết nối. Vui lòng thử lại", Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        if (userId != -1) {
-            myRef.removeEventListener(changeListener);
+        if (isNetworkAvailable()) {
+            if (userId != -1) {
+                myRef.removeEventListener(changeListener);
+            }
         }
     }
     @Override
@@ -100,6 +110,13 @@ public class UserManagementOrderPage extends BasePage {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
     private ValueEventListener changeListener = new ValueEventListener() {
@@ -142,4 +159,19 @@ public class UserManagementOrderPage extends BasePage {
 
         }
     };
+    InternalNetworkChangeReceiver internalNetworkChangeReceiver = new InternalNetworkChangeReceiver();
+    public class InternalNetworkChangeReceiver extends BroadcastReceiver
+    {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Toast.makeText(UserManagementOrderPage.this, "asd", Toast.LENGTH_SHORT).show();
+            if (!isNetworkAvailable()){
+                if (userId != -1) {
+                    myRef.removeEventListener(changeListener);
+                    list.clear();
+                    adapter.notifyDataSetChanged();
+                }
+            }
+        }
+    }
 }

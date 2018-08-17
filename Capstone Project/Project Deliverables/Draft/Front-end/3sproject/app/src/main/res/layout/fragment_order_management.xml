@@ -7,4 +7,26 @@
         android:id="@+id/lv_order"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
+    <RelativeLayout
+        android:id="@+id/noOrderLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="invisible">
+        <ImageView
+            android:id="@+id/boxImage"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:src="@drawable/empty_box"
+            android:layout_centerHorizontal="true"/>
+    <TextView
+        android:id="@+id/noOrderText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Không có đơn hàng"
+        android:textSize="18dp"
+        android:layout_centerInParent="true"
+        android:layout_below="@+id/boxImage"
+        android:layout_marginTop="10dp"/>
+    </RelativeLayout>
 </RelativeLayout>

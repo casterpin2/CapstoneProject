@@ -6,7 +6,7 @@
     <item
         android:id="@+id/search_view"
         app:actionViewClass="android.support.v7.widget.SearchView"
-        android:icon="@drawable/white_search"
+        android:icon="@drawable/search_toolbar"
         android:title="Search"
         app:showAsAction="always|collapseActionView"
         />

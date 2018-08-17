@@ -3,6 +3,7 @@ package project.view.fragment.home;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -39,12 +40,13 @@ import project.view.R;
 import project.view.gui.UserManagementOrderPage;
 import project.view.model.Store;
 import project.view.gui.UserInformationPage;
+import project.view.util.NetworkStateReceiver;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class UserFragment extends Fragment {
+public class UserFragment extends Fragment implements NetworkStateReceiver.NetworkStateReceiverListener {
 
     private View view;
     private Toolbar toolbar;
@@ -53,15 +55,14 @@ public class UserFragment extends Fragment {
     private CircleImageView profile_image;
     private LinearLayout changePasswordLayout, userInfoLayout, cartLayout, orderLayout;
     private int userID = 0;
-    private SwipeRefreshLayout userInforLayout;
     private StorageReference storageReference = Firebase.getFirebase();
     String fullName = "";
     String userAvatarPath = "";
     private User user;
     private Store store;
+    private NetworkStateReceiver networkStateReceiver;
 
     public UserFragment() {
-        // Required empty public constructor
     }
 
 
@@ -70,6 +71,12 @@ public class UserFragment extends Fragment {
                              Bundle savedInstanceState) {
         String userJSON = getArguments().getString("userJSON");
         String storeJSON = getArguments().getString("storeJSON");
+
+        //check network available
+        networkStateReceiver = new NetworkStateReceiver();
+        networkStateReceiver.addListener(this);
+        getContext().registerReceiver(networkStateReceiver, new IntentFilter(android.net.ConnectivityManager.CONNECTIVITY_ACTION));
+
         if (userJSON.isEmpty()) {
             user = new User();
             store = new Store();
@@ -79,7 +86,7 @@ public class UserFragment extends Fragment {
         }
         userID = user.getId();
         // Inflate the layout for this fragment
-        if (userID == 0 && isNetworkAvailable() == true) {
+        if (userID == 0) {
             view = inflater.inflate(R.layout.no_loginned_user_fragment_home_page_layout, container, false);
             findViewInNotLoginnedLayout();
             loginBtn.setOnClickListener(new View.OnClickListener() {
@@ -90,7 +97,7 @@ public class UserFragment extends Fragment {
                     startActivity(toLoginPage);
                 }
             });
-        } else if (isNetworkAvailable() == true && userID != 0) {
+        } else if (userID != 0) {
             view = inflater.inflate(R.layout.fragment_me, container, false);
             findViewInUserFragment();
             toolbar = view.findViewById(R.id.toolbar);
@@ -110,43 +117,19 @@ public class UserFragment extends Fragment {
                     Glide.with(getContext() /* context */)
                             .using(new FirebaseImageLoader())
                             .load(storageReference.child(userAvatarPath))
-                            //.asBitmap()
-                            //.toBytes(Bitmap.CompressFormat.PNG, 100)
-                            //.format(DecodeFormat.PREFER_ARGB_8888)
                             .diskCacheStrategy(DiskCacheStrategy.NONE)
                             .skipMemoryCache(true)
                             .into(profile_image);
-//                    storageReference.child(userAvatarPath).getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-//                        @Override
-//                        public void onSuccess(byte[] bytes) {
-//                            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-//                            profile_image.setImageBitmap(bitmap);
-//                            // Use the bytes to display the image
-//                        }
-//                    }).addOnFailureListener(new OnFailureListener() {
-//                        @Override
-//                        public void onFailure(@NonNull Exception exception) {
-//                            // Handle any errors
-//                        }
-//                    });
+
                 }
             }
-
-            userInforLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-                @Override
-                public void onRefresh() {
-
-                    stopRefresh();
-                }
-            });
-            userInforLayout.setColorSchemeResources(R.color.colorPrimary);
 
             changePasswordLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent toChangePasswordScreen = new Intent(getContext(), ChangePasswordPage.class);
                     toChangePasswordScreen.putExtra("username", user.getUsername());
-
+                    toChangePasswordScreen.putExtra("displayName", tvUserName.getText().toString());
                     startActivityForResult(toChangePasswordScreen,113);
                 }
             });
@@ -154,8 +137,6 @@ public class UserFragment extends Fragment {
             btnLogout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-             /*   Intent toLoginScreen = new Intent(getContext(), LoginPage.class);
-                getContext().startActivity(toLoginScreen);*/
                     SharedPreferences preferences = getActivity().getSharedPreferences("authentication", Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = preferences.edit();
                     //lưu vào editor
@@ -197,11 +178,18 @@ public class UserFragment extends Fragment {
                     getContext().startActivity(toUserOrderManagement);
                 }
             });
-        } else if (isNetworkAvailable() == false) {
-            view = inflater.inflate(R.layout.no_have_internet_user_fragment_home_page_layout, container, false);
         }
 
         return view;
+    }
+
+    @Override
+    public void networkAvailable() {
+    }
+
+    @Override
+    public void networkUnavailable() {
+        Toast.makeText(getContext(), "Vui lòng kiểm tra kết nối mạng", Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -215,7 +203,8 @@ public class UserFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         Glide.get(getContext()).clearMemory();
-
+        networkStateReceiver.removeListener(this);
+        getContext().unregisterReceiver(networkStateReceiver);
     }
 
 
@@ -231,7 +220,6 @@ public class UserFragment extends Fragment {
         userInfoLayout = view.findViewById(R.id.userInfoLayout);
         cartLayout = view.findViewById(R.id.cartLayout);
         orderLayout = view.findViewById(R.id.orderLayout);
-        userInforLayout = view.findViewById(R.id.userInforLayout);
         tvUserName = view.findViewById(R.id.tvUserName);
         profile_image = view.findViewById(R.id.profile_image);
 
@@ -241,33 +229,6 @@ public class UserFragment extends Fragment {
         loginBtn = view.findViewById(R.id.loginBtn);
     }
 
-    private void stopRefresh() {
-
-        userInforLayout.setRefreshing(false);
-    }
-
-    public void setLayout(int userID, RelativeLayout loginnedLayout, RelativeLayout noLoginLayout, RelativeLayout noHaveInternetLayout) {
-        if (isNetworkAvailable() == true && userID == 0) {
-            noLoginLayout.setVisibility(View.VISIBLE);
-            loginnedLayout.setVisibility(View.INVISIBLE);
-            noHaveInternetLayout.setVisibility(View.INVISIBLE);
-        } else if (isNetworkAvailable() == true && userID != 0) {
-            noLoginLayout.setVisibility(View.INVISIBLE);
-            loginnedLayout.setVisibility(View.VISIBLE);
-            noHaveInternetLayout.setVisibility(View.INVISIBLE);
-        } else if (isNetworkAvailable() == false) {
-            noLoginLayout.setVisibility(View.INVISIBLE);
-            loginnedLayout.setVisibility(View.INVISIBLE);
-            noHaveInternetLayout.setVisibility(View.VISIBLE);
-        }
-    }
-
-    private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-    }
 
     public class clearCache extends AsyncTask<Void, Void, Void> {
         @Override
@@ -297,11 +258,13 @@ public class UserFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        String a = data.getStringExtra("nameDisplay");
+
         if (requestCode == 111 && resultCode == 222) {
             if (data.getStringExtra("nameDisplay") != null && !data.getStringExtra("nameDisplay").isEmpty()) {
                 tvUserName.setText(data.getStringExtra("nameDisplay"));
             }
         }
+
+
     }
 }

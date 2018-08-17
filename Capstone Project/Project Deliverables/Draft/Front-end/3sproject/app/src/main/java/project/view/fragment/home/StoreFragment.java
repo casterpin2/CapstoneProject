@@ -1,15 +1,9 @@
 package project.view.fragment.home;
 
-
-import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,15 +31,15 @@ import project.view.gui.RegisterStorePage;
 import project.view.gui.StoreManagementOrderPage;
 import project.view.model.Store;
 import project.view.model.StoreInformation;
+import project.view.util.NetworkStateReceiver;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class StoreFragment extends Fragment {
-    private Context context;
+public class StoreFragment extends Fragment implements NetworkStateReceiver.NetworkStateReceiverListener {
     private TextView storeName, ownerName, address, registerDate, phoneText, tv_count_smile, tv_count_sad;
-    private ImageView storeImg, btnEdit, errorImage;
+    private ImageView storeImg, btnEdit;
     private int storeID = 1;
     private int hasStore = 0;
     private int userID = 1;
@@ -56,14 +50,12 @@ public class StoreFragment extends Fragment {
     private User user;
     private Button btnManagermentProduct, btnManagermentOrder, loginBtn, registerStoreBtn;
     private StorageReference storageReference = Firebase.getFirebase();
-    private SwipeRefreshLayout mainLayout;
-    private FragmentManager supportFragmentManager;
     private final int RESULT_CODE = 2222;
     private final int REQUEST_CODE = 1111;
-    public StoreFragment() {
-        // Required empty public constructor
-    }
+    private NetworkStateReceiver networkStateReceiver;
 
+    public StoreFragment() {
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -81,7 +73,12 @@ public class StoreFragment extends Fragment {
         hasStore = user.getHasStore();
         userID = user.getId();
 
-        if (isNetworkAvailable() == true && hasStore == 1 && userID != 0 && storeID != 0) {
+        //check network available
+        networkStateReceiver = new NetworkStateReceiver();
+        networkStateReceiver.addListener(this);
+        getContext().registerReceiver(networkStateReceiver, new IntentFilter(android.net.ConnectivityManager.CONNECTIVITY_ACTION));
+
+        if (hasStore == 1 && userID != 0 && storeID != 0) {
             view = inflater.inflate(R.layout.fragment_store, container, false);
             findViewInStoreFragment();
             registerDate.setText(store.getRegisterLog());
@@ -91,15 +88,6 @@ public class StoreFragment extends Fragment {
             ownerName.setText(user.getFirst_name() + " " + user.getLast_name());
             latitude = Double.parseDouble(store.getLatitude());
             longtitude = Double.parseDouble(store.getLongtitude());
-
-            mainLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-                @Override
-                public void onRefresh() {
-                    stopRefresh();
-                }
-            });
-            mainLayout.setColorSchemeResources(R.color.colorPrimary);
-
             btnManagermentProduct.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -132,39 +120,44 @@ public class StoreFragment extends Fragment {
                     startActivityForResult(toEditStoreInformation, REQUEST_CODE);
                 }
             });
-        } else if (isNetworkAvailable() == true && hasStore == 0 && userID != 0) {
+
+        } else if (hasStore == 0 && userID != 0) {
             view = inflater.inflate(R.layout.no_has_store_store_fragment_home_page_layout, container, false);
             findViewInNoHaveStoreLayout();
             registerStoreBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent toRegisterStorePage = new Intent(getContext(), RegisterStorePage.class);
-                    toRegisterStorePage.putExtra("user_id", user.getId());
-                    startActivity(toRegisterStorePage);
+                        Intent toRegisterStorePage = new Intent(getContext(), RegisterStorePage.class);
+                        toRegisterStorePage.putExtra("user_id", user.getId());
+                        startActivity(toRegisterStorePage);
+
                 }
             });
-        } else if (isNetworkAvailable() == true && userID == 0) {
+        } else if (userID == 0) {
             view = inflater.inflate(R.layout.no_loginned_store_fragment_home_page_layout, container, false);
             findViewInNoLoginnedLayout();
             loginBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent toLoginPage = new Intent(getContext(), LoginPage.class);
-                    startActivity(toLoginPage);
-                }
-            });
-        } else if (isNetworkAvailable() == false) {
-            view = inflater.inflate(R.layout.no_have_internet_store_fragment_home_page_layout, container, false);
-            findViewInNoHaveInternetLayout();
-            errorImage.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    // cái này để reload khi mà mất mạng
+
+                        Intent toLoginPage = new Intent(getContext(), LoginPage.class);
+                        startActivity(toLoginPage);
+
                 }
             });
         }
         return view;
     }
+
+    @Override
+    public void networkAvailable() {
+    }
+
+    @Override
+    public void networkUnavailable() {
+        Toast.makeText(getContext(), "Vui lòng kiểm tra kết nối mạng", Toast.LENGTH_LONG).show();
+    }
+
 
     private void findViewInStoreFragment() {
         storeName = view.findViewById(R.id.storeName);
@@ -178,8 +171,6 @@ public class StoreFragment extends Fragment {
         btnManagermentProduct = view.findViewById(R.id.btnManagerProduct);
         tv_count_smile = (TextView) view.findViewById(R.id.tv_count_smile);
         tv_count_sad = (TextView) view.findViewById(R.id.tv_count_sad);
-
-        mainLayout = view.findViewById(R.id.storeFragmentLayout);
         Glide.with(getContext() /* context */)
                 .using(new FirebaseImageLoader())
                 .load(storageReference.child(store.getImage_path()))
@@ -196,10 +187,6 @@ public class StoreFragment extends Fragment {
         registerStoreBtn = view.findViewById(R.id.registerStoreBtn);
     }
 
-    private void findViewInNoHaveInternetLayout() {
-        errorImage = view.findViewById(R.id.errorImage);
-    }
-
     @Override
     public void onResume() {
         super.onResume();
@@ -213,26 +200,16 @@ public class StoreFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-
+        networkStateReceiver.removeListener(this);
+        getContext().unregisterReceiver(networkStateReceiver);
     }
 
-    private void stopRefresh() {
-
-        mainLayout.setRefreshing(false);
-    }
-
-    private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-    }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE && resultCode == RESULT_CODE) {
             String checkData = data.getStringExtra("data");
-            if(!checkData.equals("NO")){
+            if (!checkData.equals("NO")) {
                 String userJSON = data.getStringExtra("userData");
                 String storeJSON = data.getStringExtra("storeData");
                 if (userJSON.isEmpty()) {
@@ -252,5 +229,4 @@ public class StoreFragment extends Fragment {
             }
         }
     }
-
 }

@@ -9,6 +9,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.CALL_PHONE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:name=".gui.App"
@@ -142,6 +143,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".gui.EditStoreInformationPage" />
         <activity android:name=".gui.BarcodeActivity" />
+        <activity android:name=".gui.ResetPasswordPage" />
         <activity
             android:name=".gui.WelcomePage"
             android:theme="@style/AppTheme.NoActionBar">
@@ -169,6 +171,7 @@
         </activity>
         <activity android:name=".gui.ProductInStoreByUserDisplayPage"
             android:theme="@style/AppTheme.NoActionBar"></activity>
+
         <receiver android:name=".gui.UserManagementOrderPage$InternalNetworkChangeReceiver" >
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />

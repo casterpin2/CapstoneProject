@@ -137,7 +137,7 @@
                                         android:layout_width="24dp"
                                         android:layout_height="24dp"
                                         android:layout_gravity="center"
-                                        android:src="@drawable/cart"
+                                        android:src="@drawable/card"
                                         android:layout_marginLeft="16dp"
                                         android:adjustViewBounds="true"
                                         android:scaleType="fitXY"/>
@@ -209,7 +209,7 @@
                                     android:layout_width="24dp"
                                     android:layout_height="24dp"
                                     android:layout_gravity="center"
-                                    android:src="@drawable/logout"
+                                    android:src="@drawable/password"
                                     android:layout_marginLeft="16dp"
                                     android:adjustViewBounds="true"
                                     android:scaleType="fitXY"/>

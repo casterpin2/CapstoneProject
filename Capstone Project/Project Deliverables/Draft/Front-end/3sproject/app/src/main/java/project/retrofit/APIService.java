@@ -7,9 +7,11 @@ import project.googleMapAPI.GoogleMapJSON;
 import project.objects.User;
 import project.view.model.Brand;
 import project.view.model.Item;
+import project.view.model.Notification;
 import project.view.model.Product;
 import project.view.model.Category;
 import project.view.model.Login;
+import project.view.model.ResultNotification;
 import project.view.model.ResultRegister;
 import project.view.model.SmsResultEntities;
 import project.view.model.Store;
@@ -20,7 +22,9 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Query;
@@ -140,4 +144,9 @@ public interface APIService {
 
     @PUT("changePassword")
     Call<Boolean> requestChangePassword(@Query("username") String username,@Query("password") String password);
+
+    @POST("send")
+    Call<ResultNotification> sendNotification(@Body Notification notification,
+                                              @Header("Authorization") String authorization,
+    @Header("Content-Type") String content);
 }

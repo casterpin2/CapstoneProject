@@ -107,32 +107,16 @@
                     android:id="@+id/promotionPercentErrorMessage_optionDialog" />
 
             </LinearLayout>
-
-
-            <LinearLayout
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:layout_gravity="center_horizontal">
-
                 <Button
                     android:id="@+id/addBtn_optionDialog"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/login_button"
-                    android:gravity="center_horizontal"
                     android:onClick="addPriceDialog"
-                    android:padding="10dp"
                     android:text="Thêm tùy chọn"
                     android:textColor="@color/colorWhite"
-                    android:textSize="12dp"
                     android:layout_marginBottom="10dp"
-                    android:layout_marginTop="10dp"
-                    />
-            </LinearLayout>
+                    android:layout_marginTop="10dp" />
         </LinearLayout>
-
     </LinearLayout>
-
-
-
 </LinearLayout>

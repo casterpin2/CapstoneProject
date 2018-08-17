@@ -23,7 +23,7 @@ dependencies {
     implementation 'com.android.support:support-v4:27.1.0'
     implementation 'com.android.support:design:27.1.0'
     implementation 'com.google.firebase:firebase-storage:16.0.1'
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.google.firebase:firebase-database:16.0.1'
     testImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
@@ -37,9 +37,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-core:16.0.1'
     implementation 'com.google.firebase:firebase-storage:16.0.1'
     implementation 'com.google.android.gms:play-services-auth:15.0.1'
+    implementation 'com.google.firebase:firebase-messaging:17.3.0'
     // Retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.1.0'
-
     // JSON Parsing
     implementation 'com.google.code.gson:gson:2.6.1'
     implementation 'com.squareup.retrofit2:converter-gson:2.1.0'
@@ -54,7 +54,6 @@ dependencies {
     implementation 'com.github.Hitomis:CircleMenu:v1.0.2'
     implementation 'com.github.clans:fab:1.6.2'
     implementation 'com.github.BlacKCaT27:CurrencyEditText:2.0.2'
-
     implementation 'com.google.android.gms:play-services-location:15.0.1'
     implementation 'com.google.android.gms:play-services-places:15.0.1'
     implementation 'com.google.android.gms:play-services-oss-licenses:15.0.1'
