@@ -585,7 +585,7 @@ public class NearbyStorePage extends BasePage implements OnMapReadyCallback {
                                             String token = store.getToken();
                                             Notification notification = new Notification();
                                             notification.setTo(token);
-                                            notification.setNotification(new NotificationDetail("alo","Đây là 3sproject"));
+                                            notification.setNotification(new NotificationDetail(storeName,"Bạn có đơn hàng mới"));
                                             Call<ResultNotification> call = ApiUtils.getAPIServiceFirebaseMessage().sendNotification(notification,keyNotification,"application/json");
                                             new PushNotification(storeId).execute(call);
                                         }
