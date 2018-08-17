@@ -106,6 +106,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".gui.EditStoreInformationPage" />
         <activity android:name=".gui.BarcodeActivity" />
+        <activity android:name=".gui.ResetPasswordPage" />
         <activity
             android:name=".gui.WelcomePage"
             android:theme="@style/AppTheme.NoActionBar">
