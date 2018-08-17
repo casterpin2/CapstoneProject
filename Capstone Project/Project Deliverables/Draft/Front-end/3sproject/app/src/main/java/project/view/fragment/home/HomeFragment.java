@@ -94,7 +94,7 @@ public class HomeFragment extends Fragment implements NetworkStateReceiver.Netwo
     private Call<List<Brand>> callBrand;
     private Call<List<Product>> callSale;
     private NetworkStateReceiver networkStateReceiver;
-
+    boolean isNetworkAvailable;
     public HomeFragment() {
 
     }
@@ -178,16 +178,12 @@ public class HomeFragment extends Fragment implements NetworkStateReceiver.Netwo
 
     @Override
     public void networkAvailable() {
-        callCategory = apiService.getCategory();
-        new CategoryData().execute(callCategory);
-        callBrand = apiService.getBrandsTop5();
-        new BrandData().execute(callBrand);
-        callSale = apiService.getSaleProductTop20();
-        new SaleData().execute(callSale);
+        isNetworkAvailable = true;
     }
 
     @Override
     public void networkUnavailable() {
+        isNetworkAvailable = false;
         Toast.makeText(getContext(), "Vui lòng kiểm tra kết nối mạng", Toast.LENGTH_LONG).show();
     }
 
@@ -248,12 +244,14 @@ public class HomeFragment extends Fragment implements NetworkStateReceiver.Netwo
                     swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                         @Override
                         public void onRefresh() {
-                            callCategory = apiService.getCategory();
-                            new CategoryData().execute(callCategory);
-                            callBrand = apiService.getBrandsTop5();
-                            new BrandData().execute(callBrand);
-                            callSale = apiService.getSaleProductTop20();
-                            new SaleData().execute(callSale);
+                            if (isNetworkAvailable) {
+                                callCategory = apiService.getCategory();
+                                new CategoryData().execute(callCategory);
+                                callBrand = apiService.getBrandsTop5();
+                                new BrandData().execute(callBrand);
+                                callSale = apiService.getSaleProductTop20();
+                                new SaleData().execute(callSale);
+                            }
                             new Handler().postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
