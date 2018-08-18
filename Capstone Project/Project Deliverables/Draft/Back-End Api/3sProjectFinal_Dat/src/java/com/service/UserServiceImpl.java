@@ -6,6 +6,7 @@
 package com.service;
 
 import com.dao.UserDao;
+import com.entites.FeedbackEntites;
 import com.entites.NearByStore;
 import com.entites.ProductAddEntites;
 import com.entites.UserEntites;
@@ -84,4 +85,9 @@ public class UserServiceImpl implements UserService{
     public HashMap<String, Object> loginG(UserEntites user, String GId) throws SQLException {
         return dao.loginG(user, GId);
     }  
+
+    @Override
+    public boolean getFeedback(FeedbackEntites feedback) throws SQLException {
+        return dao.getFeedback(feedback);
+    }
 }

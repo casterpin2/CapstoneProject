@@ -6,6 +6,7 @@ import java.util.List;
 import project.googleMapAPI.GoogleMapJSON;
 import project.objects.User;
 import project.view.model.Brand;
+import project.view.model.Feedback;
 import project.view.model.Item;
 import project.view.model.Notification;
 import project.view.model.Product;
@@ -149,4 +150,7 @@ public interface APIService {
     Call<ResultNotification> sendNotification(@Body Notification notification,
                                               @Header("Authorization") String authorization,
     @Header("Content-Type") String content);
+
+    @POST("getFeedback")
+    Call<Boolean> getFeedback(@Body Feedback feedback);
 }

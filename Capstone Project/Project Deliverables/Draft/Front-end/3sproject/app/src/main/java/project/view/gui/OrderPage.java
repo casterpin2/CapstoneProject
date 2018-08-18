@@ -137,7 +137,6 @@ public class OrderPage extends BasePage implements OnMapReadyCallback{
         isCart = getIntent().getBooleanExtra("isCart", true);
         price = (long)getIntent().getDoubleExtra("price",0);
         promotion = getIntent().getDoubleExtra("promotion",0.0);
-        Toast.makeText(OrderPage.this, price + " " + promotion, Toast.LENGTH_LONG).show();
         mapping();
         if (isCart) {
             String priceInCart = getIntent().getStringExtra("priceInCart");

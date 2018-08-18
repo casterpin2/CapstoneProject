@@ -5,6 +5,7 @@
  */
 package com.dao;
 
+import com.entites.FeedbackEntites;
 import com.entites.NearByStore;
 import com.entites.ProductAddEntites;
 import com.entites.UserEntites;
@@ -31,7 +32,7 @@ public interface UserDao {
     public HashMap<String,Object> login(String username,String password) throws SQLException;
     public HashMap<String,Object> loginFB(UserEntites user,String FBId) throws SQLException;
     public HashMap<String,Object> loginG(UserEntites user,String GId) throws SQLException;
-    
+    public boolean getFeedback(FeedbackEntites feedback) throws SQLException;
     public UserEntites updateInformation(UserEntites user) throws SQLException;
     public UserEntites informationUser(int userId) throws SQLException;
     public UserEntites getPhoneNumberOfUser(String username) throws SQLException;

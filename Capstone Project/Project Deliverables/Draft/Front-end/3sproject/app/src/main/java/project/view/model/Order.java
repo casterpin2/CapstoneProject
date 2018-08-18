@@ -118,7 +118,7 @@ public class Order {
     public Order() {
     }
 
-    public Order(String status, double totalPrice, String deliverTime) {
+        public Order(String status, double totalPrice, String deliverTime) {
         this.status = status;
         this.totalPrice = totalPrice;
         this.deliverTime = deliverTime;

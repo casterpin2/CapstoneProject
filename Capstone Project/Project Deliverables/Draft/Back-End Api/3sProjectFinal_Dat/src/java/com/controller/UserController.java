@@ -5,6 +5,7 @@
  */
 package com.controller;
 
+import com.entites.FeedbackEntites;
 import com.entites.JsonUtil;
 import com.entites.NearByStore;
 import com.entites.ProductAddEntites;
@@ -231,5 +232,14 @@ public class UserController {
             e.getMessage();
         }
         return smsJson;
+    }
+    
+    @RequestMapping(value = "/getFeedback", method = RequestMethod.POST, produces = "application/json")
+    public boolean getFeedback(@RequestBody String jsonString) throws SQLException, IOException {
+        JsonFactory factory = new JsonFactory();
+        factory.enable(JsonParser.Feature.ALLOW_SINGLE_QUOTES);
+        ObjectMapper mapper = new ObjectMapper(factory);
+        FeedbackEntites us = mapper.readValue(jsonString, FeedbackEntites.class);
+        return user.getFeedback(us);
     }
 }

@@ -3,9 +3,10 @@ package project.googleMapAPI;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class GoogleMapJSON {
+public class GoogleMapJSON implements Serializable {
     @SerializedName("results")
     @Expose
     private List<Address_Component> results;

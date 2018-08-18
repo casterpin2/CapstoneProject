@@ -1,5 +1,6 @@
 package project.view.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -12,6 +13,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
@@ -84,7 +86,7 @@ public class UserOrderAdapter extends BaseExpandableListAdapter {
     }
 
     @Override
-    public View getGroupView(int groupPosition, boolean b, View convertView, ViewGroup viewGroup) {
+    public View getGroupView(final int groupPosition, boolean b, View convertView, ViewGroup viewGroup) {
         if (convertView == null) {
             LayoutInflater infalInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = infalInflater.inflate(R.layout.order_parent_list, null);
@@ -192,7 +194,9 @@ public class UserOrderAdapter extends BaseExpandableListAdapter {
                      public void onClick(View view) {
                          Intent toUserFeedBackPage = new Intent(context, UserFeedbackPage.class);
                          toUserFeedBackPage.putExtra("orderId",orderId);
-                         context.startActivity(toUserFeedBackPage);
+                         toUserFeedBackPage.putExtra("userId",userId);
+                         toUserFeedBackPage.putExtra("storeId",((Order) getGroup(groupPosition)).getStoreId());
+                         ((Activity)context).startActivityForResult(toUserFeedBackPage ,1);
                      }
                  });
              }

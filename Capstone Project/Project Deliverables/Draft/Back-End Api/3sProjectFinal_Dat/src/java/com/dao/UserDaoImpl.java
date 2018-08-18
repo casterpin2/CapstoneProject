@@ -6,6 +6,7 @@
 package com.dao;
 
 import static com.dao.BaseDao.closeConnect;
+import com.entites.FeedbackEntites;
 import com.entites.NearByStore;
 import com.entites.ProductAddEntites;
 import com.entites.StoreEntites;
@@ -20,8 +21,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -733,5 +732,34 @@ public class UserDaoImpl extends BaseDao implements UserDao {
             closeConnect(conn, pre, rs);
         }
         return hashMap;
+    }
+
+    @Override
+    public boolean getFeedback(FeedbackEntites feedback) throws SQLException {
+        boolean check = false;
+        Connection conn = null;
+        PreparedStatement pre = null;
+        int count = 0;
+        try {
+            String sql = "insert into Feedback(user_id,store_id,content,satisfied) values (?,?,?,?)";
+            conn = getConnection();
+            conn.setAutoCommit(false);
+            pre = conn.prepareStatement(sql);
+            pre.setInt(1, feedback.getUser_id());
+            pre.setInt(2, feedback.getStore_id());
+            pre.setString(3, feedback.getContent());
+            pre.setInt(4, feedback.getIsSatisfied());
+            count++;
+            if (pre.executeUpdate() == count) {
+                conn.commit();
+                check = true;
+            } else {
+                conn.rollback();
+                conn.setAutoCommit(true);
+            }
+        } finally {
+            closeConnect(conn, pre, null);
+        }
+        return check;
     }
 }

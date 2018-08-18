@@ -3,9 +3,11 @@ package project.view.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+
 import project.objects.User;
 
-public class Login {
+public class Login implements Serializable{
     @SerializedName("user")
     @Expose
     private User user;

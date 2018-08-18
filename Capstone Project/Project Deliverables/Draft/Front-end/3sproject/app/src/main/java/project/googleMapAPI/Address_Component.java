@@ -3,10 +3,11 @@ package project.googleMapAPI;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
-public class Address_Component {
+public class Address_Component implements Serializable {
     @SerializedName("address_components")
     @Expose
     private List<Address> addressList;

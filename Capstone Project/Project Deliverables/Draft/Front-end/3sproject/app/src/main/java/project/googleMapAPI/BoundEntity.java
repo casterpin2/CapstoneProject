@@ -3,7 +3,9 @@ package project.googleMapAPI;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class BoundEntity {
+import java.io.Serializable;
+
+public class BoundEntity implements Serializable {
     @SerializedName("lat")
     @Expose
     private String lat;

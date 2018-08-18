@@ -1,9 +1,12 @@
 package project.view.gui;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -11,13 +14,25 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.gson.Gson;
+
+import java.io.IOException;
+
+import project.retrofit.ApiUtils;
 import project.view.R;
+import project.view.model.Feedback;
+import project.view.model.ResultNotification;
 import project.view.util.CustomInterface;
 import project.view.util.TweakUI;
+import retrofit2.Call;
+import retrofit2.Response;
 
 public class UserFeedbackPage extends BasePage {
     private LinearLayout main_layout;
@@ -27,7 +42,11 @@ public class UserFeedbackPage extends BasePage {
     private TextView tv_feedback_status, error_mess;
     private Button btn_send_feedback;
     private EditText content_feedback;
-    private int orderId;
+    private ProgressBar loadingBar;
+    private int userId,storeId;
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    DatabaseReference myRef;
+    private String orderId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,8 +65,6 @@ public class UserFeedbackPage extends BasePage {
             }
         });
 
-
-        orderId = getIntent().getIntExtra("orderId",-1);
         back_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -76,7 +93,21 @@ public class UserFeedbackPage extends BasePage {
                     btnOK.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            dialog();
+                            if (userId == -1 || storeId == -1 || orderId.isEmpty()){
+                                //Toast.makeText(UserFeedbackPage.this, "Có lỗi xảy ra!!!", Toast.LENGTH_SHORT).show();
+                            } else {
+                                String content = content_feedback.getText().toString();
+                                int isSatisfied = 1;
+                                if (isSad) isSatisfied = 0;
+                                Feedback feedback = new Feedback();
+                                feedback.setContent(content);
+                                feedback.setUser_id(userId);
+                                feedback.setStore_id(storeId);
+                                feedback.setIsSatisfied(isSatisfied);
+                                Log.d("abc", new Gson().toJson(feedback));
+                                Call<Boolean> call = ApiUtils.getAPIService().getFeedback(feedback);
+                                new SendFeedback().execute(call);
+                            }
                             alertDialog.hide();
                         }
                     });
@@ -103,6 +134,10 @@ public class UserFeedbackPage extends BasePage {
         btn_send_feedback = findViewById(R.id.btn_send_feedback);
         content_feedback = findViewById(R.id.content);
         error_mess = findViewById(R.id.errorMessage);
+        loadingBar = findViewById(R.id.loadingBar);
+        orderId = getIntent().getStringExtra("orderId");
+        userId = getIntent().getIntExtra("userId",-1);
+        storeId = getIntent().getIntExtra("storeId",-1);
     }
 
     private void dialog(){
@@ -119,9 +154,10 @@ public class UserFeedbackPage extends BasePage {
         btnOK.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent toHomePage = new Intent(getBaseContext(),HomePage.class);
-                startActivity(toHomePage);
                 alertDialog.hide();
+                Intent intent = new Intent();
+                setResult(Activity.RESULT_OK,intent);
+                finish();
             }
         });
         alertDialog.show();
@@ -167,5 +203,45 @@ public class UserFeedbackPage extends BasePage {
                 }
             }
         });
+    }
+
+    public class SendFeedback extends AsyncTask<Call,Void,Boolean> {
+
+
+        @Override
+        protected void onPreExecute() {
+            loadingBar.setVisibility(View.VISIBLE);
+            super.onPreExecute();
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            super.onPostExecute(result);
+            loadingBar.setVisibility(View.INVISIBLE);
+            if (result != null) {
+                DatabaseReference databaseReference = database.getReference().child("ordersUser").child(String.valueOf(userId)).child(orderId).child("isFeedback");
+                databaseReference.setValue("true");
+                dialog();
+            } else {
+                Toast.makeText(UserFeedbackPage.this, "Có lỗi xảy ra!!!", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            super.onProgressUpdate(values);
+        }
+
+        @Override
+        protected Boolean doInBackground(Call... calls) {
+            try {
+                Call<Boolean> call = calls[0];
+                Response<Boolean> response = call.execute();
+                return response.body();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
     }
 }
