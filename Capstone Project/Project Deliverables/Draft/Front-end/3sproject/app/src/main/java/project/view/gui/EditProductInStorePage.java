@@ -3,6 +3,8 @@ package project.view.gui;
 import android.content.DialogInterface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.os.Bundle;
@@ -14,6 +16,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -55,11 +58,13 @@ public class EditProductInStorePage extends BasePage {
     private String productNameValue;
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference myRef;
+    private ProgressBar loadingBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_product_in_store_page);
         findView();
+        loadingBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorApplication), android.graphics.PorterDuff.Mode.MULTIPLY);
         CustomInterface.setStatusBarColor(this);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorApplication)));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -92,7 +97,8 @@ public class EditProductInStorePage extends BasePage {
         productName.setText(productNameValue);
         categoryName.setText(categoryNameValue);
         brandName.setText(brandNameValue);
-        productPrice.setText(Formater.formatDoubleToMoney(String.valueOf(productPriceValue)));
+//        productPrice.setText(Formater.formatDoubleToMoney(String.valueOf(productPriceValue)));
+        productPrice.setText(String.valueOf(productPriceValue));
         productPrice.setSelection(productPrice.getText().toString().length());
         promotionPercent.setText(String.valueOf(promotionPercentValue));
         promotionPercent.setSelection(promotionPercent.getText().toString().length());
@@ -207,6 +213,7 @@ public class EditProductInStorePage extends BasePage {
         saveBtn = (Button) findViewById(R.id.saveBtn);
         imageView = (ImageView) findViewById(R.id.productImage);
         scroll = (ScrollView) findViewById(R.id.scroll);
+        loadingBar = findViewById(R.id.loadingBar);
     }
 
     @Override
@@ -260,6 +267,7 @@ public class EditProductInStorePage extends BasePage {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            loadingBar.setVisibility(View.VISIBLE);
         }
 
         @Override
@@ -276,17 +284,43 @@ public class EditProductInStorePage extends BasePage {
         }
         @Override
         protected void onPostExecute(Boolean result) {
+            boolean isSuccess = false;
             if (result == null) {
-                Toast.makeText(EditProductInStorePage.this,"Không có kết nối mạng!",Toast.LENGTH_LONG).show();
-                return;
+                isSuccess = false;
             }
-            if (!result){
-                Toast.makeText(EditProductInStorePage.this,"Có lỗi xảy ra !!!",Toast.LENGTH_LONG).show();
-                return;
+            if (!result) {
+                isSuccess = false;
             } else {
+                isSuccess = true;
+            }
+            if(isSuccess == true){
+                loadingBar.setVisibility(View.INVISIBLE);
                 Toast.makeText(EditProductInStorePage.this,"Sửa thông tin " + productNameValue + " thành công",Toast.LENGTH_LONG).show();
                 finish();
             }
+            final boolean finalCheck = isSuccess;
+            new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                @Override
+                public void run() {
+
+                    if (finalCheck == false) {
+                        Toast.makeText(EditProductInStorePage.this, "Có lỗi xảy ra. Vui lòng thử lại!", Toast.LENGTH_SHORT).show();
+//                        nullMessage.setText("Có lỗi xảy ra, vui lòng tải lại trang!");
+                        loadingBar.setVisibility(View.INVISIBLE);
+                    }
+                }
+            },10000);
+//            if (result == null) {
+//                Toast.makeText(EditProductInStorePage.this,"Không có kết nối mạng!",Toast.LENGTH_LONG).show();
+//                return;
+//            }
+//            if (!result){
+//                Toast.makeText(EditProductInStorePage.this,"Có lỗi xảy ra. Vui lòng thử lại",Toast.LENGTH_LONG).show();
+//                return;
+//            } else {
+//                Toast.makeText(EditProductInStorePage.this,"Sửa thông tin " + productNameValue + " thành công",Toast.LENGTH_LONG).show();
+//                finish();
+//            }
             super.onPostExecute(result);
 
         }

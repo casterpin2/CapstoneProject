@@ -14,6 +14,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Handler;
+import android.os.Looper;
 import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -432,21 +433,34 @@ public class NearbyStorePage extends BasePage implements OnMapReadyCallback {
         protected void onPostExecute(List<NearByStore> listNearByStore) {
             super.onPostExecute(listNearByStore);
             list.clear();
-            loadingBar.setVisibility(View.INVISIBLE);
+
             if (listNearByStore != null) {
                 for (NearByStore near : listNearByStore) {
                     list.add(near);
                 }
+                loadingBar.setVisibility(View.INVISIBLE);
                 adapter.notifyDataSetChanged();
                 changeLocation(mMap);
+                if (list.size() == 0) {
+                    noHaveStore.setVisibility(View.VISIBLE);
+                } else {
+                    noHaveStore.setVisibility(View.INVISIBLE);
+                }
             } else {
-                Toast.makeText(NearbyStorePage.this,"Có lỗi xảy ra!!!",Toast.LENGTH_LONG).show();
+//
+                new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                            Toast.makeText(NearbyStorePage.this, "Có lỗi xảy ra. Vui lòng thử lại!", Toast.LENGTH_SHORT).show();
+//                            nullMessage.setText("Có lỗi xảy ra, vui lòng tải lại trang!");
+                            loadingBar.setVisibility(View.INVISIBLE);
+                            noHaveStore.setVisibility(View.VISIBLE);
+                            noHaveStore.setText("Có lỗi xảy ra, vui lòng tải lại trang!");
+
+                    }
+                },10000);
             }
-            if (list.size() == 0) {
-                noHaveStore.setVisibility(View.VISIBLE);
-            } else {
-                noHaveStore.setVisibility(View.INVISIBLE);
-            }
+
         }
     }
 

@@ -3,6 +3,8 @@ package project.view.gui;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
@@ -14,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -68,6 +71,8 @@ public class ProductInStoreByUserDisplayPage extends BasePage {
     private List<Product> tempProductInStore;
     private ProductFilter productFilter;
     private LinearLayout storeNameLayout;
+    private ProgressBar loadingBar;
+    private TextView nullMessage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +80,7 @@ public class ProductInStoreByUserDisplayPage extends BasePage {
         setContentView(R.layout.activity_product_in_store_by_user_display_page);
         findView();
         customView();
-
+        loadingBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorApplication), android.graphics.PorterDuff.Mode.MULTIPLY);
         storeName = getIntent().getStringExtra("storeName");
         phone = getIntent().getStringExtra("phone");
         image_path = getIntent().getStringExtra("image_path");
@@ -131,17 +136,41 @@ public class ProductInStoreByUserDisplayPage extends BasePage {
         main_layout = findViewById(R.id.main_layout);
         searchView = findViewById(R.id.searchViewQuery);
         storeNameLayout = findViewById(R.id.storeNameLayout);
+        loadingBar = findViewById(R.id.loadingBar);
+        nullMessage = findViewById(R.id.nullMessage);
     }
 
     public class ProductInStoreList extends AsyncTask<Call,List<Product>,Void> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            loadingBar.setVisibility(View.VISIBLE);
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+            boolean check = false;
+            if (products != null) {
+                check = true;
+            } else {
+                check = false;
+            }
+            if(check == true){
+                loadingBar.setVisibility(View.INVISIBLE);
+            }
+            final boolean finalCheck = check;
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+
+                    if (finalCheck == false) {
+                        Toast.makeText(ProductInStoreByUserDisplayPage.this, "Có lỗi xảy ra. Vui lòng thử lại!", Toast.LENGTH_SHORT).show();
+                        nullMessage.setText("Có lỗi xảy ra, vui lòng tải lại trang!");
+                        loadingBar.setVisibility(View.INVISIBLE);
+                    }
+                }
+            },10000);
         }
 
         @Override
@@ -149,7 +178,9 @@ public class ProductInStoreByUserDisplayPage extends BasePage {
             super.onProgressUpdate(values);
             productFilter = new ProductFilter();
             products = values[0];
+
             tempProductInStore = new ArrayList<>();
+
             if(products != null){
                 productFilter.setCategoryFilter(products, ProductInStoreByUserDisplayPage.this, spinnerCategory);
                 productFilter.setSortItem(ProductInStoreByUserDisplayPage.this,spinnerSort);
@@ -225,6 +256,7 @@ public class ProductInStoreByUserDisplayPage extends BasePage {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
             return null;
         }
     }

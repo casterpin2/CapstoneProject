@@ -77,7 +77,6 @@ public class CategoryDisplayPage extends BasePage {
         });
         imgBarCode.setVisibility(View.INVISIBLE);
         loadingBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorApplication), android.graphics.PorterDuff.Mode.MULTIPLY);
-        loadingBar.setVisibility(View.VISIBLE);
 
         searchView.setQueryHint("Tìm trong danh mục ...");
 

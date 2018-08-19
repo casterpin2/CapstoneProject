@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,6 +16,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,19 +43,20 @@ public class ProductTypeDisplayPage extends BasePage {
     public List<Product> tempProduct;
     private RecyclerView recyclerView;
     private ProductTypeCustomCardViewAdapter adapter;
-    private TextView filterLable;
+    private TextView filterLable, nullMessage;
     private Spinner spinnerCategory,spinnerBrand;
     ProductFilter productFilter;
     private  List<Product> searchedProduct;
     private SearchView searchView;
     private String typeName;
+    private ProgressBar loadingBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.content_with_filter);
         findView();
-
+        loadingBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorApplication), android.graphics.PorterDuff.Mode.MULTIPLY);
 
         int typeID = getIntent().getIntExtra("typeID", -1);
         typeName = getIntent().getStringExtra("typeName");
@@ -88,6 +91,8 @@ public class ProductTypeDisplayPage extends BasePage {
         filterLable.setText("Thương hiệu");
         spinnerBrand = findViewById(R.id.spinnerSort);
         searchView = findViewById(R.id.action_search);
+        loadingBar = (ProgressBar) findViewById(R.id.loadingBar);
+        nullMessage = findViewById(R.id.nullMessage);
     }
 
     @Override
@@ -149,6 +154,7 @@ public class ProductTypeDisplayPage extends BasePage {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            loadingBar.setVisibility(View.VISIBLE);
         }
         @Override
         protected void onPostExecute(List<Product> aVoid) {
@@ -185,10 +191,19 @@ public class ProductTypeDisplayPage extends BasePage {
 
                     }
                 });
-
+                loadingBar.setVisibility(View.INVISIBLE);
                 adapter.notifyDataSetChanged();
             } else {
-                Toast.makeText(ProductTypeDisplayPage.this, "Có lỗi xảy ra !!!",Toast.LENGTH_LONG).show();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+
+                            Toast.makeText(ProductTypeDisplayPage.this, "Có lỗi xảy ra. Vui lòng thử lại!", Toast.LENGTH_SHORT).show();
+                            nullMessage.setText("Có lỗi xảy ra, vui lòng tải lại trang!");
+                            loadingBar.setVisibility(View.INVISIBLE);
+                        }
+
+                },10000);
             }
             super.onPostExecute(aVoid);
 

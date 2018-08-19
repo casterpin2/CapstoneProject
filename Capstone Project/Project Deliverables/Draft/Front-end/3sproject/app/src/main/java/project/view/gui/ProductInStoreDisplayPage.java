@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,6 +22,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -107,6 +109,7 @@ public class ProductInStoreDisplayPage extends BasePage {
         spinnerSort = findViewById(R.id.spinnerSort);
         main_layout = findViewById(R.id.main_layout);
         searchView = findViewById(R.id.searchViewQuery);
+        nullMessage = findViewById(R.id.nullMessage);
     }
     private class ProductInStoreList extends AsyncTask<Call, Void, Void> {
         @Override
@@ -118,7 +121,27 @@ public class ProductInStoreDisplayPage extends BasePage {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            loadingBar.setVisibility(View.INVISIBLE);
+            boolean check = false;
+            if (productInStores.isEmpty()) {
+                check = false;
+            } else {
+                check = true;
+            }
+            if(check == true){
+                loadingBar.setVisibility(View.INVISIBLE);
+            }
+            final boolean finalCheck = check;
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+
+                    if (finalCheck == false) {
+                        Toast.makeText(ProductInStoreDisplayPage.this, "Có lỗi xảy ra. Vui lòng thử lại!", Toast.LENGTH_SHORT).show();
+                        nullMessage.setText("Có lỗi xảy ra, vui lòng tải lại trang!");
+                        loadingBar.setVisibility(View.INVISIBLE);
+                    }
+                }
+            },10000);
         }
 
         @Override
@@ -148,7 +171,6 @@ public class ProductInStoreDisplayPage extends BasePage {
                     public void run() {
                         adapter.notifyDataSetChanged();
                         adapter.setStoreID(storeID);
-                        nullMessage = findViewById(R.id.nullMessage);
                         theListView = (ListView) findViewById(R.id.mainListView);
                         theListView.setAdapter(adapter);
 
