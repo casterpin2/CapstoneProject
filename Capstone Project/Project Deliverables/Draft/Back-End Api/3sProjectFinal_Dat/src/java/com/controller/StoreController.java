@@ -86,6 +86,10 @@ public class StoreController {
         return storeReusult;
     }
     
-    
+      @RequestMapping(value = "/informationStore", method = RequestMethod.GET, produces = "application/json;")
+    public StoreEntites storeInformation(@RequestParam("storeId") int storeId) throws SQLException, ClassNotFoundException, IOException {
+        return store.informationStore(storeId);
+    }
+
 
 }

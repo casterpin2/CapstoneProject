@@ -44,5 +44,10 @@ public class StoreServiceImpl implements StoreService{
     public StoreEntites updateStore(StoreEntites store, LocationEntites location) throws SQLException {
         return dao.updateStore(store, location);
     }
+
+    @Override
+    public StoreEntites informationStore(int storeId) throws SQLException {
+       return dao.informationStore(storeId);
+    }
     
 }
