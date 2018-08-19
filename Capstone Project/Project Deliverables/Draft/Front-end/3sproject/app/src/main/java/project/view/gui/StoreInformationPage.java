@@ -2,6 +2,7 @@ package project.view.gui;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -10,6 +11,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,12 +44,16 @@ public class StoreInformationPage extends AppCompatActivity {
     private int storeID;
     ImageView backBtn;
     TextView ownerName, address, registerDate, phoneText;
+    private ProgressBar loadingBar;
+    private LinearLayout storeInforForm;
+    private TextView nullMessage;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_store_information_page);
         findView();
+        loadingBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorApplication), android.graphics.PorterDuff.Mode.MULTIPLY);
         mAPI = ApiUtils.getAPIService();
         CustomInterface.setStatusBarColor(this);
         storeID = getIntent().getIntExtra("storeID", -1);
@@ -65,26 +73,50 @@ public class StoreInformationPage extends AppCompatActivity {
         address = findViewById(R.id.address);
         registerDate = findViewById(R.id.registerDate);
         phoneText = findViewById(R.id.phoneText);
-    }
+        loadingBar = findViewById(R.id.loadingBar);
+        storeInforForm = findViewById(R.id.storeInforForm);
+        nullMessage = findViewById(R.id.nullMessage);
+;    }
 
     public class StoreInformation extends AsyncTask<Call,Void,Store> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            loadingBar.setVisibility(View.VISIBLE);
+            storeInforForm.setVisibility(View.INVISIBLE);
         }
 
         @Override
         protected void onPostExecute(Store store1) {
             super.onPostExecute(store1);
+            boolean haveData = false;
             if (store1 != null){
                 store = store1;
                 ownerName.setText(store.getName());
                 address.setText(store.getAddress());
                 registerDate.setText(store.getRegisterLog());
                 phoneText.setText(store.getPhone());
+                haveData = true;
             } else {
-                Toast.makeText(getBaseContext(),"Có lỗi xảy ra",Toast.LENGTH_LONG).show();
+//                Toast.makeText(getBaseContext(),"Có lỗi xảy ra",Toast.LENGTH_LONG).show();
+                haveData = false;
             }
+            if(haveData){
+                loadingBar.setVisibility(View.INVISIBLE);
+                storeInforForm.setVisibility(View.VISIBLE);
+            }
+            final boolean finalHaveData = haveData;
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+
+                    if (!finalHaveData) {
+                        Toast.makeText(getBaseContext(), "Có lỗi xảy ra. Vui lòng thử lại", Toast.LENGTH_SHORT).show();
+                        nullMessage.setText("Có lỗi xảy ra, vui lòng tải lại trang!");
+                        loadingBar.setVisibility(View.INVISIBLE);
+                    }
+                }
+            },10000);
         }
 
         @Override

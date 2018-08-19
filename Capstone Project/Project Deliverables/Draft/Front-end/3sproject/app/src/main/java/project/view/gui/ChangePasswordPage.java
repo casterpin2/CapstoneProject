@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
@@ -129,10 +131,12 @@ public class ChangePasswordPage extends BasePage {
                         if(username!=null && !username.isEmpty()){
                             apiService = ApiUtils.getAPIService();
                             String password = MD5Library.md5(newPass.getText().toString());
+                            loadingBar.setVisibility(View.VISIBLE);
                             apiService.requestChangePassword(username,password).enqueue(new Callback<Boolean>() {
                                 @Override
                                 public void onResponse(Call<Boolean> call, Response<Boolean> response) {
                                     if(response.isSuccessful()){
+                                        loadingBar.setVisibility(View.INVISIBLE);
                                         Toast.makeText(ChangePasswordPage.this, "Thay đổi mật khẩu thành công.", Toast.LENGTH_LONG).show();
                                         Intent backToUserFragment = new Intent(ChangePasswordPage.this, UserFragment.class);
                                         tvOldPass.setText("");
@@ -147,7 +151,14 @@ public class ChangePasswordPage extends BasePage {
 
                                 @Override
                                 public void onFailure(Call<Boolean> call, Throwable t) {
-                                    Toast.makeText(ChangePasswordPage.this, "Đã có lỗi xảy ra.", Toast.LENGTH_LONG).show();
+                                    new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                                Toast.makeText(ChangePasswordPage.this, "Có lỗi xảy ra. Vui lòng thử lại!", Toast.LENGTH_SHORT).show();
+                                            loadingBar.setVisibility(View.INVISIBLE);
+
+                                        }
+                                    },10000);
                                 }
                             });
                         }

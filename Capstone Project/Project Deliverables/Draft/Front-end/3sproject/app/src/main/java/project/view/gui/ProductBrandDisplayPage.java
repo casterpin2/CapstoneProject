@@ -9,6 +9,8 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -20,6 +22,7 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -51,6 +54,7 @@ public class ProductBrandDisplayPage extends BasePage {
     final static int REQUEST_LOCATION = 1;
     private double currentLatitude = 0.0;
     private double currentLongtitude = 0.0;
+    private TextView nullMessage;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +63,7 @@ public class ProductBrandDisplayPage extends BasePage {
         main_layout = findViewById(R.id.main_layout);
         theListView = (ListView) findViewById(R.id.mainListView);
         loadingBar = (ProgressBar) findViewById(R.id.loadingBar);
+        nullMessage = (TextView) findViewById(R.id.nullMessage);
         apiService = ApiUtils.getAPIService();
         brandID = getIntent().getIntExtra("brandID", -1);
         brandName = getIntent().getStringExtra("brandName");
@@ -133,15 +138,39 @@ public class ProductBrandDisplayPage extends BasePage {
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            loadingBar.setVisibility(View.INVISIBLE);
             super.onPostExecute(aVoid);
+            boolean check =false;
+            if (list.isEmpty()) {
+                check = false;
+            } else {
+                check = true;
+            }
+            if(check == true){
+                loadingBar.setVisibility(View.INVISIBLE);
+            }
+            final boolean finalCheck = check;
+            new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                @Override
+                public void run() {
 
+                    if (finalCheck == false) {
+//                        Toast.makeText(ProductBrandDisplayPage.this, "Có lỗi khi định vị vị trí của bạn", Toast.LENGTH_SHORT).show();
+                        nullMessage.setText("Có lỗi xảy ra, vui lòng tải lại trang!");
+                        loadingBar.setVisibility(View.INVISIBLE);
+                    }
+                }
+            },10000);
+            adapter = new ProductBrandDisplayListViewAdapter(ProductBrandDisplayPage.this, R.layout.product_brand_display_custom_listview, list);
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    theListView.setAdapter(adapter);
+                }});
         }
 
         @Override
         protected void onProgressUpdate(Void... values) {
             super.onProgressUpdate(values);
-
         }
 
         @Override
@@ -153,14 +182,9 @@ public class ProductBrandDisplayPage extends BasePage {
                 for (int i = 0; i < response.body().size(); i++) {
                     list.add(response.body().get(i));
                 }
-                adapter = new ProductBrandDisplayListViewAdapter(ProductBrandDisplayPage.this, R.layout.product_brand_display_custom_listview, list);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        theListView.setAdapter(adapter);
-                    }});
             } catch (IOException e) {
             }
+
             return null;
         }
     }

@@ -21,5 +21,15 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:visibility="invisible"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:textColor="@color/common_google_signin_btn_text_light_disabled"
+        android:textSize="20dp"
+        android:id="@+id/nullMessage"
+
+        />
 
 </RelativeLayout>

@@ -6,6 +6,8 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
@@ -23,6 +25,7 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -57,6 +60,7 @@ public class CategoryDisplayPage extends BasePage {
     private SearchView searchView;
     private ImageButton imgBack,imgBarCode;
     private List<Category> searchedProduct = new ArrayList<>();
+    private TextView nullMessage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,6 +139,7 @@ public class CategoryDisplayPage extends BasePage {
         imgBack = findViewById(R.id.backBtn);
         imgBarCode = findViewById(R.id.imgBarCode);
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        nullMessage = findViewById(R.id.nullMessage);
     }
 
     @Override
@@ -158,6 +163,34 @@ public class CategoryDisplayPage extends BasePage {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+            boolean check = false;
+            if (categoryList.isEmpty()) {
+                check = false;
+            } else {
+                check = true;
+            }
+            if(check == true){
+                loadingBar.setVisibility(View.INVISIBLE);
+            }
+            final boolean finalCheck = check;
+            new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                @Override
+                public void run() {
+
+                    if (finalCheck == false) {
+                        Toast.makeText(CategoryDisplayPage.this, "Có lỗi xảy ra. Vui lòng thử lại!", Toast.LENGTH_SHORT).show();
+                        nullMessage.setText("Có lỗi xảy ra, vui lòng tải lại trang!");
+                        loadingBar.setVisibility(View.INVISIBLE);
+                    }
+                }
+            },10000);
+            adapter = new CategoryCustomCardviewAdapter(CategoryDisplayPage.this, categoryList);
+
+            RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(CategoryDisplayPage.this, 2);
+            recyclerView.setLayoutManager(mLayoutManager);
+            recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, Formater.dpToPx(10,getResources()), true));
+            recyclerView.setItemAnimator(new DefaultItemAnimator());
+            recyclerView.setAdapter(adapter);
         }
 
         @Override
@@ -167,14 +200,7 @@ public class CategoryDisplayPage extends BasePage {
             categoryList = values[0];
 
 
-            adapter = new CategoryCustomCardviewAdapter(CategoryDisplayPage.this, categoryList);
 
-            RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(CategoryDisplayPage.this, 2);
-            recyclerView.setLayoutManager(mLayoutManager);
-            recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, Formater.dpToPx(10,getResources()), true));
-            recyclerView.setItemAnimator(new DefaultItemAnimator());
-            recyclerView.setAdapter(adapter);
-            loadingBar.setVisibility(View.INVISIBLE);
         }
 
         @Override

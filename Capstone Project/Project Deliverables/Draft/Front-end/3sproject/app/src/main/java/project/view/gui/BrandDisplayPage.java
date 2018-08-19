@@ -6,6 +6,8 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
@@ -24,6 +26,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.storage.StorageReference;
@@ -54,6 +58,7 @@ public class BrandDisplayPage extends BasePage {
     private SearchView searchView;
     private ImageButton imgBack,imgBarCode;
     private List<Brand> searchedProduct = new ArrayList<>();
+    private TextView nullMessage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,6 +134,7 @@ public class BrandDisplayPage extends BasePage {
         imgBack = findViewById(R.id.backBtn);
         imgBarCode = findViewById(R.id.imgBarCode);
         main_layout = findViewById(R.id.main_layout);
+        nullMessage= findViewById(R.id.nullMessage);
     }
     /**
      * Converting dp to pixel
@@ -159,14 +165,27 @@ public class BrandDisplayPage extends BasePage {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-        }
+            boolean check = false;
+            if (brandList.isEmpty()) {
+                check = false;
+            } else {
+                check = true;
+            }
+            if(check == true){
+                loadingBar.setVisibility(View.INVISIBLE);
+            }
+            final boolean finalCheck = check;
+            new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                @Override
+                public void run() {
 
-        @Override
-        protected void onProgressUpdate(List<Brand>... values) {
-            super.onProgressUpdate(values);
-            StorageReference storageReference = Firebase.getFirebase();
-            brandList = values[0];
-
+                    if (finalCheck == false) {
+                        Toast.makeText(BrandDisplayPage.this, "Có lỗi xảy ra. Vui lòng thử lại!", Toast.LENGTH_SHORT).show();
+                        nullMessage.setText("Có lỗi xảy ra, vui lòng tải lại trang!");
+                        loadingBar.setVisibility(View.INVISIBLE);
+                    }
+                }
+            },10000);
             adapter = new BrandCustomCardviewAdapter(BrandDisplayPage.this, brandList);
 
             RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(BrandDisplayPage.this, 2);
@@ -174,7 +193,16 @@ public class BrandDisplayPage extends BasePage {
             recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(10), true));
             recyclerView.setItemAnimator(new DefaultItemAnimator());
             recyclerView.setAdapter(adapter);
-            loadingBar.setVisibility(View.INVISIBLE);
+        }
+
+        @Override
+        protected void onProgressUpdate(List<Brand>... values) {
+            super.onProgressUpdate(values);
+
+            StorageReference storageReference = Firebase.getFirebase();
+            brandList = values[0];
+
+
         }
 
         @Override
