@@ -8,6 +8,7 @@ package com.dao;
 import static com.dao.BaseDao.closeConnect;
 import com.entites.LocationEntites;
 import com.entites.StoreEntites;
+import com.entites.UserEntites;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -286,10 +287,15 @@ public class StoreDaoImpl extends BaseDao implements StoreDao {
                 conn.rollback();
                 conn.setAutoCommit(true);
             }
-            if (checkLocation(location)) {
-                checkUpdateLocation = updateLocationByStore(conn, location, store.getLocation_id());
+            int idExist = checkLocationExist(location, conn);
+            if (idExist > 0) {
+                checkUpdateLocation = updateLocationByStore(conn, location, idExist);
             } else {
-                checkUpdateLocation = true;
+                boolean checkNewInsert = insertNewLocation(location, conn);
+                int idNew = checkLocationExist(location, conn);
+                if (checkNewInsert && idNew > 0) {
+                    checkUpdateLocation = updateUserLocation(conn, idNew, store);
+                }
             }
 
             if (checkUpdateLocation && checkUpdateStore) {
@@ -346,9 +352,9 @@ public class StoreDaoImpl extends BaseDao implements StoreDao {
                 store = new StoreEntites();
                 store.setId(rs.getInt("storeId"));
                 if (rs.getString("apartment_number") != null) {
-                    store.setAddress(rs.getString("apartment_number") + " " + rs.getString("street") + " " + rs.getString("county") + " " + rs.getString("city"));
+                    store.setAddress(rs.getString("apartment_number") + "-" + rs.getString("street") + "-" + rs.getString("county") + "-" + rs.getString("city"));
                 } else {
-                    store.setAddress(rs.getString("street") + " " + rs.getString("county") + " " + rs.getString("city"));
+                    store.setAddress(rs.getString("street") + "-" + rs.getString("county") + "-" + rs.getString("city"));
                 }
 
                 store.setImage_path(imgPath);
@@ -369,30 +375,110 @@ public class StoreDaoImpl extends BaseDao implements StoreDao {
 
     }
 
-    public boolean checkLocation(LocationEntites location) {
-        boolean check = false;
-        if(location.getApartment_number()!=null){
-            check = true;
+    public int checkLocationExist(LocationEntites location, Connection conn) {
+        int storeExist = 0;
+        PreparedStatement pre = null;
+        ResultSet rs = null;
+        try {
+            String sql = "SELECT id FROM Location where longitude = ? and latitude = ?";
+            pre = conn.prepareStatement(sql);
+            pre.setString(1, location.getLongitude());
+            pre.setString(2, location.getLatitude());
+            rs = pre.executeQuery();
+            if (rs.next()) {
+                storeExist = rs.getInt("id");
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        } finally {
+            closeConnect(null, pre, rs);
         }
-        if(location.getCity()!=null){
-            check = true;
-        }
-        if(location.getCounty()!=null){
-            check = true;
-        }
-        if(location.getDistrict()!=null){
-            check = true;
-        }
-        if(location.getLatitude()!=null){
-            check = true;
-        }
-        if(location.getLongitude()!=null){
-            check = true;
-        }
-        if(location.getStreet()!=null){
-            check = true;
-        }
-        
-        return check;
+        return storeExist;
     }
+
+    public boolean insertNewLocation(LocationEntites locationEntites, Connection conn) {
+        String insert = "insert into Location(apartment_number,street,county,district,city,longitude,latitude) values (?,?,?,?,?,?,?)";
+        PreparedStatement pre = null;
+
+        try {
+            pre = conn.prepareStatement(insert);
+            pre.setString(1, locationEntites.getApartment_number());
+            pre.setString(2, locationEntites.getStreet());
+            pre.setString(3, locationEntites.getCounty());
+            pre.setString(4, locationEntites.getDistrict());
+            pre.setString(5, locationEntites.getCity());
+            pre.setString(6, locationEntites.getLongitude());
+            pre.setString(7, locationEntites.getLatitude());
+            int countInsert = pre.executeUpdate();
+            if (countInsert > 0) {
+                conn.commit();
+                return true;
+            } else {
+                conn.rollback();
+                conn.setAutoCommit(true);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            closeConnect(null, pre, null);
+        }
+
+        return false;
+    }
+
+    public boolean updateUserLocation(Connection conn, int idLocation, StoreEntites store) {
+        PreparedStatement pre = null;
+        try {
+            String update = "Update Store set location_id  = ? where id = ? ";
+            pre = conn.prepareStatement(update);
+            pre.setInt(1, idLocation);
+            pre.setInt(2, store.getId());
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            closeConnect(null, pre, null);
+        }
+        return false;
+    }
+
+    @Override
+    public StoreEntites informationStore(int storeId) throws SQLException {
+        Connection conn = null;
+        PreparedStatement pre = null;
+        ResultSet rs = null;
+        StoreEntites store = null;
+        String sql = "SELECT s.id as storeId,s.user_id,s.location_id,s.name as nameStore, s.phone,s.status,l.apartment_number,l.street,l.district,l.county, "
+                + "l.city,l.latitude,l.longitude,img.path FROM Store s "
+                + "JOIN Location as l on s.location_id = l.id JOIN (Image_Store imgS join Image img on imgS.image_id = img.id) on imgS.store_id = s.id where s.id =?";
+        try {
+            conn = getConnection();
+            pre = conn.prepareStatement(sql);
+            pre.setInt(1, storeId);
+            rs = pre.executeQuery();
+            if (rs.next()) {
+                store = new StoreEntites();
+                store.setId(rs.getInt("storeId"));
+                if (rs.getString("apartment_number") != null) {
+                    store.setAddress(rs.getString("apartment_number") + "-" + rs.getString("street") + "-" + rs.getString("county") + "-" + rs.getString("city"));
+                } else {
+                    store.setAddress(rs.getString("street") + "-" + rs.getString("county") + "-" + rs.getString("city"));
+                }
+
+                store.setImage_path(rs.getString("path"));
+                store.setLatitude(rs.getString("latitude"));
+                store.setLongtitude(rs.getString("longitude"));
+                store.setName(rs.getString("nameStore"));
+                store.setPhone(rs.getString("phone"));
+                store.setStatus(rs.getInt("status"));
+                store.setUser_id(rs.getInt("user_id"));
+                store.setLocation_id(rs.getInt("location_id"));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(StoreDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            closeConnect(null, pre, rs);
+        }
+        return store;
+    }
+
 }
