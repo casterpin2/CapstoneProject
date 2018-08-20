@@ -15,13 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ProgressBar
-            android:id="@+id/loadingBar"
-            style="?android:attr/progressBarStyleInverse"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:visibility="invisible"/>
+
 
         <RelativeLayout
             android:id="@+id/registerStoreForm"
@@ -78,40 +72,6 @@
                     android:textColor="@color/colorRed"/>
             </android.support.design.widget.TextInputLayout>
 
-            <!--<LinearLayout-->
-            <!--android:id="@+id/addressLayout"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_below="@+id/etPhoneLayout"-->
-            <!--android:layout_marginTop="10dp">-->
-
-            <!--<TextView-->
-            <!--android:layout_width="0dp"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_weight="1"-->
-            <!--android:gravity="center_vertical"-->
-            <!--android:text="Địa chỉ" />-->
-            <!--<RelativeLayout-->
-            <!--android:layout_width="0dp"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_weight="1">-->
-            <!--<Button-->
-            <!--android:id="@+id/getLocationBtn"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="Lấy địa chỉ hiện tại"-->
-            <!--android:textColor="@color/white"-->
-            <!--android:background="@drawable/login_button"-->
-            <!--android:paddingTop="10dp"-->
-            <!--android:paddingBottom="10dp"-->
-            <!--android:paddingLeft="3dp"-->
-            <!--android:paddingRight="3dp"-->
-            <!--android:textSize="11dp"-->
-            <!--/>-->
-            <!--</RelativeLayout>-->
-            <!---->
-
-            <!--</LinearLayout>-->
 
             <RelativeLayout
                 android:id="@+id/handleAddressLayout"
@@ -182,23 +142,51 @@
                 android:layout_below="@id/autoAddressLayout"
                 android:textColor="@color/colorRed"/>
 
-            <Button
-                android:id="@+id/registerBtn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/map"
-                android:text="Đăng kí"
-                android:background="@drawable/login_button"
-                android:textColor="@color/colorWhite"
-                android:layout_marginTop="10dp"/>
-            <fragment
-                android:id="@+id/map"
-                android:name="com.google.android.gms.maps.SupportMapFragment"
+
+            <RelativeLayout
+                android:id="@+id/mapLayout"
                 android:layout_width="match_parent"
                 android:layout_height="250dp"
                 android:layout_below="@+id/tvLocationError"
-                tools:context=".TestMap"
-                android:layout_marginTop="5dp"/>
+                android:layout_marginTop="5dp">
+                <fragment
+                    android:id="@+id/map"
+                    android:name="com.google.android.gms.maps.SupportMapFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    tools:context=".TestMap"/>
+                <ProgressBar
+                    android:id="@+id/loadingBarMap"
+                    style="?android:attr/progressBarStyleInverse"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:visibility="invisible"/>
+            </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/mapLayout"
+                android:layout_marginTop="10dp">
+                <Button
+                    android:id="@+id/registerBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:text="Đăng kí"
+                    android:background="@drawable/login_button"
+                    android:textColor="@color/colorWhite"/>
+                <ProgressBar
+                    android:id="@+id/loadingBarRegister"
+                    style="?android:attr/progressBarStyleInverse"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_centerInParent="true"
+                    android:visibility="invisible"
+                    android:padding="5dp"/>
+
+            </RelativeLayout>
+
+
         </RelativeLayout>
 
     </RelativeLayout>

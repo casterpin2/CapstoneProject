@@ -546,17 +546,23 @@ public class RegisterStorePage extends BasePage implements OnMapReadyCallback {
         protected void onPostExecute(Store result) {
             super.onPostExecute(result);
             if (checkLocation == false) {
-                loadingBar.setVisibility(View.INVISIBLE);
+                loadingBarRegister.setVisibility(View.INVISIBLE);
+                registerBtn.setEnabled(true);
+                registerBtn.setText("Đăng kí");
                 Toast.makeText(RegisterStorePage.this, "Chưa định vị được vị trí của bạn", Toast.LENGTH_LONG).show();
                 return;
             }
             if (result == null) {
-                loadingBar.setVisibility(View.INVISIBLE);
+                loadingBarRegister.setVisibility(View.INVISIBLE);
+                registerBtn.setEnabled(true);
+                registerBtn.setText("Đăng kí");
                 Toast.makeText(RegisterStorePage.this, "Có lỗi xảy ra", Toast.LENGTH_LONG).show();
                 return;
             }
             if (result.getId() == 0){
-                loadingBar.setVisibility(View.INVISIBLE);
+                loadingBarRegister.setVisibility(View.INVISIBLE);
+                registerBtn.setEnabled(true);
+                registerBtn.setText("Đăng kí");
                 Toast.makeText(RegisterStorePage.this, "Số điện thoại này đã được sử dụng để đăng kí cửa hàng", Toast.LENGTH_LONG).show();
                 return;
             }

@@ -2,6 +2,8 @@ package project.view.gui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
@@ -55,8 +57,6 @@ public class ResetPasswordPage extends BasePage{
 
         regex= new Regex();
 
-        loadingBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorApplication), android.graphics.PorterDuff.Mode.MULTIPLY);
-
         username = getIntent().getStringExtra("username");
 
         newPass.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -104,11 +104,16 @@ public class ResetPasswordPage extends BasePage{
                         tvConfirmPass.setText("");
                         apiService = ApiUtils.getAPIService();
                         String password = MD5Library.md5(newPass.getText().toString());
-
+                        loadingBar.setVisibility(View.VISIBLE);
+                        btnChangePass.setEnabled(false);
+                        btnChangePass.setText("Đang thực hiện");
                         apiService.requestChangePassword(username, password).enqueue(new Callback<Boolean>() {
                             @Override
                             public void onResponse(Call<Boolean> call, Response<Boolean> response) {
                                 if(response.isSuccessful()){
+                                    loadingBar.setVisibility(View.INVISIBLE);
+                                    btnChangePass.setEnabled(true);
+                                    btnChangePass.setText("Lưu thay đổi");
                                     Toast.makeText(ResetPasswordPage.this, "Thay đổi thông tin thành công", Toast.LENGTH_LONG).show();
                                     Intent toLoginPage = new Intent(getBaseContext(),LoginPage.class);
                                     toLoginPage.putExtra("username",username);
@@ -118,7 +123,16 @@ public class ResetPasswordPage extends BasePage{
 
                             @Override
                             public void onFailure(Call<Boolean> call, Throwable t) {
+                                new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(ResetPasswordPage.this, "Có lỗi xảy ra. Vui lòng thử lại!", Toast.LENGTH_SHORT).show();
+                                        loadingBar.setVisibility(View.INVISIBLE);
+                                        btnChangePass.setEnabled(true);
+                                        btnChangePass.setText("Lưu thay đổi");
 
+                                    }
+                                },10000);
                             }
                         });
                     }

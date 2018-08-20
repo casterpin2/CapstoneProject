@@ -550,7 +550,7 @@ public class EditStoreInformationPage extends BasePage implements OnMapReadyCall
             editor.putString("user", userJson);
             editor.putString("store", storeJson);
             editor.commit();
-            Toast.makeText(EditStoreInformationPage.this, "Thay đổi thông tin thành công", Toast.LENGTH_SHORT).show();
+            Toast.makeText(EditStoreInformationPage.this, "Thay đổi thông tin cửa hàng thành công", Toast.LENGTH_SHORT).show();
             Intent backToStoreFragment = new Intent(EditStoreInformationPage.this,StoreFragment.class);
             backToStoreFragment.putExtra("data","YES");
             backToStoreFragment.putExtra("userData",userJson);
