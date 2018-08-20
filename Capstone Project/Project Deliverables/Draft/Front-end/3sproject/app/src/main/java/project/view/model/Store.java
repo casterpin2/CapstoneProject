@@ -122,13 +122,33 @@ public class Store implements Serializable{
     public void setStatus(int status) {
         this.status = status;
     }
-    public Store(String name,int user_id, String phone) {
+
+    public Store(String name,int user_id, String phone,String registerLog) {
         this.name = name;
         this.user_id = user_id;
         this.phone = phone;
+        this.registerLog = registerLog;
     }
 
-    public Store(int id,String name, String phone,String image_path) {
+    @Override
+    public String toString() {
+        return "Store{" +
+                "name='" + name + '\'' +
+                ", user_id=" + user_id +
+                ", location_id=" + location_id +
+                ", address='" + address + '\'' +
+                ", longtitude='" + longtitude + '\'' +
+                ", latitude='" + latitude + '\'' +
+                ", phone='" + phone + '\'' +
+                ", image_path='" + image_path + '\'' +
+                ", id=" + id +
+                ", status=" + status +
+                ", registerLog='" + registerLog + '\'' +
+                ", user_name='" + user_name + '\'' +
+                '}';
+    }
+
+    public Store(int id, String name, String phone, String image_path) {
         this.name = name;
         this.id = id;
         this.phone = phone;

@@ -43,6 +43,10 @@ import com.google.gson.Gson;
 import com.suke.widget.SwitchButton;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -222,7 +226,12 @@ public class RegisterStorePage extends BasePage implements OnMapReadyCallback {
                     String phone = etPhone.getText().toString().trim();
                     int user_id = getIntent().getIntExtra("user_id", 0);
                     if (user_id != 0) {
-                        callAPIRegisterStore(new Store(storeName, user_id, phone), location);
+                        Calendar c = Calendar.getInstance();
+                        int seconds = c.get(Calendar.SECOND);
+                        Date date = c.getTime();
+                        SimpleDateFormat dateFormat= new SimpleDateFormat("yyyy-MM-dd");
+                        String dateString = dateFormat.format(date);
+                        callAPIRegisterStore(new Store(storeName, user_id, phone,dateString), location);
                     }
                 }
             }
@@ -532,7 +541,18 @@ public class RegisterStorePage extends BasePage implements OnMapReadyCallback {
         protected void onPostExecute(Store result) {
             super.onPostExecute(result);
             if (checkLocation == false) {
+                loadingBar.setVisibility(View.INVISIBLE);
                 Toast.makeText(RegisterStorePage.this, "Chưa định vị được vị trí của bạn", Toast.LENGTH_LONG).show();
+                return;
+            }
+            if (result == null) {
+                loadingBar.setVisibility(View.INVISIBLE);
+                Toast.makeText(RegisterStorePage.this, "Có lỗi xảy ra", Toast.LENGTH_LONG).show();
+                return;
+            }
+            if (result.getId() == 0){
+                loadingBar.setVisibility(View.INVISIBLE);
+                Toast.makeText(RegisterStorePage.this, "Số điện thoại này đã được sử dụng để đăng kí cửa hàng", Toast.LENGTH_LONG).show();
                 return;
             }
             if (result != null) {
@@ -542,15 +562,13 @@ public class RegisterStorePage extends BasePage implements OnMapReadyCallback {
                 SharedPreferences preferences = getSharedPreferences("authentication", Context.MODE_PRIVATE);
                 User user = new Gson().fromJson(preferences.getString("user",""),User.class);
                 user.setHasStore(1);
-                Log.d("",user.toString());
                 SharedPreferences.Editor editor = preferences.edit();
                 editor.putString("store", new Gson().toJson(result));
                 editor.putString("user", new Gson().toJson(user));
-                //chấp nhận lưu xuống file
                 editor.commit();
                 finishAffinity();
                 finish();
-                startActivity(intent);
+               startActivity(intent);
             } else {
                 Toast.makeText(RegisterStorePage.this, "Có lỗi xảy ra", Toast.LENGTH_LONG).show();
             }
@@ -583,9 +601,6 @@ public class RegisterStorePage extends BasePage implements OnMapReadyCallback {
         HashMap<String, String> map = new HashMap<>();
         map.put("store",jSon1);
         map.put("location",jSon2);
-        Log.d("store",jSon1);
-        Log.d("location",jSon2);
-        Log.d("location",map.toString());
         mAPI = ApiUtils.getAPIService();
         final Call<Store> call = mAPI.registerStore(map);
         new RegisterStore().execute(call);

@@ -24,8 +24,9 @@ import org.springframework.stereotype.Repository;
 @Repository("storeDao")
 public class StoreDaoImpl extends BaseDao implements StoreDao {
 
-    private final String REGISTER_STORE_INSERT = "update Store set name = ? , location_id = ? , phone = ? , status = 1 where user_id = ?";
+    private final String REGISTER_STORE_INSERT = "update Store set name = ? , location_id = ? , phone = ? , status = 1 , registerLog = ? where user_id = ?";
     private final String UPDATE_HAS_STORE_USER = "update User set hasStore = 1 where id = ?";
+    private final String CHECK_PHONE_STORE = "select * from Store where phone = ?";
     private final String REGISTER_LOCATION_INSERT = "insert into Location(apartment_number,street,county,district,city,longitude,latitude) values (?,?,?,?,?,?,?)";
     private final String GET_LAST_LOCATION_ID = "select MAX(id) as id from Location";
     private final String GET_LOCATION_ID = "select * from Location where latitude = ? and longitude = ?";
@@ -44,6 +45,12 @@ public class StoreDaoImpl extends BaseDao implements StoreDao {
         try {
             conn = getConnection();
             locationId = getLocaionIdIfExist(location.getLatitude(), location.getLongitude());
+            pre = conn.prepareStatement(CHECK_PHONE_STORE);
+            pre.setString(1, store.getPhone());
+            ResultSet rs = pre.executeQuery();
+            if (rs.next()){
+                return result;
+            }
             if (locationId == -1) {
                 pre = conn.prepareStatement(REGISTER_LOCATION_INSERT);
                 pre.setString(1, location.getApartment_number());
@@ -67,7 +74,8 @@ public class StoreDaoImpl extends BaseDao implements StoreDao {
             pre = conn.prepareStatement(REGISTER_STORE_INSERT);
             pre.setString(1, store.getName());
             pre.setInt(2, locationId);
-            pre.setInt(4, store.getUser_id());
+            pre.setInt(5, store.getUser_id());
+            pre.setString(4, store.getRegisterLog());
             pre.setString(3, store.getPhone());
             count = pre.executeUpdate();
             if (count == 0) {
