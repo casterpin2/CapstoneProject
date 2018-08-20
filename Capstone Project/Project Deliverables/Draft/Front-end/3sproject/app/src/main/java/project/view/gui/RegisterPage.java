@@ -139,17 +139,18 @@ public class RegisterPage extends AppCompatActivity {
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isUserName = regex.checkUserName(tvUserName,etUserName);
-                isName = regex.checkDisplayName(tvName,etName);
-                isPassword = regex.checkPass(tvPassword,etPassword);
-                if(etConfirmPass.getText().toString().equals(etPassword.getText().toString())){
-                    confirm = true;
+                if (isUserName && isName && isPassword && confirm&& isEmail && isPhone ) {
+                    isUserName = regex.checkUserName(tvUserName, etUserName);
+                    isName = regex.checkDisplayName(tvName, etName);
+                    isPassword = regex.checkPass(tvPassword, etPassword);
+                    if (etConfirmPass.getText().toString().equals(etPassword.getText().toString())) {
+                        confirm = true;
+                    } else {
+                        tvConfirmPassword.setText(R.string.confirm_password);
+                    }
+                    isEmail = regex.checkEmail(tvEmail, etEmail);
+                    isPhone = regex.checkPhone(tvPhoneNumber, etPhoneNumber);
                 }
-                else {
-                    tvConfirmPassword.setText(R.string.confirm_password);
-                }
-                isEmail = regex.checkEmail(tvEmail,etEmail);
-                isPhone = regex.checkPhone(tvPhoneNumber,etPhoneNumber);
                 if (isUserName && isName && isPassword && confirm&& isEmail && isPhone ) {
                     us.setUsername(etUserName.getText().toString());
                     us.setPhone(etPhoneNumber.getText().toString().trim().replaceAll("\\s+",""));
