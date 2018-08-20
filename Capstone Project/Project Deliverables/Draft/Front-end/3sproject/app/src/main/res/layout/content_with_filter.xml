@@ -79,8 +79,5 @@
             android:layout_centerInParent="true"
             android:textColor="@color/common_google_signin_btn_text_light_disabled"
             android:textSize="20dp"
-            android:id="@+id/nullMessage"
-            />
-
-
+            android:id="@+id/nullMessage" />
 </RelativeLayout>

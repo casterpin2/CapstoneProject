@@ -24,6 +24,7 @@ import com.google.gson.Gson;
 
 import project.firebase.Firebase;
 import project.objects.User;
+import project.view.gui.FeedbackManagement;
 import project.view.gui.LoginPage;
 import project.view.gui.ProductInStoreDisplayPage;
 import project.view.R;
@@ -38,7 +39,7 @@ import project.view.util.NetworkStateReceiver;
  * A simple {@link Fragment} subclass.
  */
 public class StoreFragment extends Fragment implements NetworkStateReceiver.NetworkStateReceiverListener {
-    private TextView storeName, ownerName, address, registerDate, phoneText, tv_count_smile, tv_count_sad;
+    private TextView storeName, ownerName, address, registerDate, phoneText, tv_count_smile, tv_count_sad,tv_feedback_status;
     private ImageView storeImg, btnEdit;
     private int storeID = 1;
     private int hasStore = 0;
@@ -120,6 +121,14 @@ public class StoreFragment extends Fragment implements NetworkStateReceiver.Netw
                     startActivityForResult(toEditStoreInformation, REQUEST_CODE);
                 }
             });
+            tv_feedback_status.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent toFeedbackManagement = new Intent(getContext(), FeedbackManagement.class);
+                    toFeedbackManagement.putExtra("storeId",storeID);
+                    getContext().startActivity(toFeedbackManagement);
+                }
+            });
 
         } else if (hasStore == 0 && userID != 0) {
             view = inflater.inflate(R.layout.no_has_store_store_fragment_home_page_layout, container, false);
@@ -177,6 +186,8 @@ public class StoreFragment extends Fragment implements NetworkStateReceiver.Netw
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .skipMemoryCache(true)
                 .into(storeImg);
+
+        tv_feedback_status = view.findViewById(R.id.tv_feedback_status);
     }
 
     private void findViewInNoLoginnedLayout() {
