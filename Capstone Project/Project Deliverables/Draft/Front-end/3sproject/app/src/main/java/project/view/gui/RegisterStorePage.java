@@ -12,6 +12,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Handler;
+import android.os.Looper;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -80,7 +81,7 @@ public class RegisterStorePage extends BasePage implements OnMapReadyCallback {
     double autoLongtitude = 0.0;
     private String result = "";
     private RelativeLayout main_layout;
-    private ProgressBar loadingBar;
+    private ProgressBar loadingBarMap, loadingBarRegister;
     private boolean checkLocation = false;
     private boolean isPhone = false,isStoreName = false,isLocation=false;
 
@@ -106,7 +107,7 @@ public class RegisterStorePage extends BasePage implements OnMapReadyCallback {
         });
         CustomInterface.setStatusBarColor(this);
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-
+        loadingBarMap.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorApplication), android.graphics.PorterDuff.Mode.MULTIPLY);
         getSupportActionBar().setTitle(R.string.registerStorePageTitle);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorApplication)));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -204,7 +205,7 @@ public class RegisterStorePage extends BasePage implements OnMapReadyCallback {
                 isLocation = true;
 
                 if((handleLongtitude==0&&handleLatitude==0)&&(autoLatitude==0||autoLongtitude==0)){
-                    tvLocationError.setText("Chưa xác định được vị trí của bạn.");
+                    tvLocationError.setText("Chưa xác định được vị trí của bạn");
                     isLocation = false;
                 }
                 else {
@@ -240,7 +241,8 @@ public class RegisterStorePage extends BasePage implements OnMapReadyCallback {
         etStoreName = (EditText) findViewById(R.id.etStoreName);
         main_layout = findViewById(R.id.main_layout);
         iconSwitch = findViewById(R.id.switch_button);
-        loadingBar = findViewById(R.id.loadingBar);
+        loadingBarMap =findViewById(R.id.loadingBarMap);
+        loadingBarRegister = findViewById(R.id.loadingBarRegister);
         tvPhoneError = findViewById(R.id.tvPhoneError);
         registerBtn = (Button) findViewById(R.id.registerBtn);
         tvLocationError = findViewById(R.id.tvLocationError);
@@ -436,7 +438,7 @@ public class RegisterStorePage extends BasePage implements OnMapReadyCallback {
         protected void onPreExecute() {
             super.onPreExecute();
             registerBtn.setEnabled(false);
-            loadingBar.setVisibility(View.VISIBLE);
+            loadingBarMap.setVisibility(View.VISIBLE);
         }
 
         @Override
@@ -462,8 +464,9 @@ public class RegisterStorePage extends BasePage implements OnMapReadyCallback {
             }
 
             if(checkLocation){
+                Toast.makeText(RegisterStorePage.this, "Đã định vị thành công", Toast.LENGTH_SHORT).show();
                 registerBtn.setEnabled(true);
-                loadingBar.setVisibility(View.INVISIBLE);
+                loadingBarMap.setVisibility(View.INVISIBLE);
             }
             new Handler().postDelayed(new Runnable() {
                 @Override
@@ -472,7 +475,7 @@ public class RegisterStorePage extends BasePage implements OnMapReadyCallback {
                     if (!checkLocation) {
                         Toast.makeText(RegisterStorePage.this, "Có lỗi khi định vị vị trí của bạn", Toast.LENGTH_SHORT).show();
                         registerBtn.setEnabled(true);
-                        loadingBar.setVisibility(View.INVISIBLE);
+                        loadingBarMap.setVisibility(View.INVISIBLE);
                     }
                 }
             },10000);
@@ -524,7 +527,9 @@ public class RegisterStorePage extends BasePage implements OnMapReadyCallback {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            loadingBar.setVisibility(View.VISIBLE);
+            loadingBarRegister.setVisibility(View.VISIBLE);
+            registerBtn.setEnabled(false);
+            registerBtn.setText("Đang thực hiện");
 
         }
 
@@ -536,7 +541,9 @@ public class RegisterStorePage extends BasePage implements OnMapReadyCallback {
                 return;
             }
             if (result != null) {
-                loadingBar.setVisibility(View.INVISIBLE);
+                loadingBarRegister.setVisibility(View.INVISIBLE);
+                registerBtn.setText("Đăng kí");
+                registerBtn.setEnabled(true);
                 Toast.makeText(RegisterStorePage.this, "Đăng kí cửa hàng thành công", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(RegisterStorePage.this, HomePage.class);
                 SharedPreferences preferences = getSharedPreferences("authentication", Context.MODE_PRIVATE);
@@ -552,7 +559,18 @@ public class RegisterStorePage extends BasePage implements OnMapReadyCallback {
                 finish();
                 startActivity(intent);
             } else {
-                Toast.makeText(RegisterStorePage.this, "Có lỗi xảy ra", Toast.LENGTH_LONG).show();
+                new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(RegisterStorePage.this, "Có lỗi xảy ra. Vui lòng thử lại!", Toast.LENGTH_SHORT).show();
+//                            nullMessage.setText("Có lỗi xảy ra, vui lòng tải lại trang!");
+                        loadingBarRegister.setVisibility(View.INVISIBLE);
+                        registerBtn.setEnabled(true);
+                        registerBtn.setText("Đăng kí");
+
+                    }
+                },10000);
+
             }
 
         }
