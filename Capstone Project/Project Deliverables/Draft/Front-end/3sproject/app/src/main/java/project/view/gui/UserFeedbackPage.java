@@ -24,6 +24,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 import project.retrofit.ApiUtils;
 import project.view.R;
@@ -104,7 +107,11 @@ public class UserFeedbackPage extends BasePage {
                                 feedback.setUser_id(userId);
                                 feedback.setStore_id(storeId);
                                 feedback.setIsSatisfied(isSatisfied);
-                                Log.d("abc", new Gson().toJson(feedback));
+                                Calendar c = Calendar.getInstance();
+                                Date date = c.getTime();
+                                SimpleDateFormat dateFormat= new SimpleDateFormat("yyyy-MM-dd");
+                                String dateString = dateFormat.format(date);
+                                feedback.setRegisterLog(dateString);
                                 Call<Boolean> call = ApiUtils.getAPIService().getFeedback(feedback);
                                 new SendFeedback().execute(call);
                             }

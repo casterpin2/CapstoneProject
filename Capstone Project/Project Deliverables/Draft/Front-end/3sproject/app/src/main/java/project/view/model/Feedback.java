@@ -16,6 +16,17 @@ public class Feedback {
     @SerializedName("isSatisfied")
     @Expose
     private int isSatisfied;
+    @SerializedName("registerLog")
+    @Expose
+    private String registerLog;
+
+    public String getRegisterLog() {
+        return registerLog;
+    }
+
+    public void setRegisterLog(String registerLog) {
+        this.registerLog = registerLog;
+    }
 
     public Feedback() {
     }

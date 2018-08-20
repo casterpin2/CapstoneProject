@@ -14,7 +14,16 @@ public class FeedbackEntites {
     private int store_id;
     private String content;
     private int isSatisfied;
+    private String registerLog;
 
+    public String getRegisterLog() {
+        return registerLog;
+    }
+
+    public void setRegisterLog(String registerLog) {
+        this.registerLog = registerLog;
+    }
+    
     public FeedbackEntites() {
     }
 

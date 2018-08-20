@@ -741,7 +741,7 @@ public class UserDaoImpl extends BaseDao implements UserDao {
         PreparedStatement pre = null;
         int count = 0;
         try {
-            String sql = "insert into Feedback(user_id,store_id,content,satisfied) values (?,?,?,?)";
+            String sql = "insert into Feedback(user_id,store_id,content,satisfied,registerLog) values (?,?,?,?,?)";
             conn = getConnection();
             conn.setAutoCommit(false);
             pre = conn.prepareStatement(sql);
@@ -749,6 +749,7 @@ public class UserDaoImpl extends BaseDao implements UserDao {
             pre.setInt(2, feedback.getStore_id());
             pre.setString(3, feedback.getContent());
             pre.setInt(4, feedback.getIsSatisfied());
+            pre.setString(5, feedback.getRegisterLog());
             count++;
             if (pre.executeUpdate() == count) {
                 conn.commit();
