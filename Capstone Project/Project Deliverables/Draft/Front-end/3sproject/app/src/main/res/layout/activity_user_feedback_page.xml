@@ -9,15 +9,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <ProgressBar
-            android:id="@+id/loadingBar"
-            style="?android:attr/progressBarStyleInverse"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/textContent"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="40dp"
-            android:visibility="invisible"/>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -137,16 +128,29 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/errorMess"
-                android:layout_marginLeft="16dp"/>
-            <Button
-                android:layout_marginTop="32dp"
-                android:id="@+id/btn_send_feedback"
+                android:layout_marginLeft="16dp"/>\
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bottom_button"
-                android:text="Gửi phản hồi"
-                android:layout_alignParentBottom="true"
-                android:textColor="@color/colorWhite"/>
+                android:layout_marginTop="32dp"
+                android:layout_alignParentBottom="true">
+                <Button
+                    android:id="@+id/btn_send_feedback"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="@drawable/bottom_button"
+                    android:text="Gửi phản hồi"
+                    android:textColor="@color/colorWhite"/>
+                <ProgressBar
+                    android:id="@+id/loadingBar"
+                    style="?android:attr/progressBarStyleInverse"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_centerHorizontal="true"
+                    android:visibility="invisible"/>
+            </RelativeLayout>
+
+
         </LinearLayout>
     </RelativeLayout>
 

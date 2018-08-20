@@ -106,7 +106,7 @@ public class ResetPasswordPage extends BasePage{
                         String password = MD5Library.md5(newPass.getText().toString());
                         loadingBar.setVisibility(View.VISIBLE);
                         btnChangePass.setEnabled(false);
-                        btnChangePass.setText("Đang thực hiện");
+                        btnChangePass.setText("");
                         apiService.requestChangePassword(username, password).enqueue(new Callback<Boolean>() {
                             @Override
                             public void onResponse(Call<Boolean> call, Response<Boolean> response) {

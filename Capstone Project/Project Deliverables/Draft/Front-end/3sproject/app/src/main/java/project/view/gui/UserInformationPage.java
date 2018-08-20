@@ -3,12 +3,15 @@ package project.view.gui;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,13 +27,15 @@ import retrofit2.Call;
 import retrofit2.Response;
 
 public class UserInformationPage extends BasePage {
-    private TextView txtName, txtPhone, txtEmail, txtGender, txtDob, storeName;
+    private TextView txtName, txtPhone, txtEmail, txtGender, txtDob, storeName,nullMessage;
     private ImageView btnBack;
     private Button btnEditInfo;
     private final int REQUEST_PROFILE_CODE = 123;
     private APIService apiService;
     private ProgressBar loadingBar;
     private String nameDisplay;
+    private User us = new User();
+    private RelativeLayout userInformation;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -109,6 +114,8 @@ public class UserInformationPage extends BasePage {
         txtDob = findViewById(R.id.txt_dob);
         storeName = findViewById(R.id.storeName);
         loadingBar = findViewById(R.id.loadingBar);
+        userInformation = findViewById(R.id.userInformation);
+        nullMessage = findViewById(R.id.nullMessage);
     }
 
 
@@ -176,18 +183,39 @@ public class UserInformationPage extends BasePage {
         protected void onPreExecute() {
             super.onPreExecute();
             loadingBar.setVisibility(View.VISIBLE);
+            userInformation.setVisibility(View.INVISIBLE);
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            loadingBar.setVisibility(View.INVISIBLE);
+            boolean check = false;
+            if (us.getLast_name() != null) {
+                check = true;
+            }
+            if(check == true){
+                loadingBar.setVisibility(View.INVISIBLE);
+                userInformation.setVisibility(View.VISIBLE);
+            }
+            final boolean finalCheck = check;
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+
+                    if (finalCheck == false) {
+                        Toast.makeText(UserInformationPage.this, "Có lỗi xảy ra. Vui lòng thử lại!", Toast.LENGTH_SHORT).show();
+                        nullMessage.setText("Có lỗi xảy ra, vui lòng tải lại trang!");
+                        loadingBar.setVisibility(View.INVISIBLE);
+                        userInformation.setVisibility(View.INVISIBLE);
+                    }
+                }
+            },10000);
         }
 
         @Override
         protected void onProgressUpdate(User... values) {
             super.onProgressUpdate(values);
-            User us = values[0];
+            us = values[0];
             txtName.setText(us.getLast_name());
             txtPhone.setText(us.getPhone());
             txtEmail.setText(us.getEmail());

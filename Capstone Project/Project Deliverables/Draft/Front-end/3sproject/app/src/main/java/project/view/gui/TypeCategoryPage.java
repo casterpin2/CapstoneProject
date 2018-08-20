@@ -8,6 +8,8 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
@@ -41,6 +43,8 @@ import project.view.model.Type;
 import project.view.util.CustomInterface;
 import retrofit2.Call;
 import android.widget.ImageButton;
+import android.widget.Toast;
+
 import retrofit2.Response;
 import project.view.util.GridSpacingItemDecoration;
 
@@ -58,6 +62,7 @@ public class TypeCategoryPage extends BasePage {
     private List<Type> searchedProduct = new ArrayList<>();
     private CoordinatorLayout main_layout;
     private Button btnViewAll;
+    private TextView nullMessage;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -115,7 +120,9 @@ public class TypeCategoryPage extends BasePage {
         imgBack = findViewById(R.id.backBtn);
         imgBarCode = findViewById(R.id.imgBarCode);
         tv_brand_title = (TextView) findViewById(R.id.tv_brand_title);
+        nullMessage = findViewById(R.id.nullMessage);
         btnViewAll = (Button) findViewById(R.id.btnAll);
+
         btnViewAll.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
@@ -171,8 +178,20 @@ public class TypeCategoryPage extends BasePage {
         @Override
         protected void onPostExecute(final List<Type> aVoid) {
             super.onPostExecute(aVoid);
+            if (aVoid == null) {
+                new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(TypeCategoryPage.this, "Có lỗi khi định vị vị trí của bạn", Toast.LENGTH_SHORT).show();
+                        nullMessage.setText("Có lỗi xảy ra, vui lòng tải lại trang!");
+                        loadingBar.setVisibility(View.INVISIBLE);
+
+                    }
+                },10000);
+                return;
+            }
             adapter = new TypePageListViewAdapter(TypeCategoryPage.this, aVoid);
-            loadingBar.setVisibility(View.INVISIBLE);
+
             RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(TypeCategoryPage.this, 2);
             recyclerView.setLayoutManager(mLayoutManager);
             recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(10), true));

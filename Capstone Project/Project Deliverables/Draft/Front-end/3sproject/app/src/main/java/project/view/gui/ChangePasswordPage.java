@@ -132,11 +132,15 @@ public class ChangePasswordPage extends BasePage {
                             apiService = ApiUtils.getAPIService();
                             String password = MD5Library.md5(newPass.getText().toString());
                             loadingBar.setVisibility(View.VISIBLE);
+                            btnChangePass.setEnabled(false);
+                            btnChangePass.setText("");
                             apiService.requestChangePassword(username,password).enqueue(new Callback<Boolean>() {
                                 @Override
                                 public void onResponse(Call<Boolean> call, Response<Boolean> response) {
                                     if(response.isSuccessful()){
                                         loadingBar.setVisibility(View.INVISIBLE);
+                                        btnChangePass.setEnabled(true);
+                                        btnChangePass.setText("Lưu thay đổi");
                                         Toast.makeText(ChangePasswordPage.this, "Thay đổi mật khẩu thành công.", Toast.LENGTH_LONG).show();
                                         Intent backToUserFragment = new Intent(ChangePasswordPage.this, UserFragment.class);
                                         tvOldPass.setText("");
@@ -156,7 +160,8 @@ public class ChangePasswordPage extends BasePage {
                                         public void run() {
                                                 Toast.makeText(ChangePasswordPage.this, "Có lỗi xảy ra. Vui lòng thử lại!", Toast.LENGTH_SHORT).show();
                                             loadingBar.setVisibility(View.INVISIBLE);
-
+                                            btnChangePass.setEnabled(true);
+                                            btnChangePass.setText("Lưu thay đổi");
                                         }
                                     },10000);
                                 }
@@ -181,8 +186,6 @@ public class ChangePasswordPage extends BasePage {
                 return false;
             }
         });
-
-        loadingBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorApplication), android.graphics.PorterDuff.Mode.MULTIPLY);
     }
 
     private void findView() {

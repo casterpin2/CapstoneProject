@@ -3,6 +3,7 @@ package project.view.gui;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -14,6 +15,8 @@ import project.view.model.Feedback;
 import project.view.util.CustomInterface;
 
 public class FeedbackManagement extends BasePage {
+    private ListView listView;
+    private ProgressBar loadingBar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -32,7 +35,8 @@ public class FeedbackManagement extends BasePage {
         Toast.makeText(getBaseContext(), feedbacks.size() + "", Toast.LENGTH_LONG).show();
 
         FeedbackManagementAdapter feedbackManagementAdapter = new FeedbackManagementAdapter(FeedbackManagement.this, R.layout.item_feedback, feedbacks);
-        ListView listView = findViewById(R.id.content);
+        listView = findViewById(R.id.content);
+        loadingBar = findViewById(R.id.loadingBar);
 
         listView.setAdapter(feedbackManagementAdapter);
     }

@@ -3,6 +3,7 @@ package project.view.gui;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -42,7 +43,7 @@ public class UserFeedbackPage extends BasePage {
     private boolean isSmile = false;
     protected boolean isSad = false;
     private ImageView smile_checked, sad_checked, back_btn;
-    private TextView tv_feedback_status, error_mess;
+    private TextView tv_feedback_status, error_mess, tvStoreName;
     private Button btn_send_feedback;
     private EditText content_feedback;
     private ProgressBar loadingBar;
@@ -67,6 +68,7 @@ public class UserFeedbackPage extends BasePage {
                 return false;
             }
         });
+        tvStoreName.setText("Truyền cái tên vào đây cho tao");
 
         back_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -142,6 +144,7 @@ public class UserFeedbackPage extends BasePage {
         content_feedback = findViewById(R.id.content);
         error_mess = findViewById(R.id.errorMessage);
         loadingBar = findViewById(R.id.loadingBar);
+        tvStoreName = findViewById(R.id.tvStoreName);
         orderId = getIntent().getStringExtra("orderId");
         userId = getIntent().getIntExtra("userId",-1);
         storeId = getIntent().getIntExtra("storeId",-1);
@@ -218,19 +221,30 @@ public class UserFeedbackPage extends BasePage {
         @Override
         protected void onPreExecute() {
             loadingBar.setVisibility(View.VISIBLE);
+            btn_send_feedback.setEnabled(false);
+            btn_send_feedback.setText("");
             super.onPreExecute();
         }
 
         @Override
         protected void onPostExecute(Boolean result) {
             super.onPostExecute(result);
-            loadingBar.setVisibility(View.INVISIBLE);
             if (result != null) {
                 DatabaseReference databaseReference = database.getReference().child("ordersUser").child(String.valueOf(userId)).child(orderId).child("isFeedback");
                 databaseReference.setValue("true");
                 dialog();
             } else {
-                Toast.makeText(UserFeedbackPage.this, "Có lỗi xảy ra!!!", Toast.LENGTH_SHORT).show();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                            Toast.makeText(UserFeedbackPage.this, "Có lỗi xảy ra. Vui lòng thử lại", Toast.LENGTH_SHORT).show();
+                            loadingBar.setVisibility(View.INVISIBLE);
+                            btn_send_feedback.setEnabled(true);
+                            btn_send_feedback.setText("Gửi phản hồi");
+                        }
+
+                },10000);
+                return;
             }
         }
 

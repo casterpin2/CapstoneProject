@@ -13,13 +13,6 @@
     android:layout_height="match_parent"
     android:id="@+id/main_layout"
     android:paddingBottom="10dp">
-    <ProgressBar
-        android:id="@+id/loadingBar"
-        style="?android:attr/progressBarStyleInverse"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:visibility="invisible"/>
         <RelativeLayout
         android:id="@+id/image"
         android:layout_width="match_parent"
@@ -190,18 +183,29 @@
             />
 
     </RelativeLayout>
-
-    <Button
-        android:id="@+id/saveBtn"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Lưu thay đổi"
-        android:background="@drawable/login_button"
         android:layout_below="@+id/promotionPercentLayout"
         android:layout_marginTop="10dp"
-        android:layout_alignParentBottom="true"
-        android:textColor="@color/colorWhite"
-        />
+        android:layout_alignParentBottom="true">
+        <Button
+            android:id="@+id/saveBtn"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="Lưu thay đổi"
+            android:background="@drawable/login_button"
+            android:textColor="@color/colorWhite"
+            />
+        <ProgressBar
+            android:id="@+id/loadingBar"
+            style="?android:attr/progressBarStyleInverse"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_centerInParent="true"
+            android:visibility="invisible"/>
+    </RelativeLayout>
+
 </RelativeLayout>
 
 

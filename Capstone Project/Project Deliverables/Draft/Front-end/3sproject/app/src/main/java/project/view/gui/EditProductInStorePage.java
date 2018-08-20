@@ -1,7 +1,10 @@
 package project.view.gui;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.drawable.ColorDrawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
@@ -64,7 +67,6 @@ public class EditProductInStorePage extends BasePage {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_product_in_store_page);
         findView();
-        loadingBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorApplication), android.graphics.PorterDuff.Mode.MULTIPLY);
         CustomInterface.setStatusBarColor(this);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorApplication)));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -166,6 +168,21 @@ public class EditProductInStorePage extends BasePage {
                             Toast.makeText(EditProductInStorePage.this, getResources().getString(R.string.unchange), Toast.LENGTH_SHORT).show();
 
                         } else {
+                            loadingBar.setVisibility(View.VISIBLE);
+                            saveBtn.setEnabled(false);
+                            saveBtn.setText("");
+                            if(!isNetworkAvailable()) {
+                                new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(EditProductInStorePage.this, "Có lỗi xảy ra. Vui lòng thử lại!", Toast.LENGTH_SHORT).show();
+                                        loadingBar.setVisibility(View.INVISIBLE);
+                                        saveBtn.setEnabled(true);
+                                        saveBtn.setText("Lưu thay đổi");
+                                    }
+                                },10000);
+                                return;
+                            }
                             myRef = database.getReference().child("cart");
                             myRef.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
@@ -189,7 +206,7 @@ public class EditProductInStorePage extends BasePage {
 
                                 @Override
                                 public void onCancelled(@NonNull DatabaseError databaseError) {
-                                    Toast.makeText(EditProductInStorePage.this,"Có lỗi xảy ra !!!",Toast.LENGTH_LONG).show();
+                                    Toast.makeText(EditProductInStorePage.this,"Có lỗi xảy ra. Vui lòng thử lại",Toast.LENGTH_LONG).show();
                                 }
                             });
 
@@ -268,6 +285,8 @@ public class EditProductInStorePage extends BasePage {
         protected void onPreExecute() {
             super.onPreExecute();
             loadingBar.setVisibility(View.VISIBLE);
+            saveBtn.setEnabled(false);
+            saveBtn.setText("");
         }
 
         @Override
@@ -284,45 +303,26 @@ public class EditProductInStorePage extends BasePage {
         }
         @Override
         protected void onPostExecute(Boolean result) {
-            boolean isSuccess = false;
-            if (result == null) {
-                isSuccess = false;
-            }
-            if (!result) {
-                isSuccess = false;
-            } else {
-                isSuccess = true;
-            }
-            if(isSuccess == true){
+            if(result == false){
+                Toast.makeText(EditProductInStorePage.this,"Có lỗi xảy ra. Vui lòng thử lại",Toast.LENGTH_LONG).show();
                 loadingBar.setVisibility(View.INVISIBLE);
-                Toast.makeText(EditProductInStorePage.this,"Sửa thông tin " + productNameValue + " thành công",Toast.LENGTH_LONG).show();
-                finish();
+                saveBtn.setEnabled(true);
+                saveBtn.setText("Lưu thay đổi");
+                return;
             }
-            final boolean finalCheck = isSuccess;
-            new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-                @Override
-                public void run() {
-
-                    if (finalCheck == false) {
-                        Toast.makeText(EditProductInStorePage.this, "Có lỗi xảy ra. Vui lòng thử lại!", Toast.LENGTH_SHORT).show();
-//                        nullMessage.setText("Có lỗi xảy ra, vui lòng tải lại trang!");
-                        loadingBar.setVisibility(View.INVISIBLE);
-                    }
-                }
-            },10000);
-//            if (result == null) {
-//                Toast.makeText(EditProductInStorePage.this,"Không có kết nối mạng!",Toast.LENGTH_LONG).show();
-//                return;
-//            }
-//            if (!result){
-//                Toast.makeText(EditProductInStorePage.this,"Có lỗi xảy ra. Vui lòng thử lại",Toast.LENGTH_LONG).show();
-//                return;
-//            } else {
-//                Toast.makeText(EditProductInStorePage.this,"Sửa thông tin " + productNameValue + " thành công",Toast.LENGTH_LONG).show();
-//                finish();
-//            }
+            Toast.makeText(EditProductInStorePage.this,"Sửa thông tin "+ productNameValue+" thành công!",Toast.LENGTH_LONG).show();
+            loadingBar.setVisibility(View.INVISIBLE);
+            saveBtn.setEnabled(true);
+            saveBtn.setText("Lưu thay đổi");
+            finish();
             super.onPostExecute(result);
 
         }
+    }
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }
