@@ -200,7 +200,7 @@ public class NearbyStorePage extends BasePage implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         LatLng myLocation = new LatLng(latitude, longtitude);
-        googleMap.addMarker(new MarkerOptions().position(myLocation).title("Vị trí của bạn"));
+        googleMap.addMarker(new MarkerOptions().position(myLocation).title("Vị trí của bạn")).showInfoWindow();
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(myLocation));
         if (productId != -1) {
             NearByStoreAsynTask asynTask = new NearByStoreAsynTask();

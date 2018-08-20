@@ -4,6 +4,8 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
@@ -21,6 +23,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -65,7 +68,7 @@ public class SaleProductDisplayPage extends BasePage {
     private APIService apiService;
     private RecyclerView recycler_view;
     private ImageView backBtn, backdrop, imgAddCard;
-    private TextView tvStoreName;
+    private TextView tvStoreName, nullMessage;
     private Spinner spinnerCategory,spinnerSort;
     private StorageReference storageReference = Firebase.getFirebase();
     private List<Product> products;
@@ -74,6 +77,8 @@ public class SaleProductDisplayPage extends BasePage {
     private List<Product> tempProductInStore;
     private ProductFilter productFilter;
     private SaleProductCustomCardviewAdapter saleProductCustomCardviewAdapter;
+    private ProgressBar loadingBar;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +86,7 @@ public class SaleProductDisplayPage extends BasePage {
         setContentView(R.layout.activity_sale_product_display_page);
         findView();
         customView();
-
+        loadingBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorApplication), android.graphics.PorterDuff.Mode.MULTIPLY);
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -104,7 +109,8 @@ public class SaleProductDisplayPage extends BasePage {
         backdrop = findViewById(R.id.backdrop);
         main_layout = findViewById(R.id.main_layout);
         searchView = findViewById(R.id.searchViewQuery);
-
+        loadingBar = findViewById(R.id.loadingBar);
+        nullMessage = findViewById(R.id.nullMessage);
     }
     private void customView(){
         main_layout.setOnTouchListener(new View.OnTouchListener() {
@@ -116,18 +122,29 @@ public class SaleProductDisplayPage extends BasePage {
         });
         searchView.setQueryHint("Tìm sản phẩm giảm giá");
         imgBarCode.setVisibility(View.INVISIBLE);
-        CustomInterface.setStatusBarColor(this);
     }
 
     public class SaleProductDisplayData extends AsyncTask<Call,List<Product>,Void>{
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            loadingBar.setVisibility(View.VISIBLE);
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+            if (aVoid == null){
+                new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(SaleProductDisplayPage.this, "Có lỗi khi định vị vị trí của bạn", Toast.LENGTH_SHORT).show();
+                        nullMessage.setText("Có lỗi xảy ra, vui lòng tải lại trang!");
+                        loadingBar.setVisibility(View.INVISIBLE);
+
+                    }
+                },10000);
+            }
         }
 
         @Override

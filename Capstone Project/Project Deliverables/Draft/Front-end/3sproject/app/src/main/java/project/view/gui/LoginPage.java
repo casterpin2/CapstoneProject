@@ -100,7 +100,6 @@ public class LoginPage extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         CustomInterface.setStatusBarColor(this);
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-        loadingBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorApplication), android.graphics.PorterDuff.Mode.MULTIPLY);
         main_layout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -297,6 +296,10 @@ public class LoginPage extends AppCompatActivity {
         protected void onPreExecute() {
             super.onPreExecute();
             loadingBar.setVisibility(View.VISIBLE);
+            loginBtn.setEnabled(false);
+            loginFBBtn.setEnabled(false);
+            loginGPBtn.setEnabled(false);
+            loginBtn.setText("");
         }
 
         @Override
@@ -305,11 +308,19 @@ public class LoginPage extends AppCompatActivity {
             if (result == null){
                 errorMessage.setText("Không có kết nối. Vui lòng thử lại");
                 loadingBar.setVisibility(View.INVISIBLE);
+                loginBtn.setEnabled(true);
+                loginFBBtn.setEnabled(true);
+                loginGPBtn.setEnabled(true);
+                loginBtn.setText("Đăng nhập");
                 return;
             } errorMessage.setText("");
             if (result.getUser().getId() == 0) {
                 errorMessage.setText("Tên tài khoản hoặc mật khẩu không đúng. Vui lòng đăng nhập lại");
                 loadingBar.setVisibility(View.INVISIBLE);
+                loginBtn.setEnabled(true);
+                loginFBBtn.setEnabled(true);
+                loginGPBtn.setEnabled(true);
+                loginBtn.setText("Đăng nhập");
             }else {
                 //Toast.makeText(LoginPage.this, LoginPage.login.getUser().toString(), Toast.LENGTH_LONG).show();
                 User user = result.getUser();
@@ -332,12 +343,20 @@ public class LoginPage extends AppCompatActivity {
                                 myRef.setValue(android_id);
                             }
                             loadingBar.setVisibility(View.INVISIBLE);
+                            loginBtn.setEnabled(true);
+                            loginFBBtn.setEnabled(true);
+                            loginGPBtn.setEnabled(true);
+                            loginBtn.setText("Đăng nhập");
                             startActivity(toHomePage);
                             finishAffinity();
                             finish();
                         } else{
                             myRef.setValue(android_id);
                             loadingBar.setVisibility(View.INVISIBLE);
+                            loginBtn.setEnabled(true);
+                            loginFBBtn.setEnabled(true);
+                            loginGPBtn.setEnabled(true);
+                            loginBtn.setText("Đăng nhập");
                             startActivity(toHomePage);
                             finishAffinity();
                             finish();

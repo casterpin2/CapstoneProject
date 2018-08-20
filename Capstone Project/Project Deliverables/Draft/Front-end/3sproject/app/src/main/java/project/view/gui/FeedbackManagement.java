@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -34,6 +35,7 @@ public class FeedbackManagement extends BasePage {
     public boolean isLoading;
     private int page;
     public Handler mHandle;
+    private ProgressBar loadingBar;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,6 +47,7 @@ public class FeedbackManagement extends BasePage {
         mHandle = new MyHandle();
         feedbackManagementAdapter = new FeedbackManagementAdapter(FeedbackManagement.this, R.layout.item_feedback, list);
         listView = findViewById(R.id.content);
+        loadingBar = findViewById(R.id.loadingBar);
         listView.setAdapter(feedbackManagementAdapter);
         if (storeId != -1){
             Call<List<UserFeedback>> call = ApiUtils.getAPIService().getAllFeedback(storeId , 0);
@@ -56,7 +59,6 @@ public class FeedbackManagement extends BasePage {
 
         LayoutInflater li = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         footerView = li.inflate(R.layout.footer_loading_listview_lazy_loading, null);
-
         listView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {

@@ -538,7 +538,7 @@ public class RegisterStorePage extends BasePage implements OnMapReadyCallback {
             super.onPreExecute();
             loadingBarRegister.setVisibility(View.VISIBLE);
             registerBtn.setEnabled(false);
-            registerBtn.setText("Đang thực hiện");
+            registerBtn.setText("");
 
         }
 

@@ -11,6 +11,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Handler;
+import android.os.Looper;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -94,7 +95,9 @@ public class EditStoreInformationPage extends BasePage implements OnMapReadyCall
     SharedPreferences pre;
     String storeJson;
     String userJson;
-    private ProgressBar loadingBar;
+    private ProgressBar loadingBarMap, loadingBarSave;
+    private boolean isMyLocation = false;
+
     public void setAutoLatitude(double autoLatitude) {
         this.autoLatitude = autoLatitude;
     }
@@ -117,13 +120,13 @@ public class EditStoreInformationPage extends BasePage implements OnMapReadyCall
                 return false;
             }
         });
+        loadingBarMap.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorApplication), android.graphics.PorterDuff.Mode.MULTIPLY);
         getSupportActionBar().setTitle("Thay đổi thông tin cửa hàng");
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorApplication)));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         getIntentFromStoreInformationPage();
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        loadingBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorApplication), android.graphics.PorterDuff.Mode.MULTIPLY);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -242,7 +245,9 @@ public class EditStoreInformationPage extends BasePage implements OnMapReadyCall
         handleAddressLayout = (RelativeLayout) findViewById(R.id.handleAddressLayout);
         switch_button = (SwitchButton) findViewById(R.id.switch_button);
         updateInformationStore = findViewById(R.id.updateBtn);
-        loadingBar = (ProgressBar) findViewById(R.id.loadingBar);
+        loadingBarMap = (ProgressBar) findViewById(R.id.loadingBarMap);
+        loadingBarSave = (ProgressBar) findViewById(R.id.loadingBarSave);
+
     }
 
     public void getIntentFromStoreInformationPage() {
@@ -422,6 +427,8 @@ public class EditStoreInformationPage extends BasePage implements OnMapReadyCall
                         markerToMap(autoLongtitude, autoLatitude, mMap, getResources().getString(R.string.yourGPS),"");
                     }
                 }
+            } else {
+                markerToMap(storeLongtitude, storeLatitude, mMap,"Vị trí hiện tại của cửa hàng" ,address);
             }
             if (isGPSEnabled) {
                 locationManager.requestLocationUpdates(
@@ -454,7 +461,7 @@ public class EditStoreInformationPage extends BasePage implements OnMapReadyCall
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            loadingBar.setVisibility(View.VISIBLE);
+            loadingBarMap.setVisibility(View.VISIBLE);
         }
 
         @Override
@@ -479,7 +486,7 @@ public class EditStoreInformationPage extends BasePage implements OnMapReadyCall
              }
 
            if(check){
-               loadingBar.setVisibility(View.INVISIBLE);
+               loadingBarMap.setVisibility(View.INVISIBLE);
            }
             final boolean finalCheck = check;
             new Handler().postDelayed(new Runnable() {
@@ -488,7 +495,8 @@ public class EditStoreInformationPage extends BasePage implements OnMapReadyCall
 
                     if (!finalCheck) {
                         Toast.makeText(EditStoreInformationPage.this, "Có lỗi khi định vị vị trí của bạn", Toast.LENGTH_SHORT).show();
-                        loadingBar.setVisibility(View.INVISIBLE);
+                        loadingBarMap.setVisibility(View.INVISIBLE);
+                        isMyLocation = false;
                     }
                 }
             },10000);
@@ -539,13 +547,31 @@ public class EditStoreInformationPage extends BasePage implements OnMapReadyCall
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            loadingBarSave.setVisibility(View.VISIBLE);
+            updateInformationStore.setEnabled(false);
+            updateInformationStore.setText("");
         }
 
         @Override
         protected void onPostExecute(Store store) {
             super.onPostExecute(store);
-             storeJson = new Gson().toJson(store);
-             userJson = pre.getString("user","");
+            if (store == null) {
+                new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(EditStoreInformationPage.this, "Có lỗi xảy ra. Vui lòng thử lại!", Toast.LENGTH_SHORT).show();
+                        loadingBarSave.setVisibility(View.INVISIBLE);
+                        updateInformationStore.setEnabled(true);
+                        updateInformationStore.setText("Lưu thay đổi");
+                    }
+                },10000);
+                return;
+            }
+            loadingBarSave.setVisibility(View.INVISIBLE);
+            updateInformationStore.setEnabled(true);
+            updateInformationStore.setText("Lưu thay đổi");
+            storeJson = new Gson().toJson(store);
+            userJson = pre.getString("user","");
             SharedPreferences.Editor editor = pre.edit();
             editor.putString("user", userJson);
             editor.putString("store", storeJson);

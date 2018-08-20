@@ -65,7 +65,25 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:layout_below="@id/rellay1">
-
+            <ProgressBar
+                android:id="@+id/loadingBar"
+                style="?android:attr/progressBarStyleInverse"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:visibility="invisible"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:textColor="@color/common_google_signin_btn_text_light_disabled"
+                android:textSize="20dp"
+                android:id="@+id/nullMessage"
+                />
+            <RelativeLayout
+                android:id="@+id/userInformation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -346,13 +364,9 @@
 
                 </LinearLayout>
             </LinearLayout>
+            </RelativeLayout>
         </RelativeLayout>
     </ScrollView>
-    <ProgressBar
-        android:id="@+id/loadingBar"
-        style="?android:attr/progressBarStyleInverse"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:visibility="invisible"/>
+
+
 </RelativeLayout>

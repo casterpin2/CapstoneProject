@@ -10,6 +10,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
@@ -363,7 +364,17 @@ public class UserSearchProductPage extends BasePage {
                 }
                 adapter.notifyDataSetChanged();
                 setLayout(noHaveProduct,haveProduct);
-        } else {Toast.makeText(UserSearchProductPage.this,"Có lỗi xảy ra!!!",Toast.LENGTH_LONG).show();}
+        } else {
+                new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(UserSearchProductPage.this, "Có lỗi xảy ra. Vui lòng thử lại!", Toast.LENGTH_SHORT).show();
+                        loadingBar.setVisibility(View.INVISIBLE);
+                        noHaveProduct.setText("Có lỗi xảy ra. Vui lòng thử lại");
+
+                    }
+                },10000);
+            }
 
         }
     }

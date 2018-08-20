@@ -182,30 +182,48 @@
             <!--android:layout_height="wrap_content"-->
             <!--android:layout_below="@+id/test1"-->
             <!--android:textSize="20dp"/>-->
-            <Button
-                android:id="@+id/updateBtn"
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/map"
-                android:text="Lưu thay đổi"
-                android:background="@drawable/login_button"
-                android:textColor="@color/colorWhite"
-                android:layout_marginTop="10dp"/>
+                android:layout_below="@+id/mapLayout"
+                android:layout_marginTop="10dp">
+                <Button
+                    android:id="@+id/updateBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Lưu thay đổi"
+                    android:background="@drawable/login_button"
+                    android:textColor="@color/colorWhite"
+                    />
+                <ProgressBar
+                    android:id="@+id/loadingBarSave"
+                    style="?android:attr/progressBarStyleInverse"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:visibility="invisible"/>
+            </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/mapLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/autoAddressLayout"
+                android:layout_marginTop="5dp">
             <fragment
                 android:id="@+id/map"
                 android:name="com.google.android.gms.maps.SupportMapFragment"
                 android:layout_width="match_parent"
                 android:layout_height="250dp"
-                android:layout_below="@+id/autoAddressLayout"
                 tools:context=".TestMap"
-                android:layout_marginTop="5dp"/>
+                />
             <ProgressBar
-                android:id="@+id/loadingBar"
+                android:id="@+id/loadingBarMap"
                 style="?android:attr/progressBarStyleInverse"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:visibility="invisible"/>
+            </RelativeLayout>
         </RelativeLayout>
 
     </RelativeLayout>

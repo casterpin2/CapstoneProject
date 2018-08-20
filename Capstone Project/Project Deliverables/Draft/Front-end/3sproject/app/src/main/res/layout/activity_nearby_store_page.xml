@@ -26,34 +26,36 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"/>
-        <ListView
-            android:id="@+id/storeListView"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/textContent"
-            android:divider="@android:color/transparent"
-            android:dividerHeight="5dp"
-            >
+            android:layout_height="fill_parent"
+            android:layout_below="@+id/textContent">
+            <ListView
+                android:id="@+id/storeListView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:divider="@android:color/transparent"
+                android:dividerHeight="5dp">
+            </ListView>
+            <TextView
+                android:id="@+id/noHaveStore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="@string/noHaveStore"
+                android:textSize="18dp"
+                android:visibility="invisible"/>
+            <ProgressBar
+                android:id="@+id/loadingBar"
+                style="?android:attr/progressBarStyleInverse"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:visibility="invisible"/>
+        </RelativeLayout>
 
-        </ListView>
-        <TextView
-            android:id="@+id/noHaveStore"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/textContent"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="40dp"
-            android:text="@string/noHaveStore"
-            android:textSize="18dp"
-            android:visibility="invisible"/>
-        <ProgressBar
-            android:id="@+id/loadingBar"
-            style="?android:attr/progressBarStyleInverse"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/textContent"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="40dp"
-            android:visibility="invisible"/>
+
+
+
     </RelativeLayout>
 </LinearLayout>

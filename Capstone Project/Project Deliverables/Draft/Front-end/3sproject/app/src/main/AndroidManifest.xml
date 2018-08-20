@@ -68,17 +68,17 @@
         <activity android:name=".gui.SearchProductAddToStore" />
         <activity
             android:name=".gui.SaleProductDisplayPage"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar.TransparentTheme" />
         <activity
             android:name=".gui.CategoryDisplayPage"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar.TransparentTheme" />
         <activity android:name=".gui.ProductBrandDisplayPage" />
         <activity
             android:name=".gui.BrandDisplayPage"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar.TransparentTheme" />
         <activity
             android:name=".gui.TypeCategoryPage"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar.TransparentTheme" />
         <activity android:name=".gui.ProductTypeDisplayPage" />
         <activity android:name=".gui.RegisterPage" />
         <activity
@@ -93,7 +93,7 @@
         <activity android:name=".gui.EditProductInStorePage" />
         <activity
             android:name=".gui.HomePage"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar.TransparentTheme">
         </activity>
 
         <activity
