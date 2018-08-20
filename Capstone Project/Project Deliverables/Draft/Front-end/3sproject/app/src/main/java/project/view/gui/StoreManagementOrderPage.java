@@ -68,7 +68,7 @@ public class StoreManagementOrderPage extends BasePage {
         toolbar.setTitle(R.string.title_order_management);
         storeId = getIntent().getIntExtra("storeId" , -1);
         if (storeId == -1) {
-            Toast.makeText(this, "Có lỗi xảy ra!!!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Có lỗi xảy ra. Vui lòng thử lại", Toast.LENGTH_SHORT).show();
             return;
         }
         CustomInterface.setStatusBarColor(this);

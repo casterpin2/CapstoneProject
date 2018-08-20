@@ -1,5 +1,8 @@
 package project.view.fragment.manageOrder;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -42,17 +45,23 @@ public class DoneOrderStore extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (storeId != -1) {
-            myRef = database.getReference().child("ordersStore").child(String.valueOf(storeId));
-            myRef.orderByChild("status").equalTo("done").addValueEventListener(changeListener);
+        if (isNetworkAvailable()){
+            if (storeId != -1) {
+                myRef = database.getReference().child("ordersStore").child(String.valueOf(storeId));
+                myRef.orderByChild("status").equalTo("done").addValueEventListener(changeListener);
+            } else {
+                Toast.makeText(getContext(), "Không có người dùng", Toast.LENGTH_LONG).show();
+            }
+            if (list.isEmpty()) {
+                noOrderLayout.setVisibility(View.VISIBLE);
+                noOrderText.setText("Không có đơn hàng đợi xử lý");
+            }else {
+                noOrderLayout.setVisibility(View.INVISIBLE);
+            }
         } else {
-            Toast.makeText(getContext(), "Không có người dùng", Toast.LENGTH_LONG).show();
-        }
-        if (list.isEmpty()) {
+            Toast.makeText(getContext(), "Không có kết nối. Vui lòng kết nối mạng để xem đơn hàng", Toast.LENGTH_LONG).show();
             noOrderLayout.setVisibility(View.VISIBLE);
-            noOrderText.setText("Không có đơn hàng đợi xử lý");
-        }else {
-            noOrderLayout.setVisibility(View.INVISIBLE);
+            noOrderText.setText("Vui lòng kết nối mạng để xem đơn hàng");
         }
     }
 
@@ -111,4 +120,10 @@ public class DoneOrderStore extends Fragment {
 
         }
     };
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
 }

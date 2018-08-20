@@ -79,7 +79,7 @@ public class UserManagementOrderPage extends BasePage {
                 orderListView.setAdapter(adapter);
                 myRef.addValueEventListener(changeListener);
             } else {
-                Toast.makeText(this, "Không có người dùng", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Bạn phải đăng nhập để xem lịch sử đặt hàng", Toast.LENGTH_LONG).show();
             }
             orderListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
                 @Override

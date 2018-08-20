@@ -33,7 +33,7 @@ public class BarcodeActivity extends AppCompatActivity implements ZXingScannerVi
         CustomInterface.setStatusBarColor(this);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorApplication)));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("");
+        getSupportActionBar().setTitle("Quét mã code sản phẩm");
     }
     private boolean checkPermission()
     {
