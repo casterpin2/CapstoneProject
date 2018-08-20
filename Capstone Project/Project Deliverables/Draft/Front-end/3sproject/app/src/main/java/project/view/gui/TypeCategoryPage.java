@@ -81,6 +81,7 @@ public class TypeCategoryPage extends BasePage {
                 return false;
             }
         });
+        loadingBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorApplication), android.graphics.PorterDuff.Mode.MULTIPLY);
         String categoryName = getIntent().getStringExtra("categoryName");
         tv_type_title.setText(categoryName);
         searchView.setQueryHint("Tìm trong " + categoryName);
@@ -172,13 +173,14 @@ public class TypeCategoryPage extends BasePage {
                 new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(TypeCategoryPage.this, "Có lỗi khi định vị vị trí của bạn", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(TypeCategoryPage.this, "Có lỗi xảy ra, vui lòng thử lại", Toast.LENGTH_SHORT).show();
                         nullMessage.setText("Có lỗi xảy ra, vui lòng tải lại trang!");
                         loadingBar.setVisibility(View.INVISIBLE);
-
                     }
                 }, 10000);
                 return;
+            } else {
+                loadingBar.setVisibility(View.INVISIBLE);
             }
             adapter = new TypePageListViewAdapter(TypeCategoryPage.this, aVoid);
 

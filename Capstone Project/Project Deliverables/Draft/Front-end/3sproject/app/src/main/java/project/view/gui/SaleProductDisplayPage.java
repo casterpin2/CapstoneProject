@@ -131,17 +131,6 @@ public class SaleProductDisplayPage extends BasePage {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            if (aVoid == null){
-                new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(SaleProductDisplayPage.this, "Có lỗi khi định vị vị trí của bạn", Toast.LENGTH_SHORT).show();
-                        nullMessage.setText("Có lỗi xảy ra, vui lòng tải lại trang!");
-                        loadingBar.setVisibility(View.INVISIBLE);
-
-                    }
-                },10000);
-            }
         }
 
         @Override
@@ -156,6 +145,18 @@ public class SaleProductDisplayPage extends BasePage {
                 for (Product product : products){
                     tempProductInStore.add(product);
                 }
+                loadingBar.setVisibility(View.INVISIBLE);
+            } else {
+                new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(SaleProductDisplayPage.this, "Có lỗi xảy ra, vui lòng thử lại", Toast.LENGTH_SHORT).show();
+                        nullMessage.setText("Có lỗi xảy ra, vui lòng tải lại trang!");
+                        loadingBar.setVisibility(View.INVISIBLE);
+
+                    }
+                },10000);
+                return;
             }
             saleProductCustomCardviewAdapter = new SaleProductCustomCardviewAdapter(SaleProductDisplayPage.this, tempProductInStore);
             RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(SaleProductDisplayPage.this, 2);
