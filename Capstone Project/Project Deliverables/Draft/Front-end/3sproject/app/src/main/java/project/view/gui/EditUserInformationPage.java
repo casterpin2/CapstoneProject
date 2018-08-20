@@ -44,6 +44,7 @@ import project.objects.User;
 import project.retrofit.APIService;
 import project.view.R;
 import project.view.util.CustomInterface;
+import project.view.util.Regex;
 import project.view.util.TweakUI;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -59,7 +60,7 @@ public class EditUserInformationPage extends BasePage {
     private Spinner genderSpinner;
     private CircleImageView profile_image;
     Calendar myCalendar ;
-    Bundle extras;
+    private Bundle extras;
     int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
     private RelativeLayout main_layout;
     private  boolean checkUpdate;
@@ -72,24 +73,19 @@ public class EditUserInformationPage extends BasePage {
     private Uri imageURI;
     User us;
     boolean checkCall = false;
+    private Regex regex;
+    private boolean  isUserName= false, isPhone = false ,isEmail = false;
+    private  DatePickerDialog.OnDateSetListener date;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_user_information_page);
-        main_layout = findViewById(R.id.main_layout);
-        main_layout.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                CustomInterface.hideKeyboard(view,getBaseContext());
-                return false;
-            }
-        });
 
-        CustomInterface.setStatusBarColor(this);
-        CustomInterface.setSoftInputMode(this);
         mApi = APIService.retrofit.create(APIService.class);
-        //TweakUI.makeTransparent(this);
         mapping();
+        customView();
+        regex = new Regex();
         getIncomingIntent();
         setLastSelector();
 
@@ -97,7 +93,7 @@ public class EditUserInformationPage extends BasePage {
         genderSpinner.setAdapter(adapter);
 
         Intent intent = getIntent();
-        final Bundle extras = intent.getExtras();
+        extras = intent.getExtras();
 
         String gender = extras.getString("gender");
         if(gender.equals("")){
@@ -107,6 +103,33 @@ public class EditUserInformationPage extends BasePage {
         } else if(gender.equals("Nữ")) {
             genderSpinner.setSelection(2);
         }
+
+        userNameText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    isUserName = regex.checkDisplayName(usernameError,userNameText);
+                }
+            }
+        });
+
+        phoneText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    isPhone = regex.checkPhone(phoneError,phoneText);
+                }
+            }
+        });
+
+        emailText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    isEmail = regex.checkEmail(emailError,emailText);
+                }
+            }
+        });
 
         profile_image.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,11 +143,11 @@ public class EditUserInformationPage extends BasePage {
             public void onClick(View v) {
                 Intent intent = getIntent();
                 Bundle extras = intent.getExtras();
-
                 String name = userNameText.getText().toString();
                 String phone = phoneText.getText().toString();
                 String email = emailText.getText().toString();
                 String dob = dobText.getText().toString();
+
 
                 String gender = "";
                 if (genderSpinner.getSelectedItemPosition() == 0) {
@@ -134,11 +157,9 @@ public class EditUserInformationPage extends BasePage {
                 } else if (genderSpinner.getSelectedItemPosition() == 2){
                     gender = "Nữ";
                 }
-
-
                 if (extras.getString("name").equals(name) && extras.getString("phone").equals(phone)
                         && extras.getString("email").equals(email) && extras.getString("dob").equals(dob)
-                         && extras.getString("gender").equals(gender)) {
+                        && extras.getString("gender").equals(gender)) {
 
                     Intent toUserInformationPage = new Intent(EditUserInformationPage.this, UserInformationPage.class);
                     setResult(201, toUserInformationPage);
@@ -146,30 +167,33 @@ public class EditUserInformationPage extends BasePage {
 
 
                 } else {
+
+                    isUserName = regex.checkDisplayName(usernameError,userNameText);
+                    isPhone = regex.checkPhone(phoneError,phoneText);
+                    isEmail = regex.checkEmail(emailError,emailText);
+
                     // code service here
-                    us = new User();
-                    pre = getSharedPreferences("authentication", Context.MODE_PRIVATE);
-                    String existUserJson = pre.getString("user",null);
-                    User userTemp  = new Gson().fromJson(existUserJson, User.class);
+                    if(isEmail && isPhone &&isUserName) {
+                        us = new User();
+                        pre = getSharedPreferences("authentication", Context.MODE_PRIVATE);
+                        String existUserJson = pre.getString("user", null);
+                        User userTemp = new Gson().fromJson(existUserJson, User.class);
 
-                    us.setDateOfBirth(dob);
-                    us.setDisplayName(name);
-                    us.setFirst_name("");
-                    us.setLast_name(name);
-                    us.setImage_path(userTemp.getImage_path());
-                    us.setUsername(userTemp.getUsername());
-                    us.setHasStore(userTemp.getHasStore());
-                    us.setEmail(email);
-                    us.setPhone(phone);
-                    us.setGender(gender);
-                    us.setId(extras.getInt("idUser",0));
-                    final Call<User> call = mApi.updateInfotmation(us);
-                    new UserUpdate().execute(call);
-
-
-
-                    saveProfile(v);
-
+                        us.setDateOfBirth(dob);
+                        us.setDisplayName(name);
+                        us.setFirst_name("");
+                        us.setLast_name(name);
+                        us.setImage_path(userTemp.getImage_path());
+                        us.setUsername(userTemp.getUsername());
+                        us.setHasStore(userTemp.getHasStore());
+                        us.setEmail(email);
+                        us.setPhone(phone);
+                        us.setGender(gender);
+                        us.setId(extras.getInt("idUser", 0));
+                        final Call<User> call = mApi.updateInfotmation(us);
+                        new UserUpdate().execute(call);
+                        saveProfile(v);
+                    }
                 }
             }
         });
@@ -208,7 +232,7 @@ public class EditUserInformationPage extends BasePage {
 
         myCalendar = Calendar.getInstance();
 
-        final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
+        date = new DatePickerDialog.OnDateSetListener() {
 
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear,
@@ -272,6 +296,18 @@ public class EditUserInformationPage extends BasePage {
         });
     }
 
+    private void customView(){
+        main_layout.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                CustomInterface.hideKeyboard(view,getBaseContext());
+                return false;
+            }
+        });
+        CustomInterface.setStatusBarColor(this);
+        CustomInterface.setSoftInputMode(this);
+    }
+
     private void openGalery(){
         Intent toGallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
         startActivityForResult(toGallery,IMAGE_CODE);
@@ -287,6 +323,7 @@ public class EditUserInformationPage extends BasePage {
     }
 
     private void mapping() {
+        main_layout = findViewById(R.id.main_layout);
         userNameText = findViewById(R.id.userNameText);
         phoneText = findViewById(R.id.phoneText);
         emailText = findViewById(R.id.emailText);
@@ -470,14 +507,14 @@ public class EditUserInformationPage extends BasePage {
         @Override
         protected Void doInBackground(Call... calls) {
             try{
-            Call<User> call = calls[0];
-            Response<User> reponse = call.execute();
-            if(reponse.body()!=null){
-                checkCall = true;
+                Call<User> call = calls[0];
+                Response<User> reponse = call.execute();
+                if(reponse.body()!=null){
+                    checkCall = true;
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
             return null;
         }
     }
