@@ -20,6 +20,13 @@ public class Feedback {
     public Feedback() {
     }
 
+    public Feedback(int user_id, int store_id, String content, int isSatisfied) {
+        this.user_id = user_id;
+        this.store_id = store_id;
+        this.content = content;
+        this.isSatisfied = isSatisfied;
+    }
+
     public int getUser_id() {
         return user_id;
     }
