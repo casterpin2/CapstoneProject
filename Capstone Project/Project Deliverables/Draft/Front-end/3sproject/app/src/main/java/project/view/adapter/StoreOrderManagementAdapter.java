@@ -1,6 +1,8 @@
 package project.view.adapter;
 
 import android.app.Activity;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.widget.ArrayAdapter;
@@ -13,6 +15,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import java.util.List;
 
 import project.view.R;
@@ -64,6 +68,10 @@ public class StoreOrderManagementAdapter extends ArrayAdapter<Order> {
             viewHolder.detailLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    if (!isNetworkAvailable()){
+                        Toast.makeText(context, "Có lỗi xảy ra với mạng", Toast.LENGTH_LONG).show();
+                        return;
+                    }
                     Intent goToOrderDetail = new Intent(context, OrderDetailPage.class);
                     goToOrderDetail.putExtra("orderId",order.getOrderId());
                     goToOrderDetail.putExtra("is" + orderType +"Order",true);
@@ -77,4 +85,11 @@ public class StoreOrderManagementAdapter extends ArrayAdapter<Order> {
             TextView tvCustomerName, tvDeliveryAddress,tvOrderDate,tvTotalOrder;
             LinearLayout detailLayout;
         }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
     }

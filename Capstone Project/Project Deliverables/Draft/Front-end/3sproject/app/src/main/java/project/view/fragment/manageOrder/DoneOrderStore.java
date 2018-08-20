@@ -126,4 +126,8 @@ public class DoneOrderStore extends Fragment {
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
+    public void clearAdapter(){
+        list.clear();
+        adapter.notifyDataSetChanged();
+    }
 }

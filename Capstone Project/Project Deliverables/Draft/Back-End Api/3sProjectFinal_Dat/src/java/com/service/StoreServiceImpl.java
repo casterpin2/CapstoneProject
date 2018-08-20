@@ -9,6 +9,8 @@ import com.dao.StoreDao;
 import com.entites.LocationEntites;
 import com.entites.StoreEntites;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -48,6 +50,11 @@ public class StoreServiceImpl implements StoreService{
     @Override
     public StoreEntites informationStore(int storeId) throws SQLException {
        return dao.informationStore(storeId);
+    }
+
+    @Override
+    public List<HashMap<String, Object>> managementFeedback(int storeId, int page) throws SQLException {
+        return dao.managementFeedback(storeId,page);
     }
     
 }

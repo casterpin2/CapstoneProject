@@ -9,6 +9,8 @@ import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
@@ -73,7 +75,6 @@ public class OrderDetailPage extends BasePage {
     @Override
     protected void onResume() {
         super.onResume();
-
         if (!orderId.isEmpty() && store != null) {
             myRef = database.getReference().child("ordersStore").child(String.valueOf(store.getId())).child(orderId);
             myRef.addValueEventListener(changeListener);
@@ -135,6 +136,11 @@ public class OrderDetailPage extends BasePage {
         acceptBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (!isNetworkAvailable()){
+                    Toast.makeText(OrderDetailPage.this, "Có lỗi xảy ra với mạng", Toast.LENGTH_LONG).show();
+                    finish();
+                    return;
+                }
                 AlertDialog.Builder builder = new AlertDialog.Builder(OrderDetailPage.this);
                 builder.setTitle("Chấp nhận đơn hàng");
                 builder.setMessage("Bạn có chắc chắn muốn nhận đơn hàng này không?");
@@ -168,6 +174,11 @@ public class OrderDetailPage extends BasePage {
             @Override
             public void onClick(View view) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(OrderDetailPage.this);
+                if (!isNetworkAvailable()){
+                    Toast.makeText(OrderDetailPage.this, "Có lỗi xảy ra với mạng", Toast.LENGTH_LONG).show();
+                    finish();
+                    return;
+                }
                 builder.setTitle("Từ chối đơn hàng");
                 builder.setMessage("Bạn có muốn từ chối nhận đơn hàng này không?");
 
@@ -201,6 +212,11 @@ public class OrderDetailPage extends BasePage {
         closeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (!isNetworkAvailable()){
+                    Toast.makeText(OrderDetailPage.this, "Có lỗi xảy ra với mạng", Toast.LENGTH_LONG).show();
+                    finish();
+                    return;
+                }
                 AlertDialog.Builder builder = new AlertDialog.Builder(OrderDetailPage.this);
                 builder.setTitle("Đóng đơn hàng");
                 builder.setMessage("Đơn hàng này đã xử lý thành công? Bạn có muốn đóng đơn hàng này?");
@@ -351,4 +367,10 @@ public class OrderDetailPage extends BasePage {
 
         }
     };
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
 }

@@ -299,6 +299,10 @@ public class RegisterPage extends AppCompatActivity {
         protected void onPostExecute(String aVoid) {
             super.onPostExecute(aVoid);
             //if (aVoid == null) return;
+            if (aVoid == null) {
+                Toast.makeText(RegisterPage.this, "Có lỗi xảy ra", Toast.LENGTH_SHORT).show();
+                return;
+            }
             Toast.makeText(RegisterPage.this, "Đăng kí thành công", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(RegisterPage.this,LoginPage.class);
             intent.putExtra("username",aVoid);

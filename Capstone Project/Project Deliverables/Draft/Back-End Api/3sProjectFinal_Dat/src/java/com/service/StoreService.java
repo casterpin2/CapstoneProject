@@ -8,6 +8,8 @@ package com.service;
 import com.entites.LocationEntites;
 import com.entites.StoreEntites;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  *
@@ -20,4 +22,5 @@ public interface StoreService {
     public boolean editProductInStore(int storeId,int productId,double price,double promotion) throws SQLException;
     public StoreEntites updateStore(StoreEntites store,LocationEntites location) throws SQLException;
     public StoreEntites informationStore(int storeId) throws SQLException;
+    public List<HashMap<String,Object>> managementFeedback(int storeId, int page) throws SQLException;
 }

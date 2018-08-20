@@ -141,15 +141,13 @@ public class UserManagementOrderPage extends BasePage {
                     }
                 }
             } else {
-                list.clear();
+                clearAdapter();
                 //buyLinearLayout.setVisibility(View.INVISIBLE);
                 //loadingBar.setVisibility(View.INVISIBLE);
-                adapter.notifyDataSetChanged();
                 noOrder.setVisibility(View.VISIBLE);
             }
             if (list.size() == 0){
-                adapter.notifyDataSetChanged();
-                noOrder.setVisibility(View.VISIBLE);
+                clearAdapter();
             }
         }
 
@@ -158,19 +156,9 @@ public class UserManagementOrderPage extends BasePage {
 
         }
     };
-    InternalNetworkChangeReceiver internalNetworkChangeReceiver = new InternalNetworkChangeReceiver();
-    public class InternalNetworkChangeReceiver extends BroadcastReceiver
-    {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Toast.makeText(UserManagementOrderPage.this, "asd", Toast.LENGTH_SHORT).show();
-            if (!isNetworkAvailable()){
-                if (userId != -1) {
-                    myRef.removeEventListener(changeListener);
-                    list.clear();
-                    adapter.notifyDataSetChanged();
-                }
-            }
-        }
+
+    public void clearAdapter(){
+        list.clear();
+        adapter.notifyDataSetChanged();
     }
 }

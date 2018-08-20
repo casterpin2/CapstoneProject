@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,6 +32,7 @@ import project.firebase.Firebase;
 import project.view.R;
 import project.view.gui.CartPage;
 import project.view.gui.UserFeedbackPage;
+import project.view.gui.UserManagementOrderPage;
 import project.view.model.CartDetail;
 import project.view.model.Order;
 import project.view.model.OrderDetail;
@@ -120,7 +123,11 @@ public class UserOrderAdapter extends BaseExpandableListAdapter {
             cancelBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
+                    if (!isNetworkAvailable()){
+                        ((UserManagementOrderPage) context).clearAdapter();
+                        Toast.makeText(context, "Bạn chưa kết nối mạng", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
                     AlertDialog.Builder builder = new AlertDialog.Builder(context);
                     builder.setTitle("Hủy đơn hàng");
                     builder.setMessage("Bạn có chắc chắn muốn hủy đơn hàng này không?");
@@ -192,6 +199,11 @@ public class UserOrderAdapter extends BaseExpandableListAdapter {
                  feedbackBtn.setOnClickListener(new View.OnClickListener() {
                      @Override
                      public void onClick(View view) {
+                         if (!isNetworkAvailable()){
+                             ((UserManagementOrderPage) context).clearAdapter();
+                             Toast.makeText(context, "Bạn chưa kết nối mạng", Toast.LENGTH_SHORT).show();
+                             return;
+                         }
                          Intent toUserFeedBackPage = new Intent(context, UserFeedbackPage.class);
                          toUserFeedBackPage.putExtra("orderId",orderId);
                          toUserFeedBackPage.putExtra("userId",userId);
@@ -238,5 +250,12 @@ public class UserOrderAdapter extends BaseExpandableListAdapter {
     @Override
     public boolean isChildSelectable(int i, int i1) {
         return false;
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }

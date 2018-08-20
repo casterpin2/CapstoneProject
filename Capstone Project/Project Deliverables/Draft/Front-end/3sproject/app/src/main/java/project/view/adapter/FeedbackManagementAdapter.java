@@ -20,16 +20,15 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.List;
 
 import project.view.R;
-import project.view.model.Feedback;
-import project.view.model.Item;
+import project.view.model.UserFeedback;
 import project.view.util.Formater;
 
-public class FeedbackManagementAdapter extends ArrayAdapter<Feedback> {
+public class FeedbackManagementAdapter extends ArrayAdapter<UserFeedback> {
 
     private Context context;
-    private List<Feedback> feedbacks;
+    private List<UserFeedback> feedbacks;
 
-    public FeedbackManagementAdapter(@NonNull Context context, int resource, @NonNull List<Feedback> feedbacks) {
+    public FeedbackManagementAdapter(@NonNull Context context, int resource, @NonNull List<UserFeedback> feedbacks) {
         super(context, resource, feedbacks);
         this.context = context;
         this.feedbacks = feedbacks;
@@ -48,16 +47,16 @@ public class FeedbackManagementAdapter extends ArrayAdapter<Feedback> {
             viewHolder = (FeedbackManagementAdapter.MyViewHolder)convertView.getTag();
         }
 
-        Feedback feedback = feedbacks.get(position);
+        UserFeedback userFeedback = feedbacks.get(position);
 
-        viewHolder.name.setText("bởi Tùng Vũ");
-        if(feedback.getIsSatisfied()==1){
+        viewHolder.name.setText(userFeedback.getUser().getDisplayName());
+        if(userFeedback.getFeedback().getIsSatisfied() == 1){
             viewHolder.imgSatisfied.setImageResource(R.drawable.smile_checked);
         }else {
             viewHolder.imgSatisfied.setImageResource(R.drawable.sad_unchecked);
         }
-        viewHolder.contentFeedback.setText(feedback.getContent());
-        viewHolder.feedbackDate.setText("vào ngày 13/07/1996");
+        viewHolder.contentFeedback.setText(userFeedback.getFeedback().getContent());
+        viewHolder.feedbackDate.setText(userFeedback.getFeedback().getRegisterLog());
         return convertView;
     }
 

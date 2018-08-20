@@ -18,6 +18,7 @@ import project.view.model.SmsResultEntities;
 import project.view.model.Store;
 import project.view.model.NearByStore;
 import project.view.model.Type;
+import project.view.model.UserFeedback;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -149,8 +150,11 @@ public interface APIService {
     @POST("send")
     Call<ResultNotification> sendNotification(@Body Notification notification,
                                               @Header("Authorization") String authorization,
-    @Header("Content-Type") String content);
+                                              @Header("Content-Type") String content);
 
     @POST("getFeedback")
     Call<Boolean> getFeedback(@Body Feedback feedback);
+
+    @GET("getAllFeedback")
+    Call<List<UserFeedback>> getAllFeedback(@Query("storeId") int storeId,@Query("page") int page);
 }

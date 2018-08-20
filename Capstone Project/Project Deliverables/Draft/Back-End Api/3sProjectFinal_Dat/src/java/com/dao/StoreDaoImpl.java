@@ -6,6 +6,7 @@
 package com.dao;
 
 import static com.dao.BaseDao.closeConnect;
+import com.entites.FeedbackEntites;
 import com.entites.LocationEntites;
 import com.entites.StoreEntites;
 import com.entites.UserEntites;
@@ -13,6 +14,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.springframework.stereotype.Repository;
@@ -488,5 +492,41 @@ public class StoreDaoImpl extends BaseDao implements StoreDao {
         }
         return store;
     }
-
+        @Override
+    public List<HashMap<String, Object>> managementFeedback(int storeId , int page) throws SQLException {
+        List<HashMap<String, Object>> list = new ArrayList<>();
+        Connection conn = null;
+        PreparedStatement pre = null;
+        try {
+            conn = getConnection();
+            String sql = "select a.user_id,a.email,a.phone,a.full_name,DATE_FORMAT(a.dateOfBirth,\"%d/%m/%Y\")  as dateOfBirth,a.content,a.satisfied,DATE_FORMAT(a.registerLog,\"%d/%m/%Y\")  as registerLog,b.path from\n" +
+"(select a.id as user_id,a.email,a.phone,a.full_name,a.image_id,a.dateOfBirth,b.content,b.satisfied,b.registerLog from User a , Feedback b where a.id = b.user_id and b.store_id = ?) a , Image b where a.image_id = b.id order by registerLog limit ?,10";
+            pre = conn.prepareStatement(sql);
+            pre.setInt(1, storeId);
+            pre.setInt(2, page*10);
+            ResultSet rs = pre.executeQuery();
+            while (rs.next()){
+                FeedbackEntites feedback = new FeedbackEntites();
+                UserEntites user = new UserEntites();
+                HashMap<String,Object> hashmap = new HashMap<>();
+                feedback.setContent(rs.getNString("content"));
+                feedback.setIsSatisfied(rs.getInt("satisfied"));
+                feedback.setStore_id(storeId);
+                feedback.setUser_id(rs.getInt("user_id"));
+                feedback.setRegisterLog(rs.getString("registerLog"));
+                user.setDisplayName(rs.getNString("full_name"));
+                user.setUserID(rs.getInt("user_id"));
+                user.setEmail(rs.getNString("email"));
+                user.setPhone(rs.getString("phone"));
+                user.setDateOfBirth(rs.getString("dateOfBirth"));
+                user.setImage_path(rs.getString("path"));
+                hashmap.put("user", user);
+                hashmap.put("feedback", feedback);
+                list.add(hashmap);
+            }
+        } finally {
+            closeConnect(conn, pre, null);
+        }
+        return list;
+    }
 }

@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -91,5 +92,8 @@ public class StoreController {
         return store.informationStore(storeId);
     }
 
-
+    @RequestMapping(value = "/getAllFeedback", method = RequestMethod.GET, produces = "application/json;")
+    public List<HashMap<String, Object>> managementFeedback(@RequestParam("storeId") int storeId, @RequestParam("page") int page) throws SQLException, ClassNotFoundException, IOException {
+        return store.managementFeedback(storeId,page);
+    }
 }
