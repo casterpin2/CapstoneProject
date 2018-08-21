@@ -72,7 +72,6 @@ public class UserDaoImpl extends BaseDao implements UserDao {
 "            (SELECT *, ( 6371 * acos( cos( radians(?) ) * cos( radians(latitude) ) * cos( radians(longitude) - radians(?) ) +\n" +
 "            sin( radians(?) ) * sin( radians(latitude) ) ) )\n" +
 "            AS distance FROM Location HAVING distance < 5) a, Store b WHERE a.id = b.location_id AND b.status = 1) a, (SELECT store_id,promotion,price FROM Product_Store WHERE product_id = ?) b WHERE a.id = b.store_id) a , User b WHERE a.user_id = b.id) a , Image_Store b WHERE a.id = b.store_id) a , Image b WHERE a.image_id = b.id ORDER BY distance limit 0,5";
-
     @Override
     public List<UserEntites> getAllUserForAdmin() throws SQLException {
         List<UserEntites> listData = null;
@@ -280,6 +279,13 @@ public class UserDaoImpl extends BaseDao implements UserDao {
                     store.setAddress(store.getAddress().replaceAll("0", "").replaceAll("Unnamed Road", "").replaceAll("\\s+", " ").replaceAll("null", "").trim());
                     store.setLatitude(rs.getString("latitude"));
                     store.setLongtitude(rs.getString("longitude"));
+                    pre = conn.prepareStatement("select smile,sad from (select COUNT(*) as smile from Feedback where satisfied = 1 and store_id = ?) a, (select COUNT(*) as sad from Feedback where satisfied = 0 and store_id = ?) b");
+                    pre.setInt(1,store.getId());
+                    pre.setInt(2,store.getId());
+                    rs = pre.executeQuery();
+                    rs.next();
+                    store.setSmile(rs.getInt("smile"));
+                    store.setSad(rs.getInt("sad"));
                 }
                 hashMap.put("store", store);
             }
@@ -334,6 +340,13 @@ public class UserDaoImpl extends BaseDao implements UserDao {
                     store.setAddress(store.getAddress().replaceAll("0", "").replaceAll("Unnamed Road", "").replaceAll("\\s+", " ").replaceAll("null", "").trim());
                     store.setLatitude(rs.getString("latitude"));
                     store.setLongtitude(rs.getString("longitude"));
+                    pre = conn.prepareStatement("select smile,sad from (select COUNT(*) as smile from Feedback where satisfied = 1 and store_id = ?) a, (select COUNT(*) as sad from Feedback where satisfied = 0 and store_id = ?) b");
+                    pre.setInt(1,store.getId());
+                    pre.setInt(2,store.getId());
+                    rs = pre.executeQuery();
+                    rs.next();
+                    store.setSmile(rs.getInt("smile"));
+                    store.setSad(rs.getInt("sad"));
                 }
                 hashMap.put("store", store);
             } else {
@@ -670,6 +683,13 @@ public class UserDaoImpl extends BaseDao implements UserDao {
                     store.setAddress(store.getAddress().replaceAll("0", "").replaceAll("Unnamed Road", "").replaceAll("\\s+", " ").replaceAll("null", "").trim());
                     store.setLatitude(rs.getString("latitude"));
                     store.setLongtitude(rs.getString("longitude"));
+                    pre = conn.prepareStatement("select smile,sad from (select COUNT(*) as smile from Feedback where satisfied = 1 and store_id = ?) a, (select COUNT(*) as sad from Feedback where satisfied = 0 and store_id = ?) b");
+                    pre.setInt(1,store.getId());
+                    pre.setInt(2,store.getId());
+                    rs = pre.executeQuery();
+                    rs.next();
+                    store.setSmile(rs.getInt("smile"));
+                    store.setSad(rs.getInt("sad"));
                 }
                 hashMap.put("store", store);
             } else {

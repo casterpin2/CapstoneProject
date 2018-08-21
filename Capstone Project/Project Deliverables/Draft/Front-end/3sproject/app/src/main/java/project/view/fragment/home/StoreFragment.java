@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,7 +30,6 @@ import project.view.R;
 import project.view.gui.RegisterStorePage;
 import project.view.gui.StoreManagementOrderPage;
 import project.view.model.Store;
-import project.view.model.StoreInformation;
 import project.view.util.NetworkStateReceiver;
 
 
@@ -89,6 +87,8 @@ public class StoreFragment extends Fragment implements NetworkStateReceiver.Netw
             ownerName.setText(user.getFirst_name() + " " + user.getLast_name());
             latitude = Double.parseDouble(store.getLatitude());
             longtitude = Double.parseDouble(store.getLongtitude());
+            tv_count_smile.setText(String.valueOf(store.getSmile()));
+            tv_count_sad.setText(String.valueOf(store.getSad()));
             btnManagermentProduct.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

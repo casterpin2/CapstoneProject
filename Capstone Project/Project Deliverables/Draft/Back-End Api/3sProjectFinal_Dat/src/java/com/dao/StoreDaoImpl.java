@@ -52,7 +52,7 @@ public class StoreDaoImpl extends BaseDao implements StoreDao {
             pre = conn.prepareStatement(CHECK_PHONE_STORE);
             pre.setString(1, store.getPhone());
             ResultSet rs = pre.executeQuery();
-            if (rs.next()){
+            if (rs.next()) {
                 return result;
             }
             if (locationId == -1) {
@@ -262,6 +262,13 @@ public class StoreDaoImpl extends BaseDao implements StoreDao {
                 se.setUser_name(rs.getNString("full_name"));
                 se.setAddress(rs.getString("apartment_number") + " " + rs.getString("street") + " " + rs.getString("county") + " " + rs.getString("district") + " " + rs.getString("city"));
                 se.setAddress(se.getAddress().replaceAll("0", "").replaceAll("Unnamed Road", "").replaceAll("\\s+", " ").replaceAll("null", "").trim());
+                pre = conn.prepareStatement("select smile,sad from (select COUNT(*) as smile from Feedback where satisfied = 1 and store_id = ?) a, (select COUNT(*) as sad from Feedback where satisfied = 0 and store_id = ?) b");
+                pre.setInt(1, storeId);
+                pre.setInt(2, storeId);
+                rs = pre.executeQuery();
+                rs.next();
+                se.setSmile(rs.getInt("smile"));
+                se.setSad(rs.getInt("sad"));
                 return se;
             }
         } catch (SQLException e) {
@@ -352,7 +359,7 @@ public class StoreDaoImpl extends BaseDao implements StoreDao {
         PreparedStatement pre = null;
         ResultSet rs = null;
         StoreEntites store = null;
-        String sql = "SELECT s.id as storeId,s.user_id,s.location_id,s.name as nameStore,\n"
+        String sql = "SELECT s.id as storeId,s.user_id,s.location_id,s.name as nameStore,DATE_FORMAT(s.registerLog,\"%d/%m/%Y\")  as registerLogFormat,\n"
                 + "                 s.phone,s.status,l.apartment_number,l.street,l.district,l.county,\n"
                 + "                l.city,l.latitude,l.longitude \n"
                 + "                FROM Store s JOIN Location as l on s.location_id = l.id where s.id =?";
@@ -364,11 +371,12 @@ public class StoreDaoImpl extends BaseDao implements StoreDao {
                 store = new StoreEntites();
                 store.setId(rs.getInt("storeId"));
                 if (rs.getString("apartment_number") != null) {
-                    store.setAddress(rs.getString("apartment_number") + "-" + rs.getString("street") + "-" + rs.getString("county") + "-" + rs.getString("city"));
+                    store.setAddress(rs.getString("apartment_number") + " " + rs.getString("street") + " " + rs.getString("county") + " " + rs.getString("district") + " " + rs.getString("city"));
                 } else {
-                    store.setAddress(rs.getString("street") + "-" + rs.getString("county") + "-" + rs.getString("city"));
+                    store.setAddress(rs.getString("street") + " " + rs.getString("county") + " " + rs.getString("district") + " " + rs.getString("city"));
                 }
-
+                store.setAddress(store.getAddress().replaceAll("0", "").replaceAll("Unnamed Road", "").replaceAll("\\s+", " ").replaceAll("null", "").trim());
+                store.setRegisterLog(rs.getString("registerLogFormat"));
                 store.setImage_path(imgPath);
                 store.setLatitude(rs.getString("latitude"));
                 store.setLongtitude(rs.getString("longitude"));
@@ -492,23 +500,24 @@ public class StoreDaoImpl extends BaseDao implements StoreDao {
         }
         return store;
     }
-        @Override
-    public List<HashMap<String, Object>> managementFeedback(int storeId , int page) throws SQLException {
+
+    @Override
+    public List<HashMap<String, Object>> managementFeedback(int storeId, int page) throws SQLException {
         List<HashMap<String, Object>> list = new ArrayList<>();
         Connection conn = null;
         PreparedStatement pre = null;
         try {
             conn = getConnection();
-            String sql = "select a.user_id,a.email,a.phone,a.full_name,DATE_FORMAT(a.dateOfBirth,\"%d/%m/%Y\")  as dateOfBirth,a.content,a.satisfied,DATE_FORMAT(a.registerLog,\"%d/%m/%Y\")  as registerLog,b.path from\n" +
-"(select a.id as user_id,a.email,a.phone,a.full_name,a.image_id,a.dateOfBirth,b.content,b.satisfied,b.registerLog from User a , Feedback b where a.id = b.user_id and b.store_id = ?) a , Image b where a.image_id = b.id order by registerLog limit ?,10";
+            String sql = "select a.user_id,a.email,a.phone,a.full_name,DATE_FORMAT(a.dateOfBirth,\"%d/%m/%Y\")  as dateOfBirth,a.content,a.satisfied,DATE_FORMAT(a.registerLog,\"%d/%m/%Y\")  as registerLog,b.path from\n"
+                    + "(select a.id as user_id,a.email,a.phone,a.full_name,a.image_id,a.dateOfBirth,b.content,b.satisfied,b.registerLog from User a , Feedback b where a.id = b.user_id and b.store_id = ?) a , Image b where a.image_id = b.id order by registerLog limit ?,10";
             pre = conn.prepareStatement(sql);
             pre.setInt(1, storeId);
-            pre.setInt(2, page*10);
+            pre.setInt(2, page * 10);
             ResultSet rs = pre.executeQuery();
-            while (rs.next()){
+            while (rs.next()) {
                 FeedbackEntites feedback = new FeedbackEntites();
                 UserEntites user = new UserEntites();
-                HashMap<String,Object> hashmap = new HashMap<>();
+                HashMap<String, Object> hashmap = new HashMap<>();
                 feedback.setContent(rs.getNString("content"));
                 feedback.setIsSatisfied(rs.getInt("satisfied"));
                 feedback.setStore_id(storeId);
