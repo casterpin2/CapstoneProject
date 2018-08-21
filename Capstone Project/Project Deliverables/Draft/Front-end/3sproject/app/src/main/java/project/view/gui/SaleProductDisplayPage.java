@@ -1,5 +1,6 @@
 package project.view.gui;
 
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -66,7 +67,7 @@ public class SaleProductDisplayPage extends BasePage {
     private Store store;
     private APIService apiService;
     private RecyclerView recycler_view;
-    private ImageView backBtn, backdrop, imgAddCard;
+    private ImageView backBtn, backdrop, imgAddCard,imgHome;
     private TextView tvStoreName, nullMessage;
     private Spinner spinnerCategory,spinnerSort;
     private StorageReference storageReference = Firebase.getFirebase();
@@ -92,7 +93,13 @@ public class SaleProductDisplayPage extends BasePage {
                 finish();
             }
         });
-
+        imgHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent toHomePage = new Intent(SaleProductDisplayPage.this,HomePage.class);
+                startActivity(toHomePage);
+            }
+        });
         apiService = APIService.retrofit.create(APIService.class);
         final Call<List<Product>> callSale = apiService.getSaleProduct();
         new SaleProductDisplayPage.SaleProductDisplayData().execute(callSale);
@@ -108,6 +115,7 @@ public class SaleProductDisplayPage extends BasePage {
         main_layout = findViewById(R.id.main_layout);
         searchView = findViewById(R.id.searchViewQuery);
         loadingBar = findViewById(R.id.loadingBar);
+        imgHome = findViewById(R.id.imgHome);
         nullMessage = findViewById(R.id.nullMessage);
     }
     private void customView(){
@@ -203,7 +211,6 @@ public class SaleProductDisplayPage extends BasePage {
 
                 }
             });
-
         }
 
         @Override

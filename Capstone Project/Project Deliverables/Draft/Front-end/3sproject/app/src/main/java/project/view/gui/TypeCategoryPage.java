@@ -64,6 +64,7 @@ public class TypeCategoryPage extends BasePage {
     private android.widget.ProgressBar loadingBar;
     private SearchView searchView;
     private ImageButton imgBack;
+    private ImageView imgHome;
     private List<Type> searchedProduct = new ArrayList<>();
     private CoordinatorLayout main_layout;
     private Button btnViewAll;
@@ -100,6 +101,13 @@ public class TypeCategoryPage extends BasePage {
                 finish();
             }
         });
+        imgHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent toHomePage = new Intent(TypeCategoryPage.this,HomePage.class);
+                startActivity(toHomePage);
+            }
+        });
     }
 
     private void setCoverImg() {
@@ -116,6 +124,7 @@ public class TypeCategoryPage extends BasePage {
         loadingBar = (android.widget.ProgressBar) findViewById(R.id.loadingBar);
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         imgBack = findViewById(R.id.backBtn);
+        imgHome = findViewById(R.id.imgHome);
         tv_type_title = (TextView) findViewById(R.id.tv_type_title);
         nullMessage = findViewById(R.id.nullMessage);
         btnViewAll = (Button) findViewById(R.id.btnAll);

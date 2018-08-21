@@ -2,6 +2,7 @@ package project.view.gui;
 
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -59,6 +60,7 @@ public class CategoryDisplayPage extends BasePage {
     private ProgressBar loadingBar;
     private SearchView searchView;
     private ImageButton imgBack;
+    private ImageView imgHome;
     private List<Category> searchedProduct = new ArrayList<>();
     private TextView nullMessage;
 
@@ -117,6 +119,13 @@ public class CategoryDisplayPage extends BasePage {
                 finish();
             }
         });
+        imgHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent toHomePage = new Intent(CategoryDisplayPage.this,HomePage.class);
+                startActivity(toHomePage);
+            }
+        });
         apiService = ApiUtils.getAPIService();
         categoryList = new ArrayList<>();
 
@@ -135,6 +144,7 @@ public class CategoryDisplayPage extends BasePage {
         loadingBar = (ProgressBar) findViewById(R.id.loadingBar);
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         imgBack = findViewById(R.id.backBtn);
+        imgHome = findViewById(R.id.imgHome);
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         nullMessage = findViewById(R.id.nullMessage);
     }

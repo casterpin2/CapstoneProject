@@ -164,8 +164,6 @@ public class EditUserInformationPage extends BasePage {
                     Intent toUserInformationPage = new Intent(EditUserInformationPage.this, UserInformationPage.class);
                     setResult(201, toUserInformationPage);
                     finish();
-
-
                 } else {
 
                     isUserName = regex.checkDisplayName(usernameError,userNameText);

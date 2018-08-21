@@ -60,7 +60,7 @@ public class ProductInStoreByUserDisplayPage extends BasePage {
     private APIService mAPI;
     private RecyclerView recycler_view;
     private ProductInStoreByUserCustomCardViewAdapter productInStoreByUserCustomListViewAdapter;
-    private ImageView backBtn,backdrop;
+    private ImageView backBtn,backdrop,imgHome;
     private TextView tvStoreName;
     private Spinner spinnerCategory,spinnerSort;
     private StorageReference storageReference = Firebase.getFirebase();
@@ -102,6 +102,13 @@ public class ProductInStoreByUserDisplayPage extends BasePage {
                 finish();
             }
         });
+        imgHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent toHomePage = new Intent(ProductInStoreByUserDisplayPage.this,HomePage.class);
+                startActivity(toHomePage);
+            }
+        });
         storeNameLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -122,6 +129,7 @@ public class ProductInStoreByUserDisplayPage extends BasePage {
         });
     }
     private void findView(){
+        imgHome = findViewById(R.id.imgHome);
         recycler_view = findViewById(R.id.recycler_view);
         backBtn = findViewById(R.id.backBtn);
         tvStoreName = findViewById(R.id.tv_store_name);
