@@ -1,17 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-    <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/swipeToRefesh"
+<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/swipeToRefesh"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-        <android.support.design.widget.CoordinatorLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <android.support.design.widget.AppBarLayout
+        android:layout_height="wrap_content">
+
+        <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?attr/colorPrimary">
+            android:background="?attr/colorPrimary"
+            android:fitsSystemWindows="true">
 
             <android.support.design.widget.CollapsingToolbarLayout
                 android:layout_width="match_parent"
@@ -20,21 +23,24 @@
                 app:expandedTitleTextAppearance="@style/TextAppearance.AppCompat.Title"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed"
                 app:titleEnabled="false">
+
                 <RelativeLayout
                     android:id="@+id/layout_img_slider"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
+
                     <android.support.v4.view.ViewPager
                         android:id="@+id/img_slider"
                         android:layout_width="match_parent"
-                        android:layout_height="256dp"/>
+                        android:layout_height="256dp" />
+
                     <LinearLayout
                         android:id="@+id/slider_dots"
-                        android:layout_marginTop="232dp"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical|center_horizontal"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="232dp"
+                        android:gravity="center_vertical|center_horizontal"
+                        android:orientation="horizontal" />
                 </RelativeLayout>
 
 
@@ -42,17 +48,17 @@
                     android:id="@+id/toolbar"
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
-                    app:layout_collapseMode="pin"
-                    app:popupTheme="@style/ThemeOverlay.AppCompat.Light" >
+                    app:layout_collapseMode="pin">
+
                     <android.support.v7.widget.CardView
-                        app:layout_scrollFlags="scroll|enterAlways"
+                        android:id="@+id/searchLayout"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        app:cardUseCompatPadding="true"
-                        android:id="@+id/searchLayout"
                         android:layout_marginRight="16dp"
                         app:cardBackgroundColor="@color/white"
-                        app:cardElevation="5dp">
+                        app:cardElevation="5dp"
+                        app:cardUseCompatPadding="true"
+                        app:layout_scrollFlags="scroll|enterAlways">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -73,51 +79,56 @@
                                 android:textColor="@color/colorApplication"
                                 android:textSize="16dp" />
                         </LinearLayout>
+
                         <ImageButton
                             android:id="@+id/imgBarCode"
-                            android:layout_marginRight="8dp"
-                            android:layout_width="32dp"
-                            android:layout_height="32dp"
-                            android:layout_gravity="end|center_vertical"
                             style="@style/Widget.AppCompat.Button.Borderless"
-                            android:src="@drawable/barcode_icon"/>
+                            android:layout_width="32dp"
+                            android:layout_height="24dp"
+                            android:layout_gravity="end|center_vertical"
+                            android:layout_marginRight="8dp"
+                            android:src="@drawable/barcode_icon" />
 
                     </android.support.v7.widget.CardView>
                 </android.support.v7.widget.Toolbar>
             </android.support.design.widget.CollapsingToolbarLayout>
         </android.support.design.widget.AppBarLayout>
-            <android.support.v4.widget.NestedScrollView
-                android:id="@+id/scrollView"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-                <LinearLayout
+        <android.support.v4.widget.NestedScrollView
+            android:id="@+id/scrollView"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
+
                 <LinearLayout
                     android:id="@+id/layout_category"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:orientation="vertical"
-                    android:background="@color/colorWhite">
+                    android:background="@color/colorWhite"
+                    android:orientation="vertical">
+
                     <RelativeLayout
                         android:id="@+id/categoty_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="8dp"
                         android:paddingTop="8dp">
+
                         <TextView
                             android:id="@+id/tv_categories"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/lb_categories"
                             android:layout_marginLeft="16dp"
-                            android:textSize="17dp"
+                            android:text="@string/lb_categories"
                             android:textAllCaps="true"
-                            android:textColor="@color/darkGrey"/>
+                            android:textColor="@color/darkGrey"
+                            android:textSize="17dp" />
 
                         <TextView
                             android:id="@+id/tv_more_category"
@@ -125,56 +136,63 @@
                             android:layout_height="wrap_content"
                             android:layout_centerInParent="true"
                             android:layout_marginRight="16dp"
-                            android:text="@string/lb_more"
                             android:gravity="right"
+                            android:text="@string/lb_more"
                             android:textColor="@color/lb_more"
                             android:textSize="14dp" />
                     </RelativeLayout>
+
                     <android.support.v7.widget.RecyclerView
                         android:id="@+id/list_category"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="16dp"/>
+                        android:layout_marginBottom="16dp" />
                 </LinearLayout>
+
                 <LinearLayout
                     android:id="@+id/layout_brand"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:orientation="vertical"
-                    android:background="@color/colorWhite">
+                    android:background="@color/colorWhite"
+                    android:orientation="vertical">
+
                     <RelativeLayout
                         android:id="@+id/brand_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="8dp"
                         android:paddingTop="8dp">
+
                         <TextView
                             android:id="@+id/tv_brand"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/lb_brands"
                             android:layout_marginLeft="16dp"
-                            android:textSize="17dp"
+                            android:text="@string/lb_brands"
+                            android:textAllCaps="true"
                             android:textColor="@color/darkGrey"
-                            android:textAllCaps="true"/>
+                            android:textSize="17dp" />
+
                         <TextView
                             android:id="@+id/tv_more_brand"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_centerInParent="true"
                             android:layout_marginRight="16dp"
-                            android:text="@string/lb_more"
                             android:gravity="right"
+                            android:text="@string/lb_more"
                             android:textColor="@color/lb_more"
                             android:textSize="14dp" />
                     </RelativeLayout>
+
                     <android.support.v7.widget.RecyclerView
                         android:id="@+id/list_brand"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="16dp"/>
+                        android:layout_marginBottom="16dp" />
                 </LinearLayout>
+
                 <LinearLayout
                     android:id="@+id/layout_sale_product"
                     android:layout_width="match_parent"
@@ -182,33 +200,36 @@
                     android:layout_marginBottom="8dp"
                     android:orientation="vertical"
                     android:paddingTop="8dp">
+
                     <TextView
                         android:id="@+id/tv_sale_product"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/lb_sale"
                         android:layout_marginLeft="16dp"
-                        android:textSize="17dp"
+                        android:text="@string/lb_sale"
                         android:textAllCaps="true"
-                        android:textColor="@color/darkGrey"/>
+                        android:textColor="@color/darkGrey"
+                        android:textSize="17dp" />
+
                     <android.support.v7.widget.RecyclerView
                         android:id="@+id/list_sale"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:clipToPadding="false"
                         android:scrollbars="vertical" />
+
                     <TextView
                         android:id="@+id/tv_more_sale"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
-                        android:text="@string/lb_more"
                         android:gravity="center"
+                        android:padding="8dp"
+                        android:text="@string/lb_more"
                         android:textColor="@color/lb_more"
-                        android:textSize="16dp"
-                        android:padding="8dp"/>
+                        android:textSize="16dp" />
                 </LinearLayout>
             </LinearLayout>
-            </android.support.v4.widget.NestedScrollView>
-        </android.support.design.widget.CoordinatorLayout>
-    </android.support.v4.widget.SwipeRefreshLayout>
+        </android.support.v4.widget.NestedScrollView>
+    </android.support.design.widget.CoordinatorLayout>
+</android.support.v4.widget.SwipeRefreshLayout>

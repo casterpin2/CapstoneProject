@@ -32,7 +32,9 @@ import com.bumptech.glide.Glide;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
 import android.support.v7.widget.SearchView;
+
 import project.retrofit.APIService;
 import project.retrofit.ApiUtils;
 import project.view.R;
@@ -41,7 +43,9 @@ import project.view.adapter.TypePageListViewAdapter;
 import project.view.model.ResultRegister;
 import project.view.model.Type;
 import project.view.util.CustomInterface;
+import project.view.util.Formater;
 import retrofit2.Call;
+
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -52,17 +56,19 @@ public class TypeCategoryPage extends BasePage {
 
     private RecyclerView recyclerView;
     private TypePageListViewAdapter adapter;
-    private List<Type> typeList = new ArrayList<>();;
+    private List<Type> typeList = new ArrayList<>();
+    ;
     private int categoryId;
     private APIService mAPI;
     private TextView tv_brand_title;
     private android.widget.ProgressBar loadingBar;
     private SearchView searchView;
-    private ImageButton imgBack,imgBarCode;
+    private ImageButton imgBack, imgBarCode;
     private List<Type> searchedProduct = new ArrayList<>();
     private CoordinatorLayout main_layout;
     private Button btnViewAll;
     private TextView nullMessage;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,32 +77,24 @@ public class TypeCategoryPage extends BasePage {
         main_layout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                CustomInterface.hideKeyboard(view,getBaseContext());
+                CustomInterface.hideKeyboard(view, getBaseContext());
                 return false;
             }
         });
         imgBarCode.setVisibility(View.INVISIBLE);
-        project.view.util.CustomInterface.setStatusBarColor(this);
         String categoryName = getIntent().getStringExtra("categoryName");
         tv_brand_title.setText(categoryName);
-        searchView.setQueryHint("Tìm trong "+ categoryName);
-
-
-
+        searchView.setQueryHint("Tìm trong " + categoryName);
         setCoverImg();
         mAPI = ApiUtils.getAPIService();
-        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        categoryId = getIntent().getIntExtra("categoryId" , 0);
 
-        if (categoryId != 0){
+        categoryId = getIntent().getIntExtra("categoryId", 0);
+
+        if (categoryId != 0) {
             Call<List<Type>> call = mAPI.getType(categoryId);
             new GetType().execute(call);
         }
-
-//            adapter = new TypePageListViewAdapter(this, typeList);
-
-
-          imgBack.setOnClickListener(new View.OnClickListener() {
+        imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
@@ -104,7 +102,7 @@ public class TypeCategoryPage extends BasePage {
         });
     }
 
-    private void setCoverImg(){
+    private void setCoverImg() {
         try {
             Glide.with(this).load(R.drawable.cover).into((ImageView) findViewById(R.id.backdrop));
         } catch (Exception e) {
@@ -112,7 +110,7 @@ public class TypeCategoryPage extends BasePage {
         }
     }
 
-      private void findView(){
+    private void findView() {
         main_layout = findViewById(R.id.main_layout);
         searchView = findViewById(R.id.searchViewQuery);
         loadingBar = (android.widget.ProgressBar) findViewById(R.id.loadingBar);
@@ -122,35 +120,29 @@ public class TypeCategoryPage extends BasePage {
         tv_brand_title = (TextView) findViewById(R.id.tv_brand_title);
         nullMessage = findViewById(R.id.nullMessage);
         btnViewAll = (Button) findViewById(R.id.btnAll);
-
-        btnViewAll.setOnClickListener(new View.OnClickListener(){
+        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        btnViewAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(TypeCategoryPage.this,ProductCategoryDisplayPage.class);
-                intent.putExtra("categoryId",categoryId);
-                intent.putExtra("categoryName",getIntent().getStringExtra("categoryName"));
+                Intent intent = new Intent(TypeCategoryPage.this, ProductCategoryDisplayPage.class);
+                intent.putExtra("categoryId", categoryId);
+                intent.putExtra("categoryName", getIntent().getStringExtra("categoryName"));
                 startActivity(intent);
             }
         });
-    }
-      /**
-     * Converting dp to pixel
-     */
-    private int dpToPx(int dp) {
-        Resources r = getResources();
-        return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics()));
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-               onBackPressed();
+                onBackPressed();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
+
     public class GetType extends AsyncTask<Call, Void, List<Type>> {
 
         @Override
@@ -187,17 +179,17 @@ public class TypeCategoryPage extends BasePage {
                         loadingBar.setVisibility(View.INVISIBLE);
 
                     }
-                },10000);
+                }, 10000);
                 return;
             }
             adapter = new TypePageListViewAdapter(TypeCategoryPage.this, aVoid);
 
             RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(TypeCategoryPage.this, 2);
             recyclerView.setLayoutManager(mLayoutManager);
-            recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(10), true));
+            recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, Formater.dpToPx(10, getResources()), true));
             recyclerView.setItemAnimator(new DefaultItemAnimator());
             recyclerView.setAdapter(adapter);
-            
+
             SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
             searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 //        productList
@@ -212,12 +204,12 @@ public class TypeCategoryPage extends BasePage {
                 @Override
                 public boolean onQueryTextChange(String newText) {
                     searchedProduct.clear();
-                    if(newText.equals("") || newText == null){
+                    if (newText.equals("") || newText == null) {
                         adapter = new TypePageListViewAdapter(TypeCategoryPage.this, aVoid);
 
                     } else {
                         for (int i = 0; i < aVoid.size(); i++) {
-                            if(aVoid.get(i).getTypeName().toLowerCase().contains(newText.toLowerCase())) {
+                            if (aVoid.get(i).getTypeName().toLowerCase().contains(newText.toLowerCase())) {
                                 searchedProduct.add(aVoid.get(i));
                             }
                         }

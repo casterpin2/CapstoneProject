@@ -66,7 +66,7 @@ public class CategoryDisplayPage extends BasePage {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_category_display_page);
-        CustomInterface.setStatusBarColor(this);
+
         findView();
         main_layout.setOnTouchListener(new View.OnTouchListener() {
             @Override

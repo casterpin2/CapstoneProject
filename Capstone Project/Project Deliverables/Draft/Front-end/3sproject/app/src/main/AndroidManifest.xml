@@ -68,17 +68,17 @@
         <activity android:name=".gui.SearchProductAddToStore" />
         <activity
             android:name=".gui.SaleProductDisplayPage"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar.TransparentTheme" />
         <activity
             android:name=".gui.CategoryDisplayPage"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar.TransparentTheme" />
         <activity android:name=".gui.ProductBrandDisplayPage" />
         <activity
             android:name=".gui.BrandDisplayPage"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar.TransparentTheme" />
         <activity
             android:name=".gui.TypeCategoryPage"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar.TransparentTheme" />
         <activity android:name=".gui.ProductTypeDisplayPage" />
         <activity android:name=".gui.RegisterPage" />
         <activity
@@ -152,6 +152,11 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity android:name=".gui.Test"
+            android:theme="@style/AppTheme.NoActionBar.TransparentTheme"
+            >
+
         </activity>
         <activity android:name=".gui.Main3Activity" />
         <activity

@@ -122,7 +122,6 @@ public class SaleProductDisplayPage extends BasePage {
         });
         searchView.setQueryHint("Tìm sản phẩm giảm giá");
         imgBarCode.setVisibility(View.INVISIBLE);
-        CustomInterface.setStatusBarColor(this);
     }
 
     public class SaleProductDisplayData extends AsyncTask<Call,List<Product>,Void>{
