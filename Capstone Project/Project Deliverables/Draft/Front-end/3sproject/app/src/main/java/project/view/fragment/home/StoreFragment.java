@@ -8,7 +8,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,6 +51,8 @@ import project.view.util.NetworkStateReceiver;
 import retrofit2.Call;
 import retrofit2.Response;
 
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -73,6 +76,9 @@ public class StoreFragment extends Fragment implements NetworkStateReceiver.Netw
     private ImageView imgCall;
     private static final int REQUEST_CALL = 1;
     private String phoneNumber;
+    private static final int IMAGE_CODE = 100;
+
+    private LinearLayout changeStoreImageLayout;
     public StoreFragment() {
     }
 
@@ -156,6 +162,25 @@ public class StoreFragment extends Fragment implements NetworkStateReceiver.Netw
                 }
             });
 
+            changeStoreImageLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(getContext(),"sadasd",Toast.LENGTH_LONG);
+                    int currentapiVersion = android.os.Build.VERSION.SDK_INT;
+                    if (currentapiVersion >= android.os.Build.VERSION_CODES.M) {
+                        if (checkPermission()) {
+                            Intent toGallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+                            startActivityForResult(toGallery, IMAGE_CODE);
+                        } else {
+                            requestPermission();
+                        }
+                    } else {
+                        Intent toGallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+                        startActivityForResult(toGallery, IMAGE_CODE);
+                    }
+                }
+            });
+
         } else if (hasStore == 0 && userID != 0) {
             view = inflater.inflate(R.layout.no_has_store_store_fragment_home_page_layout, container, false);
             findViewInNoHaveStoreLayout();
@@ -183,6 +208,14 @@ public class StoreFragment extends Fragment implements NetworkStateReceiver.Netw
         }
         return view;
     }
+    private boolean checkPermission() {
+        boolean checkPermissionRead = ContextCompat.checkSelfPermission(getContext(), READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+        return checkPermissionRead;
+    }
+    private void requestPermission() {
+        ActivityCompat.requestPermissions(getActivity(), new String[]{READ_EXTERNAL_STORAGE}, 1001);
+    }
+
 
     @Override
     public void networkAvailable() {
@@ -195,6 +228,7 @@ public class StoreFragment extends Fragment implements NetworkStateReceiver.Netw
 
 
     private void findViewInStoreFragment() {
+        changeStoreImageLayout = view.findViewById(R.id.changeStoreImageLayout);
         storeName = view.findViewById(R.id.storeName);
         ownerName = view.findViewById(R.id.ownerName);
         address = view.findViewById(R.id.address);

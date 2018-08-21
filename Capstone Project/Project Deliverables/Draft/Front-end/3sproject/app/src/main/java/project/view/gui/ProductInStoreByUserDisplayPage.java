@@ -47,19 +47,17 @@ import retrofit2.Response;
 public class ProductInStoreByUserDisplayPage extends BasePage {
     private int storeID;
     private String storeName;
-    private String phone;
-    private String image_path;
     private Store store;
     private APIService mAPI;
     private RecyclerView recycler_view;
     private ProductInStoreByUserCustomCardViewAdapter productInStoreByUserCustomListViewAdapter;
-    private ImageView backBtn,backdrop,imgHome;
+    private ImageView backBtn, backdrop, imgHome;
     private TextView tvStoreName;
-    private Spinner spinnerCategory,spinnerSort;
+    private Spinner spinnerCategory, spinnerSort;
     private StorageReference storageReference = Firebase.getFirebase();
     private List<Product> products;
     private CoordinatorLayout main_layout;
-    private SearchView searchView ;
+    private SearchView searchView;
     private List<Product> tempProductInStore;
     private ProductFilter productFilter;
     private LinearLayout storeNameLayout;
@@ -73,22 +71,14 @@ public class ProductInStoreByUserDisplayPage extends BasePage {
         findView();
         customView();
         loadingBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorApplication), android.graphics.PorterDuff.Mode.MULTIPLY);
-        storeName = getIntent().getStringExtra("storeName");
-        phone = getIntent().getStringExtra("phone");
-        image_path = getIntent().getStringExtra("image_path");
-        tvStoreName.setText(storeName);
         storeID = getIntent().getIntExtra("storeID", -1);
-        store = new Store(storeID,storeName,phone,image_path);
-        searchView.setQueryHint("Tìm trong "+storeName);
-        if (!image_path.isEmpty()){
-            Glide.with(this /* context */)
-                    .using(new FirebaseImageLoader())
-                    .load(storageReference.child(image_path))
-                    .into(backdrop);
-        }
         mAPI = ApiUtils.getAPIService();
+
         final Call<List<Product>> call = mAPI.getProductInStore(storeID);
         new ProductInStoreByUserDisplayPage.ProductInStoreList().execute(call);
+
+        final Call<Store> storeCall = mAPI.getStoreById(storeID);
+        new ProductInStoreByUserDisplayPage.StoreInformation().execute(storeCall);
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -98,7 +88,7 @@ public class ProductInStoreByUserDisplayPage extends BasePage {
         imgHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent toHomePage = new Intent(ProductInStoreByUserDisplayPage.this,HomePage.class);
+                Intent toHomePage = new Intent(ProductInStoreByUserDisplayPage.this, HomePage.class);
                 startActivity(toHomePage);
             }
         });
@@ -106,22 +96,23 @@ public class ProductInStoreByUserDisplayPage extends BasePage {
             @Override
             public void onClick(View view) {
                 Intent toStoreInfo = new Intent(getBaseContext(), StoreInformationPage.class);
-                toStoreInfo.putExtra("storeID",storeID);
+                toStoreInfo.putExtra("storeID", storeID);
                 startActivity(toStoreInfo);
             }
         });
     }
 
-    private void customView(){
+    private void customView() {
         main_layout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                CustomInterface.hideKeyboard(view,getBaseContext());
+                CustomInterface.hideKeyboard(view, getBaseContext());
                 return false;
             }
         });
     }
-    private void findView(){
+
+    private void findView() {
         imgHome = findViewById(R.id.imgHome);
         recycler_view = findViewById(R.id.recycler_view);
         backBtn = findViewById(R.id.backBtn);
@@ -136,7 +127,7 @@ public class ProductInStoreByUserDisplayPage extends BasePage {
         nullMessage = findViewById(R.id.nullMessage);
     }
 
-    public class ProductInStoreList extends AsyncTask<Call,List<Product>,Void> {
+    public class ProductInStoreList extends AsyncTask<Call, List<Product>, Void> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -152,7 +143,7 @@ public class ProductInStoreByUserDisplayPage extends BasePage {
             } else {
                 check = false;
             }
-            if(check == true){
+            if (check == true) {
                 loadingBar.setVisibility(View.INVISIBLE);
             }
             final boolean finalCheck = check;
@@ -166,7 +157,7 @@ public class ProductInStoreByUserDisplayPage extends BasePage {
                         loadingBar.setVisibility(View.INVISIBLE);
                     }
                 }
-            },10000);
+            }, 10000);
         }
 
         @Override
@@ -177,26 +168,26 @@ public class ProductInStoreByUserDisplayPage extends BasePage {
 
             tempProductInStore = new ArrayList<>();
 
-            if(products != null){
+            if (products != null) {
                 productFilter.setCategoryFilter(products, ProductInStoreByUserDisplayPage.this, spinnerCategory);
-                productFilter.setSortItem(ProductInStoreByUserDisplayPage.this,spinnerSort);
-                for (Product product : products){
+                productFilter.setSortItem(ProductInStoreByUserDisplayPage.this, spinnerSort);
+                for (Product product : products) {
                     tempProductInStore.add(product);
                 }
             }
-            productInStoreByUserCustomListViewAdapter = new ProductInStoreByUserCustomCardViewAdapter(ProductInStoreByUserDisplayPage.this, tempProductInStore,store);
+            productInStoreByUserCustomListViewAdapter = new ProductInStoreByUserCustomCardViewAdapter(ProductInStoreByUserDisplayPage.this, tempProductInStore, store);
             RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(ProductInStoreByUserDisplayPage.this, 2);
             recycler_view.setLayoutManager(mLayoutManager);
-            recycler_view.addItemDecoration(new GridSpacingItemDecoration(2, Formater.dpToPx(2,getResources()), true));
+            recycler_view.addItemDecoration(new GridSpacingItemDecoration(2, Formater.dpToPx(2, getResources()), true));
             recycler_view.setItemAnimator(new DefaultItemAnimator());
             recycler_view.setAdapter(productInStoreByUserCustomListViewAdapter);
             spinnerSort.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                    if(adapterView.getItemAtPosition(i).toString().equals(productFilter.FROM_LOW_COST)) {
-                        Collections.sort(tempProductInStore,new ProductInStoreCompareableDecrease());
-                    }else if(adapterView.getItemAtPosition(i).toString().equals(productFilter.FROM_HIGH_COST)){
-                        Collections.sort(tempProductInStore,new ProductInStoreCompareableIncrease());
+                    if (adapterView.getItemAtPosition(i).toString().equals(productFilter.FROM_LOW_COST)) {
+                        Collections.sort(tempProductInStore, new ProductInStoreCompareableDecrease());
+                    } else if (adapterView.getItemAtPosition(i).toString().equals(productFilter.FROM_HIGH_COST)) {
+                        Collections.sort(tempProductInStore, new ProductInStoreCompareableIncrease());
                     }
                     productInStoreByUserCustomListViewAdapter.notifyDataSetChanged();
                 }
@@ -211,18 +202,18 @@ public class ProductInStoreByUserDisplayPage extends BasePage {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                     tempProductInStore.clear();
-                    if(adapterView.getItemAtPosition(i).toString().contains(productFilter.ALL_PRODUCT)){
-                        for (Product product : products){
+                    if (adapterView.getItemAtPosition(i).toString().contains(productFilter.ALL_PRODUCT)) {
+                        for (Product product : products) {
                             tempProductInStore.add(product);
                         }
-                    }else if(adapterView.getItemAtPosition(i).toString().contains(productFilter.SALE_PRODUCT)){
+                    } else if (adapterView.getItemAtPosition(i).toString().contains(productFilter.SALE_PRODUCT)) {
                         for (Product product : products) {
-                            if (product.getPromotion()!=0) {
+                            if (product.getPromotion() != 0) {
                                 tempProductInStore.add(product);
                             }
                         }
 
-                    }else{
+                    } else {
                         for (Product product : products) {
                             if (adapterView.getItemAtPosition(i).toString().contains(product.getCategory_name())) {
                                 tempProductInStore.add(product);
@@ -245,7 +236,7 @@ public class ProductInStoreByUserDisplayPage extends BasePage {
                 Call<List<Product>> call = calls[0];
                 Response<List<Product>> response = call.execute();
                 List<Product> list = new ArrayList<>();
-                for(int i =0 ; i< response.body().size();i++){
+                for (int i = 0; i < response.body().size(); i++) {
                     list.add(response.body().get(i));
                 }
                 publishProgress(list);
@@ -257,4 +248,44 @@ public class ProductInStoreByUserDisplayPage extends BasePage {
         }
     }
 
+    public class StoreInformation extends AsyncTask<Call, Void, Store> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            loadingBar.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected void onPostExecute(Store store1) {
+            super.onPostExecute(store1);
+            if (store1 != null) {
+                store = store1;
+                searchView.setQueryHint("Tìm trong " + store.getName());
+                if (!store.getImage_path().isEmpty()) {
+                    Glide.with(getBaseContext())
+                            .using(new FirebaseImageLoader())
+                            .load(storageReference.child(store.getImage_path()))
+                            .into(backdrop);
+                }
+                tvStoreName.setText(store.getName());
+            }
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            super.onProgressUpdate(values);
+        }
+
+        @Override
+        protected Store doInBackground(Call... calls) {
+            try {
+                Call<Store> call = calls[0];
+                Response<Store> response = call.execute();
+                return response.body();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
 }

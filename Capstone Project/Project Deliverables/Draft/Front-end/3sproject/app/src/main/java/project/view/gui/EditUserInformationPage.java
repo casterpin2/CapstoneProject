@@ -2,6 +2,7 @@ package project.view.gui;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -9,6 +10,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
@@ -44,10 +46,12 @@ import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.google.gson.Gson;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
@@ -99,6 +103,7 @@ public class EditUserInformationPage extends BasePage {
     private String namePath;
     private boolean isCheckSave = false;
     private StorageReference storageReference;
+    private String currentImg;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -125,7 +130,6 @@ public class EditUserInformationPage extends BasePage {
         } else if(gender.equals("Nữ")) {
             genderSpinner.setSelection(2);
         }
-
         userNameText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -220,7 +224,7 @@ public class EditUserInformationPage extends BasePage {
                     pre = getSharedPreferences("authentication", Context.MODE_PRIVATE);
                     String existUserJson = pre.getString("user", null);
                     us = new Gson().fromJson(existUserJson, User.class);
-                    uploadImg(us.getId());
+                    //uploadImg(us.getId());
                     us.setImage_path(namePath);
                     final Call<Boolean> call = mApi.updateImgUser(us);
                     new UserUpdateImg().execute(call);
@@ -245,7 +249,7 @@ public class EditUserInformationPage extends BasePage {
                     us.setPhone(phone);
                     us.setGender(gender);
                     us.setId(extras.getInt("idUser", 0));
-                    uploadImg(us.getId());
+                   // uploadImg(us.getId());
                     us.setImage_path(namePath);
                     final Call<User> call = mApi.updateInfotmation(us);
                     new UserUpdate().execute(call);
@@ -414,17 +418,13 @@ public class EditUserInformationPage extends BasePage {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
         if (resultCode == RESULT_OK && requestCode == IMAGE_CODE) {
             imageURI = data.getData();
             checkAva = true;
             try {
-
-                InputStream imageStream = getContentResolver().openInputStream(imageURI);
-                Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-                selectedImage = getResizedBitmap(selectedImage, 1024);
-                profile_image.setImageBitmap(selectedImage);
-                uploadImg(extras.getInt("idUser", 0));
-
+                saveBtn.setEnabled(false);
+                uploadImg();
             } catch (Exception e) {
 
             }
@@ -445,28 +445,61 @@ public class EditUserInformationPage extends BasePage {
         }
         return Bitmap.createScaledBitmap(image, width, height, true);
     }
-    private void uploadImg(int userId) {
+    private void uploadImg() {
 
         if (imageURI != null) {
-            final String nameImg = userId + "--" + UUID.randomUUID().toString();
+            final String nameImg = extras.getInt("idUser", 0) + "--" + UUID.randomUUID().toString();
             StorageReference ref = storageReference.child("User/image/" + nameImg);
 
             ref.putFile(imageURI).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     // Get a URL to the uploaded content
-                    if(taskSnapshot.getTask().isSuccessful()){
-                        namePath = "User/image/" + nameImg;
+                    if (taskSnapshot.getTask().isSuccessful()) {
+                        InputStream imageStream = null;
+                        try {
+                            imageStream = getContentResolver().openInputStream(imageURI);
+                            Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+                            selectedImage = getResizedBitmap(selectedImage, 1024);
+                            profile_image.setImageBitmap(selectedImage);
+                            namePath = "User/image/" + nameImg;
+                            saveBtn.setEnabled(true);
+
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception exception) {
-                    // Handle unsuccessful uploads
-                    // ...
+                    Toast.makeText(EditUserInformationPage.this, "Xin lỗi kích thước ảnh lớn hơn 2MB", Toast.LENGTH_SHORT).show();
+                    if (!extras.getString("path").isEmpty() && extras.getString("path") != null) {
+                        if (extras.getString("path").contains("graph") || extras.getString("path").contains("google")) {
+                            Glide.with(EditUserInformationPage.this /* context */)
+                                    .load(extras.getString("path"))
+                                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                    .skipMemoryCache(true)
+                                    .into(profile_image);
+                        } else {
+                            Glide.with(EditUserInformationPage.this /* context */)
+                                    .using(new FirebaseImageLoader())
+                                    .load(storageReference.child(extras.getString("path")))
+                                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                    .skipMemoryCache(true)
+                                    .into(profile_image);
+                        }
+                        namePath = extras.getString("path");
+                        saveBtn.setEnabled(true);
+                    }
+
+                }
+            }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+
                 }
             });
-
         }
     }
     private void mapping() {

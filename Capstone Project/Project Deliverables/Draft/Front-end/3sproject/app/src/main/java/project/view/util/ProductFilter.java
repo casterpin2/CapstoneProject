@@ -21,8 +21,13 @@ public class ProductFilter {
     private ArrayAdapter<String> arrayAdapter;
     public static final String ALL_PRODUCT = "Tất cả sản phẩm";
     public static final String SALE_PRODUCT = "Sản phẩm giảm giá";
+
     public static final String FROM_LOW_COST = "Giá từ thấp tới cao";
     public static final String FROM_HIGH_COST = "Giá từ cao xuống thấp";
+
+    public static final String ALL_RATE = "Tất cả đánh giá";
+    public static final String SATISFIED_RATE = "Hài lòng";
+    public static final String UNSATISFIED_RATE = "Không hài lòng";
     public ProductFilter(){
     }
     public void setCategoryFilter(List<Product> products, Context context, Spinner categorySpinner){
@@ -121,5 +126,16 @@ public class ProductFilter {
                 android.R.layout.simple_spinner_item, list);
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         brandSpinner.setAdapter(arrayAdapter);
+    }
+
+    public void setRateFilter(Context context, Spinner spinner){
+        final List<String> list = new ArrayList<String>();
+        list.add(ALL_RATE);
+        list.add(SATISFIED_RATE);
+        list.add(UNSATISFIED_RATE);
+        arrayAdapter = new ArrayAdapter<String>(context,
+                android.R.layout.simple_spinner_item, list);
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(arrayAdapter);
     }
 }

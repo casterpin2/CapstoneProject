@@ -180,11 +180,10 @@
                     android:id="@+id/storeName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:ellipsize="end"
-                    android:maxLines="2"
+                    android:padding="8dp"
+                    android:textColor="@color/lb_more"
                     android:text="Cửa hàng bách hóa số 21"
-                    android:textSize="13dp" />
+                    android:textSize="16dp" />
             </LinearLayout>
 
         </LinearLayout>
@@ -199,7 +198,6 @@
             android:background="@color/colorWhite"
             android:orientation="vertical"
             android:paddingBottom="10dp"
-            android:paddingTop="15dp"
             android:visibility="invisible">
 
             <LinearLayout
