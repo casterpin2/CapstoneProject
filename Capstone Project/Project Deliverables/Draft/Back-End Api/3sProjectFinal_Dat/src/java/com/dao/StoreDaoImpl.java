@@ -317,7 +317,7 @@ public class StoreDaoImpl extends BaseDao implements StoreDao {
                     checkUpdateLocation = updateUserLocation(conn, idNew, store);
                 }
             }
-             storeData = getStore(conn, store, store.getImage_path());         
+            storeData = getStore(conn, store, store.getImage_path());
         } finally {
             closeConnect(conn, pre, rs);
         }
@@ -546,6 +546,28 @@ public class StoreDaoImpl extends BaseDao implements StoreDao {
                 hashmap.put("user", user);
                 hashmap.put("feedback", feedback);
                 list.add(hashmap);
+            }
+        } finally {
+            closeConnect(conn, pre, null);
+        }
+        return list;
+    }
+
+    @Override
+    public List<Integer> countFeedback(int storeId) throws SQLException {
+        String sql = "select smile,sad from (select COUNT(*) as smile from Feedback where satisfied = 1 and store_id = ?) a, (select COUNT(*) as sad from Feedback where satisfied = 0 and store_id = ?) b";
+        List<Integer> list = new ArrayList<>();
+        Connection conn = null;
+        PreparedStatement pre = null;
+        try {
+            conn = getConnection();
+            pre = conn.prepareStatement(sql);
+            pre.setInt(1, storeId);
+            pre.setInt(2, storeId);
+            ResultSet rs = pre.executeQuery();
+            if (rs.next()){
+                list.add(rs.getInt("smile"));
+                list.add(rs.getInt("sad"));
             }
         } finally {
             closeConnect(conn, pre, null);

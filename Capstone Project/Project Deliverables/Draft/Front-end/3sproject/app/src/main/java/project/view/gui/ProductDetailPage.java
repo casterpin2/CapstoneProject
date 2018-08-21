@@ -63,7 +63,7 @@ public class ProductDetailPage extends BasePage {
     private boolean isStoreSee; //intent
 
     private int productId; //intent
-
+    private boolean isStoreBefore; // intent true nếu đã có màn ProductInStoreByUser trước
     private ProgressBar loadingBar;
     private User user;
     private Store myStore;
@@ -83,6 +83,7 @@ public class ProductDetailPage extends BasePage {
         storeID = getIntent().getIntExtra("storeID", -1);
         isStoreProduct = getIntent().getBooleanExtra("isStoreProduct", false);
         isStoreSee = getIntent().getBooleanExtra("isStoreSee", false);
+        isStoreBefore = getIntent().getBooleanExtra("isStoreBefore", false);
         product = new Gson().fromJson(getIntent().getStringExtra("product"),Product.class);
         if (product != null){
             getView();
@@ -140,6 +141,10 @@ public class ProductDetailPage extends BasePage {
                 storeNameTV.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        if (isStoreBefore) {
+                            finish();
+                            return;
+                        }
                         Intent toProductInStoreByUser = new Intent(ProductDetailPage.this,ProductInStoreByUserDisplayPage.class);
                         toProductInStoreByUser.putExtra("storeID",storeID);
                         startActivity(toProductInStoreByUser);
@@ -176,7 +181,6 @@ public class ProductDetailPage extends BasePage {
                         } else {
                             Call<Store> call = ApiUtils.getAPIService().getStoreById(storeID);
                             new GetStoreById().execute(call);
-                            showDialog();
                         }
                     }
 
@@ -297,7 +301,7 @@ public class ProductDetailPage extends BasePage {
         protected void onPostExecute(final Store store) {
             super.onPostExecute(store);
             setStore(store);
-            addProductToCart(store);
+            addProductToCart();
         }
 
         @Override
@@ -358,7 +362,7 @@ public class ProductDetailPage extends BasePage {
         this.store = store;
     }
 
-    private void addProductToCart(Store store1){
+    private void addProductToCart(){
         if (store == null){
             Toast.makeText(ProductDetailPage.this, "Có lỗi xảy ra!!!", Toast.LENGTH_SHORT).show();
             return;
@@ -382,7 +386,7 @@ public class ProductDetailPage extends BasePage {
                     }
                     CartDetail cartDetail  = new CartDetail(product.getProduct_id(),product.getProduct_name(),1,price,product.getImage_path());
                     myRef.child("cartDetail").child(String.valueOf(product.getProduct_id())).setValue(cartDetail);
-                    Toast.makeText(ProductDetailPage.this, "Thêm sản phẩm vào giỏ hàng thành công", Toast.LENGTH_SHORT).show();
+                    showDialog();
                 } else {
                     myRef.child("cartDetail").child(String.valueOf(product.getProduct_id())).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -394,7 +398,7 @@ public class ProductDetailPage extends BasePage {
                                 }
                                 CartDetail cartDetail  = new CartDetail(product.getProduct_id(),product.getProduct_name(),1,price,product.getImage_path());
                                 myRef.child("cartDetail").child(String.valueOf(product.getProduct_id())).setValue(cartDetail);
-                                Toast.makeText(ProductDetailPage.this, "Thêm sản phẩm vào giỏ hàng thành công", Toast.LENGTH_SHORT).show();
+                                showDialog();
                             } else {
                                 double price =  product.getPrice();
                                 if(product.getPromotion()!=0){
@@ -404,7 +408,7 @@ public class ProductDetailPage extends BasePage {
                                     myRef.child("cartDetail").child(String.valueOf(product.getProduct_id())).child("unitPrice").setValue(price);
                                 }
                                 myRef.child("cartDetail").child(String.valueOf(product.getProduct_id())).child("quantity").setValue((long)dataSnapshot.child("quantity").getValue()+1);
-                                Toast.makeText(ProductDetailPage.this, "Thêm sản phẩm vào giỏ hàng thành công", Toast.LENGTH_SHORT).show();
+                                showDialog();
                             }
                         }
 

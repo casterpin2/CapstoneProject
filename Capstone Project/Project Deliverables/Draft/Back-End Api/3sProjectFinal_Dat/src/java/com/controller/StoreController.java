@@ -96,4 +96,9 @@ public class StoreController {
     public List<HashMap<String, Object>> managementFeedback(@RequestParam("storeId") int storeId, @RequestParam("page") int page) throws SQLException, ClassNotFoundException, IOException {
         return store.managementFeedback(storeId,page);
     }
+    
+    @RequestMapping(value = "/countFeedback", method = RequestMethod.GET, produces = "application/json;")
+    public List<Integer> countFeedback(@RequestParam("storeId") int storeId) throws SQLException, ClassNotFoundException, IOException {
+        return store.countFeedback(storeId);
+    }
 }

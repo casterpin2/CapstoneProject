@@ -56,5 +56,10 @@ public class StoreServiceImpl implements StoreService{
     public List<HashMap<String, Object>> managementFeedback(int storeId, int page) throws SQLException {
         return dao.managementFeedback(storeId,page);
     }
+
+    @Override
+    public List<Integer> countFeedback(int storeId) throws SQLException {
+        return dao.countFeedback(storeId);
+    }
     
 }

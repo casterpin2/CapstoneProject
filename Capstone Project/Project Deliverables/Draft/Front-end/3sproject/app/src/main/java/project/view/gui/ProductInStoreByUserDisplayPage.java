@@ -73,12 +73,12 @@ public class ProductInStoreByUserDisplayPage extends BasePage {
         loadingBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorApplication), android.graphics.PorterDuff.Mode.MULTIPLY);
         storeID = getIntent().getIntExtra("storeID", -1);
         mAPI = ApiUtils.getAPIService();
-
+        final Call<Store> storeCall = mAPI.getStoreById(storeID);
+        new ProductInStoreByUserDisplayPage.StoreInformation().execute(storeCall);
         final Call<List<Product>> call = mAPI.getProductInStore(storeID);
         new ProductInStoreByUserDisplayPage.ProductInStoreList().execute(call);
 
-        final Call<Store> storeCall = mAPI.getStoreById(storeID);
-        new ProductInStoreByUserDisplayPage.StoreInformation().execute(storeCall);
+
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

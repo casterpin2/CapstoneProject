@@ -23,4 +23,5 @@ public interface StoreService {
     public StoreEntites updateStore(StoreEntites store,LocationEntites location) throws SQLException;
     public StoreEntites informationStore(int storeId) throws SQLException;
     public List<HashMap<String,Object>> managementFeedback(int storeId, int page) throws SQLException;
+    public List<Integer> countFeedback(int storeId) throws SQLException;
 }

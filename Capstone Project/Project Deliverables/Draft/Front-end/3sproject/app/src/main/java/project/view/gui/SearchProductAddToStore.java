@@ -584,7 +584,7 @@ public class SearchProductAddToStore extends BasePage {
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
-    public class ProductListWithName extends AsyncTask<Call,List<Item>,Void> {
+    public class ProductListWithName extends AsyncTask<Call,Void,List<Item>> {
         @Override
         protected void onPreExecute() {
             loadingBar.setVisibility(View.VISIBLE);
@@ -592,9 +592,11 @@ public class SearchProductAddToStore extends BasePage {
         }
 
         @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            if (aVoid == null) {
+        protected void onPostExecute(List<Item> listProduct) {
+            super.onPostExecute(listProduct);
+            if (listProduct != null && listProduct.size() != 0 ) {
+                //theListView.removeFooterView(footerView);
+            } if (listProduct == null) {
                 new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -603,19 +605,8 @@ public class SearchProductAddToStore extends BasePage {
                         nullMessage.setText("Có lỗi xảy ra. Vui lòng thử lại");
 
                     }
-                },10000);
-            }
-        }
-
-        @Override
-        protected void onProgressUpdate(List<Item>... values) {
-            super.onProgressUpdate(values);
-            List<Item> listProduct = values[0];
-            if (listProduct != null && listProduct.size() != 0 ) {
-                //theListView.removeFooterView(footerView);
-            } else {
-                //theListView.removeFooterView(footerView);
-                limitData = true;
+                },5000);
+                return;
             }
             for (Item item : listProduct) {
                 searchedProductList.add(item);
@@ -634,15 +625,16 @@ public class SearchProductAddToStore extends BasePage {
         }
 
         @Override
-        protected Void doInBackground(Call... calls) {
+        protected void onProgressUpdate(Void... values) {
+            super.onProgressUpdate(values);
+        }
+
+        @Override
+        protected List<Item> doInBackground(Call... calls) {
             try {
                 Call<List<Item>> call = calls[0];
                 Response<List<Item>> response = call.execute();
-                List<Item> list = new ArrayList<>();
-                for(int i =0 ; i< response.body().size();i++){
-                    list.add(response.body().get(i));
-                }
-                publishProgress(list);
+                return response.body();
             } catch (IOException e) {
                 e.printStackTrace();
             }

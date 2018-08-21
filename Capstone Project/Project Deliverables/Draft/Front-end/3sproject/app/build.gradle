@@ -64,6 +64,7 @@ dependencies {
     implementation 'com.sackcentury:shinebutton:0.2.0'
     //barcode
     implementation 'me.dm7.barcodescanner:zxing:1.9.8'
+    implementation 'com.github.aarsy.googlemapsanimations:googlemapsanimations:1.0.5'
 }
 //fire base
 apply plugin: 'com.google.gms.google-services'
