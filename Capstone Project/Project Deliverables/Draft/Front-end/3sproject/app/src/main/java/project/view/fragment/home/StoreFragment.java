@@ -6,7 +6,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -22,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import project.retrofit.ApiUtils;
 import project.view.gui.EditStoreInformationPage;
 
 import com.bumptech.glide.Glide;
@@ -29,6 +32,9 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.storage.StorageReference;
 import com.google.gson.Gson;
+
+import java.io.IOException;
+import java.util.List;
 
 import project.firebase.Firebase;
 import project.objects.User;
@@ -41,6 +47,8 @@ import project.view.gui.RegisterStorePage;
 import project.view.gui.StoreManagementOrderPage;
 import project.view.model.Store;
 import project.view.util.NetworkStateReceiver;
+import retrofit2.Call;
+import retrofit2.Response;
 
 
 /**
@@ -99,8 +107,7 @@ public class StoreFragment extends Fragment implements NetworkStateReceiver.Netw
             ownerName.setText(user.getFirst_name() + " " + user.getLast_name());
             latitude = Double.parseDouble(store.getLatitude());
             longtitude = Double.parseDouble(store.getLongtitude());
-            tv_count_smile.setText(String.valueOf(store.getSmile()));
-            tv_count_sad.setText(String.valueOf(store.getSad()));
+
             btnManagermentProduct.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -221,6 +228,10 @@ public class StoreFragment extends Fragment implements NetworkStateReceiver.Netw
     @Override
     public void onResume() {
         super.onResume();
+        if (hasStore == 1 && userID != 0 && storeID != 0) {
+            Call<List<Integer>> call = ApiUtils.getAPIService().countFeedback(store.getId());
+            new CountFeedback().execute(call);
+        }
     }
 
     @Override
@@ -283,6 +294,43 @@ public class StoreFragment extends Fragment implements NetworkStateReceiver.Netw
             } else {
                 Toast.makeText((Activity) getContext(), "Permission DENIED", Toast.LENGTH_SHORT).show();
             }
+        }
+    }
+
+    public class CountFeedback extends AsyncTask<Call,Void,List<Integer>> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected void onPostExecute(List<Integer> list) {
+            super.onPostExecute(list);
+            if (list != null) {
+                tv_count_smile.setText(String.valueOf(list.get(0)));
+                tv_count_sad.setText(String.valueOf(list.get(1)));
+            }
+            else {
+                tv_count_smile.setText(String.valueOf(0));
+                tv_count_sad.setText(String.valueOf(0));
+            }
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            super.onProgressUpdate(values);
+        }
+
+        @Override
+        protected List<Integer> doInBackground(Call... calls) {
+            try {
+                Call<List<Integer>> call = calls[0];
+                Response<List<Integer>> response = call.execute();
+                return response.body();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
         }
     }
 }
