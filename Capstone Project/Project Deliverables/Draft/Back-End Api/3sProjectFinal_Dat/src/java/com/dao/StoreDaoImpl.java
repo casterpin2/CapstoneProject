@@ -52,7 +52,7 @@ public class StoreDaoImpl extends BaseDao implements StoreDao {
             pre = conn.prepareStatement(CHECK_PHONE_STORE);
             pre.setString(1, store.getPhone());
             ResultSet rs = pre.executeQuery();
-            if (rs.next()){
+            if (rs.next()) {
                 return result;
             }
             if (locationId == -1) {
@@ -363,10 +363,12 @@ public class StoreDaoImpl extends BaseDao implements StoreDao {
             if (rs.next()) {
                 store = new StoreEntites();
                 store.setId(rs.getInt("storeId"));
-                if (rs.getString("apartment_number") != null) {
-                    store.setAddress(rs.getString("apartment_number") + "-" + rs.getString("street") + "-" + rs.getString("county") + "-" + rs.getString("city"));
+                if (!rs.getString("street").equals("Unnamed Road")) {
+                    store.setAddress(rs.getString("apartment_number") + "-" + rs.getString("street") + "-" + rs.getString("county") + "-" + rs.getString("district") + "-" + rs.getString("city"));
+                    store.setAddress(store.getAddress().replaceAll("0", "").replaceAll("\\s+", " ").replaceAll("null", "").trim());
                 } else {
-                    store.setAddress(rs.getString("street") + "-" + rs.getString("county") + "-" + rs.getString("city"));
+                    store.setAddress(rs.getString("apartment_number") + "-" + rs.getString("county") + "-" + rs.getString("district") + "-" + rs.getString("city"));
+                    store.setAddress(store.getAddress().replaceAll("0", "").replaceAll("\\s+", " ").replaceAll("null", "").trim());
                 }
 
                 store.setImage_path(imgPath);
@@ -445,6 +447,15 @@ public class StoreDaoImpl extends BaseDao implements StoreDao {
             pre = conn.prepareStatement(update);
             pre.setInt(1, idLocation);
             pre.setInt(2, store.getId());
+            int check = pre.executeUpdate();
+            if (check > 0) {
+                conn.commit();
+                return true;
+            } else {
+                conn.rollback();
+                conn.setAutoCommit(true);
+            }
+
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         } finally {
@@ -492,23 +503,24 @@ public class StoreDaoImpl extends BaseDao implements StoreDao {
         }
         return store;
     }
-        @Override
-    public List<HashMap<String, Object>> managementFeedback(int storeId , int page) throws SQLException {
+
+    @Override
+    public List<HashMap<String, Object>> managementFeedback(int storeId, int page) throws SQLException {
         List<HashMap<String, Object>> list = new ArrayList<>();
         Connection conn = null;
         PreparedStatement pre = null;
         try {
             conn = getConnection();
-            String sql = "select a.user_id,a.email,a.phone,a.full_name,DATE_FORMAT(a.dateOfBirth,\"%d/%m/%Y\")  as dateOfBirth,a.content,a.satisfied,DATE_FORMAT(a.registerLog,\"%d/%m/%Y\")  as registerLog,b.path from\n" +
-"(select a.id as user_id,a.email,a.phone,a.full_name,a.image_id,a.dateOfBirth,b.content,b.satisfied,b.registerLog from User a , Feedback b where a.id = b.user_id and b.store_id = ?) a , Image b where a.image_id = b.id order by registerLog limit ?,10";
+            String sql = "select a.user_id,a.email,a.phone,a.full_name,DATE_FORMAT(a.dateOfBirth,\"%d/%m/%Y\")  as dateOfBirth,a.content,a.satisfied,DATE_FORMAT(a.registerLog,\"%d/%m/%Y\")  as registerLog,b.path from\n"
+                    + "(select a.id as user_id,a.email,a.phone,a.full_name,a.image_id,a.dateOfBirth,b.content,b.satisfied,b.registerLog from User a , Feedback b where a.id = b.user_id and b.store_id = ?) a , Image b where a.image_id = b.id order by registerLog limit ?,10";
             pre = conn.prepareStatement(sql);
             pre.setInt(1, storeId);
-            pre.setInt(2, page*10);
+            pre.setInt(2, page * 10);
             ResultSet rs = pre.executeQuery();
-            while (rs.next()){
+            while (rs.next()) {
                 FeedbackEntites feedback = new FeedbackEntites();
                 UserEntites user = new UserEntites();
-                HashMap<String,Object> hashmap = new HashMap<>();
+                HashMap<String, Object> hashmap = new HashMap<>();
                 feedback.setContent(rs.getNString("content"));
                 feedback.setIsSatisfied(rs.getInt("satisfied"));
                 feedback.setStore_id(storeId);

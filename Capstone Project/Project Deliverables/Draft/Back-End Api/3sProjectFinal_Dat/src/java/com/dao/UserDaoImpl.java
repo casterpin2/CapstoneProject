@@ -38,14 +38,14 @@ public class UserDaoImpl extends BaseDao implements UserDao {
             + "(SELECT a.*,b.image_id as store_image_id FROM\n"
             + "(SELECT a.*,b.path as user_image_path FROM \n"
             + "(SELECT a.id as user_id,username,a.password,full_name,email,device_id,role_id,a.phone as user_phone,dateOfBirth,hasStore,gender,a.image_id as user_image_id,b.`location_id`, b.`phone` as store_phone, `status`,b.name,b.id as store_id , DATE_FORMAT(registerLog,\"%d/%m/%Y\")  as registerLogFormat FROM (SELECT * FROM User WHERE facebook_id = ?) as a , Store b WHERE a.id = b.user_id) a , Image b WHERE a.user_image_id = b.id) a , Image_Store b WHERE a.store_id = b.store_id) a , Image b WHERE a.store_image_id = b.id";
-    
+
     private String QUERY_LOGIN_GOOGLE = "SELECT a.*,b.path as store_image_path FROM\n"
             + "(SELECT a.*,b.image_id as store_image_id FROM\n"
             + "(SELECT a.*,b.path as user_image_path FROM \n"
             + "(SELECT a.id as user_id,username,a.password,full_name,email,device_id,role_id,a.phone as user_phone,dateOfBirth,hasStore,gender,a.image_id as user_image_id,b.`location_id`, b.`phone` as store_phone, `status`,b.name,b.id as store_id , DATE_FORMAT(registerLog,\"%d/%m/%Y\")  as registerLogFormat FROM (SELECT * FROM User WHERE google_id = ?) as a , Store b WHERE a.id = b.user_id) a , Image b WHERE a.user_image_id = b.id) a , Image_Store b WHERE a.store_id = b.store_id) a , Image b WHERE a.store_image_id = b.id";
-    
+
     private String INSERT_ACCOUNT_GOOGLE = "INSERT INTO User(full_name,email,hasStore,role_id,google_id,image_id) VALUES (?,?,0,2,?,?)";
-    
+
     private String QUERY_LOCATION = "SELECT * FROM Location WHERE id = ?";
 
     private String INSERT_ACCOUNT_FB = "INSERT INTO User(full_name,email,hasStore,role_id,facebook_id,image_id) VALUES (?,?,0,2,?,?)";
@@ -64,14 +64,14 @@ public class UserDaoImpl extends BaseDao implements UserDao {
 
     private String QUERY_USER_SEARCH_PRODUCT = "SELECT a.id,a.name,a.description,a.brand_name,a.path,b.name as type_name FROM (SELECT a.*,b.path FROM (SELECT a.*,b.image_id FROM (SELECT a.id,a.name,a.description,a.type_id,b.name as brand_name FROM (SELECT a.id,name,description,b.brand_id,b.type_id FROM Product a , Type_Brand b WHERE a.type_brand_id = b.id AND name LIKE ?) a,Brand b WHERE a.brand_id =b.id) a , Image_Product b WHERE a.id = b.product_id) a , Image b WHERE a.image_id = b.id) a, Type b WHERE a.type_id = b.id ORDER BY name LIMIT ?,?";
 
-    private String BUSINESS_CORE = "SELECT a.*,b.path as image_path FROM\n" +
-"            (SELECT a.*,b.image_id as image_id FROM \n" +
-"            (SELECT a.*,b.full_name as user_name FROM\n" +
-"            (SELECT a.*,b.promotion,b.price FROM \n" +
-"            (SELECT a.apartment_number,a.street,a.county,a.district,a.city,a.longitude,a.latitude,a.distance,b.* FROM\n" +
-"            (SELECT *, ( 6371 * acos( cos( radians(?) ) * cos( radians(latitude) ) * cos( radians(longitude) - radians(?) ) +\n" +
-"            sin( radians(?) ) * sin( radians(latitude) ) ) )\n" +
-"            AS distance FROM Location HAVING distance < 5) a, Store b WHERE a.id = b.location_id AND b.status = 1) a, (SELECT store_id,promotion,price FROM Product_Store WHERE product_id = ?) b WHERE a.id = b.store_id) a , User b WHERE a.user_id = b.id) a , Image_Store b WHERE a.id = b.store_id) a , Image b WHERE a.image_id = b.id ORDER BY distance limit 0,5";
+    private String BUSINESS_CORE = "SELECT a.*,b.path as image_path FROM\n"
+            + "            (SELECT a.*,b.image_id as image_id FROM \n"
+            + "            (SELECT a.*,b.full_name as user_name FROM\n"
+            + "            (SELECT a.*,b.promotion,b.price FROM \n"
+            + "            (SELECT a.apartment_number,a.street,a.county,a.district,a.city,a.longitude,a.latitude,a.distance,b.* FROM\n"
+            + "            (SELECT *, ( 6371 * acos( cos( radians(?) ) * cos( radians(latitude) ) * cos( radians(longitude) - radians(?) ) +\n"
+            + "            sin( radians(?) ) * sin( radians(latitude) ) ) )\n"
+            + "            AS distance FROM Location HAVING distance < 5) a, Store b WHERE a.id = b.location_id AND b.status = 1) a, (SELECT store_id,promotion,price FROM Product_Store WHERE product_id = ?) b WHERE a.id = b.store_id) a , User b WHERE a.user_id = b.id) a , Image_Store b WHERE a.id = b.store_id) a , Image b WHERE a.image_id = b.id ORDER BY distance limit 0,5";
 
     @Override
     public List<UserEntites> getAllUserForAdmin() throws SQLException {
@@ -175,7 +175,7 @@ public class UserDaoImpl extends BaseDao implements UserDao {
             pre = conn.prepareStatement(sql);
             pre.setString(1, us.getUserName());
             pre.setString(2, us.getPassword());
-            pre.setString(3, us.getFirstName()+ " " + us.getLastName());
+            pre.setString(3, us.getFirstName() + " " + us.getLastName());
             pre.setString(4, us.getEmail());
             pre.setInt(5, 1);
             pre.setString(6, us.getPhone());
@@ -354,7 +354,7 @@ public class UserDaoImpl extends BaseDao implements UserDao {
                     image_id = rs.getInt("MAX(id)");
                 }
                 pre = conn.prepareStatement(INSERT_ACCOUNT_FB);
-                pre.setString(1, user.getFirstName()+" "+user.getLastName());
+                pre.setString(1, user.getFirstName() + " " + user.getLastName());
                 pre.setString(2, user.getEmail());
                 pre.setString(3, FBId);
                 pre.setInt(4, image_id);
@@ -402,7 +402,7 @@ public class UserDaoImpl extends BaseDao implements UserDao {
     }
 
     @Override
-    public List<ProductAddEntites> userSearchProduct(String productName,int page) throws SQLException {
+    public List<ProductAddEntites> userSearchProduct(String productName, int page) throws SQLException {
         Connection conn = null;
         PreparedStatement pre = null;
         ResultSet rs = null;
@@ -412,7 +412,7 @@ public class UserDaoImpl extends BaseDao implements UserDao {
             conn = getConnection();
             pre = conn.prepareStatement(QUERY_USER_SEARCH_PRODUCT);
             pre.setString(1, "%" + productName + "%");
-            pre.setInt(2, page*5);
+            pre.setInt(2, page * 5);
             pre.setInt(3, 5);
             rs = pre.executeQuery();
             while (rs.next()) {
@@ -441,7 +441,7 @@ public class UserDaoImpl extends BaseDao implements UserDao {
         ResultSet rs = null;
         List<NearByStore> list = new ArrayList<>();
         NearByStore entites = null;
-         try {
+        try {
             conn = getConnection();
             pre = conn.prepareStatement(BUSINESS_CORE);
             pre.setDouble(1, Double.parseDouble(latitude));
@@ -452,7 +452,7 @@ public class UserDaoImpl extends BaseDao implements UserDao {
             while (rs.next()) {
                 entites = new NearByStore();
                 entites.setId(rs.getInt("id"));
-                entites.setAddress(rs.getString("apartment_number")+" "+rs.getString("street")+" "+rs.getString("county")+" "+rs.getString("district")+" "+rs.getString("city"));
+                entites.setAddress(rs.getString("apartment_number") + " " + rs.getString("street") + " " + rs.getString("county") + " " + rs.getString("district") + " " + rs.getString("city"));
                 entites.setAddress(entites.getAddress().replaceAll("0", "").replaceAll("Unnamed Road", "").replaceAll("\\s+", " ").replaceAll("null", "").trim());
                 entites.setLatitude(rs.getDouble("latitude"));
                 entites.setLongitude(rs.getDouble("longitude"));
@@ -480,10 +480,10 @@ public class UserDaoImpl extends BaseDao implements UserDao {
     @Override
     public UserEntites updateInformation(UserEntites user) throws SQLException {
         Connection conn = null;
-        PreparedStatement pre= null;
+        PreparedStatement pre = null;
         UserEntites data = null;
-        try{
-            String updateSql = "Update User set full_name =? ,gender = ?, dateOfBirth =?, phone =? ,email =? where id =?";
+        try {
+            String updateSql = "Update User set full_name =? ,gender = ?, dateOfBirth =?, phone =? ,email =?,image_id =? where id =?";
             conn = getConnection();
             conn.setAutoCommit(false);
             pre = conn.prepareStatement(updateSql);
@@ -495,38 +495,54 @@ public class UserDaoImpl extends BaseDao implements UserDao {
             pre.setDate(3, dateTime);
             pre.setString(4, user.getPhone());
             pre.setString(5, user.getEmail());
-            pre.setInt(6, user.getUserID());
+            if (!user.getImage_path().equals("User/image/1.jpg")) {
+                if (!checkIdImgExist(conn, user.getUserName())) {
+                    if (insertImgUser(conn, user.getImage_path(), user.getUserName())) {
+                        int imgId = getIdNewImg(conn, user.getUserName());
+                        pre.setInt(6, imgId);
+                    }
+                } else {
+                    int imgId = getIdNewImg(conn, user.getUserName());
+                    if (updateImgWithIdExist(conn, user.getImage_path(), imgId)) {
+                        pre.setInt(6, imgId);
+                    }
+                }
+            } else {
+                pre.setInt(6, 51);
+            }
+
+            pre.setInt(7, user.getUserID());
             int checkUpdate = pre.executeUpdate();
-            if(checkUpdate>0){
+            if (checkUpdate > 0) {
                 conn.commit();
                 data = getInformationUser(conn, user.getUserID());
-            }else{
+            } else {
                 conn.rollback();
                 conn.setAutoCommit(true);
-               
+
             }
-            
-            
+
         } catch (ParseException ex) {
             System.out.println(ex.getMessage());
-        
-        }finally{
+
+        } finally {
             closeConnect(conn, pre, null);
-}
+        }
         return data;
     }
-    public UserEntites getInformationUser(Connection conn,int idUser) throws SQLException{
+
+    public UserEntites getInformationUser(Connection conn, int idUser) throws SQLException {
         PreparedStatement pre = null;
-        ResultSet rs =null;
+        ResultSet rs = null;
         UserEntites us = null;
-        try{
-            String sql ="SELECT us.id,us.full_name,us.email,us.hasStore,us.gender,us.dateOfBirth,us.phone,img.path,us.device_id,us.username"
+        try {
+            String sql = "SELECT us.id,us.full_name,us.email,us.hasStore,us.gender,us.dateOfBirth,us.phone,img.path,us.device_id,us.username"
                     + " FROM User us JOIN Image img on us.image_id = img.id where us.id = ?";
             pre = conn.prepareStatement(sql);
             pre.setInt(1, idUser);
             rs = pre.executeQuery();
-            if(rs.next()){
-                us  = new UserEntites();
+            if (rs.next()) {
+                us = new UserEntites();
                 us.setUserID(rs.getInt("id"));
                 us.setLastName(rs.getString("full_name"));
                 us.setDeviceId(rs.getString("device_id"));
@@ -538,7 +554,7 @@ public class UserDaoImpl extends BaseDao implements UserDao {
                 us.setDateOfBirth(rs.getString("dateOfBirth"));
                 us.setGender(rs.getString("gender"));
             }
-        }finally{
+        } finally {
             closeConnect(null, pre, rs);
         }
         return us;
@@ -548,17 +564,17 @@ public class UserDaoImpl extends BaseDao implements UserDao {
     public UserEntites informationUser(int userId) throws SQLException {
         Connection conn = null;
         PreparedStatement pre = null;
-        ResultSet rs =null;
+        ResultSet rs = null;
         UserEntites us = null;
-        try{
-            String sql ="SELECT us.id,us.full_name,us.email,us.hasStore,us.gender,us.dateOfBirth,us.phone,img.path,us.device_id,us.username,us.password"
+        try {
+            String sql = "SELECT us.id,us.full_name,us.email,us.hasStore,us.gender,us.dateOfBirth,us.phone,img.path,us.device_id,us.username,us.password"
                     + " FROM User us JOIN Image img on us.image_id = img.id where us.id = ?";
-            conn= getConnection();
+            conn = getConnection();
             pre = conn.prepareStatement(sql);
             pre.setInt(1, userId);
             rs = pre.executeQuery();
-            if(rs.next()){
-                us  = new UserEntites();
+            if (rs.next()) {
+                us = new UserEntites();
                 us.setUserID(rs.getInt("id"));
                 us.setLastName(rs.getString("full_name"));
                 us.setDeviceId(rs.getString("device_id"));
@@ -571,7 +587,7 @@ public class UserDaoImpl extends BaseDao implements UserDao {
                 us.setGender(rs.getString("gender"));
                 us.setPassword(rs.getString("password"));
             }
-        }finally{
+        } finally {
             closeConnect(conn, pre, rs);
         }
         return us;
@@ -579,22 +595,22 @@ public class UserDaoImpl extends BaseDao implements UserDao {
 
     @Override
     public UserEntites getPhoneNumberOfUser(String username) throws SQLException {
-        String sql ="SELECT phone,username FROM User where username =?";
-        Connection conn =null;
-        PreparedStatement pre =null;
-        ResultSet rs =null;
+        String sql = "SELECT phone,username FROM User where username =?";
+        Connection conn = null;
+        PreparedStatement pre = null;
+        ResultSet rs = null;
         UserEntites us = null;
-        try{
+        try {
             conn = getConnection();
             pre = conn.prepareStatement(sql);
             pre.setString(1, username);
             rs = pre.executeQuery();
-            if(rs.next()){
+            if (rs.next()) {
                 us = new UserEntites();
                 us.setUserName(rs.getString("username"));
-                us.setPhone(rs.getString("phone"));              
+                us.setPhone(rs.getString("phone"));
             }
-        }finally{
+        } finally {
             closeConnect(conn, pre, rs);
         }
         return us;
@@ -603,23 +619,23 @@ public class UserDaoImpl extends BaseDao implements UserDao {
     @Override
     public boolean changePassword(String username, String password) throws SQLException {
         Connection conn = null;
-        PreparedStatement pre =null;
-        try{
-            String sql ="Update User set password = ? where username =?";
+        PreparedStatement pre = null;
+        try {
+            String sql = "Update User set password = ? where username =?";
             conn = getConnection();
             conn.setAutoCommit(false);
             pre = conn.prepareStatement(sql);
             pre.setString(1, password);
             pre.setString(2, username);
             int countUpdate = pre.executeUpdate();
-            if(countUpdate>0){
+            if (countUpdate > 0) {
                 conn.commit();
                 return true;
-            }else{
+            } else {
                 conn.rollback();
                 conn.setAutoCommit(true);
             }
-        }finally{
+        } finally {
             closeConnect(conn, pre, null);
         }
         return false;
@@ -666,8 +682,13 @@ public class UserDaoImpl extends BaseDao implements UserDao {
                     pre.setInt(1, store.getLocation_id());
                     rs = pre.executeQuery();
                     rs.next();
-                    store.setAddress(rs.getString("apartment_number") + " " + rs.getString("street") + " " + rs.getString("county") + " " + rs.getString("district") + " " + rs.getString("city"));
-                    store.setAddress(store.getAddress().replaceAll("0", "").replaceAll("Unnamed Road", "").replaceAll("\\s+", " ").replaceAll("null", "").trim());
+                    if (!rs.getString("street").equals("Unnamed Road")) {
+                        store.setAddress(rs.getString("apartment_number") + "-" + rs.getString("street") + "-" + rs.getString("county") + "-" + rs.getString("district") + "-" + rs.getString("city"));
+                        store.setAddress(store.getAddress().replaceAll("0", "").replaceAll("\\s+", " ").replaceAll("null", "").trim());
+                    } else {
+                        store.setAddress(rs.getString("apartment_number") + "-" + rs.getString("county") + "-" + rs.getString("district") + "-" + rs.getString("city"));
+                        store.setAddress(store.getAddress().replaceAll("0", "").replaceAll("\\s+", " ").replaceAll("null", "").trim());
+                    }
                     store.setLatitude(rs.getString("latitude"));
                     store.setLongtitude(rs.getString("longitude"));
                 }
@@ -690,7 +711,7 @@ public class UserDaoImpl extends BaseDao implements UserDao {
                     image_id = rs.getInt("MAX(id)");
                 }
                 pre = conn.prepareStatement(INSERT_ACCOUNT_GOOGLE);
-                pre.setString(1,user.getLastName());
+                pre.setString(1, user.getLastName());
                 pre.setString(2, user.getEmail());
                 pre.setString(3, GId);
                 pre.setInt(4, image_id);
@@ -762,5 +783,126 @@ public class UserDaoImpl extends BaseDao implements UserDao {
             closeConnect(conn, pre, null);
         }
         return check;
+    }
+
+    public boolean insertImgUser(Connection conn, String img, String username) {
+        PreparedStatement pre = null;
+        try {
+            String insert = "insert into Image(name,path) values (?,?)";
+            conn.setAutoCommit(false);
+            pre = conn.prepareStatement(insert);
+            pre.setString(1, username);
+            pre.setString(2, img);
+            int check = pre.executeUpdate();
+            if (check > 0) {
+                conn.commit();
+                return true;
+            } else {
+                conn.rollback();
+                conn.setAutoCommit(true);
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        } finally {
+            closeConnect(null, pre, null);
+        }
+        return false;
+    }
+
+    public int getIdNewImg(Connection conn, String name) throws SQLException {
+        PreparedStatement pre = null;
+        ResultSet rs = null;
+        try {
+            String sql = "select id from Image where name = ?";
+            pre = conn.prepareStatement(sql);
+            pre.setString(1, name);
+            rs = pre.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("id");
+            }
+        } finally {
+            closeConnect(null, pre, rs);
+        }
+        return 0;
+    }
+
+    public boolean checkIdImgExist(Connection conn, String username) throws SQLException {
+        PreparedStatement pre = null;
+        ResultSet rs = null;
+        try {
+            String sql = " select name from Image where name =?";
+            pre = conn.prepareStatement(sql);
+            pre.setString(1, username);
+            rs = pre.executeQuery();
+            if (rs.next()) {
+                return true;
+            }
+        } finally {
+            closeConnect(null, pre, rs);
+        }
+        return false;
+    }
+
+    public boolean updateImgWithIdExist(Connection conn, String path, int id) throws SQLException {
+
+        PreparedStatement pre = null;
+        try {
+            String update = "Update Image set path= ? where id =?";
+            conn.setAutoCommit(false);
+            pre = conn.prepareStatement(update);
+            pre.setString(1, path);
+            pre.setInt(2, id);
+            int check = pre.executeUpdate();
+            if (check > 0) {
+                conn.commit();
+                return true;
+            } else {
+                conn.rollback();
+                conn.setAutoCommit(true);
+            }
+        } finally {
+            closeConnect(null, pre, null);
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean updateImgUser(UserEntites user) throws SQLException {
+        Connection conn = null;
+        PreparedStatement pre = null;
+        try {
+            conn = getConnection();
+            String update = "Update User set image_id =? where id =?";
+            conn.setAutoCommit(false);
+            pre = conn.prepareStatement(update);
+            if (!user.getImage_path().equals("User/image/1.jpg")) {
+                if (!checkIdImgExist(conn, user.getUserName())) {
+                    if (insertImgUser(conn, user.getImage_path(), user.getUserName())) {
+                        int imgId = getIdNewImg(conn, user.getUserName());
+                        pre.setInt(1, imgId);
+                    }
+                } else {
+                    int imgId = getIdNewImg(conn, user.getUserName());
+                    if (updateImgWithIdExist(conn, user.getImage_path(), imgId)) {
+                        pre.setInt(1, imgId);
+                    }
+                }
+            } else {
+                pre.setInt(1, 51);
+            }
+            pre.setInt(2, user.getUserID());
+            int checkUpdate = pre.executeUpdate();
+            if (checkUpdate > 0) {
+                conn.commit();
+                return true;
+            } else {
+                conn.rollback();
+                conn.setAutoCommit(true);
+            }
+        } finally {
+            closeConnect(conn, pre, null);
+        }
+        return false;
     }
 }

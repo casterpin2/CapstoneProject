@@ -57,7 +57,7 @@ public class UserFragment extends Fragment implements NetworkStateReceiver.Netwo
     private int userID = 0;
     private StorageReference storageReference = Firebase.getFirebase();
     String fullName = "";
-    String userAvatarPath = "";
+    String userAvatarPath;
     private User user;
     private Store store;
     private NetworkStateReceiver networkStateReceiver;
@@ -154,6 +154,7 @@ public class UserFragment extends Fragment implements NetworkStateReceiver.Netwo
                 public void onClick(View v) {
                     Intent toUserInfoScreen = new Intent(getContext(), UserInformationPage.class);
                     toUserInfoScreen.putExtra("userID", userID);
+
                     ;
                     startActivityForResult(toUserInfoScreen, 111);
 
@@ -262,6 +263,24 @@ public class UserFragment extends Fragment implements NetworkStateReceiver.Netwo
         if (requestCode == 111 && resultCode == 222) {
             if (data.getStringExtra("nameDisplay") != null && !data.getStringExtra("nameDisplay").isEmpty()) {
                 tvUserName.setText(data.getStringExtra("nameDisplay"));
+               String pathImg = data.getStringExtra("path");
+                if (!pathImg.isEmpty() && pathImg != null) {
+                    if (pathImg.contains("graph") || pathImg.contains("google")) {
+                        Glide.with(getContext() /* context */)
+                                .load(pathImg)
+                                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                .skipMemoryCache(true)
+                                .into(profile_image);
+                    } else {
+                        Glide.with(getContext() /* context */)
+                                .using(new FirebaseImageLoader())
+                                .load(storageReference.child(pathImg))
+                                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                .skipMemoryCache(true)
+                                .into(profile_image);
+
+                    }
+                }
             }
         }
 

@@ -90,4 +90,11 @@ public class UserServiceImpl implements UserService{
     public boolean getFeedback(FeedbackEntites feedback) throws SQLException {
         return dao.getFeedback(feedback);
     }
+
+    @Override
+    public boolean updateImgUser(UserEntites user) throws SQLException {
+        return dao.updateImgUser(user);
+    }
+
+   
 }
