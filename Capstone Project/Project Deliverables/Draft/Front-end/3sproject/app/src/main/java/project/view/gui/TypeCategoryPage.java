@@ -60,10 +60,11 @@ public class TypeCategoryPage extends BasePage {
     ;
     private int categoryId;
     private APIService mAPI;
-    private TextView tv_brand_title;
+    private TextView tv_type_title;
     private android.widget.ProgressBar loadingBar;
     private SearchView searchView;
-    private ImageButton imgBack, imgBarCode;
+    private ImageButton imgBack;
+    private ImageView imgHome;
     private List<Type> searchedProduct = new ArrayList<>();
     private CoordinatorLayout main_layout;
     private Button btnViewAll;
@@ -81,9 +82,9 @@ public class TypeCategoryPage extends BasePage {
                 return false;
             }
         });
-        imgBarCode.setVisibility(View.INVISIBLE);
+        loadingBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorApplication), android.graphics.PorterDuff.Mode.MULTIPLY);
         String categoryName = getIntent().getStringExtra("categoryName");
-        tv_brand_title.setText(categoryName);
+        tv_type_title.setText(categoryName);
         searchView.setQueryHint("Tìm trong " + categoryName);
         setCoverImg();
         mAPI = ApiUtils.getAPIService();
@@ -100,11 +101,18 @@ public class TypeCategoryPage extends BasePage {
                 finish();
             }
         });
+        imgHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent toHomePage = new Intent(TypeCategoryPage.this,HomePage.class);
+                startActivity(toHomePage);
+            }
+        });
     }
 
     private void setCoverImg() {
         try {
-            Glide.with(this).load(R.drawable.cover).into((ImageView) findViewById(R.id.backdrop));
+            Glide.with(this).load(R.drawable.cover).into((ImageView) findViewById(R.id.cover));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -116,8 +124,8 @@ public class TypeCategoryPage extends BasePage {
         loadingBar = (android.widget.ProgressBar) findViewById(R.id.loadingBar);
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         imgBack = findViewById(R.id.backBtn);
-        imgBarCode = findViewById(R.id.imgBarCode);
-        tv_brand_title = (TextView) findViewById(R.id.tv_brand_title);
+        imgHome = findViewById(R.id.imgHome);
+        tv_type_title = (TextView) findViewById(R.id.tv_type_title);
         nullMessage = findViewById(R.id.nullMessage);
         btnViewAll = (Button) findViewById(R.id.btnAll);
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
@@ -174,13 +182,14 @@ public class TypeCategoryPage extends BasePage {
                 new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(TypeCategoryPage.this, "Có lỗi khi định vị vị trí của bạn", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(TypeCategoryPage.this, "Có lỗi xảy ra, vui lòng thử lại", Toast.LENGTH_SHORT).show();
                         nullMessage.setText("Có lỗi xảy ra, vui lòng tải lại trang!");
                         loadingBar.setVisibility(View.INVISIBLE);
-
                     }
                 }, 10000);
                 return;
+            } else {
+                loadingBar.setVisibility(View.INVISIBLE);
             }
             adapter = new TypePageListViewAdapter(TypeCategoryPage.this, aVoid);
 

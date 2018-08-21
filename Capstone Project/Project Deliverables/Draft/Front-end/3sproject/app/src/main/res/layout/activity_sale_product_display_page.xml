@@ -10,8 +10,7 @@
         android:id="@+id/main.appbar"
         android:layout_width="match_parent"
         android:layout_height="256dp"
-        android:fitsSystemWindows="true"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:fitsSystemWindows="true">
 
         <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/main.collapsing"
@@ -49,7 +48,7 @@
                     android:layout_height="wrap_content"
                     android:text="Sản phẩm giảm giá"
                     android:textColor="@android:color/white"
-                    android:textSize="20dp" />
+                    android:textSize="30dp" />
             </LinearLayout>
 
             <android.support.v7.widget.Toolbar
@@ -72,7 +71,7 @@
                     android:scaleType="fitXY"
                     android:src="@drawable/btn_back" />
 
-                <include layout="@layout/search_view_custom" />
+                <include layout="@layout/search_custom" />
             </android.support.v7.widget.Toolbar>
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>

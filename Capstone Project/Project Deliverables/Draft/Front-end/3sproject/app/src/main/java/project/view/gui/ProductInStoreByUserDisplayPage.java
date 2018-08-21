@@ -45,7 +45,6 @@ import retrofit2.Call;
 import retrofit2.Response;
 
 public class ProductInStoreByUserDisplayPage extends BasePage {
-    private ImageView imgBarCode;
     private int storeID;
     private String storeName;
     private String phone;
@@ -54,7 +53,7 @@ public class ProductInStoreByUserDisplayPage extends BasePage {
     private APIService mAPI;
     private RecyclerView recycler_view;
     private ProductInStoreByUserCustomCardViewAdapter productInStoreByUserCustomListViewAdapter;
-    private ImageView backBtn,backdrop;
+    private ImageView backBtn,backdrop,imgHome;
     private TextView tvStoreName;
     private Spinner spinnerCategory,spinnerSort;
     private StorageReference storageReference = Firebase.getFirebase();
@@ -96,6 +95,13 @@ public class ProductInStoreByUserDisplayPage extends BasePage {
                 finish();
             }
         });
+        imgHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent toHomePage = new Intent(ProductInStoreByUserDisplayPage.this,HomePage.class);
+                startActivity(toHomePage);
+            }
+        });
         storeNameLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -114,18 +120,15 @@ public class ProductInStoreByUserDisplayPage extends BasePage {
                 return false;
             }
         });
-        imgBarCode.setVisibility(View.INVISIBLE);
-        CustomInterface.setStatusBarColor(this);
-
     }
     private void findView(){
-        imgBarCode = findViewById(R.id.imgBarCode);
+        imgHome = findViewById(R.id.imgHome);
         recycler_view = findViewById(R.id.recycler_view);
         backBtn = findViewById(R.id.backBtn);
         tvStoreName = findViewById(R.id.tv_store_name);
         spinnerCategory = findViewById(R.id.spinnerCategory);
         spinnerSort = findViewById(R.id.spinnerSort);
-        backdrop = findViewById(R.id.backdrop);
+        backdrop = findViewById(R.id.cover);
         main_layout = findViewById(R.id.main_layout);
         searchView = findViewById(R.id.searchViewQuery);
         storeNameLayout = findViewById(R.id.storeNameLayout);

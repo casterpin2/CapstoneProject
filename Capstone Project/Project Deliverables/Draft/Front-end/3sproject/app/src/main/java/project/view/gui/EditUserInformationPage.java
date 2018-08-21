@@ -6,9 +6,15 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -27,17 +33,27 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.google.gson.Gson;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.UUID;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import project.objects.User;
@@ -49,6 +65,9 @@ import project.view.util.TweakUI;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 public class EditUserInformationPage extends BasePage {
     private static final String TAG = "EditUserInformationPage";
@@ -63,7 +82,7 @@ public class EditUserInformationPage extends BasePage {
     private Bundle extras;
     int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
     private RelativeLayout main_layout;
-    private  boolean checkUpdate;
+    private boolean checkUpdate = false;
     String[] genderName = {"Chưa xác định", "Nam", "Nữ"};
     private String storeUser;
     private APIService mApi;
@@ -76,12 +95,15 @@ public class EditUserInformationPage extends BasePage {
     private Regex regex;
     private boolean  isUserName= false, isPhone = false ,isEmail = false;
     private  DatePickerDialog.OnDateSetListener date;
-
+    private boolean checkAva = false;
+    private String namePath;
+    private boolean isCheckSave = false;
+    private StorageReference storageReference;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_user_information_page);
-
+        storageReference = FirebaseStorage.getInstance().getReference();
         mApi = APIService.retrofit.create(APIService.class);
         mapping();
         customView();
@@ -157,44 +179,79 @@ public class EditUserInformationPage extends BasePage {
                 } else if (genderSpinner.getSelectedItemPosition() == 2){
                     gender = "Nữ";
                 }
-                if (extras.getString("name").equals(name) && extras.getString("phone").equals(phone)
+                isUserName = regex.checkDisplayName(usernameError,userNameText);
+                isPhone = regex.checkPhone(phoneError,phoneText);
+                isEmail = regex.checkEmail(emailError,emailText);
+                boolean checkAllValidate = isEmail && isPhone &&isUserName;
+                boolean checkChange = extras.getString("name").equals(name) && extras.getString("phone").equals(phone)
                         && extras.getString("email").equals(email) && extras.getString("dob").equals(dob)
-                        && extras.getString("gender").equals(gender)) {
-
+                        && extras.getString("gender").equals(gender);
+                //thong tin ko thay doi anh khong thay doi
+                if (checkChange && !checkAva ) {
                     Intent toUserInformationPage = new Intent(EditUserInformationPage.this, UserInformationPage.class);
                     setResult(201, toUserInformationPage);
                     finish();
-
-
-                } else {
-
-                    isUserName = regex.checkDisplayName(usernameError,userNameText);
-                    isPhone = regex.checkPhone(phoneError,phoneText);
-                    isEmail = regex.checkEmail(emailError,emailText);
-
-                    // code service here
-                    if(isEmail && isPhone &&isUserName) {
-                        us = new User();
-                        pre = getSharedPreferences("authentication", Context.MODE_PRIVATE);
-                        String existUserJson = pre.getString("user", null);
-                        User userTemp = new Gson().fromJson(existUserJson, User.class);
-
-                        us.setDateOfBirth(dob);
-                        us.setDisplayName(name);
-                        us.setFirst_name("");
-                        us.setLast_name(name);
-                        us.setImage_path(userTemp.getImage_path());
-                        us.setUsername(userTemp.getUsername());
-                        us.setHasStore(userTemp.getHasStore());
-                        us.setEmail(email);
-                        us.setPhone(phone);
-                        us.setGender(gender);
-                        us.setId(extras.getInt("idUser", 0));
-                        final Call<User> call = mApi.updateInfotmation(us);
-                        new UserUpdate().execute(call);
-                        saveProfile(v);
-                    }
                 }
+
+                if (!checkAva && !checkChange && checkAllValidate ) {
+                    // code service here
+                    us = new User();
+                    pre = getSharedPreferences("authentication", Context.MODE_PRIVATE);
+                    String existUserJson = pre.getString("user", null);
+                    User userTemp = new Gson().fromJson(existUserJson, User.class);
+
+                    us.setDateOfBirth(dob);
+                    us.setDisplayName(name);
+                    us.setFirst_name("");
+                    us.setLast_name(name);
+                    us.setImage_path(userTemp.getImage_path());
+                    us.setUsername(userTemp.getUsername());
+                    us.setHasStore(userTemp.getHasStore());
+                    us.setEmail(email);
+                    us.setPhone(phone);
+                    us.setGender(gender);
+                    us.setId(extras.getInt("idUser", 0));
+                    final Call<User> call = mApi.updateInfotmation(us);
+                    new UserUpdate().execute(call);
+
+
+                }
+                if (checkAva && checkChange) {
+                    pre = getSharedPreferences("authentication", Context.MODE_PRIVATE);
+                    String existUserJson = pre.getString("user", null);
+                    us = new Gson().fromJson(existUserJson, User.class);
+                    uploadImg(us.getId());
+                    us.setImage_path(namePath);
+                    final Call<Boolean> call = mApi.updateImgUser(us);
+                    new UserUpdateImg().execute(call);
+                    Intent toUserInformationPage = new Intent(EditUserInformationPage.this, UserInformationPage.class);
+                    toUserInformationPage.putExtra("path", us.getImage_path());
+                    setResult(202, toUserInformationPage);
+                    finish();
+                }
+                if (checkAva && !checkChange && checkAllValidate) {
+                    us = new User();
+                    pre = getSharedPreferences("authentication", Context.MODE_PRIVATE);
+                    String existUserJson = pre.getString("user", null);
+                    User userTemp = new Gson().fromJson(existUserJson, User.class);
+                    us.setDateOfBirth(dob);
+                    us.setDisplayName(name);
+                    us.setFirst_name("");
+                    us.setLast_name(name);
+                    us.setImage_path(userTemp.getImage_path());
+                    us.setUsername(userTemp.getUsername());
+                    us.setHasStore(userTemp.getHasStore());
+                    us.setEmail(email);
+                    us.setPhone(phone);
+                    us.setGender(gender);
+                    us.setId(extras.getInt("idUser", 0));
+                    uploadImg(us.getId());
+                    us.setImage_path(namePath);
+                    final Call<User> call = mApi.updateInfotmation(us);
+                    new UserUpdate().execute(call);
+                }
+
+
             }
         });
 
@@ -205,7 +262,10 @@ public class EditUserInformationPage extends BasePage {
                         && extras.getString("phone").equals(phoneText.getText().toString())
                         && extras.getString("email").equals(emailText.getText().toString())
                         && extras.getString("dob").equals(dobText.getText().toString())) {
-                    onBackPressed();
+                    Intent intent = new Intent(EditUserInformationPage.this, UserInformationPage.class);
+                    intent.putExtra("userID", us.getId());
+                    setResult(200,intent);
+                    finish();
                 } else {
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(EditUserInformationPage.this);
@@ -215,7 +275,10 @@ public class EditUserInformationPage extends BasePage {
                     builder.setPositiveButton(R.string.alertdialog_acceptButton, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            onBackPressed();
+                            Intent intent = new Intent(EditUserInformationPage.this, UserInformationPage.class);
+                            intent.putExtra("userID", us.getId());
+                            setResult(200,intent);
+                            finish();
                         }
                     });
 
@@ -262,7 +325,10 @@ public class EditUserInformationPage extends BasePage {
                         && extras.getString("phone").equals(phoneText.getText().toString())
                         && extras.getString("email").equals(emailText.getText().toString())
                         && extras.getString("dob").equals(dobText.getText().toString())) {
-                    onBackPressed();
+                    Intent intent = new Intent(EditUserInformationPage.this, UserInformationPage.class);
+                    intent.putExtra("userID", extras.getInt("idUser", 0));
+                    setResult(200,intent);
+                    finish();
                 } else {
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(EditUserInformationPage.this);
@@ -272,7 +338,10 @@ public class EditUserInformationPage extends BasePage {
                     builder.setPositiveButton(R.string.alertdialog_acceptButton, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            onBackPressed();
+                            Intent intent = new Intent(EditUserInformationPage.this, UserInformationPage.class);
+                            intent.putExtra("userID", us.getId());
+                            setResult(200,intent);
+                            finish();
                         }
                     });
 
@@ -291,11 +360,40 @@ public class EditUserInformationPage extends BasePage {
         changeImageLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                openGalery();
+                int currentapiVersion = android.os.Build.VERSION.SDK_INT;
+                if (currentapiVersion >= android.os.Build.VERSION_CODES.M) {
+                    if (checkPermission()) {
+                        Intent toGallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+                        startActivityForResult(toGallery, IMAGE_CODE);
+                    } else {
+                        requestPermission();
+                    }
+                } else {
+                    Intent toGallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+                    startActivityForResult(toGallery, IMAGE_CODE);
+                }
             }
         });
     }
-
+    private boolean checkPermission() {
+        boolean checkPermissionRead = ContextCompat.checkSelfPermission(getApplicationContext(), READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+        return checkPermissionRead;
+    }
+    private void requestPermission() {
+        ActivityCompat.requestPermissions(this, new String[]{READ_EXTERNAL_STORAGE}, 1001);
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        int currentapiVersion = android.os.Build.VERSION.SDK_INT;
+        if (currentapiVersion >= android.os.Build.VERSION_CODES.M) {
+            if (checkPermission()) {
+            } else {
+                requestPermission();
+            }
+        } else {
+        }
+    }
     private void customView(){
         main_layout.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -316,12 +414,61 @@ public class EditUserInformationPage extends BasePage {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK && requestCode == IMAGE_CODE){
+        if (resultCode == RESULT_OK && requestCode == IMAGE_CODE) {
             imageURI = data.getData();
-            profile_image.setImageURI(imageURI);
+            checkAva = true;
+            try {
+
+                InputStream imageStream = getContentResolver().openInputStream(imageURI);
+                Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+                selectedImage = getResizedBitmap(selectedImage, 1024);
+                profile_image.setImageBitmap(selectedImage);
+                uploadImg(extras.getInt("idUser", 0));
+
+            } catch (Exception e) {
+
+            }
+
         }
     }
+    public Bitmap getResizedBitmap(Bitmap image, int maxSize) {
+        int width = image.getWidth();
+        int height = image.getHeight();
 
+        float bitmapRatio = (float) width / (float) height;
+        if (bitmapRatio > 1) {
+            width = maxSize;
+            height = (int) (width / bitmapRatio);
+        } else {
+            height = maxSize;
+            width = (int) (height * bitmapRatio);
+        }
+        return Bitmap.createScaledBitmap(image, width, height, true);
+    }
+    private void uploadImg(int userId) {
+
+        if (imageURI != null) {
+            final String nameImg = userId + "--" + UUID.randomUUID().toString();
+            StorageReference ref = storageReference.child("User/image/" + nameImg);
+
+            ref.putFile(imageURI).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    // Get a URL to the uploaded content
+                    if(taskSnapshot.getTask().isSuccessful()){
+                        namePath = "User/image/" + nameImg;
+                    }
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    // Handle unsuccessful uploads
+                    // ...
+                }
+            });
+
+        }
+    }
     private void mapping() {
         main_layout = findViewById(R.id.main_layout);
         userNameText = findViewById(R.id.userNameText);
@@ -352,15 +499,23 @@ public class EditUserInformationPage extends BasePage {
             dobText.setText(extras.getString("dob"));
             emailText.setText(extras.getString("email"));
             phoneText.setText(extras.getString("phone"));
+            if (!extras.getString("path").isEmpty() && extras.getString("path") != null) {
+                if (extras.getString("path").contains("graph") || extras.getString("path").contains("google")) {
+                    Glide.with(EditUserInformationPage.this /* context */)
+                            .load(extras.getString("path"))
+                            .diskCacheStrategy(DiskCacheStrategy.NONE)
+                            .skipMemoryCache(true)
+                            .into(profile_image);
+                } else {
+                    Glide.with(EditUserInformationPage.this /* context */)
+                            .using(new FirebaseImageLoader())
+                            .load(storageReference.child(extras.getString("path")))
+                            .diskCacheStrategy(DiskCacheStrategy.NONE)
+                            .skipMemoryCache(true)
+                            .into(profile_image);
 
-//            String gender = extras.getString("gender");
-//            if (gender != null) {
-//                if (gender.equals("Nam")) {
-//                    rdMale.setChecked(true);
-//                } else {
-//                    rdFemale.setChecked(true);
-//                }
-//            }
+                }
+            }
         }
     }
 
@@ -413,65 +568,6 @@ public class EditUserInformationPage extends BasePage {
         }
     }
 
-    public void saveProfile(View view) {
-        Bundle extras = new Bundle();
-
-        String gender = "";
-        if (genderSpinner.getSelectedItemPosition() == 0) {
-            gender = "";
-        } else if (genderSpinner.getSelectedItemPosition() == 1) {
-            gender = "Nam";
-        } else if (genderSpinner.getSelectedItemPosition() == 2){
-            gender = "Nữ";
-        }
-
-        extras.putString("name", userNameText.getText().toString());
-        extras.putString("phone", phoneText.getText().toString());
-        extras.putString("email", emailText.getText().toString());
-        extras.putString("dob", dobText.getText().toString());
-        extras.putString("gender", gender);
-        Intent intent = new Intent(EditUserInformationPage.this, UserInformationPage.class);
-        intent.putExtras(extras);
-        setResult(200,intent);
-        finish();
-
-    }
-//
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//
-//        if (requestCode == 1) {
-//            if (resultCode == Activity.RESULT_OK) {
-////                cityID = data.getIntExtra("cityID", cityID);
-////                townID = data.getIntExtra("townID", townID);
-////                communeID = data.getIntExtra("communeID", communeID);
-//
-////                city.setText(String.valueOf(cityID));
-////                town.setText(String.valueOf(townID));
-////                commune.setText(String.valueOf(communeID));
-//
-//            }
-//            if (resultCode == Activity.RESULT_CANCELED) {
-//                //Write your code if there's no result
-//            }
-//
-//            if (requestCode == PLACE_AUTOCOMPLETE_REQUEST_CODE) {
-//                if (resultCode == RESULT_OK) {
-//                    Place place = PlaceAutocomplete.getPlace(this, data);
-//
-//
-//                } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
-//                    Status status = PlaceAutocomplete.getStatus(this, data);
-//                    // TODO: Handle the error.
-//                    Toast.makeText(EditUserInformationPage.this, "An error occurred: " + status, Toast.LENGTH_SHORT).show();
-//
-//                } else if (resultCode == RESULT_CANCELED) {
-//                    // The user canceled the operation.
-//                }
-//            }
-//        }
-//    }
-
 
     private class UserUpdate extends AsyncTask<Call,User,Void>{
 
@@ -483,17 +579,23 @@ public class EditUserInformationPage extends BasePage {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            if(checkCall){
+            if (checkCall) {
 
                 String userJson = new Gson().toJson(us);
-                storeUser = pre.getString("store",null);
+                storeUser = pre.getString("store", null);
                 SharedPreferences.Editor editor = pre.edit();
                 //lưu vào editor
                 editor.putString("user", userJson);
                 editor.putString("store", storeUser);
                 editor.commit();
-                Toast.makeText(EditUserInformationPage.this, R.string.succesfully, Toast.LENGTH_LONG).show();
-                checkUpdate = true;
+
+                Intent intent = new Intent(EditUserInformationPage.this, UserInformationPage.class);
+                intent.putExtra("userID", us.getId());
+                setResult(200, intent);
+                finish();
+
+            } else {
+                Toast.makeText(EditUserInformationPage.this, "Thông tin không thay đổi", Toast.LENGTH_SHORT).show();
             }
 
         }
@@ -510,6 +612,59 @@ public class EditUserInformationPage extends BasePage {
                 Call<User> call = calls[0];
                 Response<User> reponse = call.execute();
                 if(reponse.body()!=null){
+                    checkCall = true;
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
+    private class UserUpdateImg extends AsyncTask<Call, User, Void> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            if (checkCall) {
+
+                String userJson = new Gson().toJson(us);
+                storeUser = pre.getString("store", null);
+                SharedPreferences.Editor editor = pre.edit();
+                //lưu vào editor
+                editor.putString("user", userJson);
+                editor.putString("store", storeUser);
+                editor.commit();
+
+                Intent intent = new Intent(EditUserInformationPage.this, UserInformationPage.class);
+                intent.putExtra("userID", us.getId());
+                setResult(200, intent);
+                finish();
+
+            } else {
+                Toast.makeText(EditUserInformationPage.this, "Thông tin không thay đổi", Toast.LENGTH_SHORT).show();
+            }
+
+
+        }
+
+        @Override
+        protected void onProgressUpdate(User... values) {
+            super.onProgressUpdate(values);
+
+        }
+
+        @Override
+        protected Void doInBackground(Call... calls) {
+            try {
+                Call<Boolean> call = calls[0];
+                Response<Boolean> reponse = call.execute();
+                if (reponse.isSuccessful()) {
                     checkCall = true;
                 }
             } catch (IOException e) {

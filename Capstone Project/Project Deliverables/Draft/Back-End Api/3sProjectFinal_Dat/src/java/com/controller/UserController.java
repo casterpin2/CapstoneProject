@@ -242,4 +242,14 @@ public class UserController {
         FeedbackEntites us = mapper.readValue(jsonString, FeedbackEntites.class);
         return user.getFeedback(us);
     }
+    
+      
+    @RequestMapping(value = "/updateImg", method = RequestMethod.POST, produces = "application/json")
+    public boolean updateImgUser(@RequestBody String jsonString) throws SQLException, IOException {
+        JsonFactory factory = new JsonFactory();
+        factory.enable(JsonParser.Feature.ALLOW_SINGLE_QUOTES);
+        ObjectMapper mapper = new ObjectMapper(factory);
+        UserEntites us = mapper.readValue(jsonString, UserEntites.class);
+        return user.updateImgUser(us);
+    }
 }

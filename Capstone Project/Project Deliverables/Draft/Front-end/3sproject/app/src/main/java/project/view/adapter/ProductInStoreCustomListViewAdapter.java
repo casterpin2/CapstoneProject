@@ -3,7 +3,11 @@ package project.view.adapter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
@@ -12,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,6 +38,7 @@ import project.retrofit.ApiUtils;
 import project.view.gui.EditProductInStorePage;
 import project.view.R;
 import project.view.gui.ProductDetailPage;
+import project.view.gui.SaleProductDisplayPage;
 import project.view.model.Cart;
 import project.view.model.CartDetail;
 import project.view.model.Product;
@@ -76,7 +82,7 @@ public class ProductInStoreCustomListViewAdapter extends ArrayAdapter<Product> {
     @NonNull
     @Override
     public View getView(final int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        ProductInStoreViewHolder viewHolder;
+        final ProductInStoreViewHolder viewHolder;
         if (convertView == null) {
             LayoutInflater inflater = LayoutInflater.from(context);
             convertView = inflater.inflate(R.layout.product_in_store_custom_listview, parent, false);
@@ -85,7 +91,7 @@ public class ProductInStoreCustomListViewAdapter extends ArrayAdapter<Product> {
         } else {
             viewHolder = (ProductInStoreViewHolder)convertView.getTag();
         }
-
+        viewHolder.loadingBar.getIndeterminateDrawable().setColorFilter(getContext().getResources().getColor(R.color.colorApplication), android.graphics.PorterDuff.Mode.MULTIPLY);
         viewHolder.productName.setText(productList.get(position).getProduct_name());
         viewHolder.productPromotion.setText(productList.get(position).getPromotion()+" %");
         viewHolder.productPrice.setText(Formater.formatDoubleToMoney(String.valueOf(productList.get(position).getPrice())));
@@ -110,6 +116,21 @@ public class ProductInStoreCustomListViewAdapter extends ArrayAdapter<Product> {
                 builder.setPositiveButton(R.string.alertdialog_acceptButton, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        viewHolder.loadingBar.setVisibility(View.VISIBLE);
+                        viewHolder.deleteBtn.setVisibility(View.INVISIBLE);
+                        if (!isNetworkAvailable()) {
+                            new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(getContext(), "Có lỗi xảy ra. Vui lòng thử lại", Toast.LENGTH_SHORT).show();
+                                    viewHolder.loadingBar.setVisibility(View.INVISIBLE);
+                                    viewHolder.deleteBtn.setVisibility(View.VISIBLE);
+                                }
+                            },5000);
+                            return;
+                        }
+                        viewHolder.loadingBar.setVisibility(View.INVISIBLE);
+                        viewHolder.deleteBtn.setVisibility(View.VISIBLE);
                         myRef = database.getReference().child("cart");
                         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
@@ -136,7 +157,7 @@ public class ProductInStoreCustomListViewAdapter extends ArrayAdapter<Product> {
                                     }
                                 }
                                 Call<Boolean> call = ApiUtils.getAPIService().deleteProductInStore(storeID,productList.get(position).getProduct_id());
-                                new DeleteProduct(position).execute(call);
+                                new DeleteProduct(position,viewHolder).execute(call);
                             }
 
                             @Override
@@ -194,7 +215,7 @@ public class ProductInStoreCustomListViewAdapter extends ArrayAdapter<Product> {
         ImageView productImage;
         ImageView deleteBtn;
         ImageView editBtn;
-
+        ProgressBar loadingBar;
         public ProductInStoreViewHolder(View view) {
             productImage = (ImageView) view.findViewById(R.id.productImage);
             productName = (TextView) view.findViewById(R.id.productName);
@@ -202,11 +223,16 @@ public class ProductInStoreCustomListViewAdapter extends ArrayAdapter<Product> {
             productPromotion =(TextView) view.findViewById(R.id.productPromotion);
             deleteBtn = (ImageView) view.findViewById(R.id.deleteBtn);
             editBtn = (ImageView) view.findViewById(R.id.editBtn);
-
+            loadingBar = (ProgressBar) view.findViewById(R.id.loadingBar);
         }
     }
 
     public class DeleteProduct extends AsyncTask<Call, Void, Boolean> {
+        private ProductInStoreViewHolder viewHolder ;
+
+        public ProductInStoreViewHolder getViewHolder() {
+            return viewHolder;
+        }
 
         private int index;
 
@@ -218,12 +244,15 @@ public class ProductInStoreCustomListViewAdapter extends ArrayAdapter<Product> {
             this.index = index;
         }
 
-        public DeleteProduct(int index) {
+        public DeleteProduct(int index, ProductInStoreViewHolder viewHolder) {
             this.index = index;
+            this.viewHolder = viewHolder;
         }
 
         @Override
         protected void onPreExecute() {
+            getViewHolder().loadingBar.setVisibility(View.VISIBLE);
+            getViewHolder().deleteBtn.setVisibility(View.INVISIBLE);
             super.onPreExecute();
         }
 
@@ -241,7 +270,9 @@ public class ProductInStoreCustomListViewAdapter extends ArrayAdapter<Product> {
         }
         @Override
         protected void onPostExecute(Boolean result) {
+
             if (result == null) {
+
                 Toast.makeText(context,"Không có mạng",Toast.LENGTH_LONG).show();
                 return;
             }
@@ -249,13 +280,20 @@ public class ProductInStoreCustomListViewAdapter extends ArrayAdapter<Product> {
                 Toast.makeText(context,"Có lỗi xảy ra !!!",Toast.LENGTH_LONG).show();
                 return;
             } else {
+                viewHolder.loadingBar.setVisibility(View.INVISIBLE);
+                viewHolder.deleteBtn.setVisibility(View.VISIBLE);
                 Toast.makeText(context,"Xóa sản phẩm thành công",Toast.LENGTH_LONG).show();
                 productList.remove(index);
                 ProductInStoreCustomListViewAdapter.this.notifyDataSetChanged();
-
             }
             super.onPostExecute(result);
 
         }
+    }
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }

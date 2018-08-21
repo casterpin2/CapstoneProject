@@ -12,6 +12,8 @@ import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
@@ -533,11 +535,30 @@ public class NearbyStorePage extends BasePage implements OnMapReadyCallback {
         }
     }
 
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         if (requestCode == 2) {
             if (resultCode == Activity.RESULT_OK) {
+                loadingBar.setVisibility(View.VISIBLE);
+                if (!isNetworkAvailable()) {
+                    new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(NearbyStorePage.this, "Có lỗi xảy ra. Vui lòng thử lại!", Toast.LENGTH_SHORT).show();
+                            loadingBar.setVisibility(View.INVISIBLE);
+                        }
+                    },10000);
+                    return;
+                }
+
                 final String address = data.getStringExtra("address");
                 final String deliverTime = data.getStringExtra("deliverTime");
                 final int storeId = data.getIntExtra("storeID",0);
@@ -612,6 +633,7 @@ public class NearbyStorePage extends BasePage implements OnMapReadyCallback {
 
                             }
                         });
+                        loadingBar.setVisibility(View.INVISIBLE);
                         AlertDialog.Builder builder = new AlertDialog.Builder(NearbyStorePage.this);
                         builder.setTitle("Đặt hàng");
                         builder.setMessage("Bạn đã đặt hàng thành công");

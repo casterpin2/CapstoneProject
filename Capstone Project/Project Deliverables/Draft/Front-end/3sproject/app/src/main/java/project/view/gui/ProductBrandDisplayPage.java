@@ -3,6 +3,7 @@ package project.view.gui;
 import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
@@ -84,17 +85,6 @@ public class ProductBrandDisplayPage extends BasePage {
         loadingBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorApplication), android.graphics.PorterDuff.Mode.MULTIPLY);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                // app icon in action bar clicked; go home
-                finish();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
 
     public List<Product> listProduct(int brandId) {
         final List<Product> productList = new ArrayList<>();
@@ -154,7 +144,6 @@ public class ProductBrandDisplayPage extends BasePage {
                 public void run() {
 
                     if (finalCheck == false) {
-//                        Toast.makeText(ProductBrandDisplayPage.this, "Có lỗi khi định vị vị trí của bạn", Toast.LENGTH_SHORT).show();
                         nullMessage.setText("Có lỗi xảy ra, vui lòng tải lại trang!");
                         loadingBar.setVisibility(View.INVISIBLE);
                     }
@@ -190,9 +179,25 @@ public class ProductBrandDisplayPage extends BasePage {
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home: {
+                finish();
+                return true;
+            }
+            case R.id.action_home:{
+                Intent toHomPage = new Intent(ProductBrandDisplayPage.this, HomePage.class);
+                startActivity(toHomPage);
+            }
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.search_view_with_find_icon, menu);
-        MenuItem itemSearch = menu.findItem(R.id.search_view);
+        getMenuInflater().inflate(R.menu.home_search_toolbar, menu);
+        MenuItem itemSearch = menu.findItem(R.id.action_search);
         final List<Product> searchedProduct = new ArrayList<>();
         searchView = (SearchView) itemSearch.getActionView();
 

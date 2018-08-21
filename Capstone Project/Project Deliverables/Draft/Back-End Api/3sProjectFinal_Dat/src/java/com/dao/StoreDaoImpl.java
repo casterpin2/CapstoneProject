@@ -171,6 +171,7 @@ public class StoreDaoImpl extends BaseDao implements StoreDao {
                 rs = pre.executeQuery();
                 rs.next();
                 se.setAddress(rs.getString("apartment_number") + " " + rs.getString("street") + " " + rs.getString("county") + " " + rs.getString("district") + " " + rs.getString("city"));
+                se.setAddress(se.getAddress().replaceAll("0", "").replaceAll("Unnamed Road", "").replaceAll("\\s+", " ").replaceAll("null", "").trim());
                 se.setLatitude(rs.getString("latitude"));
                 se.setLongtitude(rs.getString("longitude"));
                 return se;
@@ -316,10 +317,7 @@ public class StoreDaoImpl extends BaseDao implements StoreDao {
                     checkUpdateLocation = updateUserLocation(conn, idNew, store);
                 }
             }
-
-            if (checkUpdateLocation && checkUpdateStore) {
-                storeData = getStore(conn, store, store.getImage_path());
-            }
+             storeData = getStore(conn, store, store.getImage_path());         
         } finally {
             closeConnect(conn, pre, rs);
         }
@@ -370,12 +368,19 @@ public class StoreDaoImpl extends BaseDao implements StoreDao {
             if (rs.next()) {
                 store = new StoreEntites();
                 store.setId(rs.getInt("storeId"));
+
                 if (rs.getString("apartment_number") != null) {
                     store.setAddress(rs.getString("apartment_number") + " " + rs.getString("street") + " " + rs.getString("county") + " " + rs.getString("district") + " " + rs.getString("city"));
                 } else {
                     store.setAddress(rs.getString("street") + " " + rs.getString("county") + " " + rs.getString("district") + " " + rs.getString("city"));
                 }
-                store.setAddress(store.getAddress().replaceAll("0", "").replaceAll("Unnamed Road", "").replaceAll("\\s+", " ").replaceAll("null", "").trim());
+                if (!rs.getString("street").equals("Unnamed Road")) {
+                    store.setAddress(rs.getString("apartment_number") + " " + rs.getString("street") + " " + rs.getString("county") + " " + rs.getString("district") + "-" + rs.getString("city"));
+                    store.setAddress(store.getAddress().replaceAll("0", "").replaceAll("\\s+", " ").replaceAll("null", "").trim());
+                } else {
+                    store.setAddress(rs.getString("apartment_number") + " " + rs.getString("county") + " " + rs.getString("district") + " " + rs.getString("city"));
+                    store.setAddress(store.getAddress().replaceAll("0", "").replaceAll("\\s+", " ").replaceAll("null", "").trim());
+                }
                 store.setRegisterLog(rs.getString("registerLogFormat"));
                 store.setImage_path(imgPath);
                 store.setLatitude(rs.getString("latitude"));
@@ -453,6 +458,15 @@ public class StoreDaoImpl extends BaseDao implements StoreDao {
             pre = conn.prepareStatement(update);
             pre.setInt(1, idLocation);
             pre.setInt(2, store.getId());
+            int check = pre.executeUpdate();
+            if (check > 0) {
+                conn.commit();
+                return true;
+            } else {
+                conn.rollback();
+                conn.setAutoCommit(true);
+            }
+
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         } finally {

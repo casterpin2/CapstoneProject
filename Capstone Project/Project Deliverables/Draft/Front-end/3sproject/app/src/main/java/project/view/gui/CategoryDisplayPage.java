@@ -2,6 +2,7 @@ package project.view.gui;
 
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -58,7 +59,8 @@ public class CategoryDisplayPage extends BasePage {
     private APIService apiService;
     private ProgressBar loadingBar;
     private SearchView searchView;
-    private ImageButton imgBack,imgBarCode;
+    private ImageButton imgBack;
+    private ImageView imgHome;
     private List<Category> searchedProduct = new ArrayList<>();
     private TextView nullMessage;
 
@@ -75,7 +77,6 @@ public class CategoryDisplayPage extends BasePage {
                 return false;
             }
         });
-        imgBarCode.setVisibility(View.INVISIBLE);
         loadingBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorApplication), android.graphics.PorterDuff.Mode.MULTIPLY);
 
         searchView.setQueryHint("Tìm trong danh mục ...");
@@ -118,6 +119,13 @@ public class CategoryDisplayPage extends BasePage {
                 finish();
             }
         });
+        imgHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent toHomePage = new Intent(CategoryDisplayPage.this,HomePage.class);
+                startActivity(toHomePage);
+            }
+        });
         apiService = ApiUtils.getAPIService();
         categoryList = new ArrayList<>();
 
@@ -125,7 +133,7 @@ public class CategoryDisplayPage extends BasePage {
         final Call<List<Category>> callCategory = apiService.getCategory();
         new CategoryDisplayData().execute(callCategory);
        try {
-            Glide.with(this).load(R.drawable.cover).into((ImageView) findViewById(R.id.backdrop));
+            Glide.with(this).load(R.drawable.cover).into((ImageView) findViewById(R.id.cover));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -136,22 +144,11 @@ public class CategoryDisplayPage extends BasePage {
         loadingBar = (ProgressBar) findViewById(R.id.loadingBar);
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         imgBack = findViewById(R.id.backBtn);
-        imgBarCode = findViewById(R.id.imgBarCode);
+        imgHome = findViewById(R.id.imgHome);
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         nullMessage = findViewById(R.id.nullMessage);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                // app icon in action bar clicked; go home
-                finish();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
     private class CategoryDisplayData extends AsyncTask<Call, List<Category>, Void> {
         @Override
         protected void onPreExecute() {
@@ -184,7 +181,6 @@ public class CategoryDisplayPage extends BasePage {
                 }
             },10000);
             adapter = new CategoryCustomCardviewAdapter(CategoryDisplayPage.this, categoryList);
-
             RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(CategoryDisplayPage.this, 2);
             recyclerView.setLayoutManager(mLayoutManager);
             recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, Formater.dpToPx(10,getResources()), true));
@@ -197,9 +193,6 @@ public class CategoryDisplayPage extends BasePage {
             super.onProgressUpdate(values);
             StorageReference storageReference = Firebase.getFirebase();
             categoryList = values[0];
-
-
-
         }
 
         @Override

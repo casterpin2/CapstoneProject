@@ -2,6 +2,7 @@ package project.view.gui;
 
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -57,7 +58,8 @@ public class BrandDisplayPage extends BasePage {
     private APIService apiService;
     private ProgressBar loadingBar;
     private SearchView searchView;
-    private ImageButton imgBack,imgBarCode;
+    private ImageButton imgBack;
+    private ImageView imgHome;
     private List<Brand> searchedProduct = new ArrayList<>();
     private TextView nullMessage;
 
@@ -73,7 +75,6 @@ public class BrandDisplayPage extends BasePage {
                 return false;
             }
         });
-        imgBarCode.setVisibility(View.INVISIBLE);
         apiService = ApiUtils.getAPIService();
         loadingBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorApplication), android.graphics.PorterDuff.Mode.MULTIPLY);
         searchView.setQueryHint("Tìm trong thương hiệu ...");
@@ -116,12 +117,19 @@ public class BrandDisplayPage extends BasePage {
                 finish();
             }
         });
+        imgHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent toHomePage = new Intent(BrandDisplayPage.this,HomePage.class);
+                startActivity(toHomePage);
+            }
+        });
         brandList = new ArrayList<>();
         apiService = APIService.retrofit.create(APIService.class);
         final Call<List<Brand>> callBrand = apiService.getBrands();
         new BrandDisplayData().execute(callBrand);
         try {
-            Glide.with(this).load(R.drawable.cover).into((ImageView) findViewById(R.id.backdrop));
+            Glide.with(this).load(R.drawable.cover).into((ImageView) findViewById(R.id.cover));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -132,21 +140,11 @@ public class BrandDisplayPage extends BasePage {
         loadingBar = (ProgressBar) findViewById(R.id.loadingBar);
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         imgBack = findViewById(R.id.backBtn);
-        imgBarCode = findViewById(R.id.imgBarCode);
+        imgHome = findViewById(R.id.imgHome);
         main_layout = findViewById(R.id.main_layout);
         nullMessage= findViewById(R.id.nullMessage);
     }
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                // app icon in action bar clicked; go home
-                finish();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
+
     private class BrandDisplayData extends AsyncTask<Call, List<Brand>, Void> {
         @Override
         protected void onPreExecute() {

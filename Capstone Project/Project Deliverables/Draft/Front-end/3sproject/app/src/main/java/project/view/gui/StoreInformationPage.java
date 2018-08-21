@@ -1,6 +1,8 @@
 package project.view.gui;
 
+import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -9,6 +11,8 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -43,7 +47,7 @@ public class StoreInformationPage extends AppCompatActivity {
     private APIService mAPI;
     private int storeID;
     ImageView backBtn;
-    TextView ownerName, address, registerDate, phoneText,tvSmile,tvSad;
+    TextView ownerName, address, registerDate, phoneText,tvSmile,tvSad , tvStoreName , viewFeedback;
     private ProgressBar loadingBar;
     private LinearLayout storeInforForm;
     private TextView nullMessage;
@@ -52,6 +56,12 @@ public class StoreInformationPage extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_store_information_page);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            Window w = getWindow(); // in Activity's onCreate() for instance
+            w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        }
+
         findView();
         loadingBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorApplication), android.graphics.PorterDuff.Mode.MULTIPLY);
         mAPI = ApiUtils.getAPIService();
@@ -63,6 +73,15 @@ public class StoreInformationPage extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 finish();
+            }
+        });
+        viewFeedback.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent toFeedbackManagement = new Intent(StoreInformationPage.this, FeedbackManagement.class);
+                toFeedbackManagement.putExtra("storeId",storeID);
+                startActivity(toFeedbackManagement);
+
             }
         });
     }
@@ -78,6 +97,8 @@ public class StoreInformationPage extends AppCompatActivity {
         nullMessage = findViewById(R.id.nullMessage);
         tvSmile = findViewById(R.id.tv_count_smile);
         tvSad = findViewById(R.id.tv_count_sad);
+        tvStoreName = findViewById(R.id.storeName);
+        viewFeedback = findViewById(R.id.tv_feedback_status);
 ;    }
 
     public class StoreInformation extends AsyncTask<Call,Void,Store> {
@@ -94,7 +115,8 @@ public class StoreInformationPage extends AppCompatActivity {
             boolean haveData = false;
             if (store1 != null){
                 store = store1;
-                ownerName.setText(store.getName());
+                tvStoreName.setText(store.getName());
+                ownerName.setText(store.getUser_name());
                 address.setText(store.getAddress());
                 registerDate.setText(store.getRegisterLog());
                 phoneText.setText(store.getPhone());

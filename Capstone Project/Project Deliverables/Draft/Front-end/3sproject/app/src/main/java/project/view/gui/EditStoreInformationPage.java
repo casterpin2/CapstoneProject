@@ -88,6 +88,7 @@ public class EditStoreInformationPage extends BasePage implements OnMapReadyCall
     SharedPreferences pre;
     String storeJson;
     String userJson;
+    String dateLog;
     private ProgressBar loadingBarMap, loadingBarSave;
     private boolean isMyLocation = false;
 
@@ -117,7 +118,13 @@ public class EditStoreInformationPage extends BasePage implements OnMapReadyCall
         getSupportActionBar().setTitle("Thay đổi thông tin cửa hàng");
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorApplication)));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        pre = getSharedPreferences("authentication", Context.MODE_PRIVATE);
+        String storeTemp = pre.getString("store",null);
+        if(storeTemp!=null && !storeTemp.isEmpty()){
+            Store store = new Gson().fromJson(storeTemp, Store.class);
+            dateLog = store.getRegisterLog();
 
+        }
         getIntentFromStoreInformationPage();
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
@@ -266,9 +273,9 @@ public class EditStoreInformationPage extends BasePage implements OnMapReadyCall
     public void onBackPressed() {
         // super.onBackPressed(); commented this line in order to disable back press
         //Write your code here
-        Intent backToUserFragment = new Intent(EditStoreInformationPage.this, StoreFragment.class);
-
-        setResult(RESULT_CODE,backToUserFragment);
+        Intent backToStoreFragment = new Intent(EditStoreInformationPage.this,StoreFragment.class);
+        backToStoreFragment.putExtra("data","NO");
+        setResult(RESULT_CODE,backToStoreFragment);
         finish();
     }
 
@@ -559,23 +566,26 @@ public class EditStoreInformationPage extends BasePage implements OnMapReadyCall
                     }
                 },10000);
                 return;
+            }else{
+                store.setRegisterLog(dateLog);
+                loadingBarSave.setVisibility(View.INVISIBLE);
+                updateInformationStore.setEnabled(true);
+                updateInformationStore.setText("Lưu thay đổi");
+                storeJson = new Gson().toJson(store);
+                userJson = pre.getString("user","");
+                SharedPreferences.Editor editor = pre.edit();
+                editor.putString("user", userJson);
+                editor.putString("store", storeJson);
+                editor.commit();
+                Toast.makeText(EditStoreInformationPage.this, "Thay đổi thông tin cửa hàng thành công", Toast.LENGTH_SHORT).show();
+                Intent backToStoreFragment = new Intent(EditStoreInformationPage.this,StoreFragment.class);
+                backToStoreFragment.putExtra("data","YES");
+                backToStoreFragment.putExtra("userData",userJson);
+                backToStoreFragment.putExtra("storeData",storeJson);
+                setResult(RESULT_CODE,backToStoreFragment);
+                finish();
             }
-            loadingBarSave.setVisibility(View.INVISIBLE);
-            updateInformationStore.setEnabled(true);
-            updateInformationStore.setText("Lưu thay đổi");
-            storeJson = new Gson().toJson(store);
-            userJson = pre.getString("user","");
-            SharedPreferences.Editor editor = pre.edit();
-            editor.putString("user", userJson);
-            editor.putString("store", storeJson);
-            editor.commit();
-            Toast.makeText(EditStoreInformationPage.this, "Thay đổi thông tin cửa hàng thành công", Toast.LENGTH_SHORT).show();
-            Intent backToStoreFragment = new Intent(EditStoreInformationPage.this,StoreFragment.class);
-            backToStoreFragment.putExtra("data","YES");
-            backToStoreFragment.putExtra("userData",userJson);
-            backToStoreFragment.putExtra("storeData",storeJson);
-            setResult(RESULT_CODE,backToStoreFragment);
-            finish();
+
         }
 
         @Override
@@ -590,6 +600,7 @@ public class EditStoreInformationPage extends BasePage implements OnMapReadyCall
                 Response<Store> response = call.execute();
                 if(response.body()!=null){
                     dataStore=  response.body();
+
                 }
                 return dataStore;
             }catch (Exception e){

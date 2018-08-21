@@ -42,7 +42,7 @@ public class FeedbackManagement extends BasePage {
         setContentView(R.layout.content_listview);
         list = new ArrayList<>();
         // Intent storeId
-        storeId = 165;
+        storeId = getIntent().getIntExtra("storeId",-1);
         customView();
         mHandle = new MyHandle();
         feedbackManagementAdapter = new FeedbackManagementAdapter(FeedbackManagement.this, R.layout.item_feedback, list);

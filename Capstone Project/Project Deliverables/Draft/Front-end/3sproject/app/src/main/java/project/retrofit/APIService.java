@@ -157,4 +157,6 @@ public interface APIService {
 
     @GET("getAllFeedback")
     Call<List<UserFeedback>> getAllFeedback(@Query("storeId") int storeId,@Query("page") int page);
+    @POST("updateImg")
+    Call<Boolean> updateImgUser(@Body User us);
 }

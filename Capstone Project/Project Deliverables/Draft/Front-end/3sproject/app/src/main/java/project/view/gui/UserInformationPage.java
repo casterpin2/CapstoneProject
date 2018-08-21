@@ -2,6 +2,7 @@ package project.view.gui;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -15,8 +16,15 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
+import com.google.firebase.storage.StorageReference;
+
 import java.io.IOException;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+import project.firebase.Firebase;
 import project.objects.User;
 import project.retrofit.APIService;
 import project.view.R;
@@ -34,8 +42,11 @@ public class UserInformationPage extends BasePage {
     private APIService apiService;
     private ProgressBar loadingBar;
     private String nameDisplay;
-    private User us = new User();
+    private CircleImageView profileImage;
+    private User us;
     private RelativeLayout userInformation;
+    String userAvatarPath;
+    private StorageReference storageReference = Firebase.getFirebase();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +67,9 @@ public class UserInformationPage extends BasePage {
                if(nameDisplay!=null){
                    backToUserFragment.putExtra("nameDisplay",nameDisplay+"");
                }
+               if(userAvatarPath!=null && !userAvatarPath.isEmpty()){
+                   backToUserFragment.putExtra("path",userAvatarPath);
+               }
 
                setResult(222,backToUserFragment);
                finish();
@@ -71,6 +85,7 @@ public class UserInformationPage extends BasePage {
                 extras.putString("dob", txtDob.getText().toString());
                 extras.putString("gender", txtGender.getText().toString());
                 extras.putInt("idUser",getIntent().getIntExtra("userID",0));
+                extras.putString("path",userAvatarPath);
                 Intent toEditUserInformationPage = new Intent(UserInformationPage.this, EditUserInformationPage.class);
                 toEditUserInformationPage.putExtras(extras);
                 startActivityForResult(toEditUserInformationPage, REQUEST_PROFILE_CODE);
@@ -116,6 +131,7 @@ public class UserInformationPage extends BasePage {
         loadingBar = findViewById(R.id.loadingBar);
         userInformation = findViewById(R.id.userInformation);
         nullMessage = findViewById(R.id.nullMessage);
+        profileImage = findViewById(R.id.profile_image);
     }
 
 
@@ -123,41 +139,37 @@ public class UserInformationPage extends BasePage {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_PROFILE_CODE && resultCode == 200) {
-            Bundle extras = data.getExtras();
-
-            String name = extras.getString("name");
-            String phone = extras.getString("phone");
-            String email = extras.getString("email");
-            String gender = extras.getString("gender");
-            String dob = extras.getString("dob");
-            txtName.setText(name);
-            txtPhone.setText(phone);
-            txtEmail.setText(email);
-            txtDob.setText(dob);
-            txtGender.setText(gender);
-            nameDisplay = txtName.getText().toString();
-         //   savingPreferences(name, phone, email, gender, dob);
-            Toast.makeText(UserInformationPage.this, "Thay đổi thông tin thành công!", Toast.LENGTH_SHORT).show();
+            Call<User> call = apiService.getInformation(getIntent().getIntExtra("userID",0));
+            new UserDataClass().execute(call);
+            Toast.makeText(UserInformationPage.this, "Thay đổi thông tin thành công!", Toast.LENGTH_LONG).show();
         }
         else if (requestCode == REQUEST_PROFILE_CODE && resultCode == 201) {
-            Toast.makeText(UserInformationPage.this, "Thông tin không thay đổi", Toast.LENGTH_SHORT).show();
+            Toast.makeText(UserInformationPage.this, "Thông tin không thay đổi", Toast.LENGTH_LONG).show();
+        }
+        if (requestCode == REQUEST_PROFILE_CODE && resultCode == 202) {
+            Toast.makeText(UserInformationPage.this, "Thay đổi thông tin thành công", Toast.LENGTH_LONG).show();
+            userAvatarPath = data.getStringExtra("path");
+            if (!userAvatarPath.isEmpty() && userAvatarPath!=null) {
+                if (userAvatarPath.contains("graph") || userAvatarPath.contains("google")) {
+                    Glide.with(UserInformationPage.this /* context */)
+                            .load(userAvatarPath)
+                            .diskCacheStrategy(DiskCacheStrategy.NONE)
+                            .skipMemoryCache(true)
+                            .into(profileImage);
+                } else {
+                    Glide.with(UserInformationPage.this /* context */)
+                            .using(new FirebaseImageLoader())
+                            .load(storageReference.child(userAvatarPath))
+                            .diskCacheStrategy(DiskCacheStrategy.NONE)
+                            .skipMemoryCache(true)
+                            .into(profileImage);
+
+                }
+            }
         }
     }
 
-//    public void savingPreferences(String name, String phone, String email, String gender, String dob){
-//        //tạo đối tượng getSharedPreferences
-//        SharedPreferences pre=getSharedPreferences("main", MODE_PRIVATE);
-//        //tạo đối tượng Editor để lưu thay đổi
-//        SharedPreferences.Editor editor=pre.edit();
-//        //lưu vào editor
-//        editor.putString("name", name);
-//        editor.putString("phone", phone);
-//        editor.putString("email", email);
-//        editor.putString("gender", gender);
-//        editor.putString("dob", dob);
-//        //chấp nhận lưu xuống file
-//        editor.commit();
-//    }
+
 
     public void restoringPreferences(){
         SharedPreferences pre=getSharedPreferences
@@ -177,6 +189,20 @@ public class UserInformationPage extends BasePage {
         txtGender.setText(gender);
         txtDob.setText(dob);
 
+    }
+    public Bitmap getResizedBitmap(Bitmap image, int maxSize) {
+        int width = image.getWidth();
+        int height = image.getHeight();
+
+        float bitmapRatio = (float)width / (float) height;
+        if (bitmapRatio > 1) {
+            width = maxSize;
+            height = (int) (width / bitmapRatio);
+        } else {
+            height = maxSize;
+            width = (int) (height * bitmapRatio);
+        }
+        return Bitmap.createScaledBitmap(image, width, height, true);
     }
      public class UserDataClass extends AsyncTask<Call,User,Void> {
         @Override
@@ -215,13 +241,34 @@ public class UserInformationPage extends BasePage {
         @Override
         protected void onProgressUpdate(User... values) {
             super.onProgressUpdate(values);
-            us = values[0];
-            txtName.setText(us.getLast_name());
-            txtPhone.setText(us.getPhone());
-            txtEmail.setText(us.getEmail());
-            txtGender.setText(us.getGender());
-            txtDob.setText(us.getDateOfBirth());
-            nameDisplay = txtName.getText().toString();
+            if(values[0]!=null){
+                us = values[0];
+                txtName.setText(us.getLast_name());
+                txtPhone.setText(us.getPhone());
+                txtEmail.setText(us.getEmail());
+                txtGender.setText(us.getGender());
+                txtDob.setText(us.getDateOfBirth());
+                nameDisplay = txtName.getText().toString();
+                userAvatarPath = us.getImage_path();
+                if (!userAvatarPath.isEmpty()) {
+                    if (userAvatarPath.contains("graph") || userAvatarPath.contains("google")) {
+                        Glide.with(UserInformationPage.this /* context */)
+                                .load(userAvatarPath)
+                                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                .skipMemoryCache(true)
+                                .into(profileImage);
+                    } else {
+                        Glide.with(UserInformationPage.this /* context */)
+                                .using(new FirebaseImageLoader())
+                                .load(storageReference.child(userAvatarPath))
+                                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                .skipMemoryCache(true)
+                                .into(profileImage);
+
+                    }
+                }
+            }
+
         }
 
         @Override

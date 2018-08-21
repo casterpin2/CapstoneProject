@@ -1,5 +1,6 @@
 package project.view.gui;
 
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -59,7 +60,6 @@ import retrofit2.Response;
 
 public class SaleProductDisplayPage extends BasePage {
 
-    private ImageView imgBarCode;
     private int storeID;
     private String storeName;
     private String phone;
@@ -67,7 +67,7 @@ public class SaleProductDisplayPage extends BasePage {
     private Store store;
     private APIService apiService;
     private RecyclerView recycler_view;
-    private ImageView backBtn, backdrop, imgAddCard;
+    private ImageView backBtn, backdrop, imgAddCard,imgHome;
     private TextView tvStoreName, nullMessage;
     private Spinner spinnerCategory,spinnerSort;
     private StorageReference storageReference = Firebase.getFirebase();
@@ -93,23 +93,29 @@ public class SaleProductDisplayPage extends BasePage {
                 finish();
             }
         });
-
+        imgHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent toHomePage = new Intent(SaleProductDisplayPage.this,HomePage.class);
+                startActivity(toHomePage);
+            }
+        });
         apiService = APIService.retrofit.create(APIService.class);
         final Call<List<Product>> callSale = apiService.getSaleProduct();
         new SaleProductDisplayPage.SaleProductDisplayData().execute(callSale);
     }
 
     private void findView(){
-        imgBarCode = findViewById(R.id.imgBarCode);
         recycler_view = findViewById(R.id.recycler_view);
         backBtn = findViewById(R.id.backBtn);
         tvStoreName = findViewById(R.id.tv_store_name);
         spinnerCategory = findViewById(R.id.spinnerCategory);
         spinnerSort = findViewById(R.id.spinnerSort);
-        backdrop = findViewById(R.id.backdrop);
+        backdrop = findViewById(R.id.cover);
         main_layout = findViewById(R.id.main_layout);
         searchView = findViewById(R.id.searchViewQuery);
         loadingBar = findViewById(R.id.loadingBar);
+        imgHome = findViewById(R.id.imgHome);
         nullMessage = findViewById(R.id.nullMessage);
     }
     private void customView(){
@@ -121,7 +127,6 @@ public class SaleProductDisplayPage extends BasePage {
             }
         });
         searchView.setQueryHint("Tìm sản phẩm giảm giá");
-        imgBarCode.setVisibility(View.INVISIBLE);
     }
 
     public class SaleProductDisplayData extends AsyncTask<Call,List<Product>,Void>{
@@ -134,17 +139,6 @@ public class SaleProductDisplayPage extends BasePage {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            if (aVoid == null){
-                new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(SaleProductDisplayPage.this, "Có lỗi khi định vị vị trí của bạn", Toast.LENGTH_SHORT).show();
-                        nullMessage.setText("Có lỗi xảy ra, vui lòng tải lại trang!");
-                        loadingBar.setVisibility(View.INVISIBLE);
-
-                    }
-                },10000);
-            }
         }
 
         @Override
@@ -159,6 +153,18 @@ public class SaleProductDisplayPage extends BasePage {
                 for (Product product : products){
                     tempProductInStore.add(product);
                 }
+                loadingBar.setVisibility(View.INVISIBLE);
+            } else {
+                new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(SaleProductDisplayPage.this, "Có lỗi xảy ra, vui lòng thử lại", Toast.LENGTH_SHORT).show();
+                        nullMessage.setText("Có lỗi xảy ra, vui lòng tải lại trang!");
+                        loadingBar.setVisibility(View.INVISIBLE);
+
+                    }
+                },10000);
+                return;
             }
             saleProductCustomCardviewAdapter = new SaleProductCustomCardviewAdapter(SaleProductDisplayPage.this, tempProductInStore);
             RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(SaleProductDisplayPage.this, 2);
@@ -205,7 +211,6 @@ public class SaleProductDisplayPage extends BasePage {
 
                 }
             });
-
         }
 
         @Override

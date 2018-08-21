@@ -104,7 +104,7 @@ public class OrderPage extends BasePage implements OnMapReadyCallback{
     private long salesPrice;
     private double promotion;
     private Product product;
-    private ProgressBar loadingBar;
+    private ProgressBar loadingBarMap, loadingBarOrder;
     private boolean checkLocation = false;
     //Calendar
     private int mYear, mMonth, mDay, mHour, mMinute;
@@ -138,6 +138,7 @@ public class OrderPage extends BasePage implements OnMapReadyCallback{
         price = (long)getIntent().getDoubleExtra("price",0);
         promotion = getIntent().getDoubleExtra("promotion",0.0);
         mapping();
+        loadingBarMap.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorApplication), android.graphics.PorterDuff.Mode.MULTIPLY);
         if (isCart) {
             String priceInCart = getIntent().getStringExtra("priceInCart");
             productDetailLayout.setVisibility(View.GONE);
@@ -416,7 +417,8 @@ public class OrderPage extends BasePage implements OnMapReadyCallback{
         orderDate = (EditText) findViewById(R.id.orderDate);
         orderTime = (EditText) findViewById(R.id.orderTime);
         productDetailLayout = (RelativeLayout) findViewById(R.id.productDetailOrderPageLayout);
-        loadingBar = findViewById(R.id.loadingBar);
+        loadingBarMap = findViewById(R.id.loadingBarMap);
+        loadingBarOrder = findViewById(R.id.loadingBarOrder);
     }
 
 
@@ -551,7 +553,7 @@ public class OrderPage extends BasePage implements OnMapReadyCallback{
 
             super.onPreExecute();
             orderBtn.setEnabled(false);
-            loadingBar.setVisibility(View.VISIBLE);
+            loadingBarMap.setVisibility(View.VISIBLE);
 
         }
 
@@ -579,7 +581,7 @@ public class OrderPage extends BasePage implements OnMapReadyCallback{
 
             if(checkLocation){
                 orderBtn.setEnabled(true);
-                loadingBar.setVisibility(View.INVISIBLE);
+                loadingBarMap.setVisibility(View.INVISIBLE);
             }
             new Handler().postDelayed(new Runnable() {
                 @Override
@@ -587,7 +589,7 @@ public class OrderPage extends BasePage implements OnMapReadyCallback{
                     if (!checkLocation) {
                         orderBtn.setEnabled(true);
                         Toast.makeText(OrderPage.this, "Có lỗi khi định vị vị trí của bạn", Toast.LENGTH_SHORT).show();
-                        loadingBar.setVisibility(View.INVISIBLE);
+                        loadingBarMap.setVisibility(View.INVISIBLE);
                     }
                 }
             },10000);
