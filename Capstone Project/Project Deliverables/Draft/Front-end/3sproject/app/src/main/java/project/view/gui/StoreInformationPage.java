@@ -43,7 +43,7 @@ public class StoreInformationPage extends AppCompatActivity {
     private APIService mAPI;
     private int storeID;
     ImageView backBtn;
-    TextView ownerName, address, registerDate, phoneText;
+    TextView ownerName, address, registerDate, phoneText,tvSmile,tvSad;
     private ProgressBar loadingBar;
     private LinearLayout storeInforForm;
     private TextView nullMessage;
@@ -76,6 +76,8 @@ public class StoreInformationPage extends AppCompatActivity {
         loadingBar = findViewById(R.id.loadingBar);
         storeInforForm = findViewById(R.id.storeInforForm);
         nullMessage = findViewById(R.id.nullMessage);
+        tvSmile = findViewById(R.id.tv_count_smile);
+        tvSad = findViewById(R.id.tv_count_sad);
 ;    }
 
     public class StoreInformation extends AsyncTask<Call,Void,Store> {
@@ -96,6 +98,8 @@ public class StoreInformationPage extends AppCompatActivity {
                 address.setText(store.getAddress());
                 registerDate.setText(store.getRegisterLog());
                 phoneText.setText(store.getPhone());
+                tvSmile.setText(String.valueOf(store.getSmile()));
+                tvSad.setText(String.valueOf(store.getSad()));
                 haveData = true;
             } else {
 //                Toast.makeText(getBaseContext(),"Có lỗi xảy ra",Toast.LENGTH_LONG).show();
