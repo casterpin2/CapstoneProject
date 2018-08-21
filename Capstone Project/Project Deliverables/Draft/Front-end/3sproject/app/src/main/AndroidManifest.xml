@@ -93,7 +93,7 @@
         <activity android:name=".gui.EditProductInStorePage" />
         <activity
             android:name=".gui.HomePage"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar.TransparentTheme">
         </activity>
 
         <activity
@@ -152,11 +152,6 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <activity android:name=".gui.Test"
-            android:theme="@style/AppTheme.NoActionBar.TransparentTheme"
-            >
-
         </activity>
         <activity android:name=".gui.Main3Activity" />
         <activity
