@@ -57,7 +57,7 @@ public class BrandDisplayPage extends BasePage {
     private APIService apiService;
     private ProgressBar loadingBar;
     private SearchView searchView;
-    private ImageButton imgBack,imgBarCode;
+    private ImageButton imgBack;
     private List<Brand> searchedProduct = new ArrayList<>();
     private TextView nullMessage;
 
@@ -73,7 +73,6 @@ public class BrandDisplayPage extends BasePage {
                 return false;
             }
         });
-        imgBarCode.setVisibility(View.INVISIBLE);
         apiService = ApiUtils.getAPIService();
         loadingBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorApplication), android.graphics.PorterDuff.Mode.MULTIPLY);
         searchView.setQueryHint("Tìm trong thương hiệu ...");
@@ -132,7 +131,6 @@ public class BrandDisplayPage extends BasePage {
         loadingBar = (ProgressBar) findViewById(R.id.loadingBar);
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         imgBack = findViewById(R.id.backBtn);
-        imgBarCode = findViewById(R.id.imgBarCode);
         main_layout = findViewById(R.id.main_layout);
         nullMessage= findViewById(R.id.nullMessage);
     }

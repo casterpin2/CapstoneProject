@@ -60,10 +60,10 @@ public class TypeCategoryPage extends BasePage {
     ;
     private int categoryId;
     private APIService mAPI;
-    private TextView tv_brand_title;
+    private TextView tv_type_title;
     private android.widget.ProgressBar loadingBar;
     private SearchView searchView;
-    private ImageButton imgBack, imgBarCode;
+    private ImageButton imgBack;
     private List<Type> searchedProduct = new ArrayList<>();
     private CoordinatorLayout main_layout;
     private Button btnViewAll;
@@ -81,9 +81,8 @@ public class TypeCategoryPage extends BasePage {
                 return false;
             }
         });
-        imgBarCode.setVisibility(View.INVISIBLE);
         String categoryName = getIntent().getStringExtra("categoryName");
-        tv_brand_title.setText(categoryName);
+        tv_type_title.setText(categoryName);
         searchView.setQueryHint("Tìm trong " + categoryName);
         setCoverImg();
         mAPI = ApiUtils.getAPIService();
@@ -116,8 +115,7 @@ public class TypeCategoryPage extends BasePage {
         loadingBar = (android.widget.ProgressBar) findViewById(R.id.loadingBar);
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         imgBack = findViewById(R.id.backBtn);
-        imgBarCode = findViewById(R.id.imgBarCode);
-        tv_brand_title = (TextView) findViewById(R.id.tv_brand_title);
+        tv_type_title = (TextView) findViewById(R.id.tv_type_title);
         nullMessage = findViewById(R.id.nullMessage);
         btnViewAll = (Button) findViewById(R.id.btnAll);
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);

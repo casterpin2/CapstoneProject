@@ -58,7 +58,7 @@ public class CategoryDisplayPage extends BasePage {
     private APIService apiService;
     private ProgressBar loadingBar;
     private SearchView searchView;
-    private ImageButton imgBack,imgBarCode;
+    private ImageButton imgBack;
     private List<Category> searchedProduct = new ArrayList<>();
     private TextView nullMessage;
 
@@ -75,7 +75,6 @@ public class CategoryDisplayPage extends BasePage {
                 return false;
             }
         });
-        imgBarCode.setVisibility(View.INVISIBLE);
         loadingBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorApplication), android.graphics.PorterDuff.Mode.MULTIPLY);
 
         searchView.setQueryHint("Tìm trong danh mục ...");
@@ -136,7 +135,6 @@ public class CategoryDisplayPage extends BasePage {
         loadingBar = (ProgressBar) findViewById(R.id.loadingBar);
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         imgBack = findViewById(R.id.backBtn);
-        imgBarCode = findViewById(R.id.imgBarCode);
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         nullMessage = findViewById(R.id.nullMessage);
     }

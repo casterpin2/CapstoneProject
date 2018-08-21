@@ -1,5 +1,6 @@
 package project.view.gui;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -43,7 +44,7 @@ public class StoreInformationPage extends AppCompatActivity {
     private APIService mAPI;
     private int storeID;
     ImageView backBtn;
-    TextView ownerName, address, registerDate, phoneText;
+    TextView tvStoreName, ownerName, address, registerDate, phoneText,viewFeedback;
     private ProgressBar loadingBar;
     private LinearLayout storeInforForm;
     private TextView nullMessage;
@@ -65,6 +66,15 @@ public class StoreInformationPage extends AppCompatActivity {
                 finish();
             }
         });
+        viewFeedback.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent toFeedbackManagement = new Intent(StoreInformationPage.this, FeedbackManagement.class);
+                toFeedbackManagement.putExtra("storeId",storeID);
+                startActivity(toFeedbackManagement);
+
+            }
+        });
     }
 
     private void findView(){
@@ -76,6 +86,8 @@ public class StoreInformationPage extends AppCompatActivity {
         loadingBar = findViewById(R.id.loadingBar);
         storeInforForm = findViewById(R.id.storeInforForm);
         nullMessage = findViewById(R.id.nullMessage);
+        tvStoreName = findViewById(R.id.storeName);
+        viewFeedback = findViewById(R.id.tv_feedback_status);
 ;    }
 
     public class StoreInformation extends AsyncTask<Call,Void,Store> {
@@ -92,7 +104,8 @@ public class StoreInformationPage extends AppCompatActivity {
             boolean haveData = false;
             if (store1 != null){
                 store = store1;
-                ownerName.setText(store.getName());
+                tvStoreName.setText(store.getName());
+                ownerName.setText(store.getUser_name());
                 address.setText(store.getAddress());
                 registerDate.setText(store.getRegisterLog());
                 phoneText.setText(store.getPhone());

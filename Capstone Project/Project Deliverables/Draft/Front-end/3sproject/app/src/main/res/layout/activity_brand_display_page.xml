@@ -10,8 +10,7 @@
         android:id="@+id/appbar"
         android:layout_width="match_parent"
         android:layout_height="256dp"
-        android:fitsSystemWindows="true"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:fitsSystemWindows="true">
 
         <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/collapsing"
@@ -43,7 +42,10 @@
 
                 <TextView
                     android:id="@+id/tv_brand_title"
-                    android:layout_width="wrap_content"
+                    android:gravity="center"
+                    android:background="#90000000"
+                    android:padding="8dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/brand_display_title"
                     android:textColor="@android:color/white"
@@ -55,7 +57,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:layout_collapseMode="pin"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Dark">
 
                 <ImageButton
                     android:id="@+id/backBtn"
@@ -70,7 +72,7 @@
                     android:scaleType="fitXY"
                     android:src="@drawable/btn_back" />
 
-                <include layout="@layout/search_view_custom" />
+                <include layout="@layout/search_custom" />
             </android.support.v7.widget.Toolbar>
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>

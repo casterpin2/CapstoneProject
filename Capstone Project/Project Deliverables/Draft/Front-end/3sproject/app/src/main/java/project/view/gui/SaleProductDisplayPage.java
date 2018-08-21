@@ -59,7 +59,6 @@ import retrofit2.Response;
 
 public class SaleProductDisplayPage extends BasePage {
 
-    private ImageView imgBarCode;
     private int storeID;
     private String storeName;
     private String phone;
@@ -100,7 +99,6 @@ public class SaleProductDisplayPage extends BasePage {
     }
 
     private void findView(){
-        imgBarCode = findViewById(R.id.imgBarCode);
         recycler_view = findViewById(R.id.recycler_view);
         backBtn = findViewById(R.id.backBtn);
         tvStoreName = findViewById(R.id.tv_store_name);
@@ -121,7 +119,6 @@ public class SaleProductDisplayPage extends BasePage {
             }
         });
         searchView.setQueryHint("Tìm sản phẩm giảm giá");
-        imgBarCode.setVisibility(View.INVISIBLE);
     }
 
     public class SaleProductDisplayData extends AsyncTask<Call,List<Product>,Void>{

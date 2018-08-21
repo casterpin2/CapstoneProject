@@ -11,8 +11,7 @@
         android:id="@+id/main.appbar"
         android:layout_width="match_parent"
         android:layout_height="256dp"
-        android:fitsSystemWindows="true"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:fitsSystemWindows="true">
 
         <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/main.collapsing"
@@ -43,9 +42,12 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/tv_brand_title"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/tv_type_title"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:padding="8dp"
+                    android:background="#90000000"
                     android:text="@string/type_title"
                     android:textColor="@android:color/white"
                     android:textSize="@dimen/backdrop_title" />
@@ -71,7 +73,7 @@
                     android:scaleType="fitXY"
                     android:src="@drawable/btn_back" />
 
-                <include layout="@layout/search_view_custom" />
+                <include layout="@layout/search_custom" />
             </android.support.v7.widget.Toolbar>
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
