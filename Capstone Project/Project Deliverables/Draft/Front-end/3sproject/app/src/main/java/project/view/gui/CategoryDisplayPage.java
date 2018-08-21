@@ -124,7 +124,7 @@ public class CategoryDisplayPage extends BasePage {
         final Call<List<Category>> callCategory = apiService.getCategory();
         new CategoryDisplayData().execute(callCategory);
        try {
-            Glide.with(this).load(R.drawable.cover).into((ImageView) findViewById(R.id.backdrop));
+            Glide.with(this).load(R.drawable.cover).into((ImageView) findViewById(R.id.cover));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -139,17 +139,6 @@ public class CategoryDisplayPage extends BasePage {
         nullMessage = findViewById(R.id.nullMessage);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                // app icon in action bar clicked; go home
-                finish();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
     private class CategoryDisplayData extends AsyncTask<Call, List<Category>, Void> {
         @Override
         protected void onPreExecute() {
@@ -182,7 +171,6 @@ public class CategoryDisplayPage extends BasePage {
                 }
             },10000);
             adapter = new CategoryCustomCardviewAdapter(CategoryDisplayPage.this, categoryList);
-
             RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(CategoryDisplayPage.this, 2);
             recyclerView.setLayoutManager(mLayoutManager);
             recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, Formater.dpToPx(10,getResources()), true));
@@ -195,9 +183,6 @@ public class CategoryDisplayPage extends BasePage {
             super.onProgressUpdate(values);
             StorageReference storageReference = Firebase.getFirebase();
             categoryList = values[0];
-
-
-
         }
 
         @Override

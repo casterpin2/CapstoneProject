@@ -120,7 +120,7 @@ public class BrandDisplayPage extends BasePage {
         final Call<List<Brand>> callBrand = apiService.getBrands();
         new BrandDisplayData().execute(callBrand);
         try {
-            Glide.with(this).load(R.drawable.cover).into((ImageView) findViewById(R.id.backdrop));
+            Glide.with(this).load(R.drawable.cover).into((ImageView) findViewById(R.id.cover));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -134,17 +134,7 @@ public class BrandDisplayPage extends BasePage {
         main_layout = findViewById(R.id.main_layout);
         nullMessage= findViewById(R.id.nullMessage);
     }
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                // app icon in action bar clicked; go home
-                finish();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
+
     private class BrandDisplayData extends AsyncTask<Call, List<Brand>, Void> {
         @Override
         protected void onPreExecute() {

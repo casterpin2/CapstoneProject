@@ -104,7 +104,7 @@ public class TypeCategoryPage extends BasePage {
 
     private void setCoverImg() {
         try {
-            Glide.with(this).load(R.drawable.cover).into((ImageView) findViewById(R.id.backdrop));
+            Glide.with(this).load(R.drawable.cover).into((ImageView) findViewById(R.id.cover));
         } catch (Exception e) {
             e.printStackTrace();
         }

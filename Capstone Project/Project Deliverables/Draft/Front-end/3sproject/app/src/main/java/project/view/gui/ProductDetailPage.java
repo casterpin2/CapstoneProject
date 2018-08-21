@@ -136,6 +136,14 @@ public class ProductDetailPage extends BasePage {
                 storeName = getIntent().getStringExtra("storeName");
                 storeNameLayout.setVisibility(View.VISIBLE);
                 storeNameTV.setText(storeName);
+                storeNameTV.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent toProductInStoreByUser = new Intent(ProductDetailPage.this,ProductInStoreByUserDisplayPage.class);
+                        toProductInStoreByUser.putExtra("storeID",storeID);
+                        startActivity(toProductInStoreByUser);
+                    }
+                });
             }
             productPriceText.setText(Formater.formatDoubleToMoney(String.valueOf(product.getPrice())));
             productPriceText.setPaintFlags(productPriceText.getPaintFlags()| Paint.STRIKE_THRU_TEXT_FLAG);

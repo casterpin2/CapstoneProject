@@ -8,7 +8,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.CALL_PHONE"/>
+    <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
@@ -20,9 +20,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <meta-data android:name="firebase_messaging_auto_init_enabled"
+        <meta-data
+            android:name="firebase_messaging_auto_init_enabled"
             android:value="false" />
-        <meta-data android:name="firebase_analytics_collection_enabled"
+        <meta-data
+            android:name="firebase_analytics_collection_enabled"
             android:value="false" />
 
         <meta-data
@@ -36,7 +38,7 @@
 
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
-            android:value="exampleServiceChannel"/>
+            android:value="exampleServiceChannel" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -84,8 +86,7 @@
         <activity
             android:name=".gui.ChangePasswordPage"
             android:windowSoftInputMode="adjustResize" />
-        <activity
-            android:name=".gui.ProductCategoryDisplayPage">
+        <activity android:name=".gui.ProductCategoryDisplayPage">
 
         </activity>
 
@@ -93,12 +94,11 @@
         <activity android:name=".gui.EditProductInStorePage" />
         <activity
             android:name=".gui.HomePage"
-            android:theme="@style/AppTheme.NoActionBar.TransparentTheme">
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
 
         <activity
             android:name=".gui.StoreInformationPage"
-            android:theme="@style/AppTheme.NoActionBar" >
+            android:theme="@style/AppTheme.NoActionBar">
 
         </activity>
         <activity android:name=".gui.RegisterStorePage" />
@@ -107,16 +107,16 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".gui.EditUserInformationPage"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustResize"/>
         <activity
             android:name=".gui.StoreManagementOrderPage"
             android:theme="@style/AppTheme.NoActionBar">
 
         </activity>
+        <activity android:name=".gui.UserManagementOrderPage"></activity>
         <activity
-            android:name=".gui.UserManagementOrderPage">
-        </activity>
-        <activity android:name=".gui.OrderDetailMapPage"
+            android:name=".gui.OrderDetailMapPage"
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity android:name=".gui.OrderDetailPage">
 
@@ -161,20 +161,22 @@
             android:name=".gui.OTPCodePage"
             android:windowSoftInputMode="adjustResize"></activity>
         <activity
-                android:name=".gui.CartPage"
-                android:windowSoftInputMode="adjustResize">
-        </activity>
-        <activity android:name=".gui.UserFeedbackPage"
-            android:windowSoftInputMode="adjustResize"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:name=".gui.CartPage"
+            android:windowSoftInputMode="adjustResize"></activity>
+        <activity
+            android:name=".gui.UserFeedbackPage"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustResize">
 
         </activity>
-        <activity android:name=".gui.ProductInStoreByUserDisplayPage"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".gui.ProductInStoreByUserDisplayPage"
+            android:theme="@style/AppTheme.NoActionBar.TransparentTheme"></activity>
         <activity android:name=".gui.FeedbackManagement">
 
         </activity>
-        <receiver android:name=".gui.UserManagementOrderPage$InternalNetworkChangeReceiver" >
+
+        <receiver android:name=".gui.UserManagementOrderPage$InternalNetworkChangeReceiver">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
                 <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />

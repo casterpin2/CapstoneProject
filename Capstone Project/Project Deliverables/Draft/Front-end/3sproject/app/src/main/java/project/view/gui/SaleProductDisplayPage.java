@@ -104,7 +104,7 @@ public class SaleProductDisplayPage extends BasePage {
         tvStoreName = findViewById(R.id.tv_store_name);
         spinnerCategory = findViewById(R.id.spinnerCategory);
         spinnerSort = findViewById(R.id.spinnerSort);
-        backdrop = findViewById(R.id.backdrop);
+        backdrop = findViewById(R.id.cover);
         main_layout = findViewById(R.id.main_layout);
         searchView = findViewById(R.id.searchViewQuery);
         loadingBar = findViewById(R.id.loadingBar);

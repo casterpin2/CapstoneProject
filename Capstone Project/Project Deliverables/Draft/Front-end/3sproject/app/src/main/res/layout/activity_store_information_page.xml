@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <RelativeLayout
+        android:fitsSystemWindows="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <RelativeLayout
@@ -38,9 +39,10 @@
 
             <ImageButton
                 android:id="@+id/backBtn"
-                android:layout_margin="8dp"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
+                android:layout_marginTop="32dp"
+                android:layout_marginLeft="8dp"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
                 android:adjustViewBounds="true"
