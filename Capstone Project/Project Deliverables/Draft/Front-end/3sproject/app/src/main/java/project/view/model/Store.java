@@ -73,6 +73,30 @@ public class Store implements Serializable{
     @Expose
     private String user_name;
 
+    @SerializedName("smile")
+    @Expose
+    private int smile;
+
+    @SerializedName("sad")
+    @Expose
+    private int sad;
+
+    public int getSmile() {
+        return smile;
+    }
+
+    public void setSmile(int smile) {
+        this.smile = smile;
+    }
+
+    public int getSad() {
+        return sad;
+    }
+
+    public void setSad(int sad) {
+        this.sad = sad;
+    }
+
     public String getUser_name() {
         return user_name;
     }

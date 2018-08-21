@@ -41,7 +41,24 @@ public class StoreEntites implements Serializable {
     private String longtitude;
     private String latitude;
     private String registerLog;
+    private int smile;
 
+    public int getSmile() {
+        return smile;
+    }
+
+    public void setSmile(int smile) {
+        this.smile = smile;
+    }
+
+    public int getSad() {
+        return sad;
+    }
+
+    public void setSad(int sad) {
+        this.sad = sad;
+    }
+    private int sad;
     public String getRegisterLog() {
         return registerLog;
     }

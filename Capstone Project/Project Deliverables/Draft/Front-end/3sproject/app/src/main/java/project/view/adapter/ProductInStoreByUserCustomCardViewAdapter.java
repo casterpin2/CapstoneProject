@@ -32,6 +32,7 @@ import java.util.List;
 import project.firebase.Firebase;
 import project.objects.User;
 import project.view.gui.CartPage;
+import project.view.gui.LoginPage;
 import project.view.gui.OTPCodePage;
 import project.view.gui.ProductDetailPage;
 import project.view.model.CartDetail;
@@ -139,27 +140,7 @@ public class ProductInStoreByUserCustomCardViewAdapter extends RecyclerView.Adap
         holder.imgAddCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-                builder.setTitle("Thêm sản phẩm vào giỏ hàng");
-                builder.setMessage("Sản phẩm đã đưuọc thêm vào giỏ hàng");
                 addProductToCart(product);
-                builder.setPositiveButton("Đi đến giỏ hàng", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                    Intent toCartPage = new Intent(mContext, CartPage.class);
-                    toCartPage.putExtra("userID",user.getId());
-                    mContext.startActivity(toCartPage);
-                        return;
-                    }
-                });
-
-                builder.setNegativeButton("Tiếp tục mua sắm", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        return;
-                    }
-                });
-                builder.show();
             }
         });
     }
@@ -178,7 +159,26 @@ public class ProductInStoreByUserCustomCardViewAdapter extends RecyclerView.Adap
 
     private void addProductToCart(final Product product){
         if (user == null) {
-            Toast.makeText(mContext, "Bạn chưa đăng nhập", Toast.LENGTH_SHORT).show();
+            AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+            builder.setTitle("Bạn chưa đăng nhập");
+            builder.setMessage("Bạn phải đăng nhập mới sử dụng được giỏ hàng");
+
+            builder.setPositiveButton("Đăng nhập", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Intent toLoginPage = new Intent(mContext, LoginPage.class);
+                    mContext.startActivity(toLoginPage);
+                    return;
+                }
+            });
+
+            builder.setNegativeButton("Đóng", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    return;
+                }
+            });
+            builder.show();
             return;
         }
         if (store == null){
@@ -206,7 +206,7 @@ public class ProductInStoreByUserCustomCardViewAdapter extends RecyclerView.Adap
                     }
                     CartDetail cartDetail  = new CartDetail(product.getProduct_id(),product.getProduct_name(),1,price,product.getImage_path());
                     myRef.child("cartDetail").child(String.valueOf(product.getProduct_id())).setValue(cartDetail);
-                    Toast.makeText(mContext, "Thêm sản phẩm vào giỏ hàng thành công", Toast.LENGTH_SHORT).show();
+                    showDialog();
                 } else {
                     myRef.child("cartDetail").child(String.valueOf(product.getProduct_id())).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -218,7 +218,7 @@ public class ProductInStoreByUserCustomCardViewAdapter extends RecyclerView.Adap
                                 }
                                 CartDetail cartDetail  = new CartDetail(product.getProduct_id(),product.getProduct_name(),1,price,product.getImage_path());
                                 myRef.child("cartDetail").child(String.valueOf(product.getProduct_id())).setValue(cartDetail);
-                                Toast.makeText(mContext, "Thêm sản phẩm vào giỏ hàng thành công", Toast.LENGTH_SHORT).show();
+                                showDialog();
                             } else {
                                 double price =  product.getPrice();
                                 if(product.getPromotion()!=0){
@@ -228,7 +228,7 @@ public class ProductInStoreByUserCustomCardViewAdapter extends RecyclerView.Adap
                                     myRef.child("cartDetail").child(String.valueOf(product.getProduct_id())).child("unitPrice").setValue(price);
                                 }
                                 myRef.child("cartDetail").child(String.valueOf(product.getProduct_id())).child("quantity").setValue((long)dataSnapshot.child("quantity").getValue()+1);
-                                Toast.makeText(mContext, "Thêm sản phẩm vào giỏ hàng thành công", Toast.LENGTH_SHORT).show();
+                                showDialog();
                             }
                         }
 
@@ -245,5 +245,29 @@ public class ProductInStoreByUserCustomCardViewAdapter extends RecyclerView.Adap
 
             }
         });
+    }
+
+    private void showDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        builder.setTitle("Thêm sản phẩm vào giỏ hàng");
+        builder.setMessage("Sản phẩm đã được thêm vào giỏ hàng");
+
+        builder.setPositiveButton("Đi đến giỏ hàng", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent toCartPage = new Intent(mContext, CartPage.class);
+                toCartPage.putExtra("userID",user.getId());
+                mContext.startActivity(toCartPage);
+                return;
+            }
+        });
+
+        builder.setNegativeButton("Tiếp tục mua sắm", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                return;
+            }
+        });
+        builder.show();
     }
 }
