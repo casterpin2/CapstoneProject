@@ -1,9 +1,16 @@
 package project.view.fragment.home;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +33,7 @@ import project.firebase.Firebase;
 import project.objects.User;
 import project.view.gui.FeedbackManagement;
 import project.view.gui.LoginPage;
+import project.view.gui.MainActivity;
 import project.view.gui.ProductInStoreDisplayPage;
 import project.view.R;
 import project.view.gui.RegisterStorePage;
@@ -54,7 +62,9 @@ public class StoreFragment extends Fragment implements NetworkStateReceiver.Netw
     private final int RESULT_CODE = 2222;
     private final int REQUEST_CODE = 1111;
     private NetworkStateReceiver networkStateReceiver;
-
+    private ImageView imgCall;
+    private static final int REQUEST_CALL = 1;
+    private String phoneNumber;
     public StoreFragment() {
     }
 
@@ -129,6 +139,13 @@ public class StoreFragment extends Fragment implements NetworkStateReceiver.Netw
                     getContext().startActivity(toFeedbackManagement);
                 }
             });
+            imgCall.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    phoneNumber = phoneText.getText().toString();
+                    makePhoneCall(phoneNumber);
+                }
+            });
 
         } else if (hasStore == 0 && userID != 0) {
             view = inflater.inflate(R.layout.no_has_store_store_fragment_home_page_layout, container, false);
@@ -176,6 +193,7 @@ public class StoreFragment extends Fragment implements NetworkStateReceiver.Netw
         phoneText = view.findViewById(R.id.phoneText);
         storeImg = view.findViewById(R.id.storeImg);
         btnEdit = view.findViewById(R.id.imgEdit);
+        imgCall = view.findViewById(R.id.image_call);
         btnManagermentOrder = view.findViewById(R.id.btnManagerOrder);
         btnManagermentProduct = view.findViewById(R.id.btnManagerProduct);
         tv_count_smile = (TextView) view.findViewById(R.id.tv_count_smile);
@@ -237,6 +255,31 @@ public class StoreFragment extends Fragment implements NetworkStateReceiver.Netw
                 ownerName.setText(user.getFirst_name() + " " + user.getLast_name());
                 latitude = getActivity().getIntent().getDoubleExtra("latitude", 0.0);
                 longtitude = getActivity().getIntent().getDoubleExtra("longtitude", 0.0);
+            }
+        }
+    }
+    private void makePhoneCall(String number) {
+
+        if (number.trim().length() > 0) {
+
+            if (ContextCompat.checkSelfPermission(getContext(),
+                    Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions((Activity) getContext(),
+                        new String[]{Manifest.permission.CALL_PHONE}, REQUEST_CALL);
+            } else {
+                String dial = "tel:" + number;
+                startActivity(new Intent(Intent.ACTION_CALL, Uri.parse(dial)));
+            }
+
+        }
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == REQUEST_CALL) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                makePhoneCall(phoneNumber);
+            } else {
+                Toast.makeText((Activity) getContext(), "Permission DENIED", Toast.LENGTH_SHORT).show();
             }
         }
     }

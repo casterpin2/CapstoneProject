@@ -171,6 +171,7 @@ public class StoreDaoImpl extends BaseDao implements StoreDao {
                 rs = pre.executeQuery();
                 rs.next();
                 se.setAddress(rs.getString("apartment_number") + " " + rs.getString("street") + " " + rs.getString("county") + " " + rs.getString("district") + " " + rs.getString("city"));
+                se.setAddress(se.getAddress().replaceAll("0", "").replaceAll("Unnamed Road", "").replaceAll("\\s+", " ").replaceAll("null", "").trim());
                 se.setLatitude(rs.getString("latitude"));
                 se.setLongtitude(rs.getString("longitude"));
                 return se;
@@ -309,10 +310,7 @@ public class StoreDaoImpl extends BaseDao implements StoreDao {
                     checkUpdateLocation = updateUserLocation(conn, idNew, store);
                 }
             }
-
-            if (checkUpdateLocation && checkUpdateStore) {
-                storeData = getStore(conn, store, store.getImage_path());
-            }
+             storeData = getStore(conn, store, store.getImage_path());         
         } finally {
             closeConnect(conn, pre, rs);
         }
@@ -364,10 +362,10 @@ public class StoreDaoImpl extends BaseDao implements StoreDao {
                 store = new StoreEntites();
                 store.setId(rs.getInt("storeId"));
                 if (!rs.getString("street").equals("Unnamed Road")) {
-                    store.setAddress(rs.getString("apartment_number") + "-" + rs.getString("street") + "-" + rs.getString("county") + "-" + rs.getString("district") + "-" + rs.getString("city"));
+                    store.setAddress(rs.getString("apartment_number") + " " + rs.getString("street") + " " + rs.getString("county") + " " + rs.getString("district") + "-" + rs.getString("city"));
                     store.setAddress(store.getAddress().replaceAll("0", "").replaceAll("\\s+", " ").replaceAll("null", "").trim());
                 } else {
-                    store.setAddress(rs.getString("apartment_number") + "-" + rs.getString("county") + "-" + rs.getString("district") + "-" + rs.getString("city"));
+                    store.setAddress(rs.getString("apartment_number") + " " + rs.getString("county") + " " + rs.getString("district") + " " + rs.getString("city"));
                     store.setAddress(store.getAddress().replaceAll("0", "").replaceAll("\\s+", " ").replaceAll("null", "").trim());
                 }
 
