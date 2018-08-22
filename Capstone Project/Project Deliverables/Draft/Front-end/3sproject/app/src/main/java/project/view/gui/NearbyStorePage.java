@@ -53,6 +53,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
@@ -435,13 +436,21 @@ public class NearbyStorePage extends BasePage implements OnMapReadyCallback,Loca
 //                googleMap.addMarker(new MarkerOptions().position(myLocation).title("Vị trí của bạn"));
                 googleMap.getUiSettings().setCompassEnabled(false);
                 googleMap.getUiSettings().setRotateGesturesEnabled(false);
-                googleMap.setMinZoomPreference(12.0f);
+                googleMap.setMinZoomPreference(13.0f);
                 googleMap.setMaxZoomPreference(22.0f);
                 for (int i = 0; i < list.size(); i++) {
+                    final int inti = i;
                     storeLongtitude = list.get(i).getLongitude();
                     storeLatitude = list.get(i).getLatitude();
                     storeLatLng = new LatLng(storeLatitude, storeLongtitude);
-                    googleMap.addMarker(new MarkerOptions().position(storeLatLng).title(list.get(i).getName()).snippet(list.get(i).getAddress()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+                    googleMap.addMarker(new MarkerOptions().position(storeLatLng).title(list.get(i).getName()).snippet(list.get(i).getAddress()));
+                    googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                        @Override
+                        public boolean onMarkerClick(Marker marker) {
+                            Toast.makeText(context, "storeLatLng" + marker.getPosition().longitude + " ddmm : "+marker.getPosition().latitude, Toast.LENGTH_SHORT).show();
+                            return false;
+                        }
+                    });
                 }
     }
 
