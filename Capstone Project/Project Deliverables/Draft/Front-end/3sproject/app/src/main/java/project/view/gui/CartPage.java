@@ -1,9 +1,14 @@
 package project.view.gui;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -144,11 +149,29 @@ public class CartPage extends BasePage{
         });
     }
 
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         if (requestCode == 1) {
             if (resultCode == Activity.RESULT_OK) {
+                loadingBar.setVisibility(View.VISIBLE);
+                if (!isNetworkAvailable()) {
+                    new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(CartPage.this, "Có lỗi xảy ra. Vui lòng thử lại!", Toast.LENGTH_SHORT).show();
+                            loadingBar.setVisibility(View.INVISIBLE);
+                        }
+                    },10000);
+                    return;
+                }
                 final String address = data.getStringExtra("address");
                 final String deliverTime = data.getStringExtra("deliverTime");
                 final String userImage = data.getStringExtra("user_image");
@@ -220,6 +243,7 @@ public class CartPage extends BasePage{
                                 }
                             });
                         }
+                        loadingBar.setVisibility(View.INVISIBLE);
                         DatabaseReference re = database.getReference().child("cart").child(String.valueOf(userId));
                         re.removeValue();
                         AlertDialog.Builder builder = new AlertDialog.Builder(CartPage.this);

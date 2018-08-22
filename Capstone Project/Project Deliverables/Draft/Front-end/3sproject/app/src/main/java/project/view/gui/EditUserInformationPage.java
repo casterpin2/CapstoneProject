@@ -30,6 +30,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -104,6 +105,7 @@ public class EditUserInformationPage extends BasePage {
     private boolean isCheckSave = false;
     private StorageReference storageReference;
     private String currentImg;
+    private ProgressBar loadingBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -418,7 +420,6 @@ public class EditUserInformationPage extends BasePage {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         if (resultCode == RESULT_OK && requestCode == IMAGE_CODE) {
             imageURI = data.getData();
             checkAva = true;
@@ -446,6 +447,8 @@ public class EditUserInformationPage extends BasePage {
         return Bitmap.createScaledBitmap(image, width, height, true);
     }
     private void uploadImg() {
+        loadingBar.setVisibility(View.VISIBLE);
+        changeImageLayout.setEnabled(false);
         final AlertDialog.Builder builder = new AlertDialog.Builder(EditUserInformationPage.this);
         builder.setTitle("Cảnh báo quá kích thước ảnh");
         builder.setMessage("Kích thích của ảnh đã vướt quá 2MB. Vui lòng thử lại ảnh khác!");
@@ -475,6 +478,8 @@ public class EditUserInformationPage extends BasePage {
                             profile_image.setImageBitmap(selectedImage);
                             namePath = "User/image/" + nameImg;
                             saveBtn.setEnabled(true);
+                            loadingBar.setVisibility(View.INVISIBLE);
+                            changeImageLayout.setEnabled(true);
 
                         } catch (FileNotFoundException e) {
                             e.printStackTrace();
@@ -503,6 +508,8 @@ public class EditUserInformationPage extends BasePage {
 
                     }
                     builder.setCancelable(false);
+                    loadingBar.setVisibility(View.INVISIBLE);
+                    changeImageLayout.setEnabled(true);
                     builder.show();
 
 
@@ -533,6 +540,7 @@ public class EditUserInformationPage extends BasePage {
         backBtn = findViewById(R.id.backBtn);
         genderSpinner = findViewById(R.id.genderSpinner);
         changeImageLayout = findViewById(R.id.changeImage);
+        loadingBar = findViewById(R.id.loadingBar);
 
     }
 

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -58,8 +59,8 @@ public class FeedbackManagement extends BasePage {
         tempList = new ArrayList<>();
         // Intent storeId
         storeId = getIntent().getIntExtra("storeId", -1);
-        customView();
         findView();
+        customView();
         filter = new ProductFilter();
         mHandle = new MyHandle();
         feedbackManagementAdapter = new FeedbackManagementAdapter(FeedbackManagement.this, R.layout.item_feedback, tempList);
@@ -97,6 +98,7 @@ public class FeedbackManagement extends BasePage {
         CustomInterface.setStatusBarColor(this);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Đánh giá về cửa hàng");
+        loadingBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorApplication), android.graphics.PorterDuff.Mode.MULTIPLY);
     }
 
     private void findView() {
@@ -122,6 +124,7 @@ public class FeedbackManagement extends BasePage {
     public class ManagementFeedback extends AsyncTask<Call, Void, List<UserFeedback>> {
         @Override
         protected void onPreExecute() {
+            loadingBar.setVisibility(View.VISIBLE);
             super.onPreExecute();
         }
 
@@ -130,11 +133,19 @@ public class FeedbackManagement extends BasePage {
             super.onPostExecute(result);
 
             if (result == null) {
-
+                new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(FeedbackManagement.this, "Có lỗi xảy ra. Vui lòng thử lại!", Toast.LENGTH_SHORT).show();
+                        loadingBar.setVisibility(View.INVISIBLE);
+                        return;
+                    }
+                },10000);
                 return;
             }
             if (result.size() == 0) {
                 noFeedback.setVisibility(View.VISIBLE);
+                noFeedback.setText("Cửa hàng không có đánh giá nào!");
                 return;
             }
             for (UserFeedback uf : result) {
