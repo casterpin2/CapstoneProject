@@ -3,10 +3,15 @@ package project.view.gui;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -31,7 +36,7 @@ public class HomePage extends BasePage{
     private String userJSON;
     private String storeJSON;
     private ViewPagerAdapter adapter;
-
+    private LocationManager locationManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,6 +46,7 @@ public class HomePage extends BasePage{
             startActivity(new Intent(HomePage.this,LoginPage.class));
         }
         getAuthen();
+        turnOnLocation();
         //Initializing viewPager
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -121,5 +127,31 @@ public class HomePage extends BasePage{
         super.onDestroy();
         Glide.get(this).clearMemory();
 
+    }
+
+    private void turnOnLocation(){
+        final LocationListener locationListener = new LocationListener() {
+            public void onLocationChanged(Location location) {
+            }
+
+            public void onProviderDisabled(String provider){
+            }
+
+            public void onProviderEnabled(String provider){ }
+            public void onStatusChanged(String provider, int status,
+                                        Bundle extras){ }
+        };
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        // getting GPS status
+        boolean isGPSEnabled = locationManager
+                .isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+        // getting network status
+        boolean isNetworkEnabled = locationManager
+                .isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+        }
     }
 }

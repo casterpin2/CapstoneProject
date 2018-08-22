@@ -69,10 +69,12 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import project.googleMapAPI.DirectionFinder;
 import project.googleMapAPI.DirectionFinderListener;
 import project.googleMapAPI.Route;
 import project.retrofit.ApiUtils;
@@ -413,7 +415,13 @@ public class NearbyStorePage extends BasePage implements OnMapReadyCallback, Loc
                     googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                         @Override
                         public boolean onMarkerClick(Marker marker) {
-                            Toast.makeText(context, "storeLatLng" + marker.getPosition().longitude + " ddmm : "+marker.getPosition().latitude, Toast.LENGTH_SHORT).show();
+                            String origin = latitude+","+longtitude;
+                            String destination = marker.getPosition().latitude+","+marker.getPosition().longitude;
+                            try {
+                                new DirectionFinder((NearbyStorePage)context, origin, destination).execute();
+                            } catch (UnsupportedEncodingException e) {
+                                e.printStackTrace();
+                            }
                             return false;
                         }
                     });
