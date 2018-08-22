@@ -2,7 +2,56 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <TextView
+        android:id="@+id/noFeedback"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Chưa có đánh giá nào về cửa hàng"
+        android:textSize="20dp"
+        android:textColor="@color/grey"
+        android:layout_centerInParent="true"
+        android:visibility="invisible"/>
+    <LinearLayout
+        android:id="@+id/filter"
+        android:layout_width="match_parent"
+        android:layout_height="?android:attr/actionBarSize"
+        android:weightSum="2"
+        android:background="@color/colorWhite"
+        android:orientation="horizontal">
+        <LinearLayout
+            android:id="@+id/categoryFilterLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Lọc đánh giá"
+                android:textSize="16dp"
+                android:textColor="@color/colorBlack"/>
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/filterLayout"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:gravity="center">
+            <ImageView
+                android:id="@+id/icon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/sort"
+                android:layout_gravity="center"/>
+            <Spinner
+                android:id="@+id/spinner"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </LinearLayout>
+    </LinearLayout>
     <ListView
+        android:layout_below="@id/filter"
         android:id="@+id/content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>

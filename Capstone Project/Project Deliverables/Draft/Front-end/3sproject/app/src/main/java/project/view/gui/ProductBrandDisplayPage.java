@@ -56,6 +56,7 @@ public class ProductBrandDisplayPage extends BasePage {
     private double currentLatitude = 0.0;
     private double currentLongtitude = 0.0;
     private TextView nullMessage;
+    private Call<List<Product>> call;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,8 +69,9 @@ public class ProductBrandDisplayPage extends BasePage {
         apiService = ApiUtils.getAPIService();
         brandID = getIntent().getIntExtra("brandID", -1);
         brandName = getIntent().getStringExtra("brandName");
+
         apiService = APIService.retrofit.create(APIService.class);
-        final Call<List<Product>> call = apiService.getProductBrand(brandID);
+        call = apiService.getProductBrand(brandID);
         new ProductBrandDisplayData().execute(call);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorApplication)));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

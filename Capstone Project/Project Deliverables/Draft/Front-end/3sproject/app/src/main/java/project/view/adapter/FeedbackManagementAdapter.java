@@ -49,7 +49,7 @@ public class FeedbackManagementAdapter extends ArrayAdapter<UserFeedback> {
 
         UserFeedback userFeedback = feedbacks.get(position);
 
-        viewHolder.name.setText(userFeedback.getUser().getDisplayName());
+        viewHolder.name.setText("Đánh giá bởi "+userFeedback.getUser().getDisplayName());
         if(userFeedback.getFeedback().getIsSatisfied() == 1){
             viewHolder.imgSatisfied.setImageResource(R.drawable.smile_checked);
         }else {

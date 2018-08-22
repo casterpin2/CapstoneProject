@@ -1,6 +1,7 @@
 package project.view.gui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -8,26 +9,35 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import project.objects.User;
 import project.retrofit.ApiUtils;
 import project.view.R;
 import project.view.adapter.FeedbackManagementAdapter;
-import project.view.model.Product;
+import project.view.model.Feedback;
 import project.view.model.UserFeedback;
 import project.view.util.CustomInterface;
+import project.view.util.ProductFilter;
 import retrofit2.Call;
 import retrofit2.Response;
 
 public class FeedbackManagement extends BasePage {
-    private List<UserFeedback> list;
+    private List<UserFeedback> tempList = new ArrayList<>();
+    private List<UserFeedback> userFeedbackList = new ArrayList<>();
     private int storeId;
     private FeedbackManagementAdapter feedbackManagementAdapter;
     private ListView listView;
@@ -36,21 +46,27 @@ public class FeedbackManagement extends BasePage {
     private int page;
     public Handler mHandle;
     private ProgressBar loadingBar;
+    private ProductFilter filter;
+    private Spinner spinner;
+    private ImageView icon;
+    private TextView noFeedback;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.content_listview);
-        list = new ArrayList<>();
+        tempList = new ArrayList<>();
         // Intent storeId
-        storeId = getIntent().getIntExtra("storeId",-1);
+        storeId = getIntent().getIntExtra("storeId", -1);
         customView();
+        findView();
+        filter = new ProductFilter();
         mHandle = new MyHandle();
-        feedbackManagementAdapter = new FeedbackManagementAdapter(FeedbackManagement.this, R.layout.item_feedback, list);
-        listView = findViewById(R.id.content);
-        loadingBar = findViewById(R.id.loadingBar);
+        feedbackManagementAdapter = new FeedbackManagementAdapter(FeedbackManagement.this, R.layout.item_feedback, tempList);
+
         listView.setAdapter(feedbackManagementAdapter);
-        if (storeId != -1){
-            Call<List<UserFeedback>> call = ApiUtils.getAPIService().getAllFeedback(storeId , 0);
+        if (storeId != -1) {
+            Call<List<UserFeedback>> call = ApiUtils.getAPIService().getAllFeedback(storeId, 0);
             new ManagementFeedback().execute(call);
         } else {
             Toast.makeText(this, "Có lỗi xảy ra", Toast.LENGTH_LONG).show();
@@ -67,8 +83,8 @@ public class FeedbackManagement extends BasePage {
 
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                int count = list.size();
-                if (view.getLastVisiblePosition() == totalItemCount - 1 && count == (page * 10) && isLoading == false  && (page > 0)) {
+                int count = tempList.size();
+                if (view.getLastVisiblePosition() == totalItemCount - 1 && count == (page * 10) && isLoading == false && (page > 0)) {
                     isLoading = true;
                     Thread thread = new ThreadgetMoreData();
                     thread.start();
@@ -77,11 +93,33 @@ public class FeedbackManagement extends BasePage {
         });
     }
 
-    private void customView(){
+    private void customView() {
         CustomInterface.setStatusBarColor(this);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Đánh giá về cửa hàng");
     }
 
-    public class ManagementFeedback extends AsyncTask<Call,Void,List<UserFeedback>> {
+    private void findView() {
+        listView = findViewById(R.id.content);
+        loadingBar = findViewById(R.id.loadingBar);
+        spinner = findViewById(R.id.spinner);
+        icon = findViewById(R.id.icon);
+        noFeedback = findViewById(R.id.noFeedback);
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home: {
+                finish();
+                return true;
+            }
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+
+    public class ManagementFeedback extends AsyncTask<Call, Void, List<UserFeedback>> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -90,18 +128,55 @@ public class FeedbackManagement extends BasePage {
         @Override
         protected void onPostExecute(List<UserFeedback> result) {
             super.onPostExecute(result);
-            if (result == null){
+
+            if (result == null) {
 
                 return;
             }
-            if (result.size() == 0){
-
+            if (result.size() == 0) {
+                noFeedback.setVisibility(View.VISIBLE);
                 return;
             }
-            for (UserFeedback uf : result){
-                list.add(uf);
+            for (UserFeedback uf : result) {
+                userFeedbackList.add(uf);
             }
+            filter.setRateFilter(FeedbackManagement.this, spinner);
+            spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                    tempList.clear();
+                    if (adapterView.getItemAtPosition(i).toString().equals(filter.ALL_RATE)) {
+                        icon.setImageResource(R.drawable.sort);
+                        for (UserFeedback userFeedback : userFeedbackList) {
+                            tempList.add(userFeedback);
+                        }
+                    } else if (adapterView.getItemAtPosition(i).toString().equals(filter.SATISFIED_RATE)) {
+                        icon.setImageResource(R.drawable.smile_checked);
+                        for (UserFeedback userFeedback : userFeedbackList) {
+                            if (userFeedback.getFeedback().getIsSatisfied() == 1) {
+                                tempList.add(userFeedback);
+                            }
+                        }
+                    } else {
+                        icon.setImageResource(R.drawable.sad_unchecked);
+                        for (UserFeedback userFeedback : userFeedbackList) {
+                            if (userFeedback.getFeedback().getIsSatisfied() == 0) {
+                                tempList.add(userFeedback);
+                            }
+                        }
+                    }
+                    feedbackManagementAdapter.notifyDataSetChanged();
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+
+                }
+
+            });
             feedbackManagementAdapter.notifyDataSetChanged();
+
+
         }
 
         @Override
@@ -139,17 +214,17 @@ public class FeedbackManagement extends BasePage {
         }
     }
 
-    public void getMoreData(){
-        Log.d("page",String.valueOf(page));
+    public void getMoreData() {
+        Log.d("page", String.valueOf(page));
         callAPI(page);
-        page ++;
+        page++;
     }
 
     public class MyHandle extends Handler {
         @Override
         public void handleMessage(Message msg) {
-            switch (msg.what){
-                case 0 :
+            switch (msg.what) {
+                case 0:
                     listView.addFooterView(footerView);
                     break;
                 case 1:
@@ -164,8 +239,8 @@ public class FeedbackManagement extends BasePage {
         }
     }
 
-    private void callAPI (int page){
-        Call<List<UserFeedback>> call = ApiUtils.getAPIService().getAllFeedback(storeId,page);
+    private void callAPI(int page) {
+        Call<List<UserFeedback>> call = ApiUtils.getAPIService().getAllFeedback(storeId, page);
         new ManagementFeedback().execute(call);
     }
 }
