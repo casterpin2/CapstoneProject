@@ -172,7 +172,7 @@ public class EditStoreInformationPage extends BasePage implements OnMapReadyCall
             public void onClick(View v) {
                 try {
                     Intent intent =
-                            new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_FULLSCREEN)
+                            new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_OVERLAY)
                                     .build(EditStoreInformationPage.this);
                     startActivityForResult(intent, PLACE_AUTOCOMPLETE_REQUEST_CODE);
 
@@ -277,29 +277,6 @@ public class EditStoreInformationPage extends BasePage implements OnMapReadyCall
         backToStoreFragment.putExtra("data","NO");
         setResult(RESULT_CODE,backToStoreFragment);
         finish();
-    }
-
-    public void getLocation() {
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
-        } else {
-            android.location.Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-
-            if (location != null) {
-                autoLatitude = location.getLatitude();
-                autoLongtitude = location.getLongitude();
-//                StringBuilder stringBuilder = new StringBuilder();
-//                stringBuilder.append(autoLatitude).append(",").append(autoLongtitude);
-//                mAPI = ApiUtils.getAPIServiceMap();
-//                final Call<GoogleMapJSON> call = mAPI.getLocation(stringBuilder.toString(),GOOGLE_MAP_KEY);
-//                new RegisterStorePage.CallMapAPI().execute(call);
-                markerToMap(autoLongtitude, autoLatitude, mMap, getResources().getString(R.string.yourGPS),"");
-            } else {
-                Toast.makeText(this, "Chưa có vị trí định vị!!", Toast.LENGTH_SHORT).show();
-            }
-
-        }
     }
 
     @Override

@@ -24,6 +24,7 @@
                     android:layout_height="268dp"
                     android:layout_centerHorizontal="true"
                     android:gravity="center">
+
                     <ImageView
                         android:id="@+id/storeImg"
                         android:layout_width="match_parent"
@@ -43,11 +44,31 @@
                         android:ellipsize="end"
                         android:padding="8dp"/>
                 </RelativeLayout>
+                <LinearLayout
+                    android:id="@+id/changeStoreImageLayout"
+                    android:layout_margin="8dp"
+                    android:background="#90000000"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <ImageView
+                        android:paddingLeft="8dp"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:src="@drawable/camera"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/colorWhite"
+                        android:layout_margin="8dp"
+                        android:text="Thay đổi ảnh"/>
+                </LinearLayout>
+
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_below="@id/storeImgLayout"
                     android:layout_marginTop="-20dp">
+
                     <ImageView
                         android:id="@+id/imgEdit"
                         android:layout_width="40dp"

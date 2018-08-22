@@ -41,6 +41,7 @@ import project.view.model.Product;
 import project.view.model.Store;
 import project.view.util.CustomInterface;
 import project.view.util.Formater;
+import project.view.util.TweakUI;
 import retrofit2.Call;
 import retrofit2.Response;
 
@@ -172,28 +173,12 @@ public class ProductDetailPage extends BasePage {
                         if (myStore.getId() == storeID) {
                             Toast.makeText(ProductDetailPage.this, "Cửa hàng của bạn, không thể đặt hàng", Toast.LENGTH_LONG).show();
                             return;
-                        }
-                    }
-                    AlertDialog.Builder builder = new AlertDialog.Builder(ProductDetailPage.this);
-                    builder.setTitle("Thêm sản phẩm vào giỏ hàng");
-                    builder.setMessage("Bạn có chắc chắn muốn thêm sản phẩm này vào cửa hàng không?");
-
-                    builder.setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
+                        } else {
                             Call<Store> call = ApiUtils.getAPIService().getStoreById(storeID);
                             new GetStoreById().execute(call);
-                            return;
+                            showDialog();
                         }
-                    });
-
-                    builder.setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            return;
-                        }
-                    });
-                    builder.show();
+                    }
 
 
                 }
@@ -242,6 +227,30 @@ public class ProductDetailPage extends BasePage {
         productNotInStoreDesc = (TextView) findViewById(R.id.productNotInStoreDesc);
         storeNameLayout = (LinearLayout) findViewById(R.id.storeNameLayout);
 
+    }
+
+    private void showDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(ProductDetailPage.this);
+        builder.setTitle("Thêm sản phẩm vào giỏ hàng");
+        builder.setMessage("Sản phẩm đã được thêm vào giỏ hàng");
+
+        builder.setPositiveButton("Đến giỏ hàng", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent toCartPage = new Intent(getBaseContext(), CartPage.class);
+                toCartPage.putExtra("userID",user.getId());
+                getBaseContext().startActivity(toCartPage);
+                return;
+            }
+        });
+
+        builder.setNegativeButton("Tiếp tục mua", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                return;
+            }
+        });
+        builder.show();
     }
 
     public void setLayout(boolean isStoreProduct, LinearLayout isNotProductInStoreLayout, LinearLayout isProductInStoreLayout, LinearLayout productDetailLayout, Button findStoreBtn){

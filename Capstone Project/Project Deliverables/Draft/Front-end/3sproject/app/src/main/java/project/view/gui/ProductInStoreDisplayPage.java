@@ -181,10 +181,10 @@ public class ProductInStoreDisplayPage extends BasePage {
                             nullMessage.setText("");
                             theListView.setVisibility(View.VISIBLE);
                         }
-//                        if(productInStores != null){
-//                            productFilter.setSortItem(ProductInStoreDisplayPage.this,spinnerSort);
-//                            productFilter.setCategoryFilter(productInStores,ProductInStoreDisplayPage.this,spinnerCategory);
-//                        }
+                        if(productInStores != null){
+                            productFilter.setSortItem(ProductInStoreDisplayPage.this,spinnerSort);
+                            productFilter.setCategoryFilter(productInStores,ProductInStoreDisplayPage.this,spinnerCategory);
+                        }
 
                         theListView. setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
@@ -227,20 +227,20 @@ public class ProductInStoreDisplayPage extends BasePage {
                             @Override
                             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                                 tempList.clear();
-                                if(productFilter.ALL_PRODUCT.equals(adapterView.getItemAtPosition(i).toString())){
-                                    for (Product product : productInStores){
+                                if (adapterView.getItemAtPosition(i).toString().contains(productFilter.ALL_PRODUCT)) {
+                                    for (Product product : productInStores) {
                                         tempList.add(product);
                                     }
-                                }else if(productFilter.SALE_PRODUCT.equals(adapterView.getItemAtPosition(i).toString())) {
+                                } else if (adapterView.getItemAtPosition(i).toString().contains(productFilter.SALE_PRODUCT)) {
                                     for (Product product : productInStores) {
-                                        if (product.getPromotion()!=0) {
+                                        if (product.getPromotion() != 0) {
                                             tempList.add(product);
                                         }
                                     }
-                                }else {
 
+                                } else {
                                     for (Product product : productInStores) {
-                                        if (product.getCategory_name().equals(adapterView.getItemAtPosition(i).toString())) {
+                                        if (adapterView.getItemAtPosition(i).toString().contains(product.getCategory_name())) {
                                             tempList.add(product);
                                         }
                                     }
@@ -264,17 +264,22 @@ public class ProductInStoreDisplayPage extends BasePage {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case android.R.id.home:
+            case android.R.id.home: {
                 finish();
+                return true;
+            }
+            case R.id.action_home:{
+                Intent toHomPage = new Intent(ProductInStoreDisplayPage.this, HomePage.class);
+                startActivity(toHomPage);
+            }
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.search_view_with_find_icon, menu);
-        MenuItem itemSearch = menu.findItem(R.id.search_view);
+        getMenuInflater().inflate(R.menu.home_search_toolbar, menu);
+        MenuItem itemSearch = menu.findItem(R.id.action_search);
         final List<Product> searchedProduct = new ArrayList<>();
         searchView = (SearchView) itemSearch.getActionView();
         searchView.clearFocus();
