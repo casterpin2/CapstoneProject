@@ -1,14 +1,17 @@
 package project.view.gui;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.MatrixCursor;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Criteria;
 import android.location.Location;
@@ -54,6 +57,8 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -67,6 +72,8 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import project.googleMapAPI.DirectionFinderListener;
+import project.googleMapAPI.Route;
 import project.retrofit.ApiUtils;
 import project.view.R;
 import project.view.adapter.NearByStoreListViewAdapter;
@@ -82,7 +89,7 @@ import project.view.util.CustomInterface;
 import retrofit2.Call;
 import retrofit2.Response;
 
-public class NearbyStorePage extends BasePage implements OnMapReadyCallback,LocationListener{
+public class NearbyStorePage extends BasePage implements OnMapReadyCallback, LocationListener, DirectionFinderListener {
     private FusedLocationProviderClient mFusedLocationClient;
     private ListView storeListView;
     private NearByStoreListViewAdapter adapter;
@@ -106,17 +113,15 @@ public class NearbyStorePage extends BasePage implements OnMapReadyCallback,Loca
     double latitude = 0.0;
     double longtitude = 0.0;
     final static int REQUEST_LOCATION = 1;
-    //lazy loading
-    public Handler mHandle;
     public View footerView;
     public boolean isLoading;
-    boolean limitData = false;
-    int page = 1;
+    private List<Polyline> polylinePaths = new ArrayList<>();
+    private ProgressDialog progressDialog;
     private Product p;
-    private MapRipple mapRipple;
     private MapRadar mapRadar;
     private String productName;
     private String keyNotification = "key=AAAAy6FA_UY:APA91bFZzblkVEFuOIabndkjShr6Vbvege_ZOOqjgBj6oK6ZiAK4284KlR5-1zkefS0GQL3SJSONX3vWf_iXaY0avSsiw505ndKIdnXcLo4-jjyNao1npqqfC0kXbIVio8m5Fqvc3VF3";
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -141,7 +146,7 @@ public class NearbyStorePage extends BasePage implements OnMapReadyCallback,Loca
     protected void onPause() {
         super.onPause();
         myRef1.removeEventListener(listener);
-        if (mapRadar != null){
+        if (mapRadar != null) {
             if (mapRadar.isAnimationRunning()) {
                 mapRadar.stopRadarAnimation();
             }
@@ -165,9 +170,9 @@ public class NearbyStorePage extends BasePage implements OnMapReadyCallback,Loca
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorApplication)));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("");
-        productId = getIntent().getIntExtra("productId",-1);
+        productId = getIntent().getIntExtra("productId", -1);
         String image_path = getIntent().getStringExtra("image_path");
-        p = new Product(productId,productName,image_path);
+        p = new Product(productId, productName, image_path);
         turnOnLocation();
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
@@ -175,13 +180,13 @@ public class NearbyStorePage extends BasePage implements OnMapReadyCallback,Loca
         main_layout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                CustomInterface.hideKeyboard(view,getBaseContext());
+                CustomInterface.hideKeyboard(view, getBaseContext());
                 return false;
             }
         });
         String sourceString = "Cửa hàng quanh đây có <b>" + productName + "</b> ";
         textContent.setText(Html.fromHtml(sourceString));
-        adapter = new NearByStoreListViewAdapter(NearbyStorePage.this, R.layout.nearby_store_page_custom_list_view, list,p);
+        adapter = new NearByStoreListViewAdapter(NearbyStorePage.this, R.layout.nearby_store_page_custom_list_view, list, p);
         storeListView.setAdapter(adapter);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -211,9 +216,20 @@ public class NearbyStorePage extends BasePage implements OnMapReadyCallback,Loca
 
     }
 
-    @SuppressLint("MissingPermission")
     @Override
     public void onMapReady(GoogleMap googleMap) {
+
+        mMap = googleMap;
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
         mFusedLocationClient.getLastLocation()
                 .addOnSuccessListener(this, new OnSuccessListener<Location>() {
                     @Override
@@ -224,10 +240,11 @@ public class NearbyStorePage extends BasePage implements OnMapReadyCallback,Loca
                                 mapRadar.withLatLng(new LatLng(location.getLatitude(), location.getLongitude()));
                             latitude = location.getLatitude();
                             longtitude = location.getLongitude();
+                            adapter.setMyLatitude(latitude);
+                            adapter.setMyLongtitude(longtitude);
                         }
                     }
                 });
-        mMap = googleMap;
         mMap.setMyLocationEnabled(true);
         LatLng myLocation = new LatLng(latitude, longtitude);
         //googleMap.addMarker(new MarkerOptions().position(myLocation).title("Vị trí của bạn")).showInfoWindow();
@@ -378,61 +395,10 @@ public class NearbyStorePage extends BasePage implements OnMapReadyCallback,Loca
         return true;
     }
 
-//    public class MyHandle extends Handler {
-//        @Override
-//        public void handleMessage(Message msg) {
-//            switch (msg.what){
-//                case 0 :
-//                    storeListView.addFooterView(footerView);
-//                    adapter.notifyDataSetChanged();
-//                    break;
-//                case 1:
-//                    //adapter.addListItemToAdapter((ArrayList<Item>)msg.obj);
-//
-//                    storeListView.removeFooterView(footerView);
-//                    getMoreData();
-//                    isLoading = false;
-//                    adapter.notifyDataSetChanged();
-//                    break;
-//                default:
-//                    break;
-//            }
-//        }
-//    }
-
-    public void getMoreData(){
-        //List<Item> addList = new ArrayList<>();
-//        page ++;
-//        callAPI(query, page);
-
-        //addList = searchedProductList;
-
-        //return addList;
-    }
-
-//    public class ThreadgetMoreData extends Thread {
-//        @Override
-//        public void run() {
-//            mHandle.sendEmptyMessage(0);
-//            //List<Item> addMoreList = getMoreData();
-//            try {
-//                Thread.sleep(1000);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//            if (isLoading == true){
-//                Message msg = mHandle.obtainMessage(1);
-//                mHandle.sendMessage(msg);
-//            }
-//        }
-//    }
-
     public void changeLocation (GoogleMap googleMap) {
                 double storeLongtitude = 0.0;
                 double storeLatitude = 0.0;
                 LatLng storeLatLng;
-//                LatLng myLocation = new LatLng(latitude, longtitude);
-//                googleMap.addMarker(new MarkerOptions().position(myLocation).title("Vị trí của bạn"));
                 googleMap.getUiSettings().setCompassEnabled(false);
                 googleMap.getUiSettings().setRotateGesturesEnabled(false);
                 googleMap.setMinZoomPreference(12.0f);
@@ -452,6 +418,8 @@ public class NearbyStorePage extends BasePage implements OnMapReadyCallback,Loca
                 mapRadar.withLatLng(new LatLng(location.getLatitude(), location.getLongitude()));
             }
         }
+        adapter.setMyLatitude(latitude);
+        adapter.setMyLongtitude(longtitude);
     }
 
     @Override
@@ -467,6 +435,40 @@ public class NearbyStorePage extends BasePage implements OnMapReadyCallback,Loca
     @Override
     public void onProviderDisabled(String provider) {
 
+    }
+
+    @Override
+    public void onDirectionFinderStart() {
+        progressDialog = ProgressDialog.show(this, "Xin chờ...",
+                "Đang tìm đường đi", true);
+        if (polylinePaths != null) {
+            for (Polyline polyline:polylinePaths ) {
+                polyline.remove();
+            }
+        }
+    }
+
+    @Override
+    public void onDirectionFinderSuccess(List<Route> routes) {
+        progressDialog.dismiss();
+        polylinePaths = new ArrayList<>();
+        for (Route route : routes) {
+            PolylineOptions polylineOptions = new PolylineOptions().
+                    geodesic(true).
+                    color(Color.BLUE).
+                    width(10);
+
+            for (int i = 0; i < route.points.size(); i++)
+                polylineOptions.add(route.points.get(i));
+
+            polylinePaths.add(mMap.addPolyline(polylineOptions));
+        }
+    }
+
+    @Override
+    public void onDirectionFinderFailed() {
+        progressDialog.dismiss();
+        Toast.makeText(this, "Có lỗi xảy ra", Toast.LENGTH_SHORT).show();
     }
 
     public class NearByStoreAsynTask extends AsyncTask<Call, Void, List<NearByStore>> {
