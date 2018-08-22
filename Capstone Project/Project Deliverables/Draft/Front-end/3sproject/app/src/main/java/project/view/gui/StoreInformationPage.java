@@ -1,11 +1,18 @@
 package project.view.gui;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
@@ -51,7 +58,9 @@ public class StoreInformationPage extends AppCompatActivity {
     private ProgressBar loadingBar;
     private LinearLayout storeInforForm;
     private TextView nullMessage;
-
+    private static final int REQUEST_CALL = 1;
+    private String phoneNumber;
+    private ImageView imgCall;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,6 +93,13 @@ public class StoreInformationPage extends AppCompatActivity {
 
             }
         });
+        imgCall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                phoneNumber = phoneText.getText().toString();
+                makePhoneCall(phoneNumber);
+            }
+        });
     }
 
     private void findView(){
@@ -99,6 +115,7 @@ public class StoreInformationPage extends AppCompatActivity {
         tvSad = findViewById(R.id.tv_count_sad);
         tvStoreName = findViewById(R.id.storeName);
         viewFeedback = findViewById(R.id.tv_feedback_status);
+        imgCall = findViewById(R.id.image_call);
 ;    }
 
     public class StoreInformation extends AsyncTask<Call,Void,Store> {
@@ -160,6 +177,31 @@ public class StoreInformationPage extends AppCompatActivity {
                 e.printStackTrace();
             }
             return null;
+        }
+    }
+    private void makePhoneCall(String number) {
+
+        if (number.trim().length() > 0) {
+
+            if (ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(StoreInformationPage.this,
+                        new String[]{Manifest.permission.CALL_PHONE}, REQUEST_CALL);
+            } else {
+                String dial = "tel:" + number;
+                startActivity(new Intent(Intent.ACTION_CALL, Uri.parse(dial)));
+            }
+
+        }
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == REQUEST_CALL) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                makePhoneCall(phoneNumber);
+            } else {
+                Toast.makeText(StoreInformationPage.this, "Permission DENIED", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 }

@@ -267,8 +267,8 @@ public class EditUserInformationPage extends BasePage {
                         && extras.getString("email").equals(emailText.getText().toString())
                         && extras.getString("dob").equals(dobText.getText().toString())) {
                     Intent intent = new Intent(EditUserInformationPage.this, UserInformationPage.class);
-                    intent.putExtra("userID", us.getId());
-                    setResult(200,intent);
+                    intent.putExtra("userID", extras.getInt("idUser", 0));
+                    setResult(201,intent);
                     finish();
                 } else {
 
@@ -280,8 +280,8 @@ public class EditUserInformationPage extends BasePage {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             Intent intent = new Intent(EditUserInformationPage.this, UserInformationPage.class);
-                            intent.putExtra("userID", us.getId());
-                            setResult(200,intent);
+                            intent.putExtra("userID", extras.getInt("idUser", 0));
+                            setResult(201,intent);
                             finish();
                         }
                     });
@@ -331,7 +331,7 @@ public class EditUserInformationPage extends BasePage {
                         && extras.getString("dob").equals(dobText.getText().toString())) {
                     Intent intent = new Intent(EditUserInformationPage.this, UserInformationPage.class);
                     intent.putExtra("userID", extras.getInt("idUser", 0));
-                    setResult(200,intent);
+                    setResult(201,intent);
                     finish();
                 } else {
 
@@ -343,8 +343,8 @@ public class EditUserInformationPage extends BasePage {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             Intent intent = new Intent(EditUserInformationPage.this, UserInformationPage.class);
-                            intent.putExtra("userID", us.getId());
-                            setResult(200,intent);
+                            intent.putExtra("userID", extras.getInt("idUser", 0));
+                            setResult(201,intent);
                             finish();
                         }
                     });
@@ -446,7 +446,18 @@ public class EditUserInformationPage extends BasePage {
         return Bitmap.createScaledBitmap(image, width, height, true);
     }
     private void uploadImg() {
-
+        final AlertDialog.Builder builder = new AlertDialog.Builder(EditUserInformationPage.this);
+        builder.setTitle("Cảnh báo quá kích thước ảnh");
+        builder.setMessage("Kích thích của ảnh đã vướt quá 2MB. Vui lòng thử lại ảnh khác!");
+        final boolean[] isIntent = {false};
+        builder.setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                isIntent[0] = true;
+                namePath = extras.getString("path");
+                return;
+            }
+        });
         if (imageURI != null) {
             final String nameImg = extras.getInt("idUser", 0) + "--" + UUID.randomUUID().toString();
             StorageReference ref = storageReference.child("User/image/" + nameImg);
@@ -473,7 +484,7 @@ public class EditUserInformationPage extends BasePage {
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception exception) {
-                    Toast.makeText(EditUserInformationPage.this, "Xin lỗi kích thước ảnh lớn hơn 2MB", Toast.LENGTH_SHORT).show();
+                   // Toast.makeText(EditUserInformationPage.this, "Xin lỗi kích thước ảnh lớn hơn 2MB", Toast.LENGTH_SHORT).show();
                     if (!extras.getString("path").isEmpty() && extras.getString("path") != null) {
                         if (extras.getString("path").contains("graph") || extras.getString("path").contains("google")) {
                             Glide.with(EditUserInformationPage.this /* context */)
@@ -489,9 +500,11 @@ public class EditUserInformationPage extends BasePage {
                                     .skipMemoryCache(true)
                                     .into(profile_image);
                         }
-                        namePath = extras.getString("path");
-                        saveBtn.setEnabled(true);
+
                     }
+                    builder.setCancelable(false);
+                    builder.show();
+
 
                 }
             }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {

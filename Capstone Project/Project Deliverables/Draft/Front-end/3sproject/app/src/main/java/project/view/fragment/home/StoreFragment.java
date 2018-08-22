@@ -157,8 +157,7 @@ public class StoreFragment extends Fragment implements NetworkStateReceiver.Netw
             imgCall.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    phoneNumber = phoneText.getText().toString();
-                    makePhoneCall(phoneNumber);
+
                 }
             });
 
@@ -305,31 +304,7 @@ public class StoreFragment extends Fragment implements NetworkStateReceiver.Netw
             }
         }
     }
-    private void makePhoneCall(String number) {
 
-        if (number.trim().length() > 0) {
-
-            if (ContextCompat.checkSelfPermission(getContext(),
-                    Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions((Activity) getContext(),
-                        new String[]{Manifest.permission.CALL_PHONE}, REQUEST_CALL);
-            } else {
-                String dial = "tel:" + number;
-                startActivity(new Intent(Intent.ACTION_CALL, Uri.parse(dial)));
-            }
-
-        }
-    }
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == REQUEST_CALL) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                makePhoneCall(phoneNumber);
-            } else {
-                Toast.makeText((Activity) getContext(), "Permission DENIED", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
 
     public class CountFeedback extends AsyncTask<Call,Void,List<Integer>> {
         @Override

@@ -1,6 +1,7 @@
 package project.view.gui;
 
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
 import android.support.design.widget.TextInputEditText;
@@ -20,11 +21,12 @@ import project.retrofit.ApiUtils;
 import project.view.R;
 import project.view.model.SmsResultEntities;
 import project.view.util.CustomInterface;
+import project.view.util.NetworkStateReceiver;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class OTPCodePage extends AppCompatActivity {
+public class OTPCodePage extends AppCompatActivity implements NetworkStateReceiver.NetworkStateReceiverListener{
 
     private RelativeLayout main_layout,rela;
     private TextInputEditText etCode;
@@ -35,6 +37,8 @@ public class OTPCodePage extends AppCompatActivity {
     private String code;
     private String phone;
     private APIService apiService;
+    private boolean checkNetwork = true;
+    private NetworkStateReceiver networkStateReceiver;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,6 +56,9 @@ public class OTPCodePage extends AppCompatActivity {
                 return false;
             }
         });
+        networkStateReceiver = new NetworkStateReceiver();
+        networkStateReceiver.addListener(this);
+        this.registerReceiver(networkStateReceiver, new IntentFilter(android.net.ConnectivityManager.CONNECTIVITY_ACTION));
 
         username = getIntent().getStringExtra("user");
         phone =getIntent().getStringExtra("phone");
@@ -60,27 +67,29 @@ public class OTPCodePage extends AppCompatActivity {
             public void onClick(View view) {
                 apiService = ApiUtils.getAPIService();
                 code = etCode.getText().toString();
+                if(checkNetwork){
+                    apiService.confirmOTP(code,phone).enqueue(new Callback<Boolean>() {
+                        @Override
+                        public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                            if(response.isSuccessful()){
 
-                apiService.confirmOTP(code,phone).enqueue(new Callback<Boolean>() {
-                    @Override
-                    public void onResponse(Call<Boolean> call, Response<Boolean> response) {
-                        if(response.isSuccessful()){
-
-                            Intent toChangePasswordPage = new Intent(getBaseContext(),ResetPasswordPage.class);
-                            toChangePasswordPage.putExtra("username",username);
-                            startActivity(toChangePasswordPage);
+                                Intent toChangePasswordPage = new Intent(getBaseContext(),ResetPasswordPage.class);
+                                toChangePasswordPage.putExtra("username",username);
+                                startActivity(toChangePasswordPage);
+                            }
                         }
-                    }
 
-                    @Override
-                    public void onFailure(Call<Boolean> call, Throwable t) {
+                        @Override
+                        public void onFailure(Call<Boolean> call, Throwable t) {
 
-                    }
-                });
+                        }
+                    });
+                }else{
+
+                }
+
                 if(isCode){
-//                    Intent toLoginPage = new Intent(getBaseContext(),LoginPage.class);
-//                    toLoginPage.putExtra("username",username);
-//                    startActivity(toLoginPage);
+
                 } else {
                     tvConfirmCodeMess.setText("Mã xác nhận không đúng, vui lòng nhập lại!");
                 }
@@ -105,22 +114,27 @@ public class OTPCodePage extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         tvConfirmCodeMess.setText("");
-                        apiService.getCodeVerify(username).enqueue(new Callback<SmsResultEntities>() {
-                            @Override
-                            public void onResponse(Call<SmsResultEntities> call, Response<SmsResultEntities> response) {
-                                if(response.body()!=null){
-                                    code = response.body().getCode();
-                                    alertDialog.hide();
+                        if(checkNetwork){
+                            apiService.getCodeVerify(username).enqueue(new Callback<SmsResultEntities>() {
+                                @Override
+                                public void onResponse(Call<SmsResultEntities> call, Response<SmsResultEntities> response) {
+                                    if(response.body()!=null){
+                                        code = response.body().getCode();
+                                        alertDialog.hide();
+                                    }
                                 }
-                            }
 
-                            @Override
-                            public void onFailure(Call<SmsResultEntities> call, Throwable t) {
+                                @Override
+                                public void onFailure(Call<SmsResultEntities> call, Throwable t) {
 
-                            }
-                        });
-                        Toast.makeText(OTPCodePage.this,"Đã gửi lại",Toast.LENGTH_LONG).show();
-                        alertDialog.hide();
+                                }
+                            });
+                            Toast.makeText(OTPCodePage.this,"Đã gửi lại",Toast.LENGTH_LONG).show();
+                            alertDialog.hide();
+                        }else{
+
+                        }
+
                     }
                 });
 
@@ -152,5 +166,16 @@ public class OTPCodePage extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+
+    @Override
+    public void networkAvailable() {
+        checkNetwork = true;
+    }
+
+    @Override
+    public void networkUnavailable() {
+        checkNetwork = false;
     }
 }
