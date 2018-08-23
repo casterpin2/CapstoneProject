@@ -99,7 +99,6 @@ public class EditProductInStorePage extends BasePage {
         productName.setText(productNameValue);
         categoryName.setText(categoryNameValue);
         brandName.setText(brandNameValue);
-//        productPrice.setText(Formater.formatDoubleToMoney(String.valueOf(productPriceValue)));
         productPrice.setText(String.valueOf(productPriceValue));
         productPrice.setSelection(productPrice.getText().toString().length());
         promotionPercent.setText(String.valueOf(promotionPercentValue));
@@ -150,20 +149,18 @@ public class EditProductInStorePage extends BasePage {
                 } else {
                     productPriceErrorMessage.setText(getResources().getString(R.string.error_empty));
                 }
-                if(promotionPercent.getText().toString().length() > 0) {
-                    promotionPercentErrorMessage.setText("");
-                } else {
-                    promotionPercentErrorMessage.setText(getResources().getString(R.string.promotionOption));
-                }
-                if(promotionPercent.getText().toString().length() > 0 && productPrice.getText().toString().length() > 0) {
-
+                if(productPrice.getText().toString().length() > 0 && promotionPercent.getText().toString().length() >= 0) {
+                    if (promotionPercent.getText().toString().length() == 0) {
+                        promotionPercent.setText("0.0");
+                    }
                     if (Double.parseDouble(promotionPercent.getText().toString()) > 100.00 || Double.parseDouble(promotionPercent.getText().toString()) < 0.00) {
                         promotionPercentErrorMessage.setText(getResources().getString(R.string.promotionOption));
 
                     } else {
-                        final long priceLong = Long.parseLong(productPrice.getText().toString().replaceAll(",+", "").replaceAll("\\.+", "").replaceAll("₫","").replaceAll("\\s+","").trim());
-                        final double promotionValue = Double.parseDouble(promotionPercent.getText().toString());
                         promotionPercentErrorMessage.setText("");
+                        final long priceLong = Long.parseLong(productPrice.getText().toString().replaceAll(",+", "").replaceAll("\\.+", "").replaceAll("₫","").replaceAll("\\s+","").trim());
+                        double promotionValue = Double.parseDouble(promotionPercent.getText().toString());
+
                         if (productPriceValue == priceLong && promotionPercentValue == promotionValue ) {
                             Toast.makeText(EditProductInStorePage.this, getResources().getString(R.string.unchange), Toast.LENGTH_SHORT).show();
 
@@ -184,6 +181,7 @@ public class EditProductInStorePage extends BasePage {
                                 return;
                             }
                             myRef = database.getReference().child("cart");
+                            final double finalPromotionValue = promotionValue;
                             myRef.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -195,12 +193,12 @@ public class EditProductInStorePage extends BasePage {
                                             for(int i = 0 ; i < cartDetails.length;i++) {
                                                 String productId = String.valueOf(((CartDetail)cartDetails[i]).getProductId());
                                                 if (((CartDetail)cartDetails[i]).getProductId() == productIDValue){
-                                                    myRef.child(userId).child(String.valueOf(cart.getStoreId())).child("cartDetail").child(productId).child("unitPrice").setValue(priceLong-(priceLong*promotionValue/100));
+                                                    myRef.child(userId).child(String.valueOf(cart.getStoreId())).child("cartDetail").child(productId).child("unitPrice").setValue(priceLong-(priceLong* finalPromotionValue /100));
                                                 }
                                             }
                                         }
                                     }
-                                    Call<Boolean> call = ApiUtils.getAPIService().editProductInStore(storeIDValue,productIDValue,priceLong,promotionValue);
+                                    Call<Boolean> call = ApiUtils.getAPIService().editProductInStore(storeIDValue,productIDValue,priceLong, finalPromotionValue);
                                     new EditProduct().execute(call);
                                 }
 
@@ -209,9 +207,7 @@ public class EditProductInStorePage extends BasePage {
                                     Toast.makeText(EditProductInStorePage.this,"Có lỗi xảy ra. Vui lòng thử lại",Toast.LENGTH_LONG).show();
                                 }
                             });
-
                         }
-
                     }
                 }
             }
@@ -220,16 +216,16 @@ public class EditProductInStorePage extends BasePage {
 
     private void findView(){
         main_layout = findViewById(R.id.main_layout);
-        productName = (TextView) findViewById(R.id.productName);
-        categoryName = (TextView) findViewById(R.id.categoryName);
-        brandName = (TextView) findViewById(R.id.brandName);
-        productPrice = (EditText) findViewById(R.id.productPrice);
-        promotionPercent = (EditText) findViewById(R.id.promotionPercent);
-        promotionPercentErrorMessage = (TextView) findViewById(R.id.promotionPercentErrorMessage);
-        productPriceErrorMessage = (TextView) findViewById(R.id.productPriceErrorMessage);
-        saveBtn = (Button) findViewById(R.id.saveBtn);
-        imageView = (ImageView) findViewById(R.id.productImage);
-        scroll = (ScrollView) findViewById(R.id.scroll);
+        productName =  findViewById(R.id.productName);
+        categoryName =  findViewById(R.id.categoryName);
+        brandName =  findViewById(R.id.brandName);
+        productPrice = findViewById(R.id.productPrice);
+        promotionPercent = findViewById(R.id.promotionPercent);
+        promotionPercentErrorMessage = findViewById(R.id.promotionPercentErrorMessage);
+        productPriceErrorMessage = findViewById(R.id.productPriceErrorMessage);
+        saveBtn = findViewById(R.id.saveBtn);
+        imageView = findViewById(R.id.productImage);
+        scroll = findViewById(R.id.scroll);
         loadingBar = findViewById(R.id.loadingBar);
     }
 
@@ -238,8 +234,8 @@ public class EditProductInStorePage extends BasePage {
         switch (item.getItemId()) {
             case android.R.id.home:
                 // app icon in action bar clicked; go home
-                productPrice = (EditText) findViewById(R.id.productPrice);
-                promotionPercent = (EditText) findViewById(R.id.promotionPercent);
+                productPrice =  findViewById(R.id.productPrice);
+                promotionPercent =  findViewById(R.id.promotionPercent);
                 final long productPriceValue = getIntent().getLongExtra("productPrice",-1);
                 final double promotionPercentValue = getIntent().getDoubleExtra("promotionPercent",-1.0);
                 long priceLong = 0;
