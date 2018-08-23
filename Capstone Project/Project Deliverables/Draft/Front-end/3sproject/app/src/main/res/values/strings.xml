@@ -155,7 +155,7 @@
 
 
     <string name="title_fragment_me">Người dùng</string>
-
+    <string name="notificationKey">key=AAAAy6FA_UY:APA91bFZzblkVEFuOIabndkjShr6Vbvege_ZOOqjgBj6oK6ZiAK4284KlR5-1zkefS0GQL3SJSONX3vWf_iXaY0avSsiw505ndKIdnXcLo4-jjyNao1npqqfC0kXbIVio8m5Fqvc3VF3</string>
 
     <!-- TODO: facebook application -->
     <string name="facebook_app_id">2158107454303596</string>

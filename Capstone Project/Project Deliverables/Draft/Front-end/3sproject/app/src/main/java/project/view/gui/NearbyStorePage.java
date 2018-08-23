@@ -243,8 +243,6 @@ public class NearbyStorePage extends BasePage implements OnMapReadyCallback, Loc
                                 mapRadar.withLatLng(new LatLng(location.getLatitude(), location.getLongitude()));
                             latitude = location.getLatitude();
                             longtitude = location.getLongitude();
-                            adapter.setMyLatitude(latitude);
-                            adapter.setMyLongtitude(longtitude);
                         }
                     }
                 });
@@ -435,8 +433,6 @@ public class NearbyStorePage extends BasePage implements OnMapReadyCallback, Loc
                 mapRadar.withLatLng(new LatLng(location.getLatitude(), location.getLongitude()));
             }
         }
-        adapter.setMyLatitude(latitude);
-        adapter.setMyLongtitude(longtitude);
     }
 
     @Override

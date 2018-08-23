@@ -40,11 +40,18 @@
             <Button
                 android:id="@+id/checkoutAllBtn"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="50dp"
                 android:layout_alignParentRight="true"
                 android:text="Mua hàng"
                 android:background="@drawable/login_button"
                 android:textColor="@color/white"/>
+            <ProgressBar
+                android:id="@+id/loadingBar"
+                style="?android:attr/progressBarStyleInverse"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_centerInParent="true"
+                android:visibility="invisible"/>
         </RelativeLayout>
     </LinearLayout>
 
@@ -83,12 +90,5 @@
             android:background="@drawable/border_button"
             android:layout_centerHorizontal="true"/>
     </RelativeLayout>
-    <ProgressBar
-        android:id="@+id/loadingBar"
-        style="?android:attr/progressBarStyleInverse"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:visibility="invisible"/>
 
 </RelativeLayout>

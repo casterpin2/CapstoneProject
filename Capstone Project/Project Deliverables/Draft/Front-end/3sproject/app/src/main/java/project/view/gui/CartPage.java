@@ -57,8 +57,6 @@ public class CartPage extends BasePage{
     private ExpandableListView lvPhones;
     private List<Cart> list = new ArrayList<>();
     private Cart cart;
-    private CartDetail detail;
-    List<CartDetail>  cartDetail;
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference myRef;
     CartAdapter phoneListAdapter;
@@ -70,7 +68,6 @@ public class CartPage extends BasePage{
     private ProgressBar loadingBar;
     private LinearLayout buyLinearLayout;
     private int userId;
-    private String keyNotification = "key=AAAAy6FA_UY:APA91bFZzblkVEFuOIabndkjShr6Vbvege_ZOOqjgBj6oK6ZiAK4284KlR5-1zkefS0GQL3SJSONX3vWf_iXaY0avSsiw505ndKIdnXcLo4-jjyNao1npqqfC0kXbIVio8m5Fqvc3VF3";
     @Override
     protected void onResume() {
         super.onResume();
@@ -127,7 +124,7 @@ public class CartPage extends BasePage{
         checkoutAllBtn = (Button) findViewById(R.id.checkoutAllBtn);
         buyLinearLayout = (LinearLayout) findViewById(R.id.buyLinearLayout);
         loadingBar = (ProgressBar) findViewById(R.id.loadingBar);
-        loadingBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorApplication), android.graphics.PorterDuff.Mode.MULTIPLY);
+//        loadingBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorApplication), android.graphics.PorterDuff.Mode.MULTIPLY);
         shoppingBtn = (Button) findViewById(R.id.shoppingBtn);
         shoppingBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -162,12 +159,16 @@ public class CartPage extends BasePage{
         if (requestCode == 1) {
             if (resultCode == Activity.RESULT_OK) {
                 loadingBar.setVisibility(View.VISIBLE);
+                checkoutAllBtn.setEnabled(false);
+                checkoutAllBtn.setText("");
                 if (!isNetworkAvailable()) {
                     new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             Toast.makeText(CartPage.this, "Có lỗi xảy ra. Vui lòng thử lại!", Toast.LENGTH_SHORT).show();
                             loadingBar.setVisibility(View.INVISIBLE);
+                            checkoutAllBtn.setEnabled(true);
+                            checkoutAllBtn.setText("Mua hàng");
                         }
                     },10000);
                     return;
@@ -230,7 +231,7 @@ public class CartPage extends BasePage{
                                                 notification.setNotification(new NotificationDetail(cart.getStoreName(),"Bạn có đơn hàng mới"));
                                                 Log.d("da",new Gson().toJson(notification));
                                                 Toast.makeText(CartPage.this, notification.toString(), Toast.LENGTH_SHORT).show();
-                                                Call<ResultNotification> call = ApiUtils.getAPIServiceFirebaseMessage().sendNotification(notification,keyNotification,"application/json");
+                                                Call<ResultNotification> call = ApiUtils.getAPIServiceFirebaseMessage().sendNotification(notification,getResources().getString(R.string.notificationKey),"application/json");
                                                 new PushNotification(cart.getStoreId()).execute(call);
                                             }
                                         }
@@ -244,6 +245,8 @@ public class CartPage extends BasePage{
                             });
                         }
                         loadingBar.setVisibility(View.INVISIBLE);
+                        checkoutAllBtn.setEnabled(true);
+                        checkoutAllBtn.setText("Mua hàng");
                         DatabaseReference re = database.getReference().child("cart").child(String.valueOf(userId));
                         re.removeValue();
                         AlertDialog.Builder builder = new AlertDialog.Builder(CartPage.this);
@@ -276,7 +279,6 @@ public class CartPage extends BasePage{
         public void onDataChange(DataSnapshot dataSnapshot) {
             checkoutAllBtn.setEnabled(false);
             list.clear();
-            loadingBar.setVisibility(View.VISIBLE);
             if (dataSnapshot.exists()) {
                 noCart.setVisibility(View.INVISIBLE);
                 for (DataSnapshot dttSnapshot2 : dataSnapshot.getChildren()) {
@@ -286,7 +288,6 @@ public class CartPage extends BasePage{
                         lvPhones.expandGroup(i);
                     }
                     //phoneListAdapter.setTotalPrice(0.0);
-                    loadingBar.setVisibility(View.INVISIBLE);
                     phoneListAdapter.notifyDataSetChanged();
 
                     totalCart.setText(phoneListAdapter.getTotalPrice());
@@ -298,7 +299,6 @@ public class CartPage extends BasePage{
             } else {
                 list.clear();
                 buyLinearLayout.setVisibility(View.INVISIBLE);
-                loadingBar.setVisibility(View.INVISIBLE);
                 phoneListAdapter.notifyDataSetChanged();
                 totalCart.setText(phoneListAdapter.getTotalPrice());
                 noCart.setVisibility(View.VISIBLE);
