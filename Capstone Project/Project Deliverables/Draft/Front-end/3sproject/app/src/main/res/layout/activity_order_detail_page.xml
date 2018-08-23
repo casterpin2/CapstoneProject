@@ -24,16 +24,15 @@
             android:layout_weight="4"
             android:layout_height="wrap_content"
             android:text="Tên khách hàng"
-            android:textSize="14dp"/>
+            android:textSize="16dp"/>
         <TextView
             android:id="@+id/usernameTV"
             android:layout_width="0dp"
             android:layout_weight="6"
             android:layout_height="wrap_content"
             android:text="Thắng Nguyễn"
-            android:paddingLeft="7dp"
             android:textColor="@color/darkGrey"
-            android:textSize="15dp"
+            android:textSize="18dp"
             android:maxLines="2"
             android:ellipsize="end"/>
     </LinearLayout>
@@ -48,23 +47,39 @@
         android:paddingRight="10dp"
         android:layout_below="@+id/usernameLayout">
         <TextView
+            android:gravity="center|left"
             android:layout_width="0dp"
             android:layout_weight="4"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:text="Số điện thoại"
-            android:textSize="14dp"
+            android:textSize="16dp"
             />
-        <TextView
-            android:id="@+id/phoneTV"
+        <LinearLayout
             android:layout_width="0dp"
-            android:layout_weight="6"
             android:layout_height="wrap_content"
-            android:text="0912003174"
-            android:paddingLeft="7dp"
-            android:textColor="@color/darkGrey"
-            android:textSize="15dp"
-            android:singleLine="true"
-            android:ellipsize="end"/>
+            android:layout_weight="6">
+            <TextView
+                android:id="@+id/phoneTV"
+                android:layout_width="0dp"
+                android:layout_weight="5"
+                android:layout_height="match_parent"
+                android:text="0912003174"
+                android:gravity="center|left"
+                android:textColor="@color/darkGrey"
+                android:textSize="18dp"
+                android:singleLine="true"
+                android:ellipsize="end"/>
+            <TextView
+                android:id="@+id/tvCall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16dp"
+                android:padding="8dp"
+                android:gravity="center|right"
+                android:textColor="@color/lb_more"
+                android:text="Gọi ngay"/>
+        </LinearLayout>
+
     </LinearLayout>
     <LinearLayout
         android:id="@+id/statusLayout"
@@ -82,7 +97,7 @@
             android:layout_weight="4"
             android:layout_height="wrap_content"
             android:text="Trạng thái"
-            android:textSize="14dp"
+            android:textSize="16dp"
             />
         <TextView
             android:id="@+id/statusTV"
@@ -90,9 +105,8 @@
             android:layout_weight="6"
             android:layout_height="wrap_content"
             android:text="Đang đợi"
-            android:paddingLeft="7dp"
             android:textColor="@color/darkGrey"
-            android:textSize="15dp"
+            android:textSize="16dp"
             android:singleLine="true"
             android:ellipsize="end"/>
     </LinearLayout>
@@ -112,7 +126,7 @@
             android:layout_weight="4"
             android:layout_height="wrap_content"
             android:text="Giá trị"
-            android:textSize="14dp"
+            android:textSize="16dp"
             />
         <TextView
             android:id="@+id/totalTV"
@@ -120,9 +134,8 @@
             android:layout_weight="6"
             android:layout_height="wrap_content"
             android:text="1.200.000 đ"
-            android:paddingLeft="7dp"
-            android:textColor="@color/darkGrey"
-            android:textSize="15dp"
+            android:textColor="@color/colorApplication"
+            android:textSize="16dp"
             android:singleLine="true"
             android:ellipsize="end"/>
     </LinearLayout>
@@ -141,7 +154,7 @@
             android:layout_weight="4"
             android:layout_height="wrap_content"
             android:text="Thời gian giao hàng"
-            android:textSize="14dp"
+            android:textSize="16dp"
             />
         <TextView
             android:id="@+id/deliveryTimeTV"
@@ -149,9 +162,8 @@
             android:layout_weight="6"
             android:layout_height="wrap_content"
             android:text="02/02/2018 19:21"
-            android:paddingLeft="7dp"
             android:textColor="@color/darkGrey"
-            android:textSize="15dp"
+            android:textSize="16dp"
             android:singleLine="true"
             android:ellipsize="end"/>
     </LinearLayout>
@@ -171,7 +183,7 @@
             android:layout_weight="4"
             android:layout_height="wrap_content"
             android:text="Địa chỉ giao hàng"
-            android:textSize="14dp"
+            android:textSize="16dp"
             />
         <TextView
             android:id="@+id/deliveryAddressTV"
@@ -179,9 +191,8 @@
             android:layout_weight="6"
             android:layout_height="wrap_content"
             android:text="Đại học FPT - Thạch Hòa - Thạch Thất - Hà Nội"
-            android:paddingLeft="7dp"
             android:textColor="@color/lb_more"
-            android:textSize="14dp"
+            android:textSize="18dp"
             android:ellipsize="end"/>
     </LinearLayout>
 
@@ -209,13 +220,13 @@
             android:textAlignment="textStart"
             android:textColor="@color/colorBlack"
             android:paddingLeft="10dp"
-            android:textSize="11dp"/>
+            android:textSize="14dp"/>
         <TextView
             android:layout_width="0dp"
             android:layout_weight="2"
             android:layout_height="wrap_content"
             android:text="Số lượng"
-            android:textSize="11dp"
+            android:textSize="14dp"
             android:textAlignment="center"
             android:textColor="@color/colorBlack"/>
     </LinearLayout>
