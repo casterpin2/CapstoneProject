@@ -4,6 +4,7 @@
     <string name="slogan">Điện thoại cầm tay\nMua ngay lập tức</string>
 
     <string name="somethingWrong">Xảy ra lỗi. Vui lòng thử lại</string>
+    <string name="googleMapAPIKey">AIzaSyB_Wiwy7Mu3fjzCHO_7E5dn5n1n6ZaxaWs</string>
 
     <!-- TODO: placeholder text in register and login page -->
     <string name="login_page_username_placeholder">Tên đăng nhập</string>

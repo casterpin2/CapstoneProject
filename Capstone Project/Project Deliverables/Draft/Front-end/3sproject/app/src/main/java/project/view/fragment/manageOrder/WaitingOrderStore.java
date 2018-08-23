@@ -54,7 +54,7 @@ public class WaitingOrderStore extends Fragment {
             if (list.isEmpty()) {
                 noOrderLayout.setVisibility(View.VISIBLE);
                 noOrderText.setText("Không có đơn hàng đợi xử lý");
-            }else {
+            } else {
                 noOrderLayout.setVisibility(View.INVISIBLE);
             }
         } else {
@@ -63,8 +63,9 @@ public class WaitingOrderStore extends Fragment {
             noOrderLayout.setVisibility(View.VISIBLE);
             noOrderText.setText("Vui lòng kết nối mạng để xem đơn hàng");
         }
-
     }
+
+
 
     @Override
     public void onPause() {
@@ -83,6 +84,18 @@ public class WaitingOrderStore extends Fragment {
         storeId = getArguments().getInt("storeId",-1);
         adapter = new StoreOrderManagementAdapter(getContext(),R.layout.item_store_order_management, list,"Waitting");
         lvOrder.setAdapter(adapter);
+        if (!isNetworkAvailable()) {
+            Toast.makeText(getContext(), "Không có kết nối. Vui lòng kết nối mạng để xem đơn hàng", Toast.LENGTH_LONG).show();
+            noOrderLayout.setVisibility(View.VISIBLE);
+            noOrderText.setText("Vui lòng kết nối mạng để xem đơn hàng");
+        } else {
+            if (list.isEmpty()) {
+                noOrderLayout.setVisibility(View.VISIBLE);
+                noOrderText.setText("Không có đơn hàng đợi xử lý");
+            }else {
+                noOrderLayout.setVisibility(View.INVISIBLE);
+            }
+        }
         return view;
     }
 

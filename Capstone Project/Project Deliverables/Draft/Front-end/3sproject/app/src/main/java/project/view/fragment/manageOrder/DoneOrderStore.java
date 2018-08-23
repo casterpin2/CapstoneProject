@@ -45,17 +45,17 @@ public class DoneOrderStore extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (isNetworkAvailable()){
+        if (isNetworkAvailable()) {
             if (storeId != -1) {
                 myRef = database.getReference().child("ordersStore").child(String.valueOf(storeId));
-                myRef.orderByChild("status").equalTo("done").addValueEventListener(changeListener);
+                myRef.orderByChild("status").equalTo("waitting").addValueEventListener(changeListener);
             } else {
                 Toast.makeText(getContext(), "Không có người dùng", Toast.LENGTH_LONG).show();
             }
             if (list.isEmpty()) {
                 noOrderLayout.setVisibility(View.VISIBLE);
                 noOrderText.setText("Không có đơn hàng đợi xử lý");
-            }else {
+            } else {
                 noOrderLayout.setVisibility(View.INVISIBLE);
             }
         } else {
@@ -83,6 +83,18 @@ public class DoneOrderStore extends Fragment {
         storeId = getArguments().getInt("storeId",-1);
         adapter = new StoreOrderManagementAdapter(getContext(),R.layout.item_store_order_management, list,"Done");
         lvOrder.setAdapter(adapter);
+        if (!isNetworkAvailable()) {
+            Toast.makeText(getContext(), "Không có kết nối. Vui lòng kết nối mạng để xem đơn hàng", Toast.LENGTH_LONG).show();
+            noOrderLayout.setVisibility(View.VISIBLE);
+            noOrderText.setText("Vui lòng kết nối mạng để xem đơn hàng");
+        } else {
+            if (list.isEmpty()) {
+                noOrderLayout.setVisibility(View.VISIBLE);
+                noOrderText.setText("Không có đơn hàng đợi xử lý");
+            }else {
+                noOrderLayout.setVisibility(View.INVISIBLE);
+            }
+        }
         return view;
     }
     private ValueEventListener changeListener = new ValueEventListener() {

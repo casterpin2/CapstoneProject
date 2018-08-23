@@ -676,6 +676,18 @@ public class SearchProductAddToStore extends BasePage {
                 //theListView.removeFooterView(footerView);
                 limitData = true;
             }
+            if (listProduct == null) {
+                new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(SearchProductAddToStore.this, "Có lỗi xảy ra. Vui lòng thử lại!", Toast.LENGTH_SHORT).show();
+                        loadingBar.setVisibility(View.INVISIBLE);
+                        nullMessage.setText("Có lỗi xảy ra. Vui lòng thử lại");
+
+                    }
+                },5000);
+                return;
+            }
             //searchedProductList = response.body();
             if(searchedProductList.isEmpty() && listProduct.isEmpty()) {
                 TextView nullMessage = findViewById(R.id.nullMessage);

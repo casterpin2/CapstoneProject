@@ -32,7 +32,7 @@
                         app:civ_border_color="#ffffff"
                         app:civ_border_width="2dp" />
                     <ProgressBar
-                        android:id="@+id/loadingBar"
+                        android:id="@+id/loadingBarImage"
                         style="?android:attr/progressBarStyleInverse"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -227,22 +227,35 @@
                     </RelativeLayout>
 
                 </LinearLayout>
-
-                <Button
-                    android:id="@+id/saveBtn"
+                <RelativeLayout
+                    android:id="@+id/saveBtnLayout"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_below="@+id/genderLayout"
                     android:layout_marginTop="16dp"
-                    android:background="@drawable/border_button"
-                    android:text="Lưu thay đổi"
-                    android:textColor="@color/colorApplication" />
+                    >
+                    <Button
+                        android:id="@+id/saveBtn"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:background="@drawable/border_button"
+                        android:text="Lưu thay đổi"
+                        android:textColor="@color/colorApplication" />
+                    <ProgressBar
+                        android:id="@+id/loadingBarSave"
+                        style="?android:attr/progressBarStyleInverse"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_centerInParent="true"
+                        android:visibility="invisible"/>
+                </RelativeLayout>
+
 
                 <Button
                     android:id="@+id/cancelBtn"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_below="@+id/saveBtn"
+                    android:layout_below="@+id/saveBtnLayout"
                     android:layout_marginBottom="16dp"
                     android:layout_marginTop="16dp"
                     android:background="@drawable/login_button"

@@ -8,7 +8,10 @@
     android:layout_marginTop="15dp"
     android:background="@color/colorWhite"
     android:orientation="vertical"
-    android:padding="10dp">
+    android:paddingTop="5dp"
+    android:paddingLeft="2dp"
+    android:paddingRight="2dp"
+    android:paddingBottom="5dp">
 
     <!--product avatar-->
 

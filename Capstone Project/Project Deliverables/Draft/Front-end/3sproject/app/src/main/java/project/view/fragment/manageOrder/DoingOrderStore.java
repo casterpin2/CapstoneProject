@@ -48,13 +48,13 @@ public class DoingOrderStore extends Fragment {
         if (isNetworkAvailable()) {
             if (storeId != -1) {
                 myRef = database.getReference().child("ordersStore").child(String.valueOf(storeId));
-                myRef.orderByChild("status").equalTo("doing").addValueEventListener(changeListener);
+                myRef.orderByChild("status").equalTo("waitting").addValueEventListener(changeListener);
             } else {
                 Toast.makeText(getContext(), "Không có người dùng", Toast.LENGTH_LONG).show();
             }
-            if (list.isEmpty() == true){
+            if (list.isEmpty()) {
                 noOrderLayout.setVisibility(View.VISIBLE);
-                noOrderText.setText("Không có đơn hàng đang xử lý");
+                noOrderText.setText("Không có đơn hàng đợi xử lý");
             } else {
                 noOrderLayout.setVisibility(View.INVISIBLE);
             }
@@ -64,8 +64,6 @@ public class DoingOrderStore extends Fragment {
             noOrderLayout.setVisibility(View.VISIBLE);
             noOrderText.setText("Vui lòng kết nối mạng để xem đơn hàng");
         }
-
-
     }
 
     @Override
@@ -86,6 +84,18 @@ public class DoingOrderStore extends Fragment {
         storeId = getArguments().getInt("storeId",-1);
         adapter = new StoreOrderManagementAdapter(getContext(),R.layout.item_store_order_management,list,"Processing");
         lvOrder.setAdapter(adapter);
+        if (!isNetworkAvailable()) {
+            Toast.makeText(getContext(), "Không có kết nối. Vui lòng kết nối mạng để xem đơn hàng", Toast.LENGTH_LONG).show();
+            noOrderLayout.setVisibility(View.VISIBLE);
+            noOrderText.setText("Vui lòng kết nối mạng để xem đơn hàng");
+        } else {
+            if (list.isEmpty()) {
+                noOrderLayout.setVisibility(View.VISIBLE);
+                noOrderText.setText("Không có đơn hàng đợi xử lý");
+            }else {
+                noOrderLayout.setVisibility(View.INVISIBLE);
+            }
+        }
         return view;
     }
 

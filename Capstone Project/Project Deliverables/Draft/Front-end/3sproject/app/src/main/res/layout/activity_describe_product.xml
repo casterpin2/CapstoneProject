@@ -9,7 +9,9 @@
     android:background="@color/colorWhite"
     android:orientation="vertical">
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <RelativeLayout
+        android:id="@+id/main_layout"
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="15dp"
@@ -22,6 +24,15 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:visibility="invisible" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:textColor="@color/common_google_signin_btn_text_light_disabled"
+            android:textSize="20dp"
+            android:id="@+id/nullMessage"
+            />
 
         <LinearLayout
             android:id="@+id/productImageLayout"
