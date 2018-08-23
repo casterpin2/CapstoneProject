@@ -125,7 +125,7 @@ public class RegisterStorePage extends BasePage implements OnMapReadyCallback {
         mapFragment.getMapAsync(this);
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        
+
         etStoreName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
