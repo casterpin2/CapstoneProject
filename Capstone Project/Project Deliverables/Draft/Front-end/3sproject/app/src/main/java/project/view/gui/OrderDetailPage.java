@@ -15,6 +15,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -27,6 +28,7 @@ import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -65,7 +67,7 @@ public class OrderDetailPage extends BasePage {
     private TextView usernameTV, phoneTV, totalTV, deliveryTimeTV, deliveryAddressTV, statusTV;
     private ListView productListView;
     private TextView acceptBtn, rejectBtn, closeBtn, tvCall;
-    private LinearLayout waittingOrderButtonLayout, processingOrderButtonLayout;
+    private LinearLayout waittingOrderButtonLayout;
     private RelativeLayout buttonLayout;
     private OrderDetailCustomListViewAdapter adapter;
     private ArrayList<Product> productList;
@@ -79,6 +81,8 @@ public class OrderDetailPage extends BasePage {
     private Store store;
     private static final int REQUEST_CALL = 1;
     private String phoneNumber;
+    private ProgressBar loadingBarAccept, loadingBarClose;
+    private RelativeLayout processingOrderButtonLayout;
     @Override
     protected void onResume() {
         super.onResume();
@@ -124,6 +128,8 @@ public class OrderDetailPage extends BasePage {
         isProcessingOrder = getIntent().getBooleanExtra("isProcessingOrder", false);
         isDoneOrder = getIntent().getBooleanExtra("isDoneOrder", false);
         findView();
+        loadingBarAccept.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorApplication), android.graphics.PorterDuff.Mode.MULTIPLY);
+        loadingBarClose.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorApplication), android.graphics.PorterDuff.Mode.MULTIPLY);
         setLayout(isWaittingOrder, isProcessingOrder, isDoneOrder,buttonLayout, waittingOrderButtonLayout, processingOrderButtonLayout);
 
         productListView.setHorizontalScrollBarEnabled(false);
@@ -143,11 +149,7 @@ public class OrderDetailPage extends BasePage {
         acceptBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!isNetworkAvailable()){
-                    Toast.makeText(OrderDetailPage.this, "Có lỗi xảy ra với mạng", Toast.LENGTH_LONG).show();
-                    finish();
-                    return;
-                }
+
                 AlertDialog.Builder builder = new AlertDialog.Builder(OrderDetailPage.this);
                 builder.setTitle("Chấp nhận đơn hàng");
                 builder.setMessage("Bạn có chắc chắn muốn nhận đơn hàng này không?");
@@ -155,15 +157,55 @@ public class OrderDetailPage extends BasePage {
                 builder.setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if (order == null ){
-                            Toast.makeText(OrderDetailPage.this, "Người dùng đã hủy đơn hàng này", Toast.LENGTH_SHORT).show();
-                            finish();
+                        loadingBarAccept.setVisibility(View.VISIBLE);
+                        acceptBtn.setEnabled(false);
+                        closeBtn.setEnabled(false);
+                        rejectBtn.setEnabled(false);
+                        tvCall.setEnabled(false);
+                        deliveryAddressTV.setEnabled(false);
+                        acceptBtn.setText("");
+                        if (!isNetworkAvailable()){
+                            new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(OrderDetailPage.this, "Có lỗi xảy ra. Vui lòng thử lại!", Toast.LENGTH_SHORT).show();
+                                    loadingBarAccept.setVisibility(View.INVISIBLE);
+                                    acceptBtn.setEnabled(true);
+                                    closeBtn.setEnabled(true);
+                                    rejectBtn.setEnabled(true);
+                                    tvCall.setEnabled(true);
+                                    deliveryAddressTV.setEnabled(true);
+                                    acceptBtn.setText("Chấp thuận");
+                                    finish();
+                                    return;
+                                }
+                            },5000);
+
                         } else {
-                            myRef.child("status").setValue("doing");
-                            DatabaseReference myRef1 = database.getReference().child("ordersUser").child(String.valueOf(order.getUserId())).child(orderId);
-                            myRef1.child("status").setValue("processing");
-                            finish();
-                            // viết code nhận đơn hàng ở đấy
+                            if (order == null ){
+                                Toast.makeText(OrderDetailPage.this, "Người dùng đã hủy đơn hàng này", Toast.LENGTH_SHORT).show();
+                                loadingBarAccept.setVisibility(View.INVISIBLE);
+                                acceptBtn.setEnabled(true);
+                                closeBtn.setEnabled(true);
+                                rejectBtn.setEnabled(true);
+                                tvCall.setEnabled(true);
+                                deliveryAddressTV.setEnabled(true);
+                                acceptBtn.setText("Chấp thuận");
+                                finish();
+                            } else {
+                                myRef.child("status").setValue("doing");
+                                DatabaseReference myRef1 = database.getReference().child("ordersUser").child(String.valueOf(order.getUserId())).child(orderId);
+                                myRef1.child("status").setValue("processing");
+                                loadingBarAccept.setVisibility(View.INVISIBLE);
+                                acceptBtn.setEnabled(true);
+                                closeBtn.setEnabled(true);
+                                rejectBtn.setEnabled(true);
+                                tvCall.setEnabled(true);
+                                deliveryAddressTV.setEnabled(true);
+                                acceptBtn.setText("Chấp thuận");
+                                finish();
+                                // viết code nhận đơn hàng ở đấy
+                            }
                         }
                     }
                 });
@@ -219,11 +261,6 @@ public class OrderDetailPage extends BasePage {
         closeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!isNetworkAvailable()){
-                    Toast.makeText(OrderDetailPage.this, "Có lỗi xảy ra với mạng", Toast.LENGTH_LONG).show();
-                    finish();
-                    return;
-                }
                 AlertDialog.Builder builder = new AlertDialog.Builder(OrderDetailPage.this);
                 builder.setTitle("Đóng đơn hàng");
                 builder.setMessage("Đơn hàng này đã xử lý thành công? Bạn có muốn đóng đơn hàng này?");
@@ -231,15 +268,55 @@ public class OrderDetailPage extends BasePage {
                 builder.setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if (order == null || String.valueOf(order.getUserId()) == null){
-                            Toast.makeText(OrderDetailPage.this, "Người dùng đã hủy đơn hàng này", Toast.LENGTH_SHORT).show();
-                            finish();
+                        loadingBarClose.setVisibility(View.VISIBLE);
+                        acceptBtn.setEnabled(false);
+                        closeBtn.setEnabled(false);
+                        rejectBtn.setEnabled(false);
+                        tvCall.setEnabled(false);
+                        deliveryAddressTV.setEnabled(false);
+                        closeBtn.setText("");
+                        if (!isNetworkAvailable()){
+                            new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(OrderDetailPage.this, "Có lỗi xảy ra. Vui lòng thử lại!", Toast.LENGTH_SHORT).show();
+                                    loadingBarClose.setVisibility(View.INVISIBLE);
+                                    acceptBtn.setEnabled(true);
+                                    closeBtn.setEnabled(true);
+                                    rejectBtn.setEnabled(true);
+                                    tvCall.setEnabled(true);
+                                    deliveryAddressTV.setEnabled(true);
+                                    closeBtn.setText("Đã giao hàng");
+                                    finish();
+                                    return;
+                                }
+                            },5000);
                         } else {
-                            myRef.child("status").setValue("done");
-                            DatabaseReference myRef1 = database.getReference().child("ordersUser").child(String.valueOf(order.getUserId())).child(orderId);
-                            myRef1.child("status").setValue("done");
-                            finish();
+                            if (order == null || String.valueOf(order.getUserId()) == null){
+                                Toast.makeText(OrderDetailPage.this, "Người dùng đã hủy đơn hàng này", Toast.LENGTH_SHORT).show();
+                                loadingBarClose.setVisibility(View.INVISIBLE);
+                                acceptBtn.setEnabled(true);
+                                closeBtn.setEnabled(true);
+                                rejectBtn.setEnabled(true);
+                                tvCall.setEnabled(true);
+                                deliveryAddressTV.setEnabled(true);
+                                closeBtn.setText("Đã giao hàng");
+                                finish();
+                            } else {
+                                myRef.child("status").setValue("done");
+                                DatabaseReference myRef1 = database.getReference().child("ordersUser").child(String.valueOf(order.getUserId())).child(orderId);
+                                myRef1.child("status").setValue("done");
+                                loadingBarClose.setVisibility(View.INVISIBLE);
+                                acceptBtn.setEnabled(true);
+                                closeBtn.setEnabled(true);
+                                rejectBtn.setEnabled(true);
+                                tvCall.setEnabled(true);
+                                deliveryAddressTV.setEnabled(true);
+                                closeBtn.setText("Đã giao hàng");
+                                finish();
+                            }
                         }
+
                     }
                 });
 
@@ -277,22 +354,22 @@ public class OrderDetailPage extends BasePage {
     }
 
     public void findView(){
-//        numberOfProductTV = (TextView) findViewById(R.id.numberOfProductTV);
-        usernameTV = (TextView) findViewById(R.id.usernameTV);
-        phoneTV = (TextView) findViewById(R.id.phoneTV);
-        totalTV = (TextView) findViewById(R.id.totalTV);
-        deliveryTimeTV = (TextView) findViewById(R.id.deliveryTimeTV);
-        deliveryAddressTV = (TextView) findViewById(R.id.deliveryAddressTV);
-        statusTV = (TextView) findViewById(R.id.statusTV);
-        productListView = (ListView) findViewById(R.id.productListView);
-        waittingOrderButtonLayout = (LinearLayout) findViewById(R.id.waittingOrderButtonLayout);
-        processingOrderButtonLayout = (LinearLayout) findViewById(R.id.processingOrderButtonLayout);
-        buttonLayout = (RelativeLayout) findViewById(R.id.buttonLayout);
-        acceptBtn = (TextView) findViewById(R.id.acceptBtn);
-        rejectBtn = (TextView) findViewById(R.id.rejectBtn);
-        closeBtn = (TextView) findViewById(R.id.closeBtn);
+        usernameTV =  findViewById(R.id.usernameTV);
+        phoneTV =  findViewById(R.id.phoneTV);
+        totalTV =  findViewById(R.id.totalTV);
+        deliveryTimeTV =  findViewById(R.id.deliveryTimeTV);
+        deliveryAddressTV =  findViewById(R.id.deliveryAddressTV);
+        statusTV =  findViewById(R.id.statusTV);
+        productListView =  findViewById(R.id.productListView);
+        waittingOrderButtonLayout =  findViewById(R.id.waittingOrderButtonLayout);
+        processingOrderButtonLayout =  findViewById(R.id.processingOrderButtonLayout);
+        buttonLayout =  findViewById(R.id.buttonLayout);
+        acceptBtn =  findViewById(R.id.acceptBtn);
+        rejectBtn =  findViewById(R.id.rejectBtn);
+        closeBtn =  findViewById(R.id.closeBtn);
         tvCall = findViewById(R.id.tvCall);
-
+        loadingBarAccept = findViewById(R.id.loadingBarAccept);
+        loadingBarClose = findViewById(R.id.loadingBarClose);
     }
     private void makePhoneCall(String number) {
 
@@ -320,7 +397,7 @@ public class OrderDetailPage extends BasePage {
         }
     }
 
-    public void setLayout(boolean isWaittingOrder, boolean isProcessingOrder, boolean isDoneOrder, RelativeLayout buttonLayout, LinearLayout waittingOrderButtonLayout, LinearLayout processingOrderButtonLayout){
+    public void setLayout(boolean isWaittingOrder, boolean isProcessingOrder, boolean isDoneOrder, RelativeLayout buttonLayout, LinearLayout waittingOrderButtonLayout, RelativeLayout processingOrderButtonLayout){
         if (isWaittingOrder) {
             waittingOrderButtonLayout.setVisibility(View.VISIBLE);
             processingOrderButtonLayout.setVisibility(View.GONE);

@@ -69,7 +69,7 @@ public class StoreOrderManagementAdapter extends ArrayAdapter<Order> {
                 @Override
                 public void onClick(View view) {
                     if (!isNetworkAvailable()){
-                        Toast.makeText(context, "Có lỗi xảy ra với mạng", Toast.LENGTH_LONG).show();
+                        Toast.makeText(context, "Vui lòng kết nối mang để xem chi tiết đơn hàng", Toast.LENGTH_LONG).show();
                         return;
                     }
                     Intent goToOrderDetail = new Intent(context, OrderDetailPage.class);
