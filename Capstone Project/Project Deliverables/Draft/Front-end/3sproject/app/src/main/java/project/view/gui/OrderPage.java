@@ -18,9 +18,9 @@ import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -63,23 +63,25 @@ import project.retrofit.ApiUtils;
 import project.view.model.OrderDetail;
 import project.view.R;
 import project.view.model.Product;
+import project.view.util.CustomInterface;
 import project.view.util.Formater;
+import project.view.util.Regex;
 import retrofit2.Call;
 import retrofit2.Response;
 
 
-public class OrderPage extends BasePage implements OnMapReadyCallback{
+public class OrderPage extends BasePage implements OnMapReadyCallback {
     //    int minteger = 1;
 //    int max = 20000;
     private TextView productName, productPrice, salePrice, promotionPercent, sumOrder;
-    private TextView tvBuyerNameError, etPhone, handleAddressText, etBuyerName;
+    private TextView tvBuyerNameError, tvPhoneError, tvLocationError, tvDateTimeError, etPhone, handleAddressText, etBuyerName;
     private Button decreaseBtn, increaseBtn, orderBtn;
     private EditText productQuantity, orderDate, orderTime;
     private SwitchButton switch_button;
     private ImageView productImage;
     private RelativeLayout productDetailLayout;
 
-    private RelativeLayout handleAddressLayout;
+    private RelativeLayout handleAddressLayout, main_layout;
 
     private OrderDetail order;
 
@@ -108,6 +110,8 @@ public class OrderPage extends BasePage implements OnMapReadyCallback{
     private boolean checkLocation = false;
     //Calendar
     private int mYear, mMonth, mDay, mHour, mMinute;
+    private boolean isName = false, isPhone = false, isLocation = false, isDateTime = false;
+    private Regex regex;
 
     private Context context;
 
@@ -134,10 +138,18 @@ public class OrderPage extends BasePage implements OnMapReadyCallback{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_fast);
 
+        regex = new Regex();
         isCart = getIntent().getBooleanExtra("isCart", true);
-        price = (long)getIntent().getDoubleExtra("price",0);
-        promotion = getIntent().getDoubleExtra("promotion",0.0);
+        price = (long) getIntent().getDoubleExtra("price", 0);
+        promotion = getIntent().getDoubleExtra("promotion", 0.0);
         mapping();
+        main_layout.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                CustomInterface.hideKeyboard(view, getBaseContext());
+                return false;
+            }
+        });
         loadingBarMap.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorApplication), android.graphics.PorterDuff.Mode.MULTIPLY);
         if (isCart) {
             String priceInCart = getIntent().getStringExtra("priceInCart");
@@ -145,16 +157,16 @@ public class OrderPage extends BasePage implements OnMapReadyCallback{
             getSupportActionBar().setTitle("Đặt hàng");
             sumOrder.setText(Formater.formatDoubleToMoney(String.valueOf(priceInCart)));
         } else {
-            product = new Gson().fromJson(getIntent().getStringExtra("product"),Product.class);
+            product = new Gson().fromJson(getIntent().getStringExtra("product"), Product.class);
             productDetailLayout.setVisibility(View.VISIBLE);
             getSupportActionBar().setTitle("Đặt hàng nhanh");
         }
         SharedPreferences pre = getSharedPreferences("authentication", Context.MODE_PRIVATE);
         String userJSON = pre.getString("user", "");
-        if (userJSON .isEmpty()){
+        if (userJSON.isEmpty()) {
             user = new User();
         } else {
-            user = new Gson().fromJson(userJSON,User.class);
+            user = new Gson().fromJson(userJSON, User.class);
         }
 
         userID = user.getId();
@@ -170,7 +182,7 @@ public class OrderPage extends BasePage implements OnMapReadyCallback{
             etPhone.setText("");
         }
 
-
+        CustomInterface.setStatusBarColor(this);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorApplication)));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -220,7 +232,7 @@ public class OrderPage extends BasePage implements OnMapReadyCallback{
                     decreaseQuantity();
                 }
             });
-        } else if (product == null && isCart == false){
+        } else if (product == null && isCart == false) {
             defaultView();
             Toast.makeText(OrderPage.this, "Có lỗi xảy ra !!!", Toast.LENGTH_SHORT).show();
         }
@@ -240,6 +252,7 @@ public class OrderPage extends BasePage implements OnMapReadyCallback{
                                 orderDate.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
                             }
                         }, mYear, mMonth, mDay);
+                datePickerDialog.getDatePicker().setMinDate(calendar.getTimeInMillis());
                 datePickerDialog.show();
             }
         });
@@ -271,7 +284,7 @@ public class OrderPage extends BasePage implements OnMapReadyCallback{
             public void onClick(View v) {
                 try {
                     Intent intent =
-                            new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_FULLSCREEN)
+                            new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_OVERLAY)
                                     .build(OrderPage.this);
                     startActivityForResult(intent, PLACE_AUTOCOMPLETE_REQUEST_CODE);
 
@@ -286,7 +299,7 @@ public class OrderPage extends BasePage implements OnMapReadyCallback{
         switch_button.setOnCheckedChangeListener(new SwitchButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(SwitchButton view, boolean isChecked) {
-                if(view.isChecked()) {
+                if (view.isChecked()) {
                     turnOnLocation();
                     handleAddressLayout.setEnabled(false);
                     handleAddressText.setText("Vị trí hiện tại của bạn");
@@ -295,13 +308,13 @@ public class OrderPage extends BasePage implements OnMapReadyCallback{
                     setAutoLongtitude(0.0);
                     handleAddressText.setText(handleLocationPlace);
                     handleAddressLayout.setEnabled(true);
-                    if(handleLongtitude == 0.0 && handleLatitude == 0.0) {
+                    if (handleLongtitude == 0.0 && handleLatitude == 0.0) {
                         LatLng defaultLocation = new LatLng(21.028511, 105.804817);
                         mMap.moveCamera(CameraUpdateFactory.newLatLng(defaultLocation));
                         mMap.setMinZoomPreference(10.0f);
                         mMap.setMaxZoomPreference(10.1f);
                     } else {
-                        markerToMap(handleLongtitude,handleLatitude,mMap,"Vị trí đăng kí");
+                        markerToMap(handleLongtitude, handleLatitude, mMap, "Vị trí đăng kí");
                     }
 
                 }
@@ -311,75 +324,115 @@ public class OrderPage extends BasePage implements OnMapReadyCallback{
 
         orderBtn.setOnClickListener(new View.OnClickListener() {
             Intent intent = new Intent();
+
             @Override
             public void onClick(View v) {
-                String userName = etBuyerName.getText().toString();
-                int productID = getIntent().getIntExtra("productID", 0);
-                int storeID = getIntent().getIntExtra("storeID", 0);
-                //long finalPrice = getSalesPrice(productDetail.getProductPrice(), productDetail.getPromotionPercent())* Integer.parseInt(productQuantity.getText().toString()) ;
-                int quantity = Integer.parseInt(productQuantity.getText().toString());
-                String phone = etPhone.getText().toString();
-                String orderDateTime = orderDate.getText().toString() + " " + orderTime.getText().toString();
-                double longtitude = autoLongtitude ;
-                double latitude = autoLatitude;
-                if (orderDate.getText().toString().isEmpty()||orderTime.getText().toString().isEmpty()){
-                    Toast.makeText(OrderPage.this, "Chọn ngày giờ", Toast.LENGTH_SHORT).show();
-                    return;}
-                if(switch_button.isChecked()){
-                    longtitude = autoLongtitude ;
-                    latitude = autoLatitude;
-                    order = new OrderDetail();
-                    StringBuilder stringBuilder = new StringBuilder();
-                    stringBuilder.append(location.getApartment_number()+" ");
-                    stringBuilder.append(location.getStreet()+" ");
-                    stringBuilder.append(location.getDistrict()+" ");
-                    stringBuilder.append(location.getCounty()+" ");
-                    stringBuilder.append(location.getCity()+" ");
-                    intent.putExtra("longtitude",autoLongtitude);
-                    intent.putExtra("latitude",autoLatitude);
-                    intent.putExtra("address",stringBuilder.toString().replaceAll("null","").replaceAll("0", "").replaceAll("Unnamed Road", "").replaceAll("\\s+", " ").trim());
+
+                if ((handleLongtitude == 0 && handleLatitude == 0) && (autoLatitude == 0 || autoLongtitude == 0)) {
+                    tvLocationError.setText("Chưa xác định được vị trí của bạn");
+                    isLocation = false;
                 } else {
-                    longtitude = 0.0;
-                    latitude = 0.0;
-                    if (handleAddressText.getText().toString().isEmpty()) {
-                        Toast.makeText(OrderPage.this, "Chọn vị trí", Toast.LENGTH_SHORT).show();
-                        return;}
-                    StringBuilder stringBuilder = new StringBuilder();
-                    stringBuilder.append(location.getApartment_number()+" ");
-                    stringBuilder.append(location.getStreet()+" ");
-                    stringBuilder.append(location.getDistrict()+" ");
-                    stringBuilder.append(location.getCounty()+" ");
-                    stringBuilder.append(location.getCity()+" ");
-                    intent.putExtra("longtitude",handleLatitude);
-                    intent.putExtra("latitude",handleLongtitude);
-                    intent.putExtra("address",stringBuilder.toString().replaceAll("null","").replaceAll("0", "").replaceAll("Unnamed Road", "").replaceAll("\\s+", " ").trim());
+                    tvLocationError.setText("");
+                    isLocation = true;
                 }
-                if ( isCart == false ){
-                    // Phan nay danh cho order fast
-                    int storeId = getIntent().getIntExtra("storeID",0);
-                    String storeName = getIntent().getStringExtra("storeName");
-                    String storePhone = getIntent().getStringExtra("phone");
-                    String image_path = getIntent().getStringExtra("image_path");
-                    intent.putExtra("userId",userID);
-                    intent.putExtra("price",salesPrice);
-                    intent.putExtra("totalPrice",salesPrice * quantity);
-                    intent.putExtra("storeName", storeName);
-                    intent.putExtra("storePhone", storePhone);
-                    intent.putExtra("image_path", image_path);
-                    intent.putExtra("storeID", storeId);
-                    intent.putExtra("quantity",Integer.parseInt(productQuantity.getText().toString()));
+
+
+                if (orderDate.getText().toString().isEmpty() || orderTime.getText().toString().isEmpty()) {
+                    tvDateTimeError.setText("Bạn chưa chọn thời gian giao hàng");
+                    isDateTime = false;
+                } else {
+                    tvDateTimeError.setText("");
+                    isDateTime = true;
                 }
-                intent.putExtra("deliverTime",orderDateTime);
-                intent.putExtra("phone",phone);
-                intent.putExtra("userName",userName);
-                intent.putExtra("user_image",user.getImage_path());
-                if (checkLocation == false){
-                    setResult(Activity.RESULT_CANCELED,intent);
+                isPhone = regex.checkPhone(tvPhoneError, etPhone);
+                isName = regex.checkDisplayName(tvBuyerNameError, etBuyerName);
+
+                if (isName && isPhone && isDateTime && isLocation) {
+
+
+                    String userName = etBuyerName.getText().toString();
+                    int productID = getIntent().getIntExtra("productID", 0);
+                    int storeID = getIntent().getIntExtra("storeID", 0);
+                    //long finalPrice = getSalesPrice(productDetail.getProductPrice(), productDetail.getPromotionPercent())* Integer.parseInt(productQuantity.getText().toString()) ;
+                    int quantity = Integer.parseInt(productQuantity.getText().toString());
+                    String phone = etPhone.getText().toString();
+                    String orderDateTime = orderDate.getText().toString() + " " + orderTime.getText().toString();
+                    double longtitude = autoLongtitude;
+                    double latitude = autoLatitude;
+
+                    if (switch_button.isChecked()) {
+                        longtitude = autoLongtitude;
+                        latitude = autoLatitude;
+                        order = new OrderDetail();
+                        StringBuilder stringBuilder = new StringBuilder();
+                        stringBuilder.append(location.getApartment_number() + " ");
+                        stringBuilder.append(location.getStreet() + " ");
+                        stringBuilder.append(location.getDistrict() + " ");
+                        stringBuilder.append(location.getCounty() + " ");
+                        stringBuilder.append(location.getCity() + " ");
+                        intent.putExtra("longtitude", autoLongtitude);
+                        intent.putExtra("latitude", autoLatitude);
+                        intent.putExtra("address", stringBuilder.toString().replaceAll("null", "").replaceAll("0", "").replaceAll("Unnamed Road", "").replaceAll("\\s+", " ").trim());
+                    } else {
+                        longtitude = 0.0;
+                        latitude = 0.0;
+                        if (handleAddressText.getText().toString().isEmpty()) {
+                            Toast.makeText(OrderPage.this, "Chọn vị trí", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        StringBuilder stringBuilder = new StringBuilder();
+                        stringBuilder.append(location.getApartment_number() + " ");
+                        stringBuilder.append(location.getStreet() + " ");
+                        stringBuilder.append(location.getDistrict() + " ");
+                        stringBuilder.append(location.getCounty() + " ");
+                        stringBuilder.append(location.getCity() + " ");
+                        intent.putExtra("longtitude", handleLatitude);
+                        intent.putExtra("latitude", handleLongtitude);
+                        intent.putExtra("address", stringBuilder.toString().replaceAll("null", "").replaceAll("0", "").replaceAll("Unnamed Road", "").replaceAll("\\s+", " ").trim());
+                    }
+                    if (isCart == false) {
+                        // Phan nay danh cho order fast
+                        int storeId = getIntent().getIntExtra("storeID", 0);
+                        String storeName = getIntent().getStringExtra("storeName");
+                        String storePhone = getIntent().getStringExtra("phone");
+                        String image_path = getIntent().getStringExtra("image_path");
+                        intent.putExtra("userId", userID);
+                        intent.putExtra("price", salesPrice);
+                        intent.putExtra("totalPrice", salesPrice * quantity);
+                        intent.putExtra("storeName", storeName);
+                        intent.putExtra("storePhone", storePhone);
+                        intent.putExtra("image_path", image_path);
+                        intent.putExtra("storeID", storeId);
+                        intent.putExtra("quantity", Integer.parseInt(productQuantity.getText().toString()));
+                    }
+                    intent.putExtra("deliverTime", orderDateTime);
+                    intent.putExtra("phone", phone);
+                    intent.putExtra("userName", userName);
+                    intent.putExtra("user_image", user.getImage_path());
+                    if (checkLocation == false) {
+                        setResult(Activity.RESULT_CANCELED, intent);
+                        finish();
+                        return;
+                    }
+                    setResult(Activity.RESULT_OK, intent);
                     finish();
-                    return;
                 }
-                setResult(Activity.RESULT_OK,intent);
-                finish();
+            }
+        });
+        etBuyerName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    isName = regex.checkDisplayName(tvBuyerNameError, etBuyerName);
+                }
+            }
+        });
+        etPhone.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    isPhone = regex.checkPhone(tvPhoneError, etPhone);
+                }
             }
         });
 
@@ -391,13 +444,16 @@ public class OrderPage extends BasePage implements OnMapReadyCallback{
     }
 
 
+    public long getSalesPrice(long productPrice, double promotionPercent) {
 
-    public long getSalesPrice(long productPrice, double promotionPercent){
-
-        return  (long)(productPrice - (productPrice * promotionPercent /100));
+        return (long) (productPrice - (productPrice * promotionPercent / 100));
     }
 
-    public void mapping(){
+    public void mapping() {
+        main_layout = findViewById(R.id.main_layout);
+        tvDateTimeError = findViewById(R.id.tvDateTimeError);
+        tvLocationError = findViewById(R.id.tvLocationError);
+        tvPhoneError = findViewById(R.id.tvPhoneError);
         productImage = (ImageView) findViewById(R.id.productImage);
         productName = (TextView) findViewById(R.id.productName);
         productPrice = (TextView) findViewById(R.id.productPrice);
@@ -432,31 +488,13 @@ public class OrderPage extends BasePage implements OnMapReadyCallback{
 
     public void decreaseQuantity() {
         int quantity = Integer.parseInt(productQuantity.getText().toString());
-        quantity = quantity - 1;
-        productQuantity.setText(String.valueOf(quantity));
-        sumOrder.setText(Formater.formatDoubleToMoney(String.valueOf((salesPrice * quantity))));
-        //sumOrder.setText(Formater.formatDoubleToMoney(String.valueOf((getSalesPrice(productDetail.getProductPrice(), productDetail.getPromotionPercent()))* quantity)));
-        if (quantity == 0) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(OrderPage.this);
-            builder.setTitle("Hủy sản phẩm");
-            builder.setMessage("Số lượng sản phẩm bạn chọn là 0. Bạn có muốn dừng việc đặt hàng tại đây?");
 
-            builder.setPositiveButton(R.string.alertdialog_acceptButton, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    finish();
-                }
-            });
-
-            builder.setNegativeButton(R.string.alertdialog_cancelButton, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    increaseQuantity();
-                    return;
-                }
-            });
-            builder.show();
+        if (quantity == 1) {
             decreaseBtn.setEnabled(false);
+        } else {
+            quantity = quantity - 1;
+            productQuantity.setText(String.valueOf(quantity));
+            sumOrder.setText(Formater.formatDoubleToMoney(String.valueOf((salesPrice * quantity))));
         }
     }
 
@@ -494,7 +532,7 @@ public class OrderPage extends BasePage implements OnMapReadyCallback{
                     this.location.setLongitude(String.valueOf(handleLongtitude));
                     StringBuilder stringBuilder = new StringBuilder();
                     stringBuilder.append(handleLatitude).append(",").append(handleLongtitude);
-                    final Call<GoogleMapJSON> call = ApiUtils.getAPIServiceMap().getLocation(stringBuilder.toString(),GOOGLE_MAP_KEY);
+                    final Call<GoogleMapJSON> call = ApiUtils.getAPIServiceMap().getLocation(stringBuilder.toString(), GOOGLE_MAP_KEY);
                     new CallMapAPI().execute(call);
                     markerToMap(handleLongtitude, handleLatitude, mMap, "Vị trí đăng kí");
                 } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
@@ -567,19 +605,19 @@ public class OrderPage extends BasePage implements OnMapReadyCallback{
             location.setCounty(location1.getCounty());
             location.setApartment_number(location1.getApartment_number());
 
-            if(location.getCity() != null) {
+            if (location.getCity() != null) {
                 checkLocation = true;
-            } else if(location.getStreet() != null) {
+            } else if (location.getStreet() != null) {
                 checkLocation = true;
-            } else if(location.getDistrict() != null) {
+            } else if (location.getDistrict() != null) {
                 checkLocation = true;
-            } else if(location.getCounty() != null) {
+            } else if (location.getCounty() != null) {
                 checkLocation = true;
-            } else if(location.getApartment_number() != null) {
+            } else if (location.getApartment_number() != null) {
                 checkLocation = true;
             }
 
-            if(checkLocation){
+            if (checkLocation) {
                 orderBtn.setEnabled(true);
                 loadingBarMap.setVisibility(View.INVISIBLE);
             }
@@ -592,7 +630,7 @@ public class OrderPage extends BasePage implements OnMapReadyCallback{
                         loadingBarMap.setVisibility(View.INVISIBLE);
                     }
                 }
-            },10000);
+            }, 10000);
             super.onPostExecute(location1);
         }
 
@@ -636,7 +674,8 @@ public class OrderPage extends BasePage implements OnMapReadyCallback{
             return location;
         }
     }
-    private void defaultView(){
+
+    private void defaultView() {
 
         productName.setText("");
 
@@ -666,17 +705,21 @@ public class OrderPage extends BasePage implements OnMapReadyCallback{
             }
         });
     }
-    private void turnOnLocation(){
+
+    private void turnOnLocation() {
         final LocationListener locationListener = new LocationListener() {
             public void onLocationChanged(Location location) {
             }
 
-            public void onProviderDisabled(String provider){
+            public void onProviderDisabled(String provider) {
             }
 
-            public void onProviderEnabled(String provider){ }
+            public void onProviderEnabled(String provider) {
+            }
+
             public void onStatusChanged(String provider, int status,
-                                        Bundle extras){ }
+                                        Bundle extras) {
+            }
         };
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         // getting GPS status
@@ -717,7 +760,7 @@ public class OrderPage extends BasePage implements OnMapReadyCallback{
                         this.location.setLongitude(String.valueOf(autoLongtitude));
                         StringBuilder stringBuilder = new StringBuilder();
                         stringBuilder.append(autoLatitude).append(",").append(autoLongtitude);
-                        final Call<GoogleMapJSON> call = ApiUtils.getAPIServiceMap().getLocation(stringBuilder.toString(),GOOGLE_MAP_KEY);
+                        final Call<GoogleMapJSON> call = ApiUtils.getAPIServiceMap().getLocation(stringBuilder.toString(), GOOGLE_MAP_KEY);
                         new CallMapAPI().execute(call);
                         //Toast.makeText(RegisterStorePage.this, this.location.toString(), Toast.LENGTH_LONG).show();
                         //Toast.makeText(this, location1.toString(), Toast.LENGTH_SHORT).show();
@@ -740,7 +783,7 @@ public class OrderPage extends BasePage implements OnMapReadyCallback{
                         this.location.setLongitude(String.valueOf(autoLongtitude));
                         StringBuilder stringBuilder = new StringBuilder();
                         stringBuilder.append(autoLatitude).append(",").append(autoLongtitude);
-                        final Call<GoogleMapJSON> call = ApiUtils.getAPIServiceMap().getLocation(stringBuilder.toString(),GOOGLE_MAP_KEY);
+                        final Call<GoogleMapJSON> call = ApiUtils.getAPIServiceMap().getLocation(stringBuilder.toString(), GOOGLE_MAP_KEY);
                         new CallMapAPI().execute(call);
                         //Toast.makeText(RegisterStorePage.this, this.location.toString(), Toast.LENGTH_LONG).show();
                         //Toast.makeText(this, location1.toString(), Toast.LENGTH_SHORT).show();
