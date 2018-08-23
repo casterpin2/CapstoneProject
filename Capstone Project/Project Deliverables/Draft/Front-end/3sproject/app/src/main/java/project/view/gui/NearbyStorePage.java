@@ -1,7 +1,6 @@
 package project.view.gui;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -13,7 +12,6 @@ import android.content.pm.PackageManager;
 import android.database.MatrixCursor;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -28,11 +26,9 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.widget.CursorAdapter;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
 import android.text.Html;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -44,7 +40,6 @@ import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -54,7 +49,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -66,7 +60,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -80,8 +73,6 @@ import project.googleMapAPI.Route;
 import project.retrofit.ApiUtils;
 import project.view.R;
 import project.view.adapter.NearByStoreListViewAdapter;
-import project.view.model.Cart;
-import project.view.model.CartDetail;
 import project.view.model.NearByStore;
 import project.view.model.Notification;
 import project.view.model.NotificationDetail;
@@ -96,7 +87,6 @@ public class NearbyStorePage extends BasePage implements OnMapReadyCallback, Loc
     private FusedLocationProviderClient mFusedLocationClient;
     private ListView storeListView;
     private NearByStoreListViewAdapter adapter;
-    private List<String> nearByStore = new ArrayList<>();
     private List<NearByStore> list = new ArrayList<>();
     private LinearLayout main_layout;
     private GoogleMap mMap;
@@ -117,13 +107,11 @@ public class NearbyStorePage extends BasePage implements OnMapReadyCallback, Loc
     double longtitude = 0.0;
     final static int REQUEST_LOCATION = 1;
     public View footerView;
-    public boolean isLoading;
     private List<Polyline> polylinePaths = new ArrayList<>();
     private ProgressDialog progressDialog;
     private Product p;
     private MapRadar mapRadar;
     private String productName;
-    private String keyNotification = "key=AAAAy6FA_UY:APA91bFZzblkVEFuOIabndkjShr6Vbvege_ZOOqjgBj6oK6ZiAK4284KlR5-1zkefS0GQL3SJSONX3vWf_iXaY0avSsiw505ndKIdnXcLo4-jjyNao1npqqfC0kXbIVio8m5Fqvc3VF3";
 
     @Override
     protected void onResume() {
@@ -253,10 +241,10 @@ public class NearbyStorePage extends BasePage implements OnMapReadyCallback, Loc
         LatLng myLocation = new LatLng(latitude, longtitude);
         //googleMap.addMarker(new MarkerOptions().position(myLocation).title("Vị trí của bạn")).showInfoWindow();
         mapRadar = new MapRadar(mMap, myLocation, context);
-                mapRadar.withDistance(5000);
-                mapRadar.withOuterCircleStrokeColor(0xfccd29);
-                mapRadar.withRadarColors(0x00fccd29, 0xfffccd29);
-                mapRadar.startRadarAnimation();
+        mapRadar.withDistance(5000);
+        mapRadar.withOuterCircleStrokeColor(0xfccd29);
+        mapRadar.withRadarColors(0x00fccd29, 0xfffccd29);
+        mapRadar.startRadarAnimation();
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(myLocation));
         if (productId != -1) {
             NearByStoreAsynTask asynTask = new NearByStoreAsynTask();
@@ -265,31 +253,6 @@ public class NearbyStorePage extends BasePage implements OnMapReadyCallback, Loc
         }
     }
 
-
-    public double CalculationByDistance(LatLng point1, LatLng point2) {
-        int Radius = 6371;// radius of earth in Km
-        double lat1 = point1.latitude;
-        double lat2 = point2.latitude;
-        double lng1 = point1.longitude;
-        double lng2 = point2.longitude;
-        double dLat = Math.toRadians(lat2 - lat1);
-        double dLon = Math.toRadians(lng2 - lng1);
-        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
-                + Math.cos(Math.toRadians(lat1))
-                * Math.cos(Math.toRadians(lat2)) * Math.sin(dLon / 2)
-                * Math.sin(dLon / 2);
-        double c = 2 * Math.asin(Math.sqrt(a));
-        double valueResult = Radius * c;
-        double km = valueResult / 1;
-        DecimalFormat newFormat = new DecimalFormat("####");
-        int kmInDec = Integer.valueOf(newFormat.format(km));
-        double meter = valueResult % 1000;
-        int meterInDec = Integer.valueOf(newFormat.format(meter));
-//        Log.i("Radius Value", "" + valueResult + "   KM  " + kmInDec
-//                + " Meter   " + meterInDec);
-
-        return Radius * c;
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -352,6 +315,8 @@ public class NearbyStorePage extends BasePage implements OnMapReadyCallback, Loc
                 View v = storeListView.getChildAt(0);
                 int top = (v == null) ? 0 : v.getTop();
                 storeListView.setSelectionFromTop(index, top);
+                String productName = "Cửa hàng quanh đây có <b>" + query + "</b> ";
+                textContent.setText(Html.fromHtml(productName));
                 if (mMap != null) {
                     changeLocation(mMap);
                 }
@@ -400,33 +365,33 @@ public class NearbyStorePage extends BasePage implements OnMapReadyCallback, Loc
     }
 
     public void changeLocation (GoogleMap googleMap) {
-                double storeLongtitude = 0.0;
-                double storeLatitude = 0.0;
-                LatLng storeLatLng;
-                googleMap.getUiSettings().setCompassEnabled(false);
-                googleMap.getUiSettings().setRotateGesturesEnabled(false);
-                googleMap.setMinZoomPreference(13.0f);
-                googleMap.setMaxZoomPreference(22.0f);
-                for (int i = 0; i < list.size(); i++) {
-                    final int inti = i;
-                    storeLongtitude = list.get(i).getLongitude();
-                    storeLatitude = list.get(i).getLatitude();
-                    storeLatLng = new LatLng(storeLatitude, storeLongtitude);
-                    googleMap.addMarker(new MarkerOptions().position(storeLatLng).title(list.get(i).getName()).snippet(list.get(i).getAddress()));
-                    googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-                        @Override
-                        public boolean onMarkerClick(Marker marker) {
-                            String origin = latitude+","+longtitude;
-                            String destination = marker.getPosition().latitude+","+marker.getPosition().longitude;
-                            try {
-                                new DirectionFinder((NearbyStorePage)context, origin, destination).execute();
-                            } catch (UnsupportedEncodingException e) {
-                                e.printStackTrace();
-                            }
-                            return false;
-                        }
-                    });
+        double storeLongtitude = 0.0;
+        double storeLatitude = 0.0;
+        LatLng storeLatLng;
+        googleMap.getUiSettings().setCompassEnabled(false);
+        googleMap.getUiSettings().setRotateGesturesEnabled(false);
+        googleMap.setMinZoomPreference(13.0f);
+        googleMap.setMaxZoomPreference(22.0f);
+        for (int i = 0; i < list.size(); i++) {
+            final int inti = i;
+            storeLongtitude = list.get(i).getLongitude();
+            storeLatitude = list.get(i).getLatitude();
+            storeLatLng = new LatLng(storeLatitude, storeLongtitude);
+            googleMap.addMarker(new MarkerOptions().position(storeLatLng).title(list.get(i).getName()).snippet(list.get(i).getAddress()));
+            googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                @Override
+                public boolean onMarkerClick(Marker marker) {
+                    String origin = latitude+","+longtitude;
+                    String destination = marker.getPosition().latitude+","+marker.getPosition().longitude;
+                    try {
+                        new DirectionFinder((NearbyStorePage)context, origin, destination).execute();
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
+                    return false;
                 }
+            });
+        }
     }
 
     @Override
@@ -529,11 +494,11 @@ public class NearbyStorePage extends BasePage implements OnMapReadyCallback, Loc
                 new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                            Toast.makeText(NearbyStorePage.this, "Có lỗi xảy ra. Vui lòng thử lại!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(NearbyStorePage.this, "Có lỗi xảy ra. Vui lòng thử lại!", Toast.LENGTH_SHORT).show();
 //                            nullMessage.setText("Có lỗi xảy ra, vui lòng tải lại trang!");
-                            loadingBar.setVisibility(View.INVISIBLE);
-                            noHaveStore.setVisibility(View.VISIBLE);
-                            noHaveStore.setText("Có lỗi xảy ra, vui lòng tải lại trang!");
+                        loadingBar.setVisibility(View.INVISIBLE);
+                        noHaveStore.setVisibility(View.VISIBLE);
+                        noHaveStore.setText("Có lỗi xảy ra, vui lòng tải lại trang!");
 
                     }
                 },10000);
@@ -645,37 +610,37 @@ public class NearbyStorePage extends BasePage implements OnMapReadyCallback, Loc
                 reference.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            String key = reference.push().getKey();
-                            DatabaseReference re = reference.child(key);
-                            DatabaseReference referenceStore = database.getReference().child("ordersStore").child(String.valueOf(storeId)).child(key);
-                            re.child("address").setValue(address);
+                        String key = reference.push().getKey();
+                        DatabaseReference re = reference.child(key);
+                        DatabaseReference referenceStore = database.getReference().child("ordersStore").child(String.valueOf(storeId)).child(key);
+                        re.child("address").setValue(address);
                         referenceStore.child("address").setValue(address);
-                            re.child("latitude").setValue(latitude);
+                        re.child("latitude").setValue(latitude);
                         referenceStore.child("latitude").setValue(latitude);
-                            re.child("longtitude").setValue(longtitude);
+                        re.child("longtitude").setValue(longtitude);
                         referenceStore.child("longtitude").setValue(longtitude);
-                            re.child("deliverTime").setValue(deliverTime);
+                        re.child("deliverTime").setValue(deliverTime);
                         referenceStore.child("deliverTime").setValue(deliverTime);
-                            re.child("storeId").setValue(storeId);
-                            re.child("storeName").setValue(storeName);
-                            re.child("status").setValue("waitting");
+                        re.child("storeId").setValue(storeId);
+                        re.child("storeName").setValue(storeName);
+                        re.child("status").setValue("waitting");
                         referenceStore.child("status").setValue("waitting");
-                            re.child("phone").setValue(storePhone);
+                        re.child("phone").setValue(storePhone);
                         referenceStore.child("userId").setValue(userId);
                         referenceStore.child("phone").setValue(phone);
                         referenceStore.child("userName").setValue(userName);
-                            re.child("isFeedback").setValue("false");
-                            re.child("totalPrice").setValue(totalPrice);
+                        re.child("isFeedback").setValue("false");
+                        re.child("totalPrice").setValue(totalPrice);
                         referenceStore.child("totalPrice").setValue(totalPrice);
-                            re.child("orderDetail").child(String.valueOf(p.getProduct_id())).child("productId").setValue(p.getProduct_id());
+                        re.child("orderDetail").child(String.valueOf(p.getProduct_id())).child("productId").setValue(p.getProduct_id());
                         referenceStore.child("orderDetail").child(String.valueOf(p.getProduct_id())).child("productId").setValue(p.getProduct_id());
-                            re.child("orderDetail").child(String.valueOf(p.getProduct_id())).child("productName").setValue(p.getProduct_name());
+                        re.child("orderDetail").child(String.valueOf(p.getProduct_id())).child("productName").setValue(p.getProduct_name());
                         referenceStore.child("orderDetail").child(String.valueOf(p.getProduct_id())).child("productName").setValue(p.getProduct_name());
-                            re.child("orderDetail").child(String.valueOf(p.getProduct_id())).child("image_path").setValue(p.getImage_path());
+                        re.child("orderDetail").child(String.valueOf(p.getProduct_id())).child("image_path").setValue(p.getImage_path());
                         referenceStore.child("orderDetail").child(String.valueOf(p.getProduct_id())).child("image_path").setValue(p.getImage_path());
-                            re.child("orderDetail").child(String.valueOf(p.getProduct_id())).child("quantity").setValue(quantity);
+                        re.child("orderDetail").child(String.valueOf(p.getProduct_id())).child("quantity").setValue(quantity);
                         referenceStore.child("orderDetail").child(String.valueOf(p.getProduct_id())).child("quantity").setValue(quantity);
-                            re.child("orderDetail").child(String.valueOf(p.getProduct_id())).child("unitPrice").setValue(price);
+                        re.child("orderDetail").child(String.valueOf(p.getProduct_id())).child("unitPrice").setValue(price);
                         referenceStore.child("orderDetail").child(String.valueOf(p.getProduct_id())).child("unitPrice").setValue(price);
                         re = database.getReference().child("notification").child(String.valueOf(storeId));
                         re.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -689,7 +654,7 @@ public class NearbyStorePage extends BasePage implements OnMapReadyCallback, Loc
                                             Notification notification = new Notification();
                                             notification.setTo(token);
                                             notification.setNotification(new NotificationDetail(storeName,"Bạn có đơn hàng mới"));
-                                            Call<ResultNotification> call = ApiUtils.getAPIServiceFirebaseMessage().sendNotification(notification,keyNotification,"application/json");
+                                            Call<ResultNotification> call = ApiUtils.getAPIServiceFirebaseMessage().sendNotification(notification,getResources().getString(R.string.notificationKey),"application/json");
                                             new PushNotification(storeId).execute(call);
                                         }
                                     }

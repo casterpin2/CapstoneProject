@@ -13,6 +13,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -105,7 +106,7 @@ public class EditUserInformationPage extends BasePage {
     private boolean isCheckSave = false;
     private StorageReference storageReference;
     private String currentImg;
-    private ProgressBar loadingBar;
+    private ProgressBar loadingBarImage, loadingBarSave;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -117,7 +118,8 @@ public class EditUserInformationPage extends BasePage {
         regex = new Regex();
         getIncomingIntent();
         setLastSelector();
-
+        loadingBarImage.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorApplication), android.graphics.PorterDuff.Mode.MULTIPLY);
+        loadingBarSave.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorApplication), android.graphics.PorterDuff.Mode.MULTIPLY);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, genderName);
         genderSpinner.setAdapter(adapter);
 
@@ -447,8 +449,9 @@ public class EditUserInformationPage extends BasePage {
         return Bitmap.createScaledBitmap(image, width, height, true);
     }
     private void uploadImg() {
-        loadingBar.setVisibility(View.VISIBLE);
+        loadingBarImage.setVisibility(View.VISIBLE);
         changeImageLayout.setEnabled(false);
+        saveBtn.setEnabled(false);
         final AlertDialog.Builder builder = new AlertDialog.Builder(EditUserInformationPage.this);
         builder.setTitle("Cảnh báo quá kích thước ảnh");
         builder.setMessage("Kích thích của ảnh đã vướt quá 2MB. Vui lòng thử lại ảnh khác!");
@@ -478,8 +481,9 @@ public class EditUserInformationPage extends BasePage {
                             profile_image.setImageBitmap(selectedImage);
                             namePath = "User/image/" + nameImg;
                             saveBtn.setEnabled(true);
-                            loadingBar.setVisibility(View.INVISIBLE);
+                            loadingBarImage.setVisibility(View.INVISIBLE);
                             changeImageLayout.setEnabled(true);
+                            saveBtn.setEnabled(true);
 
                         } catch (FileNotFoundException e) {
                             e.printStackTrace();
@@ -508,8 +512,9 @@ public class EditUserInformationPage extends BasePage {
 
                     }
                     builder.setCancelable(false);
-                    loadingBar.setVisibility(View.INVISIBLE);
+                    loadingBarImage.setVisibility(View.INVISIBLE);
                     changeImageLayout.setEnabled(true);
+                    saveBtn.setEnabled(true);
                     builder.show();
 
 
@@ -540,8 +545,8 @@ public class EditUserInformationPage extends BasePage {
         backBtn = findViewById(R.id.backBtn);
         genderSpinner = findViewById(R.id.genderSpinner);
         changeImageLayout = findViewById(R.id.changeImage);
-        loadingBar = findViewById(R.id.loadingBar);
-
+        loadingBarImage = findViewById(R.id.loadingBarImage);
+        loadingBarSave = findViewById(R.id.loadingBarSave);
     }
 
     private void getIncomingIntent() {
@@ -628,6 +633,10 @@ public class EditUserInformationPage extends BasePage {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            loadingBarSave.setVisibility(View.VISIBLE);
+            saveBtn.setText("");
+            saveBtn.setEnabled(false);
+            changeImageLayout.setEnabled(false);
         }
 
         @Override
@@ -643,13 +652,29 @@ public class EditUserInformationPage extends BasePage {
                 editor.putString("store", storeUser);
                 editor.commit();
 
+                loadingBarSave.setVisibility(View.INVISIBLE);
+                saveBtn.setText("Lưu thay đổi");
+                saveBtn.setEnabled(true);
+                changeImageLayout.setEnabled(true);
+
                 Intent intent = new Intent(EditUserInformationPage.this, UserInformationPage.class);
                 intent.putExtra("userID", us.getId());
                 setResult(200, intent);
                 finish();
 
             } else {
-                Toast.makeText(EditUserInformationPage.this, "Thông tin không thay đổi", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(EditUserInformationPage.this, "Thông tin không thay đổi", Toast.LENGTH_SHORT).show();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                            Toast.makeText(EditUserInformationPage.this, "Có lỗi xảy ra. Vui lòng thử lại", Toast.LENGTH_SHORT).show();
+                            loadingBarSave.setVisibility(View.INVISIBLE);
+                            saveBtn.setText("Lưu thay đổi");
+                            saveBtn.setEnabled(true);
+                            changeImageLayout.setEnabled(true);
+                    }
+                },10000);
+                return;
             }
 
         }

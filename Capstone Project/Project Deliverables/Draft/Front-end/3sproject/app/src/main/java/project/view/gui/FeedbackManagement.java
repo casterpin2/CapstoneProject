@@ -138,15 +138,20 @@ public class FeedbackManagement extends BasePage {
                     public void run() {
                         Toast.makeText(FeedbackManagement.this, "Có lỗi xảy ra. Vui lòng thử lại!", Toast.LENGTH_SHORT).show();
                         loadingBar.setVisibility(View.INVISIBLE);
+                        noFeedback.setVisibility(View.VISIBLE);
+                        noFeedback.setText("Có lỗi xảy ra. Vui lòng tải lại trang");
                         return;
                     }
                 },10000);
                 return;
             }
             if (result.size() == 0) {
+                loadingBar.setVisibility(View.INVISIBLE);
                 noFeedback.setVisibility(View.VISIBLE);
                 noFeedback.setText("Cửa hàng không có đánh giá nào!");
                 return;
+            } else {
+                loadingBar.setVisibility(View.INVISIBLE);
             }
             for (UserFeedback uf : result) {
                 userFeedbackList.add(uf);
