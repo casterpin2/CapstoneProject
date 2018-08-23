@@ -30,7 +30,7 @@ public class TypeController {
     TypeService service;
     
     @RequestMapping(value = "/getType", method = RequestMethod.GET, produces = "application/json")
-    public List<TypeEntites> nearByStore(@RequestParam("categoryId") int categoryId) throws SQLException, IOException {
+    public List<TypeEntites> getTypebyCategory(@RequestParam("categoryId") int categoryId) throws SQLException, IOException {
         return service.getTypebyCategory(categoryId);
     }
     

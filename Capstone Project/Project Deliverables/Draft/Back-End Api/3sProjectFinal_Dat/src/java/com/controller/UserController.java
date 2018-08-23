@@ -6,23 +6,30 @@
 package com.controller;
 
 import com.entites.FeedbackEntites;
-import com.entites.JsonUtil;
 import com.entites.NearByStore;
 import com.entites.ProductAddEntites;
 import com.entites.SmsResultEntities;
 import com.entites.UserEntites;
 import com.service.UserService;
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLConnection;
+import java.nio.charset.Charset;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.servlet.http.HttpServletResponse;
 import javax.xml.bind.DatatypeConverter;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonParser;
@@ -35,6 +42,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.util.FileCopyUtils;
 /**
  *
  * @author TUYEN
@@ -55,7 +68,48 @@ public class UserController {
 
         return user.getAllUserForAdmin();
     }
+    
+    @RequestMapping(value = "/download", method = RequestMethod.GET)
+    public void download(HttpServletResponse response) throws IOException {
 
+            File file = null;
+            ClassLoader classloader = Thread.currentThread().getContextClassLoader();
+            file = new File(classloader.getResource("4.rar").getFile());
+       
+        if(!file.exists()){
+            String errorMessage = "Sorry. The file you are looking for does not exist";
+            System.out.println(errorMessage);
+            OutputStream outputStream = response.getOutputStream();
+            outputStream.write(errorMessage.getBytes(Charset.forName("UTF-8")));
+            outputStream.close();
+            return;
+        }
+         
+        String mimeType= URLConnection.guessContentTypeFromName(file.getName());
+        if(mimeType==null){
+            System.out.println("mimetype is not detectable, will take default");
+            mimeType = "application/octet-stream";
+        }
+         
+        System.out.println("mimetype : "+mimeType);
+         
+        response.setContentType(mimeType);
+         
+        /* "Content-Disposition : inline" will show viewable types [like images/text/pdf/anything viewable by browser] right on browser 
+            while others(zip e.g) will be directly downloaded [may provide save as popup, based on your browser setting.]*/
+        response.setHeader("Content-Disposition", String.format("inline; filename=\"" + file.getName() +"\""));
+ 
+         
+        /* "Content-Disposition : attachment" will be directly download, may provide save as popup, based on your browser setting*/
+        //response.setHeader("Content-Disposition", String.format("attachment; filename=\"%s\"", file.getName()));
+         
+        response.setContentLength((int)file.length());
+ 
+        InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+ 
+        //Copy bytes from source to destination(outputstream in this example), closes both streams.
+        FileCopyUtils.copy(inputStream, response.getOutputStream());
+    }
     @RequestMapping(value = "/registerUser", method = RequestMethod.POST, produces = "application/json")
     public String registerUser(@RequestBody String jsonString) throws SQLException, ClassNotFoundException, IOException {
         JsonFactory factory = new JsonFactory();
