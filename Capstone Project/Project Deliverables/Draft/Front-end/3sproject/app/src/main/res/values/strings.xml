@@ -21,7 +21,7 @@
     <string name="user_name">Tên đăng nhập</string>
     <string name="name">Tên hiển thị</string>
     <string name="password">Mật Khẩu</string>
-    <string name="confirm_password">Nhập lại mật khẩu</string>
+    <string name="confirm_password">Mật khẩu nhập lại không khớp</string>
     <string name="email">Email</string>
     <string name="phone_number">Số điện thoại</string>
     <string name="btn_register">Đăng kí</string>
@@ -155,7 +155,7 @@
 
 
     <string name="title_fragment_me">Người dùng</string>
-
+    <string name="notificationKey">key=AAAAy6FA_UY:APA91bFZzblkVEFuOIabndkjShr6Vbvege_ZOOqjgBj6oK6ZiAK4284KlR5-1zkefS0GQL3SJSONX3vWf_iXaY0avSsiw505ndKIdnXcLo4-jjyNao1npqqfC0kXbIVio8m5Fqvc3VF3</string>
 
     <!-- TODO: facebook application -->
     <string name="facebook_app_id">2158107454303596</string>
@@ -177,6 +177,6 @@
 
     <!-- TODO: placeholder text in User Information Page -->
     <string name="editBtn">Thay đổi thông tin</string>
-    <string name="error_old_pass">Mật khẩu không đúng</string>
+    <string name="error_old_pass">Mật khẩu hiện tại không đúng</string>
 
 </resources>

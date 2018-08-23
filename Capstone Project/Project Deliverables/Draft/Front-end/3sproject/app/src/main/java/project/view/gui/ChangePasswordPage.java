@@ -48,7 +48,6 @@ public class ChangePasswordPage extends BasePage {
     private String username;
     private Regex regex;
     private boolean isNewPass = false, isOldPass = false, isConfirm = false;
-    private String paswordValidator;
     private boolean checkPassword = true;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -86,12 +85,14 @@ public class ChangePasswordPage extends BasePage {
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
                    isNewPass = regex.checkPass(tvNewPass,newPass);
-                   if(newPass.getText().toString().equals(oldPass.getText().toString())){
-                       isNewPass = false;
-                       tvNewPass.setText("Mật khẩu mới không được giống với mật khẩu cũ");
-                   }else {
+                   if (isNewPass) {
+                       if(newPass.getText().toString().equals(oldPass.getText().toString())){
+                           isNewPass = false;
+                           tvNewPass.setText("Mật khẩu mới không được giống với mật khẩu cũ");
+                       }else {
                        tvNewPass.setText("");
-                    }
+                       }
+                   }
                 }
             }
         });
@@ -193,7 +194,7 @@ public class ChangePasswordPage extends BasePage {
         tvNewPass = findViewById(R.id.tvNewPassword);
         tvConfirmPass = findViewById(R.id.tvConfirmPass);
         btnChangePass = findViewById(R.id.btnChangePass);
-        loadingBar = (ProgressBar) findViewById(R.id.loadingBar);
+        loadingBar = findViewById(R.id.loadingBar);
         oldPass = findViewById(R.id.etOldPassword);
         newPass = findViewById(R.id.etNewPassword);
         confirmPass = findViewById(R.id.etConfirmPass);

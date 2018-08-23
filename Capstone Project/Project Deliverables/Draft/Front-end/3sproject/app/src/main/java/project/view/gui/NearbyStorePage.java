@@ -245,6 +245,7 @@ public class NearbyStorePage extends BasePage implements OnMapReadyCallback, Loc
                             if (mapRadar.isAnimationRunning())
                                 mapRadar.withLatLng(new LatLng(location.getLatitude(), location.getLongitude()));
                             latitude = location.getLatitude();
+                            longtitude = location.getLongitude();
                         }
                     }
                 });

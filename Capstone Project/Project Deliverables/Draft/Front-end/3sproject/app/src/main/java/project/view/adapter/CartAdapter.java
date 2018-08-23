@@ -52,17 +52,19 @@ public class CartAdapter extends BaseExpandableListAdapter {
     public Context getContext() {
         return context;
     }
-    public double getTotal(){
+
+    public double getTotal() {
         getTotalPrice();
         return totalPrice;
     }
+
     public String getTotalPrice() {
         totalPrice = 0;
-        for (Cart cart : list){
+        for (Cart cart : list) {
             Object[] cartDetails = cart.getCartDetail().values().toArray();
             double count = 0;
-            for(int i = 0 ; i < cartDetails.length;i++) {
-                CartDetail cartDetail = (CartDetail)cartDetails[i];
+            for (int i = 0; i < cartDetails.length; i++) {
+                CartDetail cartDetail = (CartDetail) cartDetails[i];
                 count += cartDetail.getUnitPrice() * cartDetail.getQuantity();
             }
             totalPrice += count;
@@ -132,14 +134,14 @@ public class CartAdapter extends BaseExpandableListAdapter {
         storeNameTV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getContext().startActivity(new Intent(getContext(), StoreInformationPage.class).putExtra("storeID",storeId));
+                getContext().startActivity(new Intent(getContext(), StoreInformationPage.class).putExtra("storeID", storeId));
             }
         });
         TextView totalTV = (TextView) convertView.findViewById(R.id.totalStoreOrder);
         double count = 0;
         Object[] cartDetails = list.get(groupPosition).getCartDetail().values().toArray();
-        for(int i = 0 ; i < cartDetails.length;i++) {
-            CartDetail cartDetail = (CartDetail)cartDetails[i];
+        for (int i = 0; i < cartDetails.length; i++) {
+            CartDetail cartDetail = (CartDetail) cartDetails[i];
             count += cartDetail.getUnitPrice() * cartDetail.getQuantity();
         }
         //totalPrice = 0;
@@ -185,8 +187,8 @@ public class CartAdapter extends BaseExpandableListAdapter {
                 if (quantity == 1) return;
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                 DatabaseReference myRef = database.getReference().child("cart").child(String.valueOf(userId));
-                ((CartDetail) getChild(groupPosition, childPosition)).setQuantity(quantity-1);
-                myRef.child(String.valueOf(storeId)).child("cartDetail").child(String.valueOf(productId)).child("quantity").setValue(quantity-1);
+                ((CartDetail) getChild(groupPosition, childPosition)).setQuantity(quantity - 1);
+                myRef.child(String.valueOf(storeId)).child("cartDetail").child(String.valueOf(productId)).child("quantity").setValue(quantity - 1);
             }
         });
 
@@ -197,8 +199,8 @@ public class CartAdapter extends BaseExpandableListAdapter {
                 increaseQuantity(quantityTv);
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                 DatabaseReference myRef = database.getReference().child("cart").child(String.valueOf(userId));
-                ((CartDetail) getChild(groupPosition, childPosition)).setQuantity(quantity+1);
-                myRef.child(String.valueOf(storeId)).child("cartDetail").child(String.valueOf(productId)).child("quantity").setValue(quantity+1);
+                ((CartDetail) getChild(groupPosition, childPosition)).setQuantity(quantity + 1);
+                myRef.child(String.valueOf(storeId)).child("cartDetail").child(String.valueOf(productId)).child("quantity").setValue(quantity + 1);
             }
         });
 
@@ -264,22 +266,13 @@ public class CartAdapter extends BaseExpandableListAdapter {
         int quantity = Integer.parseInt(quantityTV.getText().toString());
 
         if (quantity <= 1) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            builder.setTitle("Hủy sản phẩm");
-            builder.setMessage("Số lượng sản phẩm bạn chọn là 1. Không thể giảm?");
-
-            builder.setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                   return;
-                }
-            });
-            builder.show();
             return;
-            //decreaseBtn.setEnabled(false);
-        }
+        } else {
+
             quantity = quantity - 1;
             quantityTV.setText(String.valueOf(quantity));
+        }
+
 //        sumOrder.setText(Formater.formatDoubleToMoney(String.valueOf((getSalesPrice(productDetail.getProductPrice(), productDetail.getPromotionPercent()))* quantity)));
 
     }
