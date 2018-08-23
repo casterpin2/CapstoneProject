@@ -8,6 +8,7 @@ import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
 import android.location.LocationManager;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,7 +53,8 @@ public class ProductDetailPage extends BasePage {
     private TextView productNotInStoreName, productNotInStoreCategoryName, productNotInStoreBrandName, productNotInStoreDesc, storeNameTV;
     private Button addToCartBtn, findStoreBtn, editProductInStore;
     private LinearLayout isNotProductInStoreLayout, isProductInStoreLayout, productDetailLayout, storeNameLayout, isProductSaleLayout;
-
+    private RelativeLayout main_layout;
+    private TextView nullMessage;
     private Product product; //intent
 
     private int storeID; //intent
@@ -207,29 +210,31 @@ public class ProductDetailPage extends BasePage {
         }
     }
     public void mapping(){
-        productImage = (ImageView) findViewById(R.id.productImage);
-        salePriceText = (TextView) findViewById(R.id.salePrice);
-        productPriceText = (TextView) findViewById(R.id.productPrice);
-        promotionPercentText = (TextView) findViewById(R.id.promotionPercent);
-        productNameText = (TextView) findViewById(R.id.productName);
-        productNotInStoreName = (TextView) findViewById(R.id.productNotInStoreName);
-        categoryNameText = (TextView) findViewById(R.id.categoryName);
-        brandNameText = (TextView) findViewById(R.id.brandName);
-        productDescText = (TextView) findViewById(R.id.productDesc);
-        addToCartBtn = (Button) findViewById(R.id.addToCartBtn);
-        isNotProductInStoreLayout = (LinearLayout) findViewById(R.id.isNotProductInStoreLayout);
-        isProductInStoreLayout = (LinearLayout) findViewById(R.id.isProductInStoreLayout);
-        productDetailLayout = (LinearLayout) findViewById(R.id.productDetailLayout);
-        findStoreBtn = (Button) findViewById(R.id.findStoreBtn);
-        loadingBar = (ProgressBar) findViewById(R.id.loadingBar);
-        editProductInStore = (Button) findViewById(R.id.editProductInStore);
-        storeNameTV = (TextView) findViewById(R.id.storeName);
-        isProductSaleLayout = (LinearLayout) findViewById(R.id.isProductSaleLayout);
+        productImage =  findViewById(R.id.productImage);
+        salePriceText =  findViewById(R.id.salePrice);
+        productPriceText =  findViewById(R.id.productPrice);
+        promotionPercentText =  findViewById(R.id.promotionPercent);
+        productNameText =  findViewById(R.id.productName);
+        productNotInStoreName =  findViewById(R.id.productNotInStoreName);
+        categoryNameText =  findViewById(R.id.categoryName);
+        brandNameText =  findViewById(R.id.brandName);
+        productDescText =  findViewById(R.id.productDesc);
+        addToCartBtn =  findViewById(R.id.addToCartBtn);
+        isNotProductInStoreLayout =  findViewById(R.id.isNotProductInStoreLayout);
+        isProductInStoreLayout =  findViewById(R.id.isProductInStoreLayout);
+        productDetailLayout =  findViewById(R.id.productDetailLayout);
+        findStoreBtn =  findViewById(R.id.findStoreBtn);
+        loadingBar =  findViewById(R.id.loadingBar);
+        editProductInStore =  findViewById(R.id.editProductInStore);
+        storeNameTV =  findViewById(R.id.storeName);
+        isProductSaleLayout =  findViewById(R.id.isProductSaleLayout);
 
-        productNotInStoreCategoryName = (TextView) findViewById(R.id.productNotInStoreCategoryName);
-        productNotInStoreBrandName = (TextView) findViewById(R.id.productNotInStoreBrandName);
-        productNotInStoreDesc = (TextView) findViewById(R.id.productNotInStoreDesc);
-        storeNameLayout = (LinearLayout) findViewById(R.id.storeNameLayout);
+        productNotInStoreCategoryName =  findViewById(R.id.productNotInStoreCategoryName);
+        productNotInStoreBrandName =  findViewById(R.id.productNotInStoreBrandName);
+        productNotInStoreDesc =  findViewById(R.id.productNotInStoreDesc);
+        storeNameLayout =  findViewById(R.id.storeNameLayout);
+        nullMessage = findViewById(R.id.nullMessage);
+        main_layout = findViewById(R.id.main_layout);
 
     }
 
@@ -327,14 +332,24 @@ public class ProductDetailPage extends BasePage {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            loadingBar.setVisibility(View.VISIBLE);
+            main_layout.setVisibility(View.INVISIBLE);
         }
 
         @Override
         protected void onPostExecute(final Product product1) {
             if (product1 == null) {
-                Toast.makeText(ProductDetailPage.this, "Có lỗi xảy ra!!!", Toast.LENGTH_SHORT).show();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        loadingBar.setVisibility(View.INVISIBLE);
+                        nullMessage.setText("Có lỗi xảy ra. Vui lòng tải lại trang");
+                    }
+                }, 5000);
                 return;
             }
+            loadingBar.setVisibility(View.INVISIBLE);
+            main_layout.setVisibility(View.VISIBLE);
             product = product1;
             getView();
             super.onPostExecute(product1);

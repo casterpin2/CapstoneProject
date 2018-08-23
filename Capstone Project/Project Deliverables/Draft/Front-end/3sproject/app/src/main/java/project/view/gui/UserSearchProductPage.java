@@ -335,6 +335,7 @@ public class UserSearchProductPage extends BasePage {
         @Override
         protected void onPreExecute() {
             loadingBar.setVisibility(View.VISIBLE);
+            noHaveProduct.setVisibility(View.INVISIBLE);
             super.onPreExecute();
         }
 
@@ -357,19 +358,19 @@ public class UserSearchProductPage extends BasePage {
         @Override
         protected void onPostExecute(List<Product> list) {
             super.onPostExecute(list);
-            loadingBar.setVisibility(View.INVISIBLE);
             if (list != null) {
                 for (int i = 0; i < list.size(); i++) {
                     productList.add(list.get(i));
                 }
                 adapter.notifyDataSetChanged();
                 setLayout(noHaveProduct,haveProduct);
-        } else {
+            } else {
                 new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         Toast.makeText(UserSearchProductPage.this, "Có lỗi xảy ra. Vui lòng thử lại!", Toast.LENGTH_SHORT).show();
                         loadingBar.setVisibility(View.INVISIBLE);
+                        noHaveProduct.setVisibility(View.VISIBLE);
                         noHaveProduct.setText("Có lỗi xảy ra. Vui lòng thử lại");
 
                     }

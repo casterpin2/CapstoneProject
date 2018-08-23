@@ -489,13 +489,6 @@
                         android:background="@drawable/login_button"
                         android:text="Đặt hàng"
                         android:textColor="@color/colorWhite" />
-                    <ProgressBar
-                        android:id="@+id/loadingBarOrder"
-                        style="?android:attr/progressBarStyleInverse"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_centerInParent="true"
-                        android:visibility="invisible"/>
                 </RelativeLayout>
             </RelativeLayout>
 

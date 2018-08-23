@@ -106,7 +106,7 @@ public class OrderPage extends BasePage implements OnMapReadyCallback {
     private long salesPrice;
     private double promotion;
     private Product product;
-    private ProgressBar loadingBarMap, loadingBarOrder;
+    private ProgressBar loadingBarMap;
     private boolean checkLocation = false;
     //Calendar
     private int mYear, mMonth, mDay, mHour, mMinute;
@@ -301,9 +301,14 @@ public class OrderPage extends BasePage implements OnMapReadyCallback {
             public void onCheckedChanged(SwitchButton view, boolean isChecked) {
                 if (view.isChecked()) {
                     turnOnLocation();
+                    StringBuilder stringBuilder = new StringBuilder();
+                    stringBuilder.append(autoLatitude).append(",").append(autoLongtitude);
+                    final Call<GoogleMapJSON> call = ApiUtils.getAPIServiceMap().getLocation(stringBuilder.toString(), GOOGLE_MAP_KEY);
+                    new CallMapAPI().execute(call);
                     handleAddressLayout.setEnabled(false);
                     handleAddressText.setText("Vị trí hiện tại của bạn");
                 } else {
+                    loadingBarMap.setVisibility(View.INVISIBLE);
                     setAutoLatitude(0.0);
                     setAutoLongtitude(0.0);
                     handleAddressText.setText(handleLocationPlace);
@@ -314,7 +319,7 @@ public class OrderPage extends BasePage implements OnMapReadyCallback {
                         mMap.setMinZoomPreference(10.0f);
                         mMap.setMaxZoomPreference(10.1f);
                     } else {
-                        markerToMap(handleLongtitude, handleLatitude, mMap, "Vị trí đăng kí");
+                        markerToMap(handleLongtitude, handleLatitude, mMap, "Vị trí đăng kí", handleLocationPlace);
                     }
 
                 }
@@ -474,7 +479,6 @@ public class OrderPage extends BasePage implements OnMapReadyCallback {
         orderTime = (EditText) findViewById(R.id.orderTime);
         productDetailLayout = (RelativeLayout) findViewById(R.id.productDetailOrderPageLayout);
         loadingBarMap = findViewById(R.id.loadingBarMap);
-        loadingBarOrder = findViewById(R.id.loadingBarOrder);
     }
 
 
@@ -534,7 +538,7 @@ public class OrderPage extends BasePage implements OnMapReadyCallback {
                     stringBuilder.append(handleLatitude).append(",").append(handleLongtitude);
                     final Call<GoogleMapJSON> call = ApiUtils.getAPIServiceMap().getLocation(stringBuilder.toString(), GOOGLE_MAP_KEY);
                     new CallMapAPI().execute(call);
-                    markerToMap(handleLongtitude, handleLatitude, mMap, "Vị trí đăng kí");
+                    markerToMap(handleLongtitude, handleLatitude, mMap, "Vị trí đăng kí","");
                 } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
                     Status status = PlaceAutocomplete.getStatus(this, data);
                     // TODO: Handle the error.
@@ -547,11 +551,11 @@ public class OrderPage extends BasePage implements OnMapReadyCallback {
         }
     }
 
-    public void markerToMap(double longtitude, double latitude, GoogleMap mMap, String markerContent) {
+    public void markerToMap(double longtitude, double latitude, GoogleMap mMap, String markerContent, String address) {
         markerContent = "";
         LatLng myLocation = new LatLng(latitude, longtitude);
         mMap.clear();
-        mMap.addMarker(new MarkerOptions().position(myLocation).title(markerContent));
+        mMap.addMarker(new MarkerOptions().position(myLocation).title(markerContent).snippet(address)).showInfoWindow();
         mMap.moveCamera(CameraUpdateFactory.newLatLng(myLocation));
         mMap.setMinZoomPreference(15);
         mMap.setMaxZoomPreference(25);
@@ -597,7 +601,7 @@ public class OrderPage extends BasePage implements OnMapReadyCallback {
 
         @Override
         protected void onPostExecute(project.view.model.Location location1) {
-
+            super.onPostExecute(location1);
             checkLocation = false;
             location.setStreet(location1.getStreet());
             location.setCity(location1.getCity());
@@ -620,18 +624,39 @@ public class OrderPage extends BasePage implements OnMapReadyCallback {
             if (checkLocation) {
                 orderBtn.setEnabled(true);
                 loadingBarMap.setVisibility(View.INVISIBLE);
-            }
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if (!checkLocation) {
-                        orderBtn.setEnabled(true);
-                        Toast.makeText(OrderPage.this, "Có lỗi khi định vị vị trí của bạn", Toast.LENGTH_SHORT).show();
-                        loadingBarMap.setVisibility(View.INVISIBLE);
-                    }
+                switch_button.setChecked(true);
+                if (switch_button.isChecked() == true) {
+                    handleAddressText.setText("Vị trí hiện tại");
+                } else if (handleLongtitude !=  0.0 && handleLatitude != 0.0) {
+                    handleAddressText.setText(handleLocationPlace);
                 }
-            }, 10000);
-            super.onPostExecute(location1);
+            }
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (!checkLocation) {
+                            loadingBarMap.setVisibility(View.INVISIBLE);
+                            orderBtn.setEnabled(true);
+                            switch_button.setChecked(false);
+                            Toast.makeText(OrderPage.this, "Có lỗi khi định vị vị trí của bạn", Toast.LENGTH_SHORT).show();
+                            return;
+//                            if (switch_button.isChecked() == false ) {
+//                                handleAddressLayout.setEnabled(true);
+//                                if (handleLongtitude ==  0.0 && handleLatitude == 0.0) {
+//                                    LatLng defaultLocation = new LatLng(21.028511, 105.804817);
+//                                    mMap.moveCamera(CameraUpdateFactory.newLatLng(defaultLocation));
+//                                    mMap.setMinZoomPreference(10.0f);
+//                                    mMap.setMaxZoomPreference(10.1f);
+//                                } else {
+//                                    markerToMap(handleLongtitude,handleLatitude,mMap,"Vị trí đăng kí",handleLocationPlace);
+//                                }
+//
+//                            }
+                        }
+                    }
+                }, 5000);
+
+
         }
 
         @Override
@@ -760,11 +785,11 @@ public class OrderPage extends BasePage implements OnMapReadyCallback {
                         this.location.setLongitude(String.valueOf(autoLongtitude));
                         StringBuilder stringBuilder = new StringBuilder();
                         stringBuilder.append(autoLatitude).append(",").append(autoLongtitude);
-                        final Call<GoogleMapJSON> call = ApiUtils.getAPIServiceMap().getLocation(stringBuilder.toString(), GOOGLE_MAP_KEY);
-                        new CallMapAPI().execute(call);
+//                        final Call<GoogleMapJSON> call = ApiUtils.getAPIServiceMap().getLocation(stringBuilder.toString(), GOOGLE_MAP_KEY);
+//                        new CallMapAPI().execute(call);
                         //Toast.makeText(RegisterStorePage.this, this.location.toString(), Toast.LENGTH_LONG).show();
                         //Toast.makeText(this, location1.toString(), Toast.LENGTH_SHORT).show();
-                        markerToMap(autoLongtitude, autoLatitude, mMap, "Ví trí của bạn");
+                        markerToMap(autoLongtitude, autoLatitude, mMap, "Ví trí của bạn","");
                     }
                 }
             }
@@ -783,11 +808,11 @@ public class OrderPage extends BasePage implements OnMapReadyCallback {
                         this.location.setLongitude(String.valueOf(autoLongtitude));
                         StringBuilder stringBuilder = new StringBuilder();
                         stringBuilder.append(autoLatitude).append(",").append(autoLongtitude);
-                        final Call<GoogleMapJSON> call = ApiUtils.getAPIServiceMap().getLocation(stringBuilder.toString(), GOOGLE_MAP_KEY);
-                        new CallMapAPI().execute(call);
+//                        final Call<GoogleMapJSON> call = ApiUtils.getAPIServiceMap().getLocation(stringBuilder.toString(), GOOGLE_MAP_KEY);
+//                        new CallMapAPI().execute(call);
                         //Toast.makeText(RegisterStorePage.this, this.location.toString(), Toast.LENGTH_LONG).show();
                         //Toast.makeText(this, location1.toString(), Toast.LENGTH_SHORT).show();
-                        markerToMap(autoLongtitude, autoLatitude, mMap, "Ví trí của bạn");
+                        markerToMap(autoLongtitude, autoLatitude, mMap, "Ví trí của bạn","");
                     }
                 }
 

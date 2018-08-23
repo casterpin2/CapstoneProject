@@ -68,12 +68,24 @@
                 android:textSize="14dp" />
         </RelativeLayout>
     </LinearLayout>
-    <Button
-        android:id="@+id/btn"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Xác Nhận"
-        android:layout_alignParentBottom="true"
-        android:textColor="@color/colorWhite"
-        android:background="@color/colorApplication"/>
+        android:layout_alignParentBottom="true">
+        <Button
+            android:id="@+id/btn"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="Xác Nhận"
+            android:textColor="@color/colorWhite"
+            android:background="@color/colorApplication"/>
+        <ProgressBar
+            android:id="@+id/loadingBar"
+            style="?android:attr/progressBarStyleInverse"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_centerInParent="true"
+            android:visibility="invisible"/>
+    </RelativeLayout>
+
 </RelativeLayout>

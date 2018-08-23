@@ -42,7 +42,6 @@ public class ProductCategoryDisplayPage extends BasePage implements ProductInCat
     private List<Product> product;
     private List<Product> productsLoadMore;
     private RecyclerView.LayoutManager mLayoutManager;
-    private ProgressBar loadingBar;
     private TextView nullMessage;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -51,7 +50,6 @@ public class ProductCategoryDisplayPage extends BasePage implements ProductInCat
         CustomInterface.setStatusBarColor(this);
         mAPI = ApiUtils.getAPIService();
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        loadingBar = findViewById(R.id.loadingBar);
         nullMessage = findViewById(R.id.nullMessage);
         categoryId = getIntent().getIntExtra("categoryId", -1);
         String categoryName = getIntent().getStringExtra("categoryName");
@@ -123,7 +121,6 @@ public class ProductCategoryDisplayPage extends BasePage implements ProductInCat
 
         @Override
         protected void onPreExecute() {
-            loadingBar.setVisibility(View.VISIBLE);
             if (page != 0) {
                 adapter.startLoadMore();
             }
@@ -135,14 +132,6 @@ public class ProductCategoryDisplayPage extends BasePage implements ProductInCat
             productsLoadMore = aVoid;
             if (productsLoadMore == null){
                 adapter.onReachEnd();
-                new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(ProductCategoryDisplayPage.this, "Có lỗi xảy ra. Vui lòng thử lại!", Toast.LENGTH_SHORT).show();
-                            nullMessage.setText("Có lỗi xảy ra, vui lòng tải lại trang!");
-                            loadingBar.setVisibility(View.INVISIBLE);
-                    }
-                },10000);
                 return;
             }
             loadMore(page);

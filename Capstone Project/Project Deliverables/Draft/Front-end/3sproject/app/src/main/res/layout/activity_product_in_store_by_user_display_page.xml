@@ -52,7 +52,6 @@
                         android:id="@+id/tv_store_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Tên cửa hàng"
                         android:textColor="@android:color/white"
                         android:textSize="@dimen/backdrop_title" />
 
@@ -61,7 +60,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="8dp"
-                        android:text="71% Đánh giá tích cực"
                         android:textColor="@color/colorWhite" />
                 </LinearLayout>
             </RelativeLayout>

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Handler;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -12,6 +13,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,6 +41,7 @@ public class OTPCodePage extends AppCompatActivity implements NetworkStateReceiv
     private APIService apiService;
     private boolean checkNetwork = true;
     private NetworkStateReceiver networkStateReceiver;
+    private ProgressBar loadingBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,6 +68,9 @@ public class OTPCodePage extends AppCompatActivity implements NetworkStateReceiv
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                loadingBar.setVisibility(View.VISIBLE);
+                btn.setEnabled(false);
+                btn.setText("");
                 apiService = ApiUtils.getAPIService();
                 code = etCode.getText().toString();
                 if(checkNetwork){
@@ -72,10 +78,14 @@ public class OTPCodePage extends AppCompatActivity implements NetworkStateReceiv
                         @Override
                         public void onResponse(Call<Boolean> call, Response<Boolean> response) {
                             if(response.isSuccessful()){
-
+                                loadingBar.setVisibility(View.INVISIBLE);
+                                btn.setEnabled(true);
+                                btn.setText("Xác nhận");
                                 Intent toChangePasswordPage = new Intent(getBaseContext(),ResetPasswordPage.class);
                                 toChangePasswordPage.putExtra("username",username);
                                 startActivity(toChangePasswordPage);
+                            } else {
+
                             }
                         }
 
@@ -85,7 +95,15 @@ public class OTPCodePage extends AppCompatActivity implements NetworkStateReceiv
                         }
                     });
                 }else{
-
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            loadingBar.setVisibility(View.INVISIBLE);
+                            btn.setEnabled(true);
+                            btn.setText("Xác nhận");
+                            tvConfirmCodeMess.setText("Có lỗi xảy ra. Vui lòng thử lại");
+                        }
+                    }, 5000);
                 }
 
                 if(isCode){
@@ -156,6 +174,7 @@ public class OTPCodePage extends AppCompatActivity implements NetworkStateReceiv
         btn = findViewById(R.id.btn);
         tvResend = findViewById(R.id.tvReSend);
         rela = findViewById(R.id.rela);
+        loadingBar = findViewById(R.id.loadingBar);
     }
 
     @Override

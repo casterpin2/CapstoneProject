@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
@@ -41,12 +42,14 @@ public class UserManagementOrderPage extends BasePage {
     private int userId;
     private Button shoppingBtn;
     private String status;
+    private TextView nullMessage;
     
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_management);
         CustomInterface.setStatusBarColor(this);
 
+        nullMessage = findViewById(R.id.nullMessage);
         shoppingBtn = (Button) findViewById(R.id.shoppingBtn);
         shoppingBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,12 +70,17 @@ public class UserManagementOrderPage extends BasePage {
                 return true;
             }
             });
+        if (!isNetworkAvailable()) {
+            nullMessage.setVisibility(View.VISIBLE);
+            nullMessage.setText("Vui lòng kết nối mạng để xem đơn hàng");
+        } else {
+            nullMessage.setVisibility(View.INVISIBLE);
         }
+    }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if (isNetworkAvailable()) {
             if (userId != -1) {
                 myRef = database.getReference().child("ordersUser").child(String.valueOf(userId));
                 adapter = new UserOrderAdapter(UserManagementOrderPage.this, list, userId);
@@ -87,9 +95,6 @@ public class UserManagementOrderPage extends BasePage {
                     return true;
                 }
             });
-        } else {
-            Toast.makeText(this, "Không có kết nối. Vui lòng thử lại", Toast.LENGTH_LONG).show();
-        }
     }
 
     @Override
