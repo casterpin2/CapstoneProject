@@ -88,9 +88,9 @@ public class ChangePasswordPage extends BasePage {
                    isNewPass = regex.checkPass(tvNewPass,newPass);
                    if(newPass.getText().toString().equals(oldPass.getText().toString())){
                        isNewPass = false;
-                       tvOldPass.setText("Mật khẩu mới không được giống với mật khẩu cũ");
+                       tvNewPass.setText("Mật khẩu mới không được giống với mật khẩu cũ");
                    }else {
-                       tvOldPass.setText("");
+                       tvNewPass.setText("");
                     }
                 }
             }
@@ -122,7 +122,6 @@ public class ChangePasswordPage extends BasePage {
                     tvConfirmPass.setText("");
                     isConfirm = true;
                 }
-
                    if (isConfirm && isNewPass && isOldPass) {
                         tvConfirmPass.setText("");
                         if (getIntent().getStringExtra("username") != null && !getIntent().getStringExtra("username").isEmpty()) {
