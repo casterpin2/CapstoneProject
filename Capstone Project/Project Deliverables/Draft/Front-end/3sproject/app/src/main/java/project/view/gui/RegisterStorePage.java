@@ -88,6 +88,8 @@ public class RegisterStorePage extends BasePage implements OnMapReadyCallback {
     private ProgressBar loadingBarMap, loadingBarRegister;
     private boolean checkLocation = false;
     private boolean isPhone = false,isStoreName = false,isLocation=false;
+    private Regex regex;
+
 
     public void setAutoLatitude(double autoLatitude) {
         this.autoLatitude = autoLatitude;
@@ -116,28 +118,19 @@ public class RegisterStorePage extends BasePage implements OnMapReadyCallback {
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorApplication)));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        regex = new Regex();
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
 
         mapFragment.getMapAsync(this);
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-
-
+        
         etStoreName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if(!hasFocus){
-                    Regex regex = new Regex();
-                    String input = etStoreName.getText().toString();
-                    if(!regex.isName(input)){
-                        tvStoreNameError.setText(R.string.errorStoreName);
-                        isStoreName = false;
-                    }
-                    else
-                        tvStoreNameError.setText("");
-                        isStoreName = true;
+                   isStoreName = regex.checkDisplayName(tvStoreNameError,etStoreName);
                 }
             }
         });
@@ -145,16 +138,8 @@ public class RegisterStorePage extends BasePage implements OnMapReadyCallback {
         etPhone.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                isPhone = true;
                 if(!hasFocus){
-                   if(etPhone.getText().length()<10||etPhone.getText().length()>11){
-                       tvPhoneError.setText(R.string.error_validate_phone);
-                       isPhone= false;
-                   }
-                   else {
-                       tvPhoneError.setText("");
-                       isPhone = true;
-                   }
+                   isPhone = regex.checkPhone(tvPhoneError,etPhone);
                 }
             }
         });
@@ -206,22 +191,18 @@ public class RegisterStorePage extends BasePage implements OnMapReadyCallback {
         registerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isLocation = true;
+
 
                 if((handleLongtitude==0&&handleLatitude==0)&&(autoLatitude==0||autoLongtitude==0)){
                     tvLocationError.setText("Chưa xác định được vị trí của bạn");
                     isLocation = false;
                 }
                 else {
+                    isLocation = true;
                     tvLocationError.setText("");
                 }
-                if (!isStoreName){
-                    tvStoreNameError.setText(R.string.errorStoreName);
-                }
-                if (!isPhone){
-                    tvPhoneError.setText(R.string.error_validate_phone);
-                }
-
+                isPhone = regex.checkPhone(tvPhoneError,etPhone);
+                isStoreName = regex.checkDisplayName(tvStoreNameError,etStoreName);
                 if(isPhone&&isStoreName&&isLocation) {
                     String storeName = etStoreName.getText().toString().trim();
                     String phone = etPhone.getText().toString().trim();
