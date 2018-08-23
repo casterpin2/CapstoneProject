@@ -1,5 +1,6 @@
 package project.view.gui;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,9 +12,12 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.MenuItem;
@@ -51,6 +55,7 @@ import project.view.adapter.UserOrderAdapter;
 import project.view.model.Cart;
 import project.view.model.CartDetail;
 import project.view.model.Order;
+import project.view.model.OrderDetail;
 import project.view.model.Product;
 import project.view.model.Store;
 import project.view.util.CustomInterface;
@@ -59,7 +64,7 @@ import project.view.util.Formater;
 public class OrderDetailPage extends BasePage {
     private TextView usernameTV, phoneTV, totalTV, deliveryTimeTV, deliveryAddressTV, statusTV;
     private ListView productListView;
-    private TextView acceptBtn, rejectBtn, closeBtn;
+    private TextView acceptBtn, rejectBtn, closeBtn, tvCall;
     private LinearLayout waittingOrderButtonLayout, processingOrderButtonLayout;
     private RelativeLayout buttonLayout;
     private OrderDetailCustomListViewAdapter adapter;
@@ -72,6 +77,8 @@ public class OrderDetailPage extends BasePage {
     DatabaseReference myRef, ref;
     private Order order;
     private Store store;
+    private static final int REQUEST_CALL = 1;
+    private String phoneNumber;
     @Override
     protected void onResume() {
         super.onResume();
@@ -245,7 +252,13 @@ public class OrderDetailPage extends BasePage {
                 builder.show();
             }
         });
-
+        tvCall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                phoneNumber = phoneTV.getText().toString();
+                makePhoneCall(phoneNumber);
+            }
+        });
         productList= new ArrayList<>();
         adapter = new OrderDetailCustomListViewAdapter(OrderDetailPage.this, R.layout.product_in_order_detail, productList);
         productListView.setAdapter(adapter);
@@ -278,7 +291,33 @@ public class OrderDetailPage extends BasePage {
         acceptBtn = (TextView) findViewById(R.id.acceptBtn);
         rejectBtn = (TextView) findViewById(R.id.rejectBtn);
         closeBtn = (TextView) findViewById(R.id.closeBtn);
+        tvCall = findViewById(R.id.tvCall);
 
+    }
+    private void makePhoneCall(String number) {
+
+        if (number.trim().length() > 0) {
+
+            if (ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(OrderDetailPage.this,
+                        new String[]{Manifest.permission.CALL_PHONE}, REQUEST_CALL);
+            } else {
+                String dial = "tel:" + number;
+                startActivity(new Intent(Intent.ACTION_CALL, Uri.parse(dial)));
+            }
+
+        }
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == REQUEST_CALL) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                makePhoneCall(phoneNumber);
+            } else {
+                Toast.makeText(OrderDetailPage.this, "Permission DENIED", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     public void setLayout(boolean isWaittingOrder, boolean isProcessingOrder, boolean isDoneOrder, RelativeLayout buttonLayout, LinearLayout waittingOrderButtonLayout, LinearLayout processingOrderButtonLayout){
