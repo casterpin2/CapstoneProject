@@ -149,9 +149,14 @@ public class RegisterStorePage extends BasePage implements OnMapReadyCallback {
                 tvLocationError.setText("");
                 if(view.isChecked()) {
                     turnOnLocation();
+                    StringBuilder stringBuilder = new StringBuilder();
+                    stringBuilder.append(autoLatitude).append(",").append(autoLongtitude);
+                    final Call<GoogleMapJSON> call = ApiUtils.getAPIServiceMap().getLocation(stringBuilder.toString(), GOOGLE_MAP_KEY);
+                    new RegisterStorePage.CallMapAPI().execute(call);
                     handleAddressLayout.setEnabled(false);
                     handleAddressText.setText(R.string.yourGPS);
                 } else {
+                    loadingBarMap.setVisibility(View.INVISIBLE);
                     setAutoLatitude(0.0);
                     setAutoLongtitude(0.0);
                     handleAddressText.setText(handleLocationPlace);
@@ -162,7 +167,7 @@ public class RegisterStorePage extends BasePage implements OnMapReadyCallback {
                         mMap.setMinZoomPreference(10.0f);
                         mMap.setMaxZoomPreference(10.1f);
                     } else {
-                        markerToMap(handleLongtitude,handleLatitude,mMap,"Vị trí đăng kí");
+                        markerToMap(handleLongtitude,handleLatitude,mMap,"Vị trí đăng kí",handleLocationPlace);
                     }
 
                 }
@@ -263,7 +268,7 @@ public class RegisterStorePage extends BasePage implements OnMapReadyCallback {
                     mAPI = ApiUtils.getAPIServiceMap();
                     final Call<GoogleMapJSON> call = mAPI.getLocation(stringBuilder.toString(),GOOGLE_MAP_KEY);
                     new CallMapAPI().execute(call);
-                    markerToMap(handleLongtitude, handleLatitude, mMap, "Vị trí đăng kí");
+                    markerToMap(handleLongtitude, handleLatitude, mMap, "Vị trí đăng kí","");
                 } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
                     Status status = PlaceAutocomplete.getStatus(this, data);
                     // TODO: Handle the error.
@@ -319,9 +324,9 @@ public class RegisterStorePage extends BasePage implements OnMapReadyCallback {
                         StringBuilder stringBuilder = new StringBuilder();
                         stringBuilder.append(autoLatitude).append(",").append(autoLongtitude);
                         mAPI = ApiUtils.getAPIServiceMap();
-                        final Call<GoogleMapJSON> call = mAPI.getLocation(stringBuilder.toString(),GOOGLE_MAP_KEY);
-                        new CallMapAPI().execute(call);
-                        markerToMap(autoLongtitude, autoLatitude, mMap, "Ví trí của bạn");
+//                        final Call<GoogleMapJSON> call = mAPI.getLocation(stringBuilder.toString(),GOOGLE_MAP_KEY);
+//                        new CallMapAPI().execute(call);
+                        markerToMap(autoLongtitude, autoLatitude, mMap, "Ví trí của bạn","");
                     }
                 }
             }
@@ -341,9 +346,9 @@ public class RegisterStorePage extends BasePage implements OnMapReadyCallback {
                         StringBuilder stringBuilder = new StringBuilder();
                         stringBuilder.append(autoLatitude).append(",").append(autoLongtitude);
                         mAPI = ApiUtils.getAPIServiceMap();
-                        final Call<GoogleMapJSON> call = mAPI.getLocation(stringBuilder.toString(),GOOGLE_MAP_KEY);
-                        new CallMapAPI().execute(call);
-                        markerToMap(autoLongtitude, autoLatitude, mMap, getResources().getString(R.string.yourGPS));
+//                        final Call<GoogleMapJSON> call = mAPI.getLocation(stringBuilder.toString(),GOOGLE_MAP_KEY);
+//                        new CallMapAPI().execute(call);
+                        markerToMap(autoLongtitude, autoLatitude, mMap, getResources().getString(R.string.yourGPS),"");
                     }
                 }
 
@@ -373,16 +378,14 @@ public class RegisterStorePage extends BasePage implements OnMapReadyCallback {
         }
     }
 
-    public void markerToMap(double longtitude, double latitude, GoogleMap mMap, String markerContent) {
+    public void markerToMap(double longtitude, double latitude, GoogleMap mMap, String markerContent, String address) {
         markerContent = "";
         LatLng myLocation = new LatLng(latitude, longtitude);
         mMap.clear();
-        mMap.addMarker(new MarkerOptions().position(myLocation).title(markerContent));
+        mMap.addMarker(new MarkerOptions().position(myLocation).title(markerContent).snippet(address)).showInfoWindow();
         mMap.moveCamera(CameraUpdateFactory.newLatLng(myLocation));
         mMap.setMinZoomPreference(15);
         mMap.setMaxZoomPreference(25);
-        mMap.getUiSettings().isMyLocationButtonEnabled();
-        mMap.getUiSettings().setScrollGesturesEnabled(false);
     }
 
     @Override
@@ -454,9 +457,13 @@ public class RegisterStorePage extends BasePage implements OnMapReadyCallback {
             }
 
             if(checkLocation){
-                Toast.makeText(RegisterStorePage.this, "Đã định vị thành công", Toast.LENGTH_SHORT).show();
                 registerBtn.setEnabled(true);
                 loadingBarMap.setVisibility(View.INVISIBLE);
+                if (iconSwitch.isChecked() == true) {
+                    handleAddressText.setText("Vị trí hiện tại");
+                } else if (handleLongtitude !=  0.0 && handleLatitude != 0.0) {
+                    handleAddressText.setText(handleLocationPlace);
+                }
             }
             new Handler().postDelayed(new Runnable() {
                 @Override
@@ -466,6 +473,21 @@ public class RegisterStorePage extends BasePage implements OnMapReadyCallback {
                         Toast.makeText(RegisterStorePage.this, "Có lỗi khi định vị vị trí của bạn", Toast.LENGTH_SHORT).show();
                         registerBtn.setEnabled(true);
                         loadingBarMap.setVisibility(View.INVISIBLE);
+                        iconSwitch.setChecked(false);
+                        if (iconSwitch.isChecked() == false ) {
+                            handleAddressLayout.setEnabled(true);
+                            if (handleLongtitude ==  0.0 && handleLatitude == 0.0) {
+                                LatLng defaultLocation = new LatLng(21.028511, 105.804817);
+                                mMap.moveCamera(CameraUpdateFactory.newLatLng(defaultLocation));
+                                mMap.setMinZoomPreference(10.0f);
+                                mMap.setMaxZoomPreference(10.1f);
+                            } else {
+                                markerToMap(handleLongtitude,handleLatitude,mMap,"Vị trí đăng kí",handleLocationPlace);
+                            }
+
+                        } else {
+                            markerToMap(autoLongtitude,autoLatitude,mMap,"Vị trí hiên tại","");
+                        }
                     }
                 }
             },10000);
@@ -533,21 +555,21 @@ public class RegisterStorePage extends BasePage implements OnMapReadyCallback {
                 Toast.makeText(RegisterStorePage.this, "Chưa định vị được vị trí của bạn", Toast.LENGTH_LONG).show();
                 return;
             }
-            if (result == null) {
-                loadingBarRegister.setVisibility(View.INVISIBLE);
-                registerBtn.setEnabled(true);
-                registerBtn.setText("Đăng kí");
-                Toast.makeText(RegisterStorePage.this, "Có lỗi xảy ra", Toast.LENGTH_LONG).show();
-                return;
-            }
-            if (result.getId() == 0){
-                loadingBarRegister.setVisibility(View.INVISIBLE);
-                registerBtn.setEnabled(true);
-                registerBtn.setText("Đăng kí");
-                Toast.makeText(RegisterStorePage.this, "Số điện thoại này đã được sử dụng để đăng kí cửa hàng", Toast.LENGTH_LONG).show();
-                return;
-            }
+//            if (result == null) {
+//                loadingBarRegister.setVisibility(View.INVISIBLE);
+//                registerBtn.setEnabled(true);
+//                registerBtn.setText("Đăng kí");
+//                Toast.makeText(RegisterStorePage.this, "Có lỗi xảy ra", Toast.LENGTH_LONG).show();
+//                return;
+//            }
             if (result != null) {
+                if (result.getId() == 0){
+                    loadingBarRegister.setVisibility(View.INVISIBLE);
+                    registerBtn.setEnabled(true);
+                    registerBtn.setText("Đăng kí");
+                    Toast.makeText(RegisterStorePage.this, "Số điện thoại này đã được sử dụng để đăng kí cửa hàng", Toast.LENGTH_LONG).show();
+                    return;
+                }
                 loadingBarRegister.setVisibility(View.INVISIBLE);
                 registerBtn.setText("Đăng kí");
                 registerBtn.setEnabled(true);
@@ -562,7 +584,7 @@ public class RegisterStorePage extends BasePage implements OnMapReadyCallback {
                 editor.commit();
                 finishAffinity();
                 finish();
-               startActivity(intent);
+                startActivity(intent);
             } else {
                 new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                     @Override
@@ -572,11 +594,13 @@ public class RegisterStorePage extends BasePage implements OnMapReadyCallback {
                         loadingBarRegister.setVisibility(View.INVISIBLE);
                         registerBtn.setEnabled(true);
                         registerBtn.setText("Đăng kí");
-
+                        return;
                     }
                 },10000);
 
             }
+
+
 
         }
 

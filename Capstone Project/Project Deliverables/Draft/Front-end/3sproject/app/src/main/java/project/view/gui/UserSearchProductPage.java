@@ -364,6 +364,16 @@ public class UserSearchProductPage extends BasePage {
                 }
                 adapter.notifyDataSetChanged();
                 setLayout(noHaveProduct,haveProduct);
+                loadingBar.setVisibility(View.INVISIBLE);
+                if (productList.isEmpty()) {
+                    noHaveProduct.setVisibility(View.VISIBLE);
+                    noHaveProduct.setText("Không có sản phẩm nào!");
+                } else {
+                    noHaveProduct.setVisibility(View.INVISIBLE);
+                    noHaveProduct.setText("");
+                }
+
+
             } else {
                 new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                     @Override

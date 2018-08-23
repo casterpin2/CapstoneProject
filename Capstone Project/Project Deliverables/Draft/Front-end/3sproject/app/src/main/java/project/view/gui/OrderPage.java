@@ -639,20 +639,20 @@ public class OrderPage extends BasePage implements OnMapReadyCallback {
                             orderBtn.setEnabled(true);
                             switch_button.setChecked(false);
                             Toast.makeText(OrderPage.this, "Có lỗi khi định vị vị trí của bạn", Toast.LENGTH_SHORT).show();
-                            return;
-//                            if (switch_button.isChecked() == false ) {
-//                                handleAddressLayout.setEnabled(true);
-//                                if (handleLongtitude ==  0.0 && handleLatitude == 0.0) {
-//                                    LatLng defaultLocation = new LatLng(21.028511, 105.804817);
-//                                    mMap.moveCamera(CameraUpdateFactory.newLatLng(defaultLocation));
-//                                    mMap.setMinZoomPreference(10.0f);
-//                                    mMap.setMaxZoomPreference(10.1f);
-//                                } else {
-//                                    markerToMap(handleLongtitude,handleLatitude,mMap,"Vị trí đăng kí",handleLocationPlace);
-//                                }
-//
-//                            }
+
+                            if (switch_button.isChecked() == false ) {
+                                handleAddressLayout.setEnabled(true);
+                                if (handleLongtitude ==  0.0 && handleLatitude == 0.0) {
+                                    LatLng defaultLocation = new LatLng(21.028511, 105.804817);
+                                    mMap.moveCamera(CameraUpdateFactory.newLatLng(defaultLocation));
+                                    mMap.setMinZoomPreference(10.0f);
+                                    mMap.setMaxZoomPreference(10.1f);
+                                } else {
+                                    markerToMap(handleLongtitude,handleLatitude,mMap,"Vị trí đăng kí",handleLocationPlace);
+                                }
+                            }
                         }
+                        return;
                     }
                 }, 5000);
 

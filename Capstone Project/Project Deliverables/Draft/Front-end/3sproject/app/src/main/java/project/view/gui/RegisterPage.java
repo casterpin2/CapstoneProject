@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +13,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,6 +44,7 @@ public class RegisterPage extends AppCompatActivity {
     private Gson gson;
     private RelativeLayout main_layout;
     private Regex regex;
+    private ProgressBar loadingBar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -216,6 +220,7 @@ public class RegisterPage extends AppCompatActivity {
         tvEmail = findViewById(R.id.tvEmail);
         tvPhoneNumber = findViewById(R.id.tvPhoneNumber);
         main_layout = findViewById(R.id.main_layout);
+        loadingBar = findViewById(R.id.loadingBar);
     }
 
 
@@ -275,6 +280,15 @@ public class RegisterPage extends AppCompatActivity {
     public class RegisterUserAsyncTask1 extends AsyncTask<Call, Void, String> {
 
         @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            loadingBar.setVisibility(View.VISIBLE);
+            btnRegister.setText("");
+            btnRegister.setEnabled(false);
+            toLoginPageBtn.setEnabled(false);
+        }
+
+        @Override
         protected String doInBackground(Call... calls) {
             try {
                 Call<ResultRegister> call = calls[0];
@@ -300,13 +314,28 @@ public class RegisterPage extends AppCompatActivity {
             super.onPostExecute(aVoid);
             //if (aVoid == null) return;
             if (aVoid == null) {
-                Toast.makeText(RegisterPage.this, "Có lỗi xảy ra", Toast.LENGTH_SHORT).show();
-                return;
+                new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(RegisterPage.this, "Có lỗi xảy ra. Vui lòng thử lại!", Toast.LENGTH_SHORT).show();
+                        loadingBar.setVisibility(View.INVISIBLE);
+                        btnRegister.setText("Đăng kí");
+                        btnRegister.setEnabled(true);
+                        toLoginPageBtn.setEnabled(true);
+                        return;
+                    }
+                },10000);
+            } else {
+                loadingBar.setVisibility(View.INVISIBLE);
+                btnRegister.setText("Đăng kí");
+                btnRegister.setEnabled(true);
+                toLoginPageBtn.setEnabled(true);
+                Toast.makeText(RegisterPage.this, "Đăng kí thành công", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(RegisterPage.this,LoginPage.class);
+                intent.putExtra("username",aVoid);
+                startActivity(intent);
             }
-            Toast.makeText(RegisterPage.this, "Đăng kí thành công", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(RegisterPage.this,LoginPage.class);
-            intent.putExtra("username",aVoid);
-            startActivity(intent);
+
         }
     }
 
