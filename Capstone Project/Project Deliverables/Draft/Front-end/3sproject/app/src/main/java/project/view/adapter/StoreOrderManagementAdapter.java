@@ -65,7 +65,7 @@ public class StoreOrderManagementAdapter extends ArrayAdapter<Order> {
             viewHolder.tvOrderDate.setText(order.getDeliverTime().toString());
             viewHolder.tvTotalOrder.setText(formater.formatDoubleToMoney(order.getTotalPrice()+""));
 
-            viewHolder.detailLayout.setOnClickListener(new View.OnClickListener() {
+           convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if (!isNetworkAvailable()){

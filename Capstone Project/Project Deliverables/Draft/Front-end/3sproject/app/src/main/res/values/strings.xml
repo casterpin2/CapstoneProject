@@ -148,7 +148,7 @@
 
     <!-- TODO: placeholder text in order management screen -->
     <string name="title_order_management">Quản lý đơn hàng</string>
-    <string name="waiting">Đang đợi xử lý</string>
+    <string name="waiting">Đợi xử lý</string>
     <string name="doing">Đang xử lý</string>
     <string name="done">Đã xử lý</string>
     <string name="lb_order_date">Đặt ngày:  </string>
