@@ -31,6 +31,7 @@ import java.util.List;
 import project.firebase.Firebase;
 import project.view.R;
 import project.view.gui.CartPage;
+import project.view.gui.ProductInStoreByUserDisplayPage;
 import project.view.gui.UserFeedbackPage;
 import project.view.gui.UserManagementOrderPage;
 import project.view.model.CartDetail;
@@ -120,6 +121,15 @@ public class UserOrderAdapter extends BaseExpandableListAdapter {
             waittingOrderStore.setText(storeName);
             waittingOrderOrderDate.setText(orderDate);
             waittingOrderTotalCast.setText(Formater.formatDoubleToMoney(String.valueOf(totalOrder)));
+
+            waittingOrderStore.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent toProductInStoreByUser = new Intent(context, ProductInStoreByUserDisplayPage.class);
+                    toProductInStoreByUser.putExtra("storeID",((Order) getGroup(groupPosition)).getStoreId());
+                    context.startActivity(toProductInStoreByUser);
+                }
+            });
             cancelBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -164,7 +174,14 @@ public class UserOrderAdapter extends BaseExpandableListAdapter {
             TextView processingOrderStore = convertView.findViewById(R.id.processingOrderStoreName);
             TextView processingOrderOrderDate = convertView.findViewById(R.id.processingOrderOrderDate);
             TextView processingOrderTotalCast = convertView.findViewById(R.id.processingOrderTotalCast);
-
+            processingOrderStore.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent toProductInStoreByUser = new Intent(context, ProductInStoreByUserDisplayPage.class);
+                    toProductInStoreByUser.putExtra("storeID",((Order) getGroup(groupPosition)).getStoreId());
+                    context.startActivity(toProductInStoreByUser);
+                }
+            });
             processingOrderStore.setText(storeName);
             processingOrderOrderDate.setText(orderDate);
             processingOrderTotalCast.setText(Formater.formatDoubleToMoney(String.valueOf(totalOrder)));
@@ -179,7 +196,14 @@ public class UserOrderAdapter extends BaseExpandableListAdapter {
                  TextView doneOrderWithFeedbackStore = convertView.findViewById(R.id.doneOrderWithFeedbackStoreName);
                  TextView doneOrderWithFeedbackOrderDate = convertView.findViewById(R.id.doneOrderWithFeedbackOrderDate);
                  TextView doneOrderWithFeedbackTotalCast = convertView.findViewById(R.id.doneOrderWithFeedbackTotalCast);
-
+                 doneOrderWithFeedbackStore.setOnClickListener(new View.OnClickListener() {
+                     @Override
+                     public void onClick(View view) {
+                         Intent toProductInStoreByUser = new Intent(context, ProductInStoreByUserDisplayPage.class);
+                         toProductInStoreByUser.putExtra("storeID",((Order) getGroup(groupPosition)).getStoreId());
+                         context.startActivity(toProductInStoreByUser);
+                     }
+                 });
                  doneOrderWithFeedbackStore.setText(storeName);
                  doneOrderWithFeedbackOrderDate.setText(orderDate);
                  doneOrderWithFeedbackTotalCast.setText(Formater.formatDoubleToMoney(String.valueOf(totalOrder)));
@@ -196,6 +220,15 @@ public class UserOrderAdapter extends BaseExpandableListAdapter {
                  doneOrderWithoutFeedbackStore.setText(storeName);
                  doneOrderWithoutFeedbackOrderDate.setText(orderDate);
                  doneOrderWithoutFeedbackTotalCast.setText(Formater.formatDoubleToMoney(String.valueOf(totalOrder)));
+
+                 doneOrderWithoutFeedbackStore.setOnClickListener(new View.OnClickListener() {
+                     @Override
+                     public void onClick(View view) {
+                         Intent toProductInStoreByUser = new Intent(context, ProductInStoreByUserDisplayPage.class);
+                         toProductInStoreByUser.putExtra("storeID",((Order) getGroup(groupPosition)).getStoreId());
+                         context.startActivity(toProductInStoreByUser);
+                     }
+                 });
                  feedbackBtn.setOnClickListener(new View.OnClickListener() {
                      @Override
                      public void onClick(View view) {
@@ -213,9 +246,6 @@ public class UserOrderAdapter extends BaseExpandableListAdapter {
                  });
              }
         }
-
-
-
         return convertView;
     }
 

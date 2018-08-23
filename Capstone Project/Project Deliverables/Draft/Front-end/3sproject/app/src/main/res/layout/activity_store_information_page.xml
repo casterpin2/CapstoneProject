@@ -263,7 +263,7 @@
                                 </LinearLayout>
                                 <LinearLayout
                                     android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
+                                    android:layout_height="wrap_content"
                                     android:orientation="vertical"
                                     android:layout_weight="1">
                                     <TextView
@@ -272,15 +272,28 @@
                                         android:text="@string/phoneText"
                                         android:textSize="14dp"
                                         android:textColor="@color/colorPrimaryDark"/>
-
-                                    <TextView
-                                        android:id="@+id/phoneText"
+                                    <LinearLayout
                                         android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:fontFamily="sans-serif-light"
-                                        android:textColor="@color/colorBlack"
-                                        android:textSize="16dp"
-                                        android:layout_marginRight="20dp"/>
+                                        android:layout_height="wrap_content">
+                                        <TextView
+                                            android:id="@+id/phoneText"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:fontFamily="sans-serif-light"
+                                            android:textColor="@color/colorBlack"
+                                            android:textSize="16dp"
+                                            android:layout_marginRight="20dp"/>
+                                        <TextView
+                                            android:id="@+id/tvCall"
+                                            android:gravity="right"
+                                            android:layout_marginRight="16dp"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:textColor="@color/lb_more"
+                                            android:textSize="16dp"
+                                            android:text="Gọi ngay"/>
+                                    </LinearLayout>
+
                                 </LinearLayout>
                             </LinearLayout>
                             <View

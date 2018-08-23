@@ -57,7 +57,7 @@ public class StoreInformationPage extends AppCompatActivity {
     TextView ownerName, address, registerDate, phoneText,tvSmile,tvSad , tvStoreName , viewFeedback;
     private ProgressBar loadingBar;
     private LinearLayout storeInforForm;
-    private TextView nullMessage;
+    private TextView nullMessage,tvCall;
     private static final int REQUEST_CALL = 1;
     private String phoneNumber;
     private ImageView imgCall;
@@ -93,7 +93,7 @@ public class StoreInformationPage extends AppCompatActivity {
 
             }
         });
-        imgCall.setOnClickListener(new View.OnClickListener() {
+        tvCall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 phoneNumber = phoneText.getText().toString();
@@ -103,6 +103,7 @@ public class StoreInformationPage extends AppCompatActivity {
     }
 
     private void findView(){
+        tvCall = findViewById(R.id.tvCall);
         backBtn = findViewById(R.id.backBtn);
         ownerName = findViewById(R.id.ownerName);
         address = findViewById(R.id.address);
