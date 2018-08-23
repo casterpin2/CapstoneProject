@@ -179,6 +179,7 @@ public class ProductDetailPage extends BasePage {
                             Toast.makeText(ProductDetailPage.this, "Cửa hàng của bạn, không thể đặt hàng", Toast.LENGTH_LONG).show();
                             return;
                         } else {
+                            addToCartBtn.setEnabled(false);
                             Call<Store> call = ApiUtils.getAPIService().getStoreById(storeID);
                             new GetStoreById().execute(call);
                         }
@@ -244,6 +245,7 @@ public class ProductDetailPage extends BasePage {
                 Intent toCartPage = new Intent(getBaseContext(), CartPage.class);
                 toCartPage.putExtra("userID",user.getId());
                 getBaseContext().startActivity(toCartPage);
+                addToCartBtn.setEnabled(true);
                 return;
             }
         });
@@ -251,9 +253,12 @@ public class ProductDetailPage extends BasePage {
         builder.setNegativeButton("Tiếp tục mua", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+
+                addToCartBtn.setEnabled(true);
                 return;
             }
         });
+        builder.setCancelable(false);
         builder.show();
     }
 
@@ -382,7 +387,7 @@ public class ProductDetailPage extends BasePage {
                     myRef.child("image_path").setValue(String.valueOf(store.getImage_path()));
                     double price =  product.getPrice();
                     if(product.getPromotion()!=0){
-                        price = product.getPrice()*product.getPromotion();
+                        price = product.getPrice()-(product.getPrice()*product.getPromotion()/100);
                     }
                     CartDetail cartDetail  = new CartDetail(product.getProduct_id(),product.getProduct_name(),1,price,product.getImage_path());
                     myRef.child("cartDetail").child(String.valueOf(product.getProduct_id())).setValue(cartDetail);

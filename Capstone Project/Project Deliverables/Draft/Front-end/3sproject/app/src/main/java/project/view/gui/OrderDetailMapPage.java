@@ -2,6 +2,7 @@ package project.view.gui;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -12,6 +13,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -19,24 +22,33 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
 
+import java.io.UnsupportedEncodingException;
+import java.util.List;
+
+import project.googleMapAPI.DirectionFinder;
+import project.googleMapAPI.DirectionFinderListener;
+import project.googleMapAPI.Route;
 import project.view.R;
 import project.view.util.TweakUI;
 
-public class OrderDetailMapPage extends AppCompatActivity implements OnMapReadyCallback {
+public class OrderDetailMapPage extends AppCompatActivity implements OnMapReadyCallback , DirectionFinderListener {
     private GoogleMap mMap;
     private LocationManager locationManager;
     double latitude = 0.0;
     double longtitude = 0.0;
     final static int REQUEST_LOCATION = 1;
     private Button backBtn;
-
+    private FusedLocationProviderClient mFusedLocationClient;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_detail_map_page);
         TweakUI.makeTransparent(OrderDetailMapPage.this);
         turnOnLocation();
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         backBtn = (Button) findViewById(R.id.backBtn);
 
 
@@ -62,18 +74,31 @@ public class OrderDetailMapPage extends AppCompatActivity implements OnMapReadyC
                 && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
         } else {
-            Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            mFusedLocationClient.getLastLocation()
+                    .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                        @Override
+                        public void onSuccess(Location location) {
+                            // Got last known location. In some rare situations this can be null.
+                            if (location != null) {
+                                latitude = location.getLatitude();
+                                longtitude = location.getLongitude();
+                            }
+                        }
+                    });
+            mMap.setMyLocationEnabled(true);
             LatLng myLocation = new LatLng(latitude, longtitude);
-            googleMap.addMarker(new MarkerOptions().position(myLocation).title("Vị trí của bạn"));
-            googleMap.moveCamera(CameraUpdateFactory.newLatLng(myLocation));
-            if (location != null) {
-                latitude = getIntent().getDoubleExtra("latitude",0.0);
-                longtitude = getIntent().getDoubleExtra("longtitude",0.0);
-                if (latitude != 0.0 && longtitude != 0.0){
-                    changeLocation(mMap);
+            String origin = latitude+","+longtitude;
+            latitude = getIntent().getDoubleExtra("latitude",0.0);
+            longtitude = getIntent().getDoubleExtra("longtitude",0.0);
+            if (latitude != 0.0 && longtitude != 0.0){
+                changeLocation(mMap);
+                String destination = latitude+","+longtitude;
+                try {
+                    new DirectionFinder(this, origin, destination).execute();
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
                 }
             }
-
         }
     }
 
@@ -155,5 +180,30 @@ public class OrderDetailMapPage extends AppCompatActivity implements OnMapReadyC
 
             }
         }
+    }
+
+    @Override
+    public void onDirectionFinderStart() {
+
+    }
+
+    @Override
+    public void onDirectionFinderSuccess(List<Route> routes) {
+        for (Route route : routes) {
+            PolylineOptions polylineOptions = new PolylineOptions().
+                    geodesic(true).
+                    color(Color.BLUE).
+                    width(10);
+
+            for (int i = 0; i < route.points.size(); i++)
+                polylineOptions.add(route.points.get(i));
+
+            mMap.addPolyline(polylineOptions);
+        }
+    }
+
+    @Override
+    public void onDirectionFinderFailed() {
+
     }
 }

@@ -2,7 +2,10 @@ package project.view.gui;
 
 import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
+import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -52,8 +55,12 @@ public class StoreManagementOrderPage extends BasePage {
     @Override
     protected void onResume() {
         super.onResume();
-
-
+//        if (!isNetworkAvailable()){
+//            if (mViewPager != null) {
+//                mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+//                mViewPager.setAdapter(mSectionsPagerAdapter);
+//            }
+//        }
     }
     @Override
     protected void onPause() {
@@ -171,6 +178,12 @@ public class StoreManagementOrderPage extends BasePage {
             onBackPressed();
         }
         return super.onOptionsItemSelected(item);
+    }
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }
 

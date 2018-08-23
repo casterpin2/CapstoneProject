@@ -229,8 +229,6 @@ public class CartPage extends BasePage{
                                                 Notification notification = new Notification();
                                                 notification.setTo(token);
                                                 notification.setNotification(new NotificationDetail(cart.getStoreName(),"Bạn có đơn hàng mới"));
-                                                Log.d("da",new Gson().toJson(notification));
-                                                Toast.makeText(CartPage.this, notification.toString(), Toast.LENGTH_SHORT).show();
                                                 Call<ResultNotification> call = ApiUtils.getAPIServiceFirebaseMessage().sendNotification(notification,getResources().getString(R.string.notificationKey),"application/json");
                                                 new PushNotification(cart.getStoreId()).execute(call);
                                             }

@@ -144,7 +144,6 @@ public class OrderDetailPage extends BasePage {
             @Override
             public void onClick(View view) {
                 if (!isNetworkAvailable()){
-                    Toast.makeText(OrderDetailPage.this, "Có lỗi xảy ra với mạng", Toast.LENGTH_LONG).show();
                     finish();
                     return;
                 }
@@ -182,7 +181,6 @@ public class OrderDetailPage extends BasePage {
             public void onClick(View view) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(OrderDetailPage.this);
                 if (!isNetworkAvailable()){
-                    Toast.makeText(OrderDetailPage.this, "Có lỗi xảy ra với mạng", Toast.LENGTH_LONG).show();
                     finish();
                     return;
                 }
@@ -220,7 +218,6 @@ public class OrderDetailPage extends BasePage {
             @Override
             public void onClick(View view) {
                 if (!isNetworkAvailable()){
-                    Toast.makeText(OrderDetailPage.this, "Có lỗi xảy ra với mạng", Toast.LENGTH_LONG).show();
                     finish();
                     return;
                 }

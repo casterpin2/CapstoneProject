@@ -374,8 +374,6 @@ public class OrderPage extends BasePage implements OnMapReadyCallback {
                         intent.putExtra("latitude", autoLatitude);
                         intent.putExtra("address", stringBuilder.toString().replaceAll("null", "").replaceAll("0", "").replaceAll("Unnamed Road", "").replaceAll("\\s+", " ").trim());
                     } else {
-                        longtitude = 0.0;
-                        latitude = 0.0;
                         if (handleAddressText.getText().toString().isEmpty()) {
                             Toast.makeText(OrderPage.this, "Chọn vị trí", Toast.LENGTH_SHORT).show();
                             return;
@@ -386,8 +384,8 @@ public class OrderPage extends BasePage implements OnMapReadyCallback {
                         stringBuilder.append(location.getDistrict() + " ");
                         stringBuilder.append(location.getCounty() + " ");
                         stringBuilder.append(location.getCity() + " ");
-                        intent.putExtra("longtitude", handleLatitude);
-                        intent.putExtra("latitude", handleLongtitude);
+                        intent.putExtra("longtitude", handleLongtitude);
+                        intent.putExtra("latitude", handleLatitude);
                         intent.putExtra("address", stringBuilder.toString().replaceAll("null", "").replaceAll("0", "").replaceAll("Unnamed Road", "").replaceAll("\\s+", " ").trim());
                     }
                     if (isCart == false) {
@@ -413,6 +411,7 @@ public class OrderPage extends BasePage implements OnMapReadyCallback {
                         setResult(Activity.RESULT_CANCELED, intent);
                         finish();
                         return;
+
                     }
                     setResult(Activity.RESULT_OK, intent);
                     finish();

@@ -123,7 +123,6 @@ public class NearbyStorePage extends BasePage implements OnMapReadyCallback, Loc
     private Product p;
     private MapRadar mapRadar;
     private String productName;
-    private String keyNotification = "key=AAAAy6FA_UY:APA91bFZzblkVEFuOIabndkjShr6Vbvege_ZOOqjgBj6oK6ZiAK4284KlR5-1zkefS0GQL3SJSONX3vWf_iXaY0avSsiw505ndKIdnXcLo4-jjyNao1npqqfC0kXbIVio8m5Fqvc3VF3";
 
     @Override
     protected void onResume() {
@@ -151,7 +150,9 @@ public class NearbyStorePage extends BasePage implements OnMapReadyCallback, Loc
     @Override
     protected void onPause() {
         super.onPause();
-        myRef1.removeEventListener(listener);
+        if (myRef1 != null) {
+            myRef1.removeEventListener(listener);
+        }
         if (mapRadar != null) {
             if (mapRadar.isAnimationRunning()) {
                 mapRadar.stopRadarAnimation();
@@ -689,7 +690,7 @@ public class NearbyStorePage extends BasePage implements OnMapReadyCallback, Loc
                                             Notification notification = new Notification();
                                             notification.setTo(token);
                                             notification.setNotification(new NotificationDetail(storeName,"Bạn có đơn hàng mới"));
-                                            Call<ResultNotification> call = ApiUtils.getAPIServiceFirebaseMessage().sendNotification(notification,keyNotification,"application/json");
+                                            Call<ResultNotification> call = ApiUtils.getAPIServiceFirebaseMessage().sendNotification(notification,getResources().getString(R.string.notificationKey),"application/json");
                                             new PushNotification(storeId).execute(call);
                                         }
                                     }

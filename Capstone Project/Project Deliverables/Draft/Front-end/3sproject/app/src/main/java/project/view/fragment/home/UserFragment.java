@@ -9,6 +9,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -25,6 +26,11 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.gson.Gson;
 
@@ -61,6 +67,8 @@ public class UserFragment extends Fragment implements NetworkStateReceiver.Netwo
     private User user;
     private Store store;
     private NetworkStateReceiver networkStateReceiver;
+    private FirebaseDatabase database = FirebaseDatabase.getInstance();
+    private DatabaseReference myRef;
 
     public UserFragment() {
     }
@@ -137,6 +145,26 @@ public class UserFragment extends Fragment implements NetworkStateReceiver.Netwo
             btnLogout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if (store != null){
+                        if (store.getId() != 0){
+                            final DatabaseReference reference = database.getReference().child("notification").child(String.valueOf(store.getId()));
+                            reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    if (dataSnapshot.exists()){
+                                        reference.child("token").setValue("");
+                                        reference.child("haveNotification").setValue("true");
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
+                        }
+                    }
+
                     SharedPreferences preferences = getActivity().getSharedPreferences("authentication", Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = preferences.edit();
                     //lưu vào editor

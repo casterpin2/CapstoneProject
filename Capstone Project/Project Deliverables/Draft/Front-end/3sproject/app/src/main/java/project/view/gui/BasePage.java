@@ -37,8 +37,8 @@ import project.view.model.Store;
 public class BasePage extends AppCompatActivity {
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference myRef;
-    private User user;
-    private Store store;
+    User user;
+    Store store;
     private String deviceToken;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -77,7 +77,7 @@ public class BasePage extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        if (user!=null) {
+        if (myRef !=null) {
             myRef.removeEventListener(changeListener);
         }
         super.onDestroy();
@@ -89,13 +89,13 @@ public class BasePage extends AppCompatActivity {
             //startService();
             //Log.d("notification","abc");
         }
+        restoringPreferences();
         if (store != null){
             final DatabaseReference reference = database.getReference().child("notification").child(String.valueOf(store.getId()));
             reference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     if (deviceToken != null){
-                        reference.child("token").setValue(deviceToken);
                         reference.child("haveNotification").setValue("false");
                     }
                 }

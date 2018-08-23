@@ -101,7 +101,7 @@ public class ProductInStoreByUserCustomCardViewAdapter extends RecyclerView.Adap
     }
 
     @Override
-    public void onBindViewHolder( MyViewHolder holder, int position) {
+    public void onBindViewHolder(final MyViewHolder holder, int position) {
         final  Product product = productInStores.get(position);
         holder.productName.setText(product.getProduct_name());
         holder.storeName.setVisibility(View.INVISIBLE);
@@ -141,7 +141,9 @@ public class ProductInStoreByUserCustomCardViewAdapter extends RecyclerView.Adap
         holder.imgAddCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addProductToCart(product);
+                v.setEnabled(false);
+                addProductToCart(product,v);
+
             }
         });
     }
@@ -158,7 +160,7 @@ public class ProductInStoreByUserCustomCardViewAdapter extends RecyclerView.Adap
         myStore = new Gson().fromJson(storeJSON,Store.class);
     }
 
-    private void addProductToCart(final Product product){
+    private void addProductToCart(final Product product,final View v){
         if (user == null) {
             AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
             builder.setTitle("Bạn chưa đăng nhập");
@@ -169,6 +171,7 @@ public class ProductInStoreByUserCustomCardViewAdapter extends RecyclerView.Adap
                 public void onClick(DialogInterface dialog, int which) {
                     Intent toLoginPage = new Intent(mContext, LoginPage.class);
                     mContext.startActivity(toLoginPage);
+                    v.setEnabled(true);
                     return;
                 }
             });
@@ -176,19 +179,24 @@ public class ProductInStoreByUserCustomCardViewAdapter extends RecyclerView.Adap
             builder.setNegativeButton("Đóng", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
+                    v.setEnabled(true);
                     return;
                 }
             });
+            builder.setCancelable(false);
             builder.show();
+
             return;
         }
         if (store == null){
             Toast.makeText(mContext, "Có lỗi xảy ra!!!", Toast.LENGTH_SHORT).show();
+            v.setEnabled(true);
             return;
         }
         if (myStore!= null){
             if (myStore.getId() == store.getId()) {
                 Toast.makeText(mContext, "Cửa hàng của bạn, không thể thêm vào giỏ hàng", Toast.LENGTH_LONG).show();
+                v.setEnabled(true);
                 return;
             }
         }
@@ -207,7 +215,7 @@ public class ProductInStoreByUserCustomCardViewAdapter extends RecyclerView.Adap
                     }
                     CartDetail cartDetail  = new CartDetail(product.getProduct_id(),product.getProduct_name(),1,price,product.getImage_path());
                     myRef.child("cartDetail").child(String.valueOf(product.getProduct_id())).setValue(cartDetail);
-                    showDialog();
+                    showDialog(v);
                 } else {
                     myRef.child("cartDetail").child(String.valueOf(product.getProduct_id())).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -219,7 +227,7 @@ public class ProductInStoreByUserCustomCardViewAdapter extends RecyclerView.Adap
                                 }
                                 CartDetail cartDetail  = new CartDetail(product.getProduct_id(),product.getProduct_name(),1,price,product.getImage_path());
                                 myRef.child("cartDetail").child(String.valueOf(product.getProduct_id())).setValue(cartDetail);
-                                showDialog();
+                                showDialog(v);
                             } else {
                                 double price =  product.getPrice();
                                 if(product.getPromotion()!=0){
@@ -229,13 +237,14 @@ public class ProductInStoreByUserCustomCardViewAdapter extends RecyclerView.Adap
                                     myRef.child("cartDetail").child(String.valueOf(product.getProduct_id())).child("unitPrice").setValue(price);
                                 }
                                 myRef.child("cartDetail").child(String.valueOf(product.getProduct_id())).child("quantity").setValue((long)dataSnapshot.child("quantity").getValue()+1);
-                                showDialog();
+                                showDialog(v);
                             }
                         }
 
                         @Override
                         public void onCancelled(@NonNull DatabaseError databaseError) {
                             Toast.makeText(mContext, "Có lỗi xảy ra!!!", Toast.LENGTH_SHORT).show();
+                            v.setEnabled(true);
                         }
                     });
                 }
@@ -248,7 +257,7 @@ public class ProductInStoreByUserCustomCardViewAdapter extends RecyclerView.Adap
         });
     }
 
-    private void showDialog(){
+    private void showDialog(final View v){
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
         builder.setTitle("Thêm sản phẩm vào giỏ hàng");
         builder.setMessage("Sản phẩm đã được thêm vào giỏ hàng");
@@ -258,6 +267,7 @@ public class ProductInStoreByUserCustomCardViewAdapter extends RecyclerView.Adap
             public void onClick(DialogInterface dialog, int which) {
                 Intent toCartPage = new Intent(mContext, CartPage.class);
                 toCartPage.putExtra("userID",user.getId());
+                v.setEnabled(true);
                 mContext.startActivity(toCartPage);
                 return;
             }
@@ -266,9 +276,11 @@ public class ProductInStoreByUserCustomCardViewAdapter extends RecyclerView.Adap
         builder.setNegativeButton("Tiếp tục mua sắm", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                v.setEnabled(true);
                 return;
             }
         });
+        builder.setCancelable(false);
         builder.show();
     }
 }

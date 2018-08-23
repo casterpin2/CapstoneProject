@@ -59,7 +59,8 @@ public class DoingOrderStore extends Fragment {
                 noOrderLayout.setVisibility(View.INVISIBLE);
             }
         } else {
-            Toast.makeText(getContext(), "Không có kết nối. Vui lòng kết nối mạng để xem đơn hàng", Toast.LENGTH_LONG).show();
+            list.clear();
+            adapter.notifyDataSetChanged();
             noOrderLayout.setVisibility(View.VISIBLE);
             noOrderText.setText("Vui lòng kết nối mạng để xem đơn hàng");
         }
