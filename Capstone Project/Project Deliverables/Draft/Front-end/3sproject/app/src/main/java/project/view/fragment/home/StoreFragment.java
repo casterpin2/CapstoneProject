@@ -106,6 +106,7 @@ public class StoreFragment extends Fragment implements NetworkStateReceiver.Netw
     private LinearLayout changeLayout;
     private String oldPathImg;
     private LinearLayout saveImageStoreLayout;
+    private String testCommit;
     public StoreFragment() {
     }
 
@@ -228,10 +229,13 @@ public class StoreFragment extends Fragment implements NetworkStateReceiver.Netw
                     }
                 }
             });
+
             btnCacel.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+
                     loadingBarImage.setVisibility(View.VISIBLE);
+
 
                     if (!oldPathImg.isEmpty() && oldPathImg != null) {
                         if (oldPathImg.contains("graph") || oldPathImg.contains("google")) {
@@ -250,6 +254,8 @@ public class StoreFragment extends Fragment implements NetworkStateReceiver.Netw
                                     .skipMemoryCache(true)
                                     .into(storeImg);
                             loadingBarImage.setVisibility(View.INVISIBLE);
+                            saveImageStoreLayout.setVisibility(View.INVISIBLE);
+
                             storeName.setVisibility(View.VISIBLE);
                         }
                     }
