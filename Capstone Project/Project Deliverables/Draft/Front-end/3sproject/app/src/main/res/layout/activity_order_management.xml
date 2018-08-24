@@ -6,54 +6,103 @@
     android:layout_height="match_parent"
     tools:context=".gui.UserManagementOrderPage">
 
+    <LinearLayout
+        android:id="@+id/filter"
+        android:layout_width="match_parent"
+        android:layout_height="?android:attr/actionBarSize"
+        android:background="@color/colorWhite"
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+        <LinearLayout
+            android:id="@+id/categoryFilterLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Trạng thái đơn hàng"
+                android:textColor="@color/colorBlack"
+                android:textSize="16dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/filterLayout"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/icon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center"
+                android:src="@drawable/sort" />
+
+            <Spinner
+                android:id="@+id/spinner"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </LinearLayout>
+    </LinearLayout>
+
     <ExpandableListView
         android:id="@+id/orderList"
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
         android:layout_above="@+id/buyLinearLayout"
-        android:layout_marginBottom="5dp"
-        />
+        android:layout_below="@+id/filter"
+        android:layout_marginBottom="5dp" />
 
     <RelativeLayout
         android:id="@+id/noOrder"
-        android:layout_centerInParent="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
         android:visibility="invisible">
+
         <ImageView
-                android:id="@+id/emptyBox"
-                android:layout_width="72dp"
-                android:layout_height="72dp"
-                android:layout_centerHorizontal="true"
-                android:src="@drawable/empty_box"/>
+            android:id="@+id/emptyBox"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/empty_box" />
+
         <TextView
             android:id="@+id/notification"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Chưa có đơn hàng nào!"
-            android:textSize="20dp"
-            android:textColor="@color/contentBadgeTitle"
             android:layout_below="@id/emptyBox"
-            android:layout_marginBottom="16dp"/>
+            android:layout_marginBottom="16dp"
+            android:text="Chưa có đơn hàng nào!"
+            android:textColor="@color/contentBadgeTitle"
+            android:textSize="20dp" />
+
         <Button
             android:id="@+id/shoppingBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Bắt đầu mua sắm"
-            android:textSize="15dp"
+            android:layout_below="@+id/notification"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/border_button"
             android:paddingLeft="8dp"
             android:paddingRight="8dp"
+            android:text="Bắt đầu mua sắm"
             android:textColor="@color/colorApplication"
-            android:layout_below="@+id/notification"
-            android:background="@drawable/border_button"
-            android:layout_centerHorizontal="true"/>
+            android:textSize="15dp" />
     </RelativeLayout>
+
     <ProgressBar
         android:id="@+id/loadingBar"
         style="?android:attr/progressBarStyleInverse"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:visibility="invisible"/>
+        android:visibility="invisible" />
 
 </RelativeLayout>

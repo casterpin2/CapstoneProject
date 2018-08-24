@@ -11,39 +11,45 @@
         android:textColor="@color/grey"
         android:layout_centerInParent="true"
         android:visibility="invisible"/>
+
     <LinearLayout
         android:id="@+id/filter"
         android:layout_width="match_parent"
         android:layout_height="?android:attr/actionBarSize"
-        android:weightSum="2"
         android:background="@color/colorWhite"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:weightSum="2">
+
         <LinearLayout
             android:id="@+id/categoryFilterLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center">
+            android:gravity="center"
+            android:orientation="vertical">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Lọc đánh giá"
-                android:textSize="16dp"
-                android:textColor="@color/colorBlack"/>
+                android:textColor="@color/colorBlack"
+                android:textSize="16dp" />
         </LinearLayout>
+
         <LinearLayout
             android:id="@+id/filterLayout"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_weight="1"
             android:gravity="center">
+
             <ImageView
                 android:id="@+id/icon"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/sort"
-                android:layout_gravity="center"/>
+                android:layout_gravity="center"
+                android:src="@drawable/sort" />
+
             <Spinner
                 android:id="@+id/spinner"
                 android:layout_width="match_parent"
