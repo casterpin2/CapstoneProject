@@ -61,5 +61,10 @@ public class StoreServiceImpl implements StoreService{
     public List<Integer> countFeedback(int storeId) throws SQLException {
         return dao.countFeedback(storeId);
     }
+
+    @Override
+    public boolean changeImgByStore(String imgPath, StoreEntites store) throws SQLException {
+        return dao.changeImgByStore(imgPath, store);
+    }
     
 }

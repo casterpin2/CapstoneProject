@@ -24,4 +24,5 @@ public interface StoreDao {
      public StoreEntites informationStore(int storeId) throws SQLException;
      public List<HashMap<String,Object>> managementFeedback(int storeId , int page) throws SQLException;
      public List<Integer> countFeedback(int storeId) throws SQLException;
+     public boolean changeImgByStore(String imgPath,StoreEntites store) throws SQLException;
 }

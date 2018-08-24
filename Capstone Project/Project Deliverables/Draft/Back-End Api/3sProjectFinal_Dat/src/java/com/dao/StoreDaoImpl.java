@@ -574,4 +574,131 @@ public class StoreDaoImpl extends BaseDao implements StoreDao {
         }
         return list;
     }
+
+    @Override
+    public boolean changeImgByStore(String imgPath, StoreEntites store) throws SQLException {
+        Connection conn = null;
+        PreparedStatement pre =null;
+        boolean checkUpdate = false;
+        try{
+            conn = getConnection();
+            if(store.getImage_path().equals("Store/default_store.jpg")){
+                if(insertNewImgPath(conn, imgPath, store.getId())){
+                    int idAfterInsert = getIdAfterInsert(conn,store.getId());
+                    checkUpdate = updateToImgStoreTbl(conn,idAfterInsert,store.getId());
+                }
+            }else{
+                int idExist = getIdExist(conn,store.getId());
+                checkUpdate = updateImgExist(conn,idExist,imgPath);
+            }
+        }finally{
+            closeConnect(conn, pre, null);
+        }
+        return checkUpdate;
+    }
+    public boolean updateToImgStoreTbl(Connection conn,int idImg,int storeId) throws SQLException{
+        PreparedStatement pre = null;
+        try {
+            String update = "Update Image_Store set image_id= ? where store_id =?";
+            conn.setAutoCommit(false);
+            pre = conn.prepareStatement(update);
+            pre.setInt(1, idImg);
+            pre.setInt(2, storeId);
+            int check = pre.executeUpdate();
+            if (check > 0) {
+                conn.commit();
+                return true;
+            } else {
+                conn.rollback();
+                conn.setAutoCommit(true);
+            }
+        } finally {
+            closeConnect(null, pre, null);
+        }
+
+        return false;
+    }
+    public boolean insertNewImgPath(Connection conn,String newPath,int storeId) throws SQLException{
+        PreparedStatement pre =null;
+        try{
+            String insert = "insert into Image(name,path) values (?,?)";
+            conn.setAutoCommit(false);
+            pre = conn.prepareStatement(insert);
+            pre.setString(1, storeId+"");
+            pre.setString(2, newPath);
+            int check = pre.executeUpdate();
+            if(check>0){
+                conn.commit();
+                return true;
+            }else{
+                conn.rollback();
+                conn.setAutoCommit(true);
+            }
+            
+        }finally{
+            closeConnect(null, pre, null);
+        }
+        return false;
+    }
+    public int getIdAfterInsert(Connection conn,int storeId) {
+        PreparedStatement pre =null;
+        ResultSet rs =null;
+        try{
+            String sql ="select id from Image where name = ?";
+            pre =conn.prepareStatement(sql);
+            pre.setString(1, storeId+"");
+            rs = pre.executeQuery();
+            if(rs.next()){
+                return rs.getInt("id");
+            }
+        }catch(Exception e){
+            System.out.println(e.getMessage());
+        }finally{
+            closeConnect(null, pre, rs);
+        }
+        return 0;
+    }
+    
+     public int getIdExist(Connection conn,int storeId) {
+        PreparedStatement pre =null;
+        ResultSet rs =null;
+        try{
+            String sql ="select image_id from Image_Store where store_id = ?";
+            pre =conn.prepareStatement(sql);
+            pre.setInt(1, storeId);
+            rs = pre.executeQuery();
+            if(rs.next()){
+                return rs.getInt("image_id");
+            }
+        }catch(Exception e){
+            System.out.println(e.getMessage());
+        }finally{
+            closeConnect(null, pre, rs);
+        }
+        return 0;
+    }
+     public boolean updateImgExist(Connection conn, int id,String path){
+         PreparedStatement pre =null;
+         
+         try{
+             String update ="Update Image set path= ? where id =?";
+             conn.setAutoCommit(false);
+             pre = conn.prepareStatement(update);
+             pre.setString(1, path);
+             pre.setInt(2, id);
+             int check = pre.executeUpdate();
+             if(check >0){
+                 conn.commit();
+                 return true;
+             }else{
+                 conn.rollback();
+                 conn.setAutoCommit(true);
+             }
+         }catch(Exception e){
+             
+         }finally{
+             closeConnect(null, pre, null);
+         }
+         return false;
+     }
 }

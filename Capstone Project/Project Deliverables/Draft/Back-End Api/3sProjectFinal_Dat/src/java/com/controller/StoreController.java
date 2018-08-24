@@ -79,26 +79,46 @@ public class StoreController {
             String storeObj = Obj.get("store");
             String locationObj = Obj.get("location");
             storeData = mapper.readValue(storeObj, StoreEntites.class);
-            locationData = mapper.readValue(locationObj, LocationEntites.class);          
+            locationData = mapper.readValue(locationObj, LocationEntites.class);
             storeReusult = store.updateStore(storeData, locationData);
         } catch (Exception ex) {
             Logger.getLogger(StoreController.class.getName()).log(Level.SEVERE, null, ex);
         }
         return storeReusult;
     }
-    
-      @RequestMapping(value = "/informationStore", method = RequestMethod.GET, produces = "application/json;")
+
+    @RequestMapping(value = "/informationStore", method = RequestMethod.GET, produces = "application/json;")
     public StoreEntites storeInformation(@RequestParam("storeId") int storeId) throws SQLException, ClassNotFoundException, IOException {
         return store.informationStore(storeId);
     }
 
     @RequestMapping(value = "/getAllFeedback", method = RequestMethod.GET, produces = "application/json;")
     public List<HashMap<String, Object>> managementFeedback(@RequestParam("storeId") int storeId, @RequestParam("page") int page) throws SQLException, ClassNotFoundException, IOException {
-        return store.managementFeedback(storeId,page);
+        return store.managementFeedback(storeId, page);
     }
-    
+
     @RequestMapping(value = "/countFeedback", method = RequestMethod.GET, produces = "application/json;")
     public List<Integer> countFeedback(@RequestParam("storeId") int storeId) throws SQLException, ClassNotFoundException, IOException {
         return store.countFeedback(storeId);
     }
+
+    @RequestMapping(value = "/updateImgStore", method = RequestMethod.PUT, produces = "application/json")
+    public Boolean updateImgStore(@RequestBody String storeJson, @RequestParam("imgPath") String newPath) {
+        StoreEntites storeData = null;
+
+        StoreEntites storeReusult = null;
+        boolean checkUpdate = false;
+        try {
+            JsonFactory factory = new JsonFactory();
+            factory.enable(JsonParser.Feature.ALLOW_SINGLE_QUOTES);
+            ObjectMapper mapper = new ObjectMapper(factory);
+            storeData = mapper.readValue(storeJson, StoreEntites.class);
+            checkUpdate = store.changeImgByStore(newPath, storeData);
+
+        } catch (Exception ex) {
+            Logger.getLogger(StoreController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return checkUpdate;
+    }
+
 }

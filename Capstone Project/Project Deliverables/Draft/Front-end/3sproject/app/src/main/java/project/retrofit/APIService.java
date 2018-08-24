@@ -163,4 +163,7 @@ public interface APIService {
 
     @GET("countFeedback")
     Call<List<Integer>> countFeedback(@Query("storeId") int storeId);
+
+    @PUT("updateImgStore")
+    Call<Boolean> updateImgStore(@Body Store storeJson,@Query("imgPath") String imgPath);
 }
