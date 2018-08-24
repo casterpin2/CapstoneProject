@@ -156,6 +156,10 @@ public class RegisterStorePage extends BasePage implements OnMapReadyCallback {
                     handleAddressLayout.setEnabled(false);
                     handleAddressText.setText(R.string.yourGPS);
                 } else {
+                    StringBuilder stringBuilder = new StringBuilder();
+                    stringBuilder.append(handleLatitude).append(",").append(handleLongtitude);
+                    final Call<GoogleMapJSON> call = ApiUtils.getAPIServiceMap().getLocation(stringBuilder.toString(), GOOGLE_MAP_KEY);
+                    new RegisterStorePage.CallMapAPI().execute(call);
                     loadingBarMap.setVisibility(View.INVISIBLE);
                     setAutoLatitude(0.0);
                     setAutoLongtitude(0.0);
