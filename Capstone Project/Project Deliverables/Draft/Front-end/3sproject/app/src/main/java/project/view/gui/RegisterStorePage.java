@@ -459,6 +459,11 @@ public class RegisterStorePage extends BasePage implements OnMapReadyCallback {
             if(checkLocation){
                 registerBtn.setEnabled(true);
                 loadingBarMap.setVisibility(View.INVISIBLE);
+                if (iconSwitch.isChecked()) {
+                    iconSwitch.setChecked(true);
+                } else {
+                    iconSwitch.setChecked(false);
+                }
                 if (iconSwitch.isChecked() == true) {
                     handleAddressText.setText("Vị trí hiện tại");
                 } else if (handleLongtitude !=  0.0 && handleLatitude != 0.0) {

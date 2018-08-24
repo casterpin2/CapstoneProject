@@ -507,6 +507,7 @@ public class OrderPage extends BasePage implements OnMapReadyCallback {
             case android.R.id.home:
                 // app icon in action bar clicked; go home
                 finish();
+                finish();
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -623,7 +624,11 @@ public class OrderPage extends BasePage implements OnMapReadyCallback {
             if (checkLocation) {
                 orderBtn.setEnabled(true);
                 loadingBarMap.setVisibility(View.INVISIBLE);
-                switch_button.setChecked(true);
+                if (switch_button.isChecked()) {
+                    switch_button.setChecked(true);
+                } else {
+                    switch_button.setChecked(false);
+                }
                 if (switch_button.isChecked() == true) {
                     handleAddressText.setText("Vị trí hiện tại");
                 } else if (handleLongtitude !=  0.0 && handleLatitude != 0.0) {
