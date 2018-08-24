@@ -308,6 +308,10 @@ public class OrderPage extends BasePage implements OnMapReadyCallback {
                     handleAddressLayout.setEnabled(false);
                     handleAddressText.setText("Vị trí hiện tại của bạn");
                 } else {
+                    StringBuilder stringBuilder = new StringBuilder();
+                    stringBuilder.append(handleLatitude).append(",").append(handleLongtitude);
+                    final Call<GoogleMapJSON> call = ApiUtils.getAPIServiceMap().getLocation(stringBuilder.toString(), GOOGLE_MAP_KEY);
+                    new CallMapAPI().execute(call);
                     loadingBarMap.setVisibility(View.INVISIBLE);
                     setAutoLatitude(0.0);
                     setAutoLongtitude(0.0);

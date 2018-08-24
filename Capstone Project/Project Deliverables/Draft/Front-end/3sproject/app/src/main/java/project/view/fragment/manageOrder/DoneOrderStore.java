@@ -48,7 +48,7 @@ public class DoneOrderStore extends Fragment {
         if (isNetworkAvailable()) {
             if (storeId != -1) {
                 myRef = database.getReference().child("ordersStore").child(String.valueOf(storeId));
-                myRef.orderByChild("status").equalTo("waitting").addValueEventListener(changeListener);
+                myRef.orderByChild("status").equalTo("done").addValueEventListener(changeListener);
             } else {
                 Toast.makeText(getContext(), "Không có người dùng", Toast.LENGTH_LONG).show();
             }
@@ -106,13 +106,13 @@ public class DoneOrderStore extends Fragment {
             if (dataSnapshot.exists()) {
                 for (final DataSnapshot dttSnapshot2 : dataSnapshot.getChildren()) {
                     order = dttSnapshot2.getValue(Order.class);
-                    if (order != null) {
-                        Log.d("order", order.toString());
+                    if (order != null && order.getStatus() != null) {
                         order.setOrderId(dttSnapshot2.getKey());
                         list.add(order);
+                        adapter.notifyDataSetChanged();
                     }
-                    adapter.notifyDataSetChanged();
                 }
+                adapter.notifyDataSetChanged();
             } else {
                 list.clear();
                 //buyLinearLayout.setVisibility(View.INVISIBLE);
