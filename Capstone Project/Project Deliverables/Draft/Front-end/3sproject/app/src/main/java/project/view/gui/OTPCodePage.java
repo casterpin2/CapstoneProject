@@ -85,7 +85,7 @@ public class OTPCodePage extends AppCompatActivity implements NetworkStateReceiv
                                 toChangePasswordPage.putExtra("username",username);
                                 startActivity(toChangePasswordPage);
                             } else {
-
+                                Toast.makeText(OTPCodePage.this, "Sai OTP Bạn chỉ được nhập 3 lần code ", Toast.LENGTH_LONG).show();
                             }
                         }
 
