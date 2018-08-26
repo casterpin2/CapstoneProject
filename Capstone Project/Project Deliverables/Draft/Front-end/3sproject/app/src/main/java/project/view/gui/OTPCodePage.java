@@ -77,7 +77,7 @@ public class OTPCodePage extends AppCompatActivity implements NetworkStateReceiv
                     apiService.confirmOTP(code,phone).enqueue(new Callback<Boolean>() {
                         @Override
                         public void onResponse(Call<Boolean> call, Response<Boolean> response) {
-                            if(response.isSuccessful()){
+                            if(response.body()==true){
                                 loadingBar.setVisibility(View.INVISIBLE);
                                 btn.setEnabled(true);
                                 btn.setText("Xác nhận");
