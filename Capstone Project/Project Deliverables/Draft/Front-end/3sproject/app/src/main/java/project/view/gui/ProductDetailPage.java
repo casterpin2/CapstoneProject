@@ -12,6 +12,7 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -287,10 +288,21 @@ public class ProductDetailPage extends BasePage {
             case android.R.id.home:
                 // app icon in action bar clicked; go home
                 finish();
+            case R.id.action_home:
+                Intent toHomPage = new Intent(ProductDetailPage.this, HomePage.class);
+                startActivity(toHomPage);
+                finishAffinity();
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.home_toolbar, menu);
+        return true;
+    }
+
     private void restoringPreferences(){
             SharedPreferences pre = getSharedPreferences("authentication", Context.MODE_PRIVATE);
             String userJSON = pre.getString("user", "");

@@ -122,6 +122,7 @@ public class BrandDisplayPage extends BasePage {
             public void onClick(View view) {
                 Intent toHomePage = new Intent(BrandDisplayPage.this, HomePage.class);
                 startActivity(toHomePage);
+                finishAffinity();
             }
         });
         brandList = new ArrayList<>();

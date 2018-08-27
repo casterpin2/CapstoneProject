@@ -57,6 +57,7 @@ public class ProductBrandDisplayPage extends BasePage {
     private double currentLongtitude = 0.0;
     private TextView nullMessage;
     private Call<List<Product>> call;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,46 +80,12 @@ public class ProductBrandDisplayPage extends BasePage {
         main_layout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                CustomInterface.hideKeyboard(view,getBaseContext());
+                CustomInterface.hideKeyboard(view, getBaseContext());
                 return false;
             }
         });
         CustomInterface.setStatusBarColor(this);
         loadingBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorApplication), android.graphics.PorterDuff.Mode.MULTIPLY);
-    }
-
-
-    public List<Product> listProduct(int brandId) {
-        final List<Product> productList = new ArrayList<>();
-        apiService.getProductBrand(brandId).enqueue(new Callback<List<Product>>() {
-            @Override
-            public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
-                final ProgressDialog progressDoalog;
-                progressDoalog = new ProgressDialog(ProductBrandDisplayPage.this);
-                progressDoalog.setMax(100);
-                progressDoalog.setMessage("Its loading....");
-                progressDoalog.setTitle("ProgressDialog bar example");
-                progressDoalog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-                // show it
-                progressDoalog.show();
-                for (int i = 0; i < response.body().size(); i++) {
-                    productList.add(response.body().get(i));
-                }
-                if (productList.size() == response.body().size()) {
-                    progressDoalog.dismiss();
-                }
-                if (productList.isEmpty()) {
-                    Toast.makeText(ProductBrandDisplayPage.this, "SomeThing Wrong", Toast.LENGTH_LONG).show();
-                }
-
-            }
-
-            @Override
-            public void onFailure(Call<List<Product>> call, Throwable t) {
-
-            }
-        });
-        return productList;
     }
 
     private class ProductBrandDisplayData extends AsyncTask<Call, Void, Void> {
@@ -131,32 +98,25 @@ public class ProductBrandDisplayPage extends BasePage {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            boolean check =false;
-            if (list.isEmpty()) {
-                check = false;
-            } else {
-                check = true;
-            }
-            if(check == true){
+            if (!list.isEmpty()) {
+                adapter = new ProductBrandDisplayListViewAdapter(ProductBrandDisplayPage.this, R.layout.product_brand_display_custom_listview, list);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        theListView.setAdapter(adapter);
+                    }
+                });
                 loadingBar.setVisibility(View.INVISIBLE);
-            }
-            final boolean finalCheck = check;
-            new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-                @Override
-                public void run() {
-
-                    if (finalCheck == false) {
+            } else {
+                new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
                         nullMessage.setText("Có lỗi xảy ra, vui lòng tải lại trang!");
                         loadingBar.setVisibility(View.INVISIBLE);
                     }
-                }
-            },10000);
-            adapter = new ProductBrandDisplayListViewAdapter(ProductBrandDisplayPage.this, R.layout.product_brand_display_custom_listview, list);
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    theListView.setAdapter(adapter);
-                }});
+                }, 10000);
+
+            }
         }
 
         @Override
@@ -187,9 +147,10 @@ public class ProductBrandDisplayPage extends BasePage {
                 finish();
                 return true;
             }
-            case R.id.action_home:{
+            case R.id.action_home: {
                 Intent toHomPage = new Intent(ProductBrandDisplayPage.this, HomePage.class);
                 startActivity(toHomPage);
+                finishAffinity();
             }
             default:
                 return super.onOptionsItemSelected(item);
@@ -206,7 +167,7 @@ public class ProductBrandDisplayPage extends BasePage {
 //        searchView.setLayoutParams(new ActionBar.LayoutParams(Gravity.LEFT));
 //        searchView.setSearchableInfo(true);
         searchView.clearFocus();
-        searchView.setQueryHint("Tìm trong "+brandName);
+        searchView.setQueryHint("Tìm trong " + brandName);
 
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
@@ -222,12 +183,12 @@ public class ProductBrandDisplayPage extends BasePage {
             @Override
             public boolean onQueryTextChange(String newText) {
                 searchedProduct.clear();
-                if(newText.equals("") || newText == null){
+                if (newText.equals("") || newText == null) {
                     adapter = new ProductBrandDisplayListViewAdapter(ProductBrandDisplayPage.this, R.layout.product_brand_display_custom_listview, list);
 
                 } else {
                     for (int i = 0; i < list.size(); i++) {
-                        if(list.get(i).getProduct_name().toLowerCase().contains(newText.toLowerCase())) {
+                        if (list.get(i).getProduct_name().toLowerCase().contains(newText.toLowerCase())) {
                             searchedProduct.add(list.get(i));
                         }
                     }
@@ -243,17 +204,20 @@ public class ProductBrandDisplayPage extends BasePage {
     }
 
     //Đây là hàm do Đạt sửa bá đạo
-    private void turnOnLocation(){
+    private void turnOnLocation() {
         final LocationListener locationListener = new LocationListener() {
             public void onLocationChanged(Location location) {
             }
 
-            public void onProviderDisabled(String provider){
+            public void onProviderDisabled(String provider) {
             }
 
-            public void onProviderEnabled(String provider){ }
+            public void onProviderEnabled(String provider) {
+            }
+
             public void onStatusChanged(String provider, int status,
-                                        Bundle extras){ }
+                                        Bundle extras) {
+            }
         };
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         // getting GPS status
