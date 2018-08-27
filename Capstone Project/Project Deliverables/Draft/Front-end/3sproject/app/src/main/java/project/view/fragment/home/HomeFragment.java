@@ -275,6 +275,9 @@ public class HomeFragment extends Fragment implements NetworkStateReceiver.Netwo
     }
 
     private void findView() {
+        recyclerViewSaleProduct = view.findViewById(R.id.list_sale);
+        recyclerViewCategories = view.findViewById(R.id.list_category);
+        recyclerViewBrands = view.findViewById(R.id.list_brand);
         scroll = view.findViewById(R.id.scrollView);
         imgBarCode = view.findViewById(R.id.imgBarCode);
         viewPager = view.findViewById(R.id.img_slider);
@@ -283,7 +286,6 @@ public class HomeFragment extends Fragment implements NetworkStateReceiver.Netwo
         tv_more_category = view.findViewById(R.id.tv_more_category);
         tv_more_brand = view.findViewById(R.id.tv_more_brand);
         tv_more_sale = view.findViewById(R.id.tv_more_sale);
-        recyclerViewSaleProduct = view.findViewById(R.id.list_sale);
         toolbar = (Toolbar) view.findViewById(R.id.toolbar);
         swipeRefreshLayout = view.findViewById(R.id.swipeToRefesh);
 
@@ -303,16 +305,16 @@ public class HomeFragment extends Fragment implements NetworkStateReceiver.Netwo
         @Override
         protected void onProgressUpdate(List<Category>... values) {
             super.onProgressUpdate(values);
-            StorageReference storageReference = Firebase.getFirebase();
-            List<Category> categoryList = values[0];
-            recyclerViewCategories = view.findViewById(R.id.list_category);
-            categoryAdapter = new CategoryRecycleViewAdapter(categoryList, getContext());
-            recyclerViewCategories.setNestedScrollingEnabled(false);
-            recyclerViewCategories.setAdapter(categoryAdapter);
-            linearLayoutManagerCategory = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
-            recyclerViewCategories.setLayoutManager(linearLayoutManagerCategory);
-            recyclerViewBrands = view.findViewById(R.id.list_brand);
 
+            List<Category> categoryList = values[0];
+            if (categoryList != null) {
+                categoryAdapter = new CategoryRecycleViewAdapter(categoryList, getContext());
+                recyclerViewCategories.setNestedScrollingEnabled(false);
+                recyclerViewCategories.setAdapter(categoryAdapter);
+                linearLayoutManagerCategory = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+                recyclerViewCategories.setLayoutManager(linearLayoutManagerCategory);
+
+            }
         }
 
         @Override
@@ -321,11 +323,7 @@ public class HomeFragment extends Fragment implements NetworkStateReceiver.Netwo
             try {
                 Call<List<Category>> call = calls[0];
                 Response<List<Category>> response = call.execute();
-                List<Category> list = new ArrayList<>();
-                for (int i = 0; i < response.body().size(); i++) {
-                    list.add(response.body().get(i));
-                }
-                publishProgress(list);
+                publishProgress(response.body());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -348,12 +346,13 @@ public class HomeFragment extends Fragment implements NetworkStateReceiver.Netwo
         @Override
         protected void onProgressUpdate(List<Brand>... values) {
             super.onProgressUpdate(values);
-            StorageReference storageReference = Firebase.getFirebase();
             List<Brand> brandList = values[0];
-            brandAdapter = new BrandRecycleViewAdapter(brandList, getContext());
-            recyclerViewBrands.setAdapter(brandAdapter);
-            linearLayoutManagerBrand = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
-            recyclerViewBrands.setLayoutManager(linearLayoutManagerBrand);
+            if (brandList != null) {
+                brandAdapter = new BrandRecycleViewAdapter(brandList, getContext());
+                recyclerViewBrands.setAdapter(brandAdapter);
+                linearLayoutManagerBrand = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+                recyclerViewBrands.setLayoutManager(linearLayoutManagerBrand);
+            }
         }
 
         @Override
@@ -362,11 +361,7 @@ public class HomeFragment extends Fragment implements NetworkStateReceiver.Netwo
             try {
                 Call<List<Brand>> call = calls[0];
                 Response<List<Brand>> response = call.execute();
-                List<Brand> list = new ArrayList<>();
-                for (int i = 0; i < response.body().size(); i++) {
-                    list.add(response.body().get(i));
-                }
-                publishProgress(list);
+                publishProgress(response.body());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -399,14 +394,15 @@ public class HomeFragment extends Fragment implements NetworkStateReceiver.Netwo
         protected void onProgressUpdate(List<Product>... values) {
             super.onProgressUpdate(values);
             List<Product> listSale = values[0];
-            saleProductCustomCardviewAdapter = new SaleProductCustomCardviewAdapter(getContext(), listSale);
-
-            RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getContext(), 2);
-            recyclerViewSaleProduct.setLayoutManager(mLayoutManager);
-            recyclerViewSaleProduct.setNestedScrollingEnabled(false);
-            recyclerViewSaleProduct.addItemDecoration(new GridSpacingItemDecoration(2, Formater.dpToPx(2, getResources()), true));
-            recyclerViewSaleProduct.setItemAnimator(new DefaultItemAnimator());
-            recyclerViewSaleProduct.setAdapter(saleProductCustomCardviewAdapter);
+            if (listSale != null){
+                saleProductCustomCardviewAdapter = new SaleProductCustomCardviewAdapter(getContext(), listSale);
+                RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getContext(), 2);
+                recyclerViewSaleProduct.setLayoutManager(mLayoutManager);
+                recyclerViewSaleProduct.setNestedScrollingEnabled(false);
+                recyclerViewSaleProduct.addItemDecoration(new GridSpacingItemDecoration(2, Formater.dpToPx(2, getResources()), true));
+                recyclerViewSaleProduct.setItemAnimator(new DefaultItemAnimator());
+                recyclerViewSaleProduct.setAdapter(saleProductCustomCardviewAdapter);
+            }
         }
 
         @Override
@@ -414,11 +410,7 @@ public class HomeFragment extends Fragment implements NetworkStateReceiver.Netwo
             try {
                 Call<List<Product>> call = calls[0];
                 Response<List<Product>> response = call.execute();
-                List<Product> list = new ArrayList<>();
-                for (int i = 0; i < response.body().size(); i++) {
-                    list.add(response.body().get(i));
-                }
-                publishProgress(list);
+                publishProgress(response.body());
             } catch (IOException e) {
                 e.printStackTrace();
             }

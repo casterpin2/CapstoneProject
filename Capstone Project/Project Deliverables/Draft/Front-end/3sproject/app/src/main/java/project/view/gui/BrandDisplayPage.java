@@ -71,7 +71,7 @@ public class BrandDisplayPage extends BasePage {
         main_layout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                CustomInterface.hideKeyboard(view,getBaseContext());
+                CustomInterface.hideKeyboard(view, getBaseContext());
                 return false;
             }
         });
@@ -93,12 +93,12 @@ public class BrandDisplayPage extends BasePage {
             @Override
             public boolean onQueryTextChange(String newText) {
                 searchedProduct.clear();
-                if(newText.equals("") || newText == null){
+                if (newText.equals("") || newText == null) {
                     adapter = new BrandCustomCardviewAdapter(BrandDisplayPage.this, brandList);
 
                 } else {
                     for (int i = 0; i < brandList.size(); i++) {
-                        if(brandList.get(i).getBrandName().toLowerCase().contains(newText.toLowerCase())) {
+                        if (brandList.get(i).getBrandName().toLowerCase().contains(newText.toLowerCase())) {
                             searchedProduct.add(brandList.get(i));
                         }
                     }
@@ -120,7 +120,7 @@ public class BrandDisplayPage extends BasePage {
         imgHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent toHomePage = new Intent(BrandDisplayPage.this,HomePage.class);
+                Intent toHomePage = new Intent(BrandDisplayPage.this, HomePage.class);
                 startActivity(toHomePage);
             }
         });
@@ -135,14 +135,14 @@ public class BrandDisplayPage extends BasePage {
         }
     }
 
-    private void findView(){
+    private void findView() {
         searchView = findViewById(R.id.searchViewQuery);
         loadingBar = (ProgressBar) findViewById(R.id.loadingBar);
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         imgBack = findViewById(R.id.backBtn);
         imgHome = findViewById(R.id.imgHome);
         main_layout = findViewById(R.id.main_layout);
-        nullMessage= findViewById(R.id.nullMessage);
+        nullMessage = findViewById(R.id.nullMessage);
     }
 
     private class BrandDisplayData extends AsyncTask<Call, List<Brand>, Void> {
@@ -155,57 +155,37 @@ public class BrandDisplayPage extends BasePage {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            boolean check = false;
-            if (brandList.isEmpty()) {
-                check = false;
-            } else {
-                check = true;
-            }
-            if(check == true){
+            if (!brandList.isEmpty()) {
+                adapter = new BrandCustomCardviewAdapter(BrandDisplayPage.this, brandList);
+                RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(BrandDisplayPage.this, 2);
+                recyclerView.setLayoutManager(mLayoutManager);
+                recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, Formater.dpToPx(10, getResources()), true));
+                recyclerView.setItemAnimator(new DefaultItemAnimator());
+                recyclerView.setAdapter(adapter);
                 loadingBar.setVisibility(View.INVISIBLE);
-            }
-            final boolean finalCheck = check;
-            new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-                @Override
-                public void run() {
-
-                    if (finalCheck == false) {
-                        Toast.makeText(BrandDisplayPage.this, "Có lỗi xảy ra. Vui lòng thử lại!", Toast.LENGTH_SHORT).show();
+            } else {
+                new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
                         nullMessage.setText("Có lỗi xảy ra, vui lòng tải lại trang!");
                         loadingBar.setVisibility(View.INVISIBLE);
                     }
-                }
-            },10000);
-            adapter = new BrandCustomCardviewAdapter(BrandDisplayPage.this, brandList);
-
-            RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(BrandDisplayPage.this, 2);
-            recyclerView.setLayoutManager(mLayoutManager);
-            recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, Formater.dpToPx(10,getResources()), true));
-            recyclerView.setItemAnimator(new DefaultItemAnimator());
-            recyclerView.setAdapter(adapter);
+                }, 10000);
+            }
         }
 
         @Override
         protected void onProgressUpdate(List<Brand>... values) {
             super.onProgressUpdate(values);
-
-            StorageReference storageReference = Firebase.getFirebase();
             brandList = values[0];
-
-
         }
 
         @Override
         protected Void doInBackground(Call... calls) {
-
             try {
                 Call<List<Brand>> call = calls[0];
                 Response<List<Brand>> response = call.execute();
-                List<Brand> list = new ArrayList<>();
-                for(int i =0;i< response.body().size();i++){
-                    list.add(response.body().get(i));
-                }
-                publishProgress(list);
+                publishProgress(response.body());
             } catch (IOException e) {
                 e.printStackTrace();
             }

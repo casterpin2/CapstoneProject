@@ -60,20 +60,14 @@ import retrofit2.Response;
 
 public class SaleProductDisplayPage extends BasePage {
 
-    private int storeID;
-    private String storeName;
-    private String phone;
-    private String image_path;
-    private Store store;
     private APIService apiService;
     private RecyclerView recycler_view;
-    private ImageView backBtn, backdrop, imgAddCard,imgHome;
-    private TextView tvStoreName, nullMessage;
-    private Spinner spinnerCategory,spinnerSort;
-    private StorageReference storageReference = Firebase.getFirebase();
+    private ImageView backBtn, imgHome;
+    private TextView nullMessage;
+    private Spinner spinnerCategory, spinnerSort;
     private List<Product> products;
     private CoordinatorLayout main_layout;
-    private SearchView searchView ;
+    private SearchView searchView;
     private List<Product> tempProductInStore;
     private ProductFilter productFilter;
     private SaleProductCustomCardviewAdapter saleProductCustomCardviewAdapter;
@@ -96,7 +90,7 @@ public class SaleProductDisplayPage extends BasePage {
         imgHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent toHomePage = new Intent(SaleProductDisplayPage.this,HomePage.class);
+                Intent toHomePage = new Intent(SaleProductDisplayPage.this, HomePage.class);
                 startActivity(toHomePage);
             }
         });
@@ -105,31 +99,30 @@ public class SaleProductDisplayPage extends BasePage {
         new SaleProductDisplayPage.SaleProductDisplayData().execute(callSale);
     }
 
-    private void findView(){
+    private void findView() {
         recycler_view = findViewById(R.id.recycler_view);
         backBtn = findViewById(R.id.backBtn);
-        tvStoreName = findViewById(R.id.tv_store_name);
         spinnerCategory = findViewById(R.id.spinnerCategory);
         spinnerSort = findViewById(R.id.spinnerSort);
-        backdrop = findViewById(R.id.cover);
         main_layout = findViewById(R.id.main_layout);
         searchView = findViewById(R.id.searchViewQuery);
         loadingBar = findViewById(R.id.loadingBar);
         imgHome = findViewById(R.id.imgHome);
         nullMessage = findViewById(R.id.nullMessage);
     }
-    private void customView(){
+
+    private void customView() {
         main_layout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                CustomInterface.hideKeyboard(view,getBaseContext());
+                CustomInterface.hideKeyboard(view, getBaseContext());
                 return false;
             }
         });
         searchView.setQueryHint("Tìm sản phẩm giảm giá");
     }
 
-    public class SaleProductDisplayData extends AsyncTask<Call,List<Product>,Void>{
+    public class SaleProductDisplayData extends AsyncTask<Call, List<Product>, Void> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -147,41 +140,42 @@ public class SaleProductDisplayPage extends BasePage {
             productFilter = new ProductFilter();
             products = values[0];
             tempProductInStore = new ArrayList<>();
-            if(products != null){
+            if (!products.isEmpty()) {
                 productFilter.setBrandFilter(products, SaleProductDisplayPage.this, spinnerCategory);
-                productFilter.setSortItem(SaleProductDisplayPage.this,spinnerSort);
-                for (Product product : products){
+                productFilter.setSortItem(SaleProductDisplayPage.this, spinnerSort);
+                for (Product product : products) {
                     tempProductInStore.add(product);
                 }
+                saleProductCustomCardviewAdapter = new SaleProductCustomCardviewAdapter(SaleProductDisplayPage.this, tempProductInStore);
+                RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(SaleProductDisplayPage.this, 2);
+                recycler_view.setLayoutManager(mLayoutManager);
+                recycler_view.addItemDecoration(new GridSpacingItemDecoration(2, Formater.dpToPx(2, getResources()), true));
+                recycler_view.setItemAnimator(new DefaultItemAnimator());
+                recycler_view.setAdapter(saleProductCustomCardviewAdapter);
                 loadingBar.setVisibility(View.INVISIBLE);
             } else {
                 new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(SaleProductDisplayPage.this, "Có lỗi xảy ra, vui lòng thử lại", Toast.LENGTH_SHORT).show();
                         nullMessage.setText("Có lỗi xảy ra, vui lòng tải lại trang!");
                         loadingBar.setVisibility(View.INVISIBLE);
 
                     }
-                },10000);
+                }, 10000);
                 return;
             }
-            saleProductCustomCardviewAdapter = new SaleProductCustomCardviewAdapter(SaleProductDisplayPage.this, tempProductInStore);
-            RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(SaleProductDisplayPage.this, 2);
-            recycler_view.setLayoutManager(mLayoutManager);
-            recycler_view.addItemDecoration(new GridSpacingItemDecoration(2, Formater.dpToPx(2,getResources()), true));
-            recycler_view.setItemAnimator(new DefaultItemAnimator());
-            recycler_view.setAdapter(saleProductCustomCardviewAdapter);
+
             spinnerSort.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                    if(adapterView.getItemAtPosition(i).toString().equals(productFilter.FROM_LOW_COST)) {
-                        Collections.sort(tempProductInStore,new ProductInStoreCompareableDecrease());
-                    }else if(adapterView.getItemAtPosition(i).toString().equals(productFilter.FROM_HIGH_COST)){
-                        Collections.sort(tempProductInStore,new ProductInStoreCompareableIncrease());
+                    if (adapterView.getItemAtPosition(i).toString().equals(productFilter.FROM_LOW_COST)) {
+                        Collections.sort(tempProductInStore, new ProductInStoreCompareableDecrease());
+                    } else if (adapterView.getItemAtPosition(i).toString().equals(productFilter.FROM_HIGH_COST)) {
+                        Collections.sort(tempProductInStore, new ProductInStoreCompareableIncrease());
                     }
                     saleProductCustomCardviewAdapter.notifyDataSetChanged();
                 }
+
                 @Override
                 public void onNothingSelected(AdapterView<?> adapterView) {
 
@@ -192,11 +186,11 @@ public class SaleProductDisplayPage extends BasePage {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                     tempProductInStore.clear();
-                    if(adapterView.getItemAtPosition(i).toString().contains(productFilter.ALL_PRODUCT)){
-                        for (Product product : products){
+                    if (adapterView.getItemAtPosition(i).toString().contains(productFilter.ALL_PRODUCT)) {
+                        for (Product product : products) {
                             tempProductInStore.add(product);
                         }
-                    }else{
+                    } else {
                         for (Product product : products) {
                             if (adapterView.getItemAtPosition(i).toString().contains(product.getBrand_name())) {
                                 tempProductInStore.add(product);
@@ -218,11 +212,7 @@ public class SaleProductDisplayPage extends BasePage {
             try {
                 Call<List<Product>> call = calls[0];
                 Response<List<Product>> response = call.execute();
-                List<Product> list = new ArrayList<>();
-                for(int i =0 ; i< response.body().size();i++){
-                    list.add(response.body().get(i));
-                }
-                publishProgress(list);
+                publishProgress(response.body());
             } catch (IOException e) {
                 e.printStackTrace();
             }

@@ -144,6 +144,7 @@ public class ProductTypeDisplayPage extends BasePage {
             case R.id.action_home:{
                 Intent toHomPage = new Intent(ProductTypeDisplayPage.this, HomePage.class);
                 startActivity(toHomPage);
+                finishAffinity();
             }
             default:
                 return super.onOptionsItemSelected(item);

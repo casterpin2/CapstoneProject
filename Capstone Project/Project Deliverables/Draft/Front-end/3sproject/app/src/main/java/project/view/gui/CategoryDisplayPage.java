@@ -159,33 +159,24 @@ public class CategoryDisplayPage extends BasePage {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            boolean check = false;
-            if (categoryList.isEmpty()) {
-                check = false;
-            } else {
-                check = true;
-            }
-            if(check == true){
-                loadingBar.setVisibility(View.INVISIBLE);
-            }
-            final boolean finalCheck = check;
-            new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-                @Override
-                public void run() {
 
-                    if (finalCheck == false) {
-                        Toast.makeText(CategoryDisplayPage.this, "Có lỗi xảy ra. Vui lòng thử lại!", Toast.LENGTH_SHORT).show();
-                        nullMessage.setText("Có lỗi xảy ra, vui lòng tải lại trang!");
-                        loadingBar.setVisibility(View.INVISIBLE);
+            if(!categoryList.isEmpty()){
+                adapter = new CategoryCustomCardviewAdapter(CategoryDisplayPage.this, categoryList);
+                RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(CategoryDisplayPage.this, 2);
+                recyclerView.setLayoutManager(mLayoutManager);
+                recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, Formater.dpToPx(10,getResources()), true));
+                recyclerView.setItemAnimator(new DefaultItemAnimator());
+                recyclerView.setAdapter(adapter);
+                loadingBar.setVisibility(View.INVISIBLE);
+            } else {
+                new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                            nullMessage.setText("Có lỗi xảy ra, vui lòng tải lại trang!");
+                            loadingBar.setVisibility(View.INVISIBLE);
                     }
-                }
-            },10000);
-            adapter = new CategoryCustomCardviewAdapter(CategoryDisplayPage.this, categoryList);
-            RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(CategoryDisplayPage.this, 2);
-            recyclerView.setLayoutManager(mLayoutManager);
-            recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, Formater.dpToPx(10,getResources()), true));
-            recyclerView.setItemAnimator(new DefaultItemAnimator());
-            recyclerView.setAdapter(adapter);
+                }, 10000);
+            }
         }
 
         @Override
@@ -201,11 +192,7 @@ public class CategoryDisplayPage extends BasePage {
             try {
                 Call<List<Category>> call = calls[0];
                 Response<List<Category>> response = call.execute();
-                List<Category> list = new ArrayList<>();
-                for(int i =0;i< response.body().size();i++){
-                    list.add(response.body().get(i));
-                }
-                publishProgress(list);
+                publishProgress(response.body());
             } catch (IOException e) {
                 e.printStackTrace();
             }

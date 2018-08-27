@@ -46,7 +46,6 @@ import retrofit2.Response;
 
 public class ProductInStoreByUserDisplayPage extends BasePage {
     private int storeID;
-    private String storeName;
     private Store store;
     private APIService mAPI;
     private RecyclerView recycler_view;
@@ -63,6 +62,8 @@ public class ProductInStoreByUserDisplayPage extends BasePage {
     private LinearLayout storeNameLayout;
     private ProgressBar loadingBar;
     private TextView nullMessage;
+    private Call<Store> storeCall;
+    private Call<List<Product>> call;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,9 +74,9 @@ public class ProductInStoreByUserDisplayPage extends BasePage {
         loadingBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorApplication), android.graphics.PorterDuff.Mode.MULTIPLY);
         storeID = getIntent().getIntExtra("storeID", -1);
         mAPI = ApiUtils.getAPIService();
-        final Call<Store> storeCall = mAPI.getStoreById(storeID);
+        storeCall = mAPI.getStoreById(storeID);
         new ProductInStoreByUserDisplayPage.StoreInformation().execute(storeCall);
-        final Call<List<Product>> call = mAPI.getProductInStore(storeID);
+        call = mAPI.getProductInStore(storeID);
         new ProductInStoreByUserDisplayPage.ProductInStoreList().execute(call);
 
 
@@ -90,6 +91,7 @@ public class ProductInStoreByUserDisplayPage extends BasePage {
             public void onClick(View view) {
                 Intent toHomePage = new Intent(ProductInStoreByUserDisplayPage.this, HomePage.class);
                 startActivity(toHomePage);
+                finishAffinity();
             }
         });
         storeNameLayout.setOnClickListener(new View.OnClickListener() {
@@ -137,27 +139,17 @@ public class ProductInStoreByUserDisplayPage extends BasePage {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            boolean check = false;
             if (products != null) {
-                check = true;
-            } else {
-                check = false;
-            }
-            if (check == true) {
                 loadingBar.setVisibility(View.INVISIBLE);
-            }
-            final boolean finalCheck = check;
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-
-                    if (finalCheck == false) {
-                        Toast.makeText(ProductInStoreByUserDisplayPage.this, "Có lỗi xảy ra. Vui lòng thử lại!", Toast.LENGTH_SHORT).show();
+            } else {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
                         nullMessage.setText("Có lỗi xảy ra, vui lòng tải lại trang!");
                         loadingBar.setVisibility(View.INVISIBLE);
                     }
-                }
-            }, 10000);
+                }, 10000);
+            }
         }
 
         @Override
@@ -168,12 +160,13 @@ public class ProductInStoreByUserDisplayPage extends BasePage {
 
             tempProductInStore = new ArrayList<>();
 
-            if (products != null) {
+            if (!products.isEmpty()) {
                 productFilter.setCategoryFilter(products, ProductInStoreByUserDisplayPage.this, spinnerCategory);
                 productFilter.setSortItem(ProductInStoreByUserDisplayPage.this, spinnerSort);
                 for (Product product : products) {
                     tempProductInStore.add(product);
                 }
+
             }
             productInStoreByUserCustomListViewAdapter = new ProductInStoreByUserCustomCardViewAdapter(ProductInStoreByUserDisplayPage.this, tempProductInStore, store);
             RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(ProductInStoreByUserDisplayPage.this, 2);
@@ -181,6 +174,7 @@ public class ProductInStoreByUserDisplayPage extends BasePage {
             recycler_view.addItemDecoration(new GridSpacingItemDecoration(2, Formater.dpToPx(2, getResources()), true));
             recycler_view.setItemAnimator(new DefaultItemAnimator());
             recycler_view.setAdapter(productInStoreByUserCustomListViewAdapter);
+
             spinnerSort.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -235,11 +229,7 @@ public class ProductInStoreByUserDisplayPage extends BasePage {
             try {
                 Call<List<Product>> call = calls[0];
                 Response<List<Product>> response = call.execute();
-                List<Product> list = new ArrayList<>();
-                for (int i = 0; i < response.body().size(); i++) {
-                    list.add(response.body().get(i));
-                }
-                publishProgress(list);
+                publishProgress(response.body());
             } catch (IOException e) {
                 e.printStackTrace();
             }

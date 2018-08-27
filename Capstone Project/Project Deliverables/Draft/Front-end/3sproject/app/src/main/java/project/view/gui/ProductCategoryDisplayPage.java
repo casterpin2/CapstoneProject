@@ -97,16 +97,6 @@ public class ProductCategoryDisplayPage extends BasePage implements ProductInCat
         }, 2000);
     }
 
-    private void callAPI (int page, int categoryId){
-        //Call API
-//        if (searchedProductList == null) {
-//            searchedProductList = new ArrayList<>();
-//            return;
-//        }
-//        Call<List<Product>> call = mAPI.getProductInCategory(page,categoryId);
-//        new ProductInCategoryList.execute(call);
-    }
-
     @Override
     public void onItemClick(View view, int position) {
 
