@@ -17,6 +17,8 @@ import android.widget.Toast;
 import com.google.firebase.storage.StorageReference;
 import com.google.gson.Gson;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.List;
 
 import project.firebase.Firebase;
@@ -40,6 +42,8 @@ public class NearByStoreListViewAdapter extends BaseAdapter {
     private Store store;
     private Store myStore;
     private User user;
+
+    private NumberFormat formatter = new DecimalFormat("#0.00");
     @Override
     public int getCount() {
         return storeList.size();
@@ -90,8 +94,8 @@ public class NearByStoreListViewAdapter extends BaseAdapter {
             if (store != null) {
                 holder.storeName.setText(store.getName());
                 holder.storeAddress.setText(store.getAddress());
-                holder.distance.setText(String.valueOf(store.getDistance()) + " km");
-
+//                holder.distance.setText(String.valueOf(store.getDistance()) + " km");
+                holder.distance.setText(formatter.format(store.getDistance()).toString() + " km");
 
                 if (store.getPromotion() > 0.0) {
                     holder.promotionPercent.setVisibility(View.VISIBLE);
