@@ -46,7 +46,7 @@ public class Formater {
                 new DecimalFormat("#,##0.00");// #,##0.00 ¤ (¤:// Currency symbol)
         format.setCurrency(Currency.getInstance(Locale.US));//Or default locale
 
-        price = (!TextUtils.isEmpty(price)) ? price : "0";
+        price = (!price.isEmpty()) ? price : "0";
         price = price.trim();
         price = format.format(Double.parseDouble(price));
         price = price.replaceAll(",", "\\.");
