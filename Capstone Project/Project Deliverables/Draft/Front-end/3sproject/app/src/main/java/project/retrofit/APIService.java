@@ -166,4 +166,6 @@ public interface APIService {
 
     @PUT("updateImgStore")
     Call<Boolean> updateImgStore(@Body Store storeJson,@Query("imgPath") String imgPath);
+    @GET("vadilateUpdateStore")
+    Call<Integer> vadilatorStore(@Query("name") String name,@Query("phone") String phone,@Query("typeSearch") String typeSearch);
 }

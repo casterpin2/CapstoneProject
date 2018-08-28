@@ -1,5 +1,6 @@
 package project.view.gui;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Paint;
@@ -42,6 +43,7 @@ public class OTPCodePage extends AppCompatActivity implements NetworkStateReceiv
     private boolean checkNetwork = true;
     private NetworkStateReceiver networkStateReceiver;
     private ProgressBar loadingBar;
+    private int countClick =0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,38 +75,67 @@ public class OTPCodePage extends AppCompatActivity implements NetworkStateReceiv
                 btn.setText("");
                 apiService = ApiUtils.getAPIService();
                 code = etCode.getText().toString();
-                if(checkNetwork){
-                    apiService.confirmOTP(code,phone).enqueue(new Callback<Boolean>() {
-                        @Override
-                        public void onResponse(Call<Boolean> call, Response<Boolean> response) {
-                            if(response.body()==true){
-                                loadingBar.setVisibility(View.INVISIBLE);
-                                btn.setEnabled(true);
-                                btn.setText("Xác nhận");
-                                Intent toChangePasswordPage = new Intent(getBaseContext(),ResetPasswordPage.class);
-                                toChangePasswordPage.putExtra("username",username);
-                                startActivity(toChangePasswordPage);
-                            } else {
-                                Toast.makeText(OTPCodePage.this, "Sai OTP Bạn chỉ được nhập 3 lần code ", Toast.LENGTH_LONG).show();
+
+                    if(checkNetwork){
+                        apiService.confirmOTP(code,phone).enqueue(new Callback<Boolean>() {
+                            @Override
+                            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                                if(response.body()==true){
+                                    loadingBar.setVisibility(View.INVISIBLE);
+                                    btn.setEnabled(true);
+                                    btn.setText("Xác nhận");
+                                    Intent toChangePasswordPage = new Intent(getBaseContext(),ResetPasswordPage.class);
+                                    toChangePasswordPage.putExtra("username",username);
+                                    startActivity(toChangePasswordPage);
+                                    countClick=0;
+                                } else {
+                                    Toast.makeText(OTPCodePage.this, "Sai OTP Bạn chỉ được nhập 3 lần code ", Toast.LENGTH_LONG).show();
+                                    loadingBar.setVisibility(View.INVISIBLE);
+                                    btn.setEnabled(true);
+                                    btn.setText("Xác nhận");
+                                    countClick++;
+                                }
                             }
-                        }
 
-                        @Override
-                        public void onFailure(Call<Boolean> call, Throwable t) {
+                            @Override
+                            public void onFailure(Call<Boolean> call, Throwable t) {
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        loadingBar.setVisibility(View.INVISIBLE);
+                                        btn.setEnabled(true);
+                                        btn.setText("Xác nhận");
+                                        tvConfirmCodeMess.setText("Có lỗi xảy ra. Vui lòng thử lại");
+                                    }
+                                }, 5000);
+                            }
+                        });
+                    }else{
 
-                        }
-                    });
-                }else{
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            loadingBar.setVisibility(View.INVISIBLE);
-                            btn.setEnabled(true);
-                            btn.setText("Xác nhận");
-                            tvConfirmCodeMess.setText("Có lỗi xảy ra. Vui lòng thử lại");
-                        }
-                    }, 5000);
-                }
+                    }
+                    if(countClick==2){
+                        final AlertDialog.Builder builder = new AlertDialog.Builder(OTPCodePage.this);
+                        builder.setTitle("Quá số lần nhập mã OTP");
+                        builder.setMessage("Vui lòng nhấn vào nút gửi lại yêu cầu");
+                        final boolean[] isIntent = {false};
+                        builder.setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                isIntent[0] = true;
+                                countClick = 0;
+                                return;
+                            }
+                        });
+                        loadingBar.setVisibility(View.INVISIBLE);
+                        btn.setEnabled(true);
+                        btn.setText("Xác nhận");
+                        builder.show();
+
+                    }
+
+
+
+
 
                 if(isCode){
 

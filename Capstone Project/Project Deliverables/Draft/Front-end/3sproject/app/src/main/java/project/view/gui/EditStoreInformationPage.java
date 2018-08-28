@@ -147,6 +147,8 @@ public class EditStoreInformationPage extends BasePage implements OnMapReadyCall
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
                     isStoreName = regex.checkDisplayName(tvStoreNameError, etStoreName);
+                    final Call<Integer> call = apiService.vadilatorStore(etStoreName.getText().toString(),"None", "phone");
+                    new ValidatorStore().execute(call);
                 }
             }
         });
@@ -156,6 +158,8 @@ public class EditStoreInformationPage extends BasePage implements OnMapReadyCall
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
                     isPhone = regex.checkPhone(tvPhoneError, etPhone);
+                    final Call<Integer> call = apiService.vadilatorStore("None", etPhone.getText().toString(), "phone");
+                    new ValidatorStore().execute(call);
                 }
             }
         });
@@ -223,8 +227,6 @@ public class EditStoreInformationPage extends BasePage implements OnMapReadyCall
                     isLocation = true;
                     tvLocationError.setText("");
                 }
-                isPhone = regex.checkPhone(tvPhoneError, etPhone);
-                isStoreName = regex.checkDisplayName(tvStoreNameError, etStoreName);
                 pre = getSharedPreferences("authentication", Context.MODE_PRIVATE);
                 storeJson = pre.getString("store", "");
                 Store storePre = new Gson().fromJson(storeJson, Store.class);
@@ -643,5 +645,55 @@ public class EditStoreInformationPage extends BasePage implements OnMapReadyCall
         etPhone.setSelection(etPhone.getText().length());
 
     }
+    private class ValidatorStore extends AsyncTask<Call, String, Void> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+        }
+
+        @Override
+        protected void onProgressUpdate(String... values) {
+            super.onProgressUpdate(values);
+            String nameCheck = values[0];
+            if (nameCheck != null) {
+                switch (nameCheck) {
+                    case "1":
+                        tvStoreNameError.setText(R.string.store_duplicate);
+                        isStoreName = false;
+                        break;
+                    case "2":
+                        tvPhoneError.setText(R.string.duplicate_phone);
+                        isPhone = false;
+                        break;
+                }
+            } else {
+                Toast.makeText(getBaseContext(), "Có lỗi xảy ra", Toast.LENGTH_LONG).show();
+            }
+        }
+
+        @Override
+        protected Void doInBackground(Call... calls) {
+
+            try {
+                Call<Integer> call = calls[0];
+                if (call != null) {
+                    Response<Integer> re = call.execute();
+                    publishProgress(re.body() + "");
+                } else {
+                    Toast.makeText(getBaseContext(), "Có lỗi xảy ra", Toast.LENGTH_LONG).show();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+    }
+
 
 }

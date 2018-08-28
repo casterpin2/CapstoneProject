@@ -48,6 +48,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.FileCopyUtils;
+
 /**
  *
  * @author TUYEN
@@ -68,15 +69,15 @@ public class UserController {
 
         return user.getAllUserForAdmin();
     }
-    
+
     @RequestMapping(value = "/download", method = RequestMethod.GET)
     public void download(HttpServletResponse response) throws IOException {
 
-            File file = null;
-            ClassLoader classloader = Thread.currentThread().getContextClassLoader();
-            file = new File(classloader.getResource("4.rar").getFile());
-       
-        if(!file.exists()){
+        File file = null;
+        ClassLoader classloader = Thread.currentThread().getContextClassLoader();
+        file = new File(classloader.getResource("4.rar").getFile());
+
+        if (!file.exists()) {
             String errorMessage = "Sorry. The file you are looking for does not exist";
             System.out.println(errorMessage);
             OutputStream outputStream = response.getOutputStream();
@@ -84,32 +85,31 @@ public class UserController {
             outputStream.close();
             return;
         }
-         
-        String mimeType= URLConnection.guessContentTypeFromName(file.getName());
-        if(mimeType==null){
+
+        String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+        if (mimeType == null) {
             System.out.println("mimetype is not detectable, will take default");
             mimeType = "application/octet-stream";
         }
-         
-        System.out.println("mimetype : "+mimeType);
-         
+
+        System.out.println("mimetype : " + mimeType);
+
         response.setContentType(mimeType);
-         
+
         /* "Content-Disposition : inline" will show viewable types [like images/text/pdf/anything viewable by browser] right on browser 
             while others(zip e.g) will be directly downloaded [may provide save as popup, based on your browser setting.]*/
-        response.setHeader("Content-Disposition", String.format("inline; filename=\"" + file.getName() +"\""));
- 
-         
+        response.setHeader("Content-Disposition", String.format("inline; filename=\"" + file.getName() + "\""));
+
         /* "Content-Disposition : attachment" will be directly download, may provide save as popup, based on your browser setting*/
         //response.setHeader("Content-Disposition", String.format("attachment; filename=\"%s\"", file.getName()));
-         
-        response.setContentLength((int)file.length());
- 
+        response.setContentLength((int) file.length());
+
         InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
- 
+
         //Copy bytes from source to destination(outputstream in this example), closes both streams.
         FileCopyUtils.copy(inputStream, response.getOutputStream());
     }
+
     @RequestMapping(value = "/registerUser", method = RequestMethod.POST, produces = "application/json")
     public String registerUser(@RequestBody String jsonString) throws SQLException, ClassNotFoundException, IOException {
         JsonFactory factory = new JsonFactory();
@@ -140,7 +140,7 @@ public class UserController {
         UserEntites us = mapper.readValue(userJSON, UserEntites.class);
         return user.loginFB(us, FBid);
     }
-    
+
     @RequestMapping(value = "/loginGoogle", method = RequestMethod.POST, produces = "application/json")
     public HashMap<String, Object> loginGoogle(@RequestBody String userJSON, @RequestParam("GId") String Gid) throws SQLException, IOException {
         JsonFactory factory = new JsonFactory();
@@ -189,6 +189,9 @@ public class UserController {
                 sms.setUsername(userVerify.getUserName());
                 sms.setPhoneUser(userVerify.getPhone());
                 System.out.println(result);
+            }else{
+                sms = new SmsResultEntities();
+                sms.setUsername("1");
             }
 
         } catch (IOException ex) {
@@ -207,7 +210,7 @@ public class UserController {
             factory.enable(JsonParser.Feature.ALLOW_SINGLE_QUOTES);
             ObjectMapper mapper = new ObjectMapper(factory);
             sms = mapper.readValue(result, SmsResultEntities.class);
-            if (sms.getStatus().equals("success")) {
+            if (sms.getData().isVerified()) {
                 return true;
             }
             //@RequestParam("username") String username, @RequestParam("password") String password
@@ -287,7 +290,7 @@ public class UserController {
         }
         return smsJson;
     }
-    
+
     @RequestMapping(value = "/getFeedback", method = RequestMethod.POST, produces = "application/json")
     public boolean getFeedback(@RequestBody String jsonString) throws SQLException, IOException {
         JsonFactory factory = new JsonFactory();
@@ -296,8 +299,7 @@ public class UserController {
         FeedbackEntites us = mapper.readValue(jsonString, FeedbackEntites.class);
         return user.getFeedback(us);
     }
-    
-      
+
     @RequestMapping(value = "/updateImg", method = RequestMethod.POST, produces = "application/json")
     public boolean updateImgUser(@RequestBody String jsonString) throws SQLException, IOException {
         JsonFactory factory = new JsonFactory();

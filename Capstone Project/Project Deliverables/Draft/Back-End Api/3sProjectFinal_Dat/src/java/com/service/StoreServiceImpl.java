@@ -66,5 +66,10 @@ public class StoreServiceImpl implements StoreService{
     public boolean changeImgByStore(String imgPath, StoreEntites store) throws SQLException {
         return dao.changeImgByStore(imgPath, store);
     }
+
+    @Override
+    public int validatorStore(String nameStore, String phone,String typeSeach) throws SQLException {
+        return dao.validatorStore(nameStore, phone,typeSeach);
+    }
     
 }

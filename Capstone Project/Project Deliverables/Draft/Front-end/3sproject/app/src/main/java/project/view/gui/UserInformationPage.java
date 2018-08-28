@@ -47,6 +47,7 @@ public class UserInformationPage extends BasePage {
     private RelativeLayout userInformation;
     String userAvatarPath;
     private StorageReference storageReference = Firebase.getFirebase();
+    private String currentPath;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,7 +58,7 @@ public class UserInformationPage extends BasePage {
 
         apiService = APIService.retrofit.create(APIService.class);
        // Toast.makeText(this, this.getIntent().getIntExtra("userID",0)+"", Toast.LENGTH_LONG).show();
-
+        currentPath = getIntent().getStringExtra("currentPath");
         Call<User> call = apiService.getInformation(getIntent().getIntExtra("userID",0));
         new UserDataClass().execute(call);
         btnBack.setOnClickListener(new View.OnClickListener() {
@@ -70,7 +71,7 @@ public class UserInformationPage extends BasePage {
                if(userAvatarPath!=null && !userAvatarPath.isEmpty()){
                    backToUserFragment.putExtra("path",userAvatarPath);
                }
-
+               backToUserFragment.putExtra("currentPath",currentPath);
                setResult(222,backToUserFragment);
                finish();
             }
@@ -86,6 +87,7 @@ public class UserInformationPage extends BasePage {
                 extras.putString("gender", txtGender.getText().toString());
                 extras.putInt("idUser",getIntent().getIntExtra("userID",0));
                 extras.putString("path",userAvatarPath);
+                extras.putString("currentPath",currentPath);
                 Intent toEditUserInformationPage = new Intent(UserInformationPage.this, EditUserInformationPage.class);
                 toEditUserInformationPage.putExtras(extras);
                 startActivityForResult(toEditUserInformationPage, REQUEST_PROFILE_CODE);
@@ -250,6 +252,7 @@ public class UserInformationPage extends BasePage {
                 txtDob.setText(us.getDateOfBirth());
                 nameDisplay = txtName.getText().toString();
                 userAvatarPath = us.getImage_path();
+                currentPath = us.getImage_path();
                 if (!userAvatarPath.isEmpty()) {
                     if (userAvatarPath.contains("graph") || userAvatarPath.contains("google")) {
                         Glide.with(UserInformationPage.this /* context */)

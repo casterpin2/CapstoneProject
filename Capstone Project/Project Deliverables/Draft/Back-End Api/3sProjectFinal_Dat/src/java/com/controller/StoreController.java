@@ -121,4 +121,9 @@ public class StoreController {
         return checkUpdate;
     }
 
+     @RequestMapping(value = "/vadilateUpdateStore", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
+    public Integer vadilatorStore(@RequestParam("name") String name, @RequestParam("phone") String phone,@RequestParam("typeSearch") String typeSearch) throws SQLException, ClassNotFoundException, IOException {
+
+        return store.validatorStore(name, phone, typeSearch);
+    }
 }

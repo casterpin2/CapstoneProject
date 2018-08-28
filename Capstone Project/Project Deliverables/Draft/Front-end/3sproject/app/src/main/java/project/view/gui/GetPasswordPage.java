@@ -83,7 +83,8 @@ public class GetPasswordPage extends AppCompatActivity {
                             apiService.getCodeVerify(etUsername.getText().toString()).enqueue(new Callback<SmsResultEntities>() {
                                 @Override
                                 public void onResponse(Call<SmsResultEntities> call, Response<SmsResultEntities> response) {
-                                    if(response.body()!=null){
+                                    if(!response.body().getUsername().equals("1")){
+
                                         Intent toOTPCodePage = new Intent(getBaseContext(),OTPCodePage.class);
                                         toOTPCodePage.putExtra("phone",response.body().getPhoneUser());
                                         toOTPCodePage.putExtra("user",response.body().getUsername());
@@ -93,7 +94,9 @@ public class GetPasswordPage extends AppCompatActivity {
                                         tvSendCodeMess.setText("Tên tài khoản không tồn tại");
 
                                     }
-
+                                    loadingBar.setVisibility(View.INVISIBLE);
+                                    btn.setEnabled(true);
+                                    btn.setText("Tiếp tục");
                                 }
 
                                 @Override

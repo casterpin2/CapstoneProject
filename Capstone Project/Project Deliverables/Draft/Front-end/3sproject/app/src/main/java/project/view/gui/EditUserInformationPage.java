@@ -107,6 +107,7 @@ public class EditUserInformationPage extends BasePage {
     private StorageReference storageReference;
     private String currentImg;
     private ProgressBar loadingBarImage, loadingBarSave;
+    private String currentPath;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -125,7 +126,7 @@ public class EditUserInformationPage extends BasePage {
 
         Intent intent = getIntent();
         extras = intent.getExtras();
-
+        currentPath = extras.getString("currentPath");
         String gender = extras.getString("gender");
         if(gender.equals("")){
             genderSpinner.setSelection(0);
@@ -148,6 +149,8 @@ public class EditUserInformationPage extends BasePage {
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
                     isPhone = regex.checkPhone(phoneError,phoneText);
+                    final Call<Integer> call = mApi.vadilator("None", "None", phoneText.getText().toString(), "phone");
+                    new ValidatorUser().execute(call);
                 }
             }
         });
@@ -157,6 +160,8 @@ public class EditUserInformationPage extends BasePage {
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
                     isEmail = regex.checkEmail(emailError,emailText);
+                    final Call<Integer> call = mApi.vadilator("None", emailText.getText().toString(), "None", "email");
+                    new ValidatorUser().execute(call);
                 }
             }
         });
@@ -187,9 +192,6 @@ public class EditUserInformationPage extends BasePage {
                 } else if (genderSpinner.getSelectedItemPosition() == 2){
                     gender = "Nữ";
                 }
-                isUserName = regex.checkDisplayName(usernameError,userNameText);
-                isPhone = regex.checkPhone(phoneError,phoneText);
-                isEmail = regex.checkEmail(emailError,emailText);
                 boolean checkAllValidate = isEmail && isPhone &&isUserName;
                 boolean checkChange = extras.getString("name").equals(name) && extras.getString("phone").equals(phone)
                         && extras.getString("email").equals(email) && extras.getString("dob").equals(dob)
@@ -233,7 +235,7 @@ public class EditUserInformationPage extends BasePage {
                     final Call<Boolean> call = mApi.updateImgUser(us);
                     new UserUpdateImg().execute(call);
                     Intent toUserInformationPage = new Intent(EditUserInformationPage.this, UserInformationPage.class);
-                    toUserInformationPage.putExtra("path", us.getImage_path());
+                    toUserInformationPage.putExtra("path", currentPath);
                     setResult(202, toUserInformationPage);
                     finish();
                 }
@@ -494,17 +496,17 @@ public class EditUserInformationPage extends BasePage {
                 @Override
                 public void onFailure(@NonNull Exception exception) {
                    // Toast.makeText(EditUserInformationPage.this, "Xin lỗi kích thước ảnh lớn hơn 2MB", Toast.LENGTH_SHORT).show();
-                    if (!extras.getString("path").isEmpty() && extras.getString("path") != null) {
-                        if (extras.getString("path").contains("graph") || extras.getString("path").contains("google")) {
+                    if (!extras.getString("currentPath").isEmpty() && extras.getString("currentPath") != null) {
+                        if (extras.getString("currentPath").contains("graph") || extras.getString("currentPath").contains("google")) {
                             Glide.with(EditUserInformationPage.this /* context */)
-                                    .load(extras.getString("path"))
+                                    .load(extras.getString("currentPath"))
                                     .diskCacheStrategy(DiskCacheStrategy.NONE)
                                     .skipMemoryCache(true)
                                     .into(profile_image);
                         } else {
                             Glide.with(EditUserInformationPage.this /* context */)
                                     .using(new FirebaseImageLoader())
-                                    .load(storageReference.child(extras.getString("path")))
+                                    .load(storageReference.child(extras.getString("currentPath")))
                                     .diskCacheStrategy(DiskCacheStrategy.NONE)
                                     .skipMemoryCache(true)
                                     .into(profile_image);
@@ -656,9 +658,10 @@ public class EditUserInformationPage extends BasePage {
                 saveBtn.setText("Lưu thay đổi");
                 saveBtn.setEnabled(true);
                 changeImageLayout.setEnabled(true);
-
+                currentPath = namePath;
                 Intent intent = new Intent(EditUserInformationPage.this, UserInformationPage.class);
                 intent.putExtra("userID", us.getId());
+                intent.putExtra("currentPath",currentPath);
                 setResult(200, intent);
                 finish();
 
@@ -752,6 +755,54 @@ public class EditUserInformationPage extends BasePage {
             return null;
         }
     }
+    private class ValidatorUser extends AsyncTask<Call, String, Void> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
 
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+        }
+
+        @Override
+        protected void onProgressUpdate(String... values) {
+            super.onProgressUpdate(values);
+            String nameCheck = values[0];
+            if (nameCheck != null) {
+                switch (nameCheck) {
+                    case "2":
+                        emailError.setText(R.string.duplicate_email);
+                        isEmail = false;
+                        break;
+                    case "3":
+                        isPhone = false;
+                        phoneError.setText(R.string.duplicate_phone);
+                        break;
+                }
+            } else {
+                Toast.makeText(getBaseContext(), "Có lỗi xảy ra", Toast.LENGTH_LONG).show();
+            }
+        }
+
+        @Override
+        protected Void doInBackground(Call... calls) {
+
+            try {
+                Call<Integer> call = calls[0];
+                if (call != null) {
+                    Response<Integer> re = call.execute();
+                    publishProgress(re.body() + "");
+                } else {
+                    Toast.makeText(getBaseContext(), "Có lỗi xảy ra", Toast.LENGTH_LONG).show();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+    }
 
 }

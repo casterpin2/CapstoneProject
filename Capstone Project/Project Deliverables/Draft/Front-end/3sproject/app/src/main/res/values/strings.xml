@@ -179,5 +179,5 @@
     <!-- TODO: placeholder text in User Information Page -->
     <string name="editBtn">Thay đổi thông tin</string>
     <string name="error_old_pass">Mật khẩu hiện tại không đúng</string>
-
+    <string name="store_duplicate">Tên cửa hàng đã tồn tại!</string>
 </resources>

@@ -701,4 +701,53 @@ public class StoreDaoImpl extends BaseDao implements StoreDao {
          }
          return false;
      }
+
+    @Override
+    public int validatorStore(String nameStore, String phone,String typeSeach) throws SQLException {
+        
+         Connection conn = null;
+        PreparedStatement pre = null;
+        ResultSet rs = null;
+        try {
+            int tempSearch = 0;
+            String sql = null;
+            switch (typeSeach) {
+                case "name":
+                    sql = "select name from Store where name = ? ";
+                    tempSearch = 1;
+                    break;
+                case "phone":
+                    sql = "select phone from Store where phone = ? ";
+                    tempSearch = 2;
+                    break;
+            }
+
+            conn = getConnection();
+            //chèn các cho các biến đúng giá trị của nó       
+            switch (tempSearch) {
+                case 1:
+                    pre = conn.prepareStatement(sql);
+                    pre.setString(1, nameStore);
+                    rs = pre.executeQuery();
+                    if (rs.next()) {                       
+                        return tempSearch;
+                    }
+                    break;
+                case 2:
+                    pre = conn.prepareStatement(sql);
+                    pre.setString(1, phone);
+                    rs = pre.executeQuery();
+                    if (rs.next()) {
+                        return tempSearch;
+                    }
+                    break;
+            }
+
+        } finally {
+            closeConnect(conn, pre, rs);
+        }
+        return 0;
+        
+
+    }
 }

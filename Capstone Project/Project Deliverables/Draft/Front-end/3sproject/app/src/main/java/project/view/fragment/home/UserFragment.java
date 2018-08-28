@@ -69,7 +69,7 @@ public class UserFragment extends Fragment implements NetworkStateReceiver.Netwo
     private NetworkStateReceiver networkStateReceiver;
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference myRef;
-
+    private String currentPathImg;
     public UserFragment() {
     }
 
@@ -93,6 +93,9 @@ public class UserFragment extends Fragment implements NetworkStateReceiver.Netwo
             store = new Gson().fromJson(storeJSON, Store.class);
         }
         userID = user.getId();
+        if(store!=null){
+            currentPathImg = store.getImage_path();
+        }
         // Inflate the layout for this fragment
         if (userID == 0) {
             view = inflater.inflate(R.layout.no_loginned_user_fragment_home_page_layout, container, false);
@@ -156,7 +159,6 @@ public class UserFragment extends Fragment implements NetworkStateReceiver.Netwo
                                         reference.child("haveNotification").setValue("true");
                                     }
                                 }
-
                                 @Override
                                 public void onCancelled(@NonNull DatabaseError databaseError) {
 
@@ -182,7 +184,7 @@ public class UserFragment extends Fragment implements NetworkStateReceiver.Netwo
                 public void onClick(View v) {
                     Intent toUserInfoScreen = new Intent(getContext(), UserInformationPage.class);
                     toUserInfoScreen.putExtra("userID", userID);
-
+                    toUserInfoScreen.putExtra("currentPath",currentPathImg);
                     ;
                     startActivityForResult(toUserInfoScreen, 111);
 
