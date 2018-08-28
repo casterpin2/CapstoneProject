@@ -28,11 +28,16 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
+import com.google.firebase.storage.StorageReference;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import project.firebase.Firebase;
 import project.retrofit.APIService;
 import project.retrofit.ApiUtils;
 import project.view.R;
@@ -60,7 +65,8 @@ public class StoreInformationPage extends AppCompatActivity {
     private TextView nullMessage,tvCall;
     private static final int REQUEST_CALL = 1;
     private String phoneNumber;
-    private ImageView imgCall;
+    private ImageView storeImg;
+    private StorageReference storageReference = Firebase.getFirebase();
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -116,7 +122,7 @@ public class StoreInformationPage extends AppCompatActivity {
         tvSad = findViewById(R.id.tv_count_sad);
         tvStoreName = findViewById(R.id.storeName);
         viewFeedback = findViewById(R.id.tv_feedback_status);
-        imgCall = findViewById(R.id.image_call);
+        storeImg = findViewById(R.id.storeImg);
 ;    }
 
     public class StoreInformation extends AsyncTask<Call,Void,Store> {
@@ -141,6 +147,12 @@ public class StoreInformationPage extends AppCompatActivity {
                 tvSmile.setText(String.valueOf(store.getSmile()));
                 tvSad.setText(String.valueOf(store.getSad()));
                 haveData = true;
+                if (!store.getImage_path().isEmpty()) {
+                    Glide.with(getBaseContext())
+                            .using(new FirebaseImageLoader())
+                            .load(storageReference.child(store.getImage_path()))
+                            .into(storeImg);
+                }
             } else {
 //                Toast.makeText(getBaseContext(),"Có lỗi xảy ra",Toast.LENGTH_LONG).show();
                 haveData = false;
