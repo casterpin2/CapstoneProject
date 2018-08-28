@@ -57,7 +57,7 @@ public class ProductInStoreDisplayPage extends BasePage {
     private List<Product> tempList = new ArrayList<>();
     private RelativeLayout main_layout;
     private ProgressBar loadingBar;
-    private Spinner spinnerCategory,spinnerSort;
+    private Spinner spinnerCategory, spinnerSort;
     private List<Product> productInStores;
     private ProductFilter productFilter;
 
@@ -83,12 +83,12 @@ public class ProductInStoreDisplayPage extends BasePage {
         setContentView(R.layout.activity_product_in_store_display_page);
         findView();
         productFilter = new ProductFilter();
-        adapter = new ProductInStoreCustomListViewAdapter(ProductInStoreDisplayPage.this,R.layout.search_product_page_custom_list_view, tempList);
+        adapter = new ProductInStoreCustomListViewAdapter(ProductInStoreDisplayPage.this, R.layout.search_product_page_custom_list_view, tempList);
         CustomInterface.setStatusBarColor(this);
         main_layout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                CustomInterface.hideKeyboard(view,getBaseContext());
+                CustomInterface.hideKeyboard(view, getBaseContext());
                 return false;
             }
         });
@@ -100,10 +100,10 @@ public class ProductInStoreDisplayPage extends BasePage {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         storeID = getIntent().getIntExtra("storeID", -1);
         mAPI = ApiUtils.getAPIService();
-       // addSortItem();
+        // addSortItem();
     }
 
-    private void findView(){
+    private void findView() {
         loadingBar = (ProgressBar) findViewById(R.id.loadingBar);
         spinnerCategory = findViewById(R.id.spinnerCategory);
         spinnerSort = findViewById(R.id.spinnerSort);
@@ -111,6 +111,7 @@ public class ProductInStoreDisplayPage extends BasePage {
         searchView = findViewById(R.id.searchViewQuery);
         nullMessage = findViewById(R.id.nullMessage);
     }
+
     private class ProductInStoreList extends AsyncTask<Call, Void, Void> {
         @Override
         protected void onPreExecute() {
@@ -121,27 +122,17 @@ public class ProductInStoreDisplayPage extends BasePage {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            boolean check = false;
-            if (productInStores.isEmpty()) {
-                check = false;
-            } else {
-                check = true;
-            }
-            if(check == true){
+            if (!productInStores.isEmpty()) {
                 loadingBar.setVisibility(View.INVISIBLE);
-            }
-            final boolean finalCheck = check;
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-
-                    if (finalCheck == false) {
-                        Toast.makeText(ProductInStoreDisplayPage.this, "Có lỗi xảy ra. Vui lòng thử lại!", Toast.LENGTH_SHORT).show();
+            } else {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
                         nullMessage.setText("Có lỗi xảy ra, vui lòng tải lại trang!");
                         loadingBar.setVisibility(View.INVISIBLE);
                     }
-                }
-            },10000);
+                }, 10000);
+            }
         }
 
         @Override
@@ -160,8 +151,8 @@ public class ProductInStoreDisplayPage extends BasePage {
                 for (int i = 0; i < response.body().size(); i++) {
                     productInStores.add(response.body().get(i));
                 }
-                if(productInStores!=null){
-                    for (Product product : productInStores){
+                if (productInStores != null) {
+                    for (Product product : productInStores) {
                         tempList.add(product);
                     }
                 }
@@ -174,46 +165,33 @@ public class ProductInStoreDisplayPage extends BasePage {
                         theListView = (ListView) findViewById(R.id.mainListView);
                         theListView.setAdapter(adapter);
 
-                        if(response.body().size() == 0) {
+                        if (response.body().size() == 0) {
                             nullMessage.setText("Cửa hàng không có sản phẩm nào!");
                             theListView.setVisibility(View.INVISIBLE);
                         } else {
                             nullMessage.setText("");
                             theListView.setVisibility(View.VISIBLE);
                         }
-                        if(productInStores != null){
-                            productFilter.setSortItem(ProductInStoreDisplayPage.this,spinnerSort);
-                            productFilter.setCategoryFilter(productInStores,ProductInStoreDisplayPage.this,spinnerCategory);
+                        if (productInStores != null) {
+                            productFilter.setSortItem(ProductInStoreDisplayPage.this, spinnerSort);
+                            productFilter.setCategoryFilter(productInStores, ProductInStoreDisplayPage.this, spinnerCategory);
                         }
-
-                        theListView. setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                            @Override
-                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                int productID = tempList.get(position).getProduct_id();
-                                int isStoreProduct = 0;
-                                Intent toProductDetailPage = new Intent(ProductInStoreDisplayPage.this, MainActivity.class);
-                                toProductDetailPage.putExtra("productID",productID);
-                                toProductDetailPage.putExtra("storeID",storeID);
-                                toProductDetailPage.putExtra("isStoreProduct",isStoreProduct);
-                            }
-                        });
-
                         addNewBtn = (Button) findViewById(R.id.addNewBtn);
                         addNewBtn.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 Intent toSearchProductToStore = new Intent(ProductInStoreDisplayPage.this, SearchProductAddToStore.class);
-                                toSearchProductToStore.putExtra("storeID",storeID);
+                                toSearchProductToStore.putExtra("storeID", storeID);
                                 startActivity(toSearchProductToStore);
                             }
                         });
                         spinnerSort.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                             @Override
                             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                                if(adapterView.getItemAtPosition(i).toString().equals(productFilter.FROM_LOW_COST)) {
-                                    Collections.sort(tempList,new ProductInStoreCompareableDecrease());
-                                }else if(adapterView.getItemAtPosition(i).toString().equals(productFilter.FROM_HIGH_COST)){
-                                    Collections.sort(tempList,new ProductInStoreCompareableIncrease());
+                                if (adapterView.getItemAtPosition(i).toString().equals(productFilter.FROM_LOW_COST)) {
+                                    Collections.sort(tempList, new ProductInStoreCompareableDecrease());
+                                } else if (adapterView.getItemAtPosition(i).toString().equals(productFilter.FROM_HIGH_COST)) {
+                                    Collections.sort(tempList, new ProductInStoreCompareableIncrease());
                                 }
                                 adapter.notifyDataSetChanged();
                             }
@@ -254,7 +232,8 @@ public class ProductInStoreDisplayPage extends BasePage {
                             }
                         });
 
-                    }});
+                    }
+                });
             } catch (IOException e) {
             }
             return null;
@@ -268,7 +247,7 @@ public class ProductInStoreDisplayPage extends BasePage {
                 finish();
                 return true;
             }
-            case R.id.action_home:{
+            case R.id.action_home: {
                 Intent toHomPage = new Intent(ProductInStoreDisplayPage.this, HomePage.class);
                 startActivity(toHomPage);
             }
@@ -276,6 +255,7 @@ public class ProductInStoreDisplayPage extends BasePage {
                 return super.onOptionsItemSelected(item);
         }
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.home_search_toolbar, menu);
@@ -299,12 +279,12 @@ public class ProductInStoreDisplayPage extends BasePage {
             @Override
             public boolean onQueryTextChange(String newText) {
                 searchedProduct.clear();
-                if(newText.equals("") || newText == null){
+                if (newText.equals("") || newText == null) {
                     adapter = new ProductInStoreCustomListViewAdapter(ProductInStoreDisplayPage.this, R.layout.search_product_page_custom_list_view, tempList);
 
                 } else {
                     for (int i = 0; i < tempList.size(); i++) {
-                        if(tempList.get(i).getProduct_name().toLowerCase().contains(newText.toLowerCase())) {
+                        if (tempList.get(i).getProduct_name().toLowerCase().contains(newText.toLowerCase())) {
                             searchedProduct.add(tempList.get(i));
                         }
                     }

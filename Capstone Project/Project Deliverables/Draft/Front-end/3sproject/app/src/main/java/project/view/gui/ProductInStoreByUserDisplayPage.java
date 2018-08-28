@@ -24,6 +24,8 @@ import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.storage.StorageReference;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -51,7 +53,7 @@ public class ProductInStoreByUserDisplayPage extends BasePage {
     private RecyclerView recycler_view;
     private ProductInStoreByUserCustomCardViewAdapter productInStoreByUserCustomListViewAdapter;
     private ImageView backBtn, backdrop, imgHome;
-    private TextView tvStoreName;
+    private TextView tvStoreName, tv_rate;
     private Spinner spinnerCategory, spinnerSort;
     private StorageReference storageReference = Firebase.getFirebase();
     private List<Product> products;
@@ -62,6 +64,7 @@ public class ProductInStoreByUserDisplayPage extends BasePage {
     private LinearLayout storeNameLayout;
     private ProgressBar loadingBar;
     private TextView nullMessage;
+    private NumberFormat formatter = new DecimalFormat("#0.0");
     private Call<Store> storeCall;
     private Call<List<Product>> call;
 
@@ -127,6 +130,7 @@ public class ProductInStoreByUserDisplayPage extends BasePage {
         storeNameLayout = findViewById(R.id.storeNameLayout);
         loadingBar = findViewById(R.id.loadingBar);
         nullMessage = findViewById(R.id.nullMessage);
+        tv_rate = findViewById(R.id.tv_rate);
     }
 
     public class ProductInStoreList extends AsyncTask<Call, List<Product>, Void> {
@@ -237,7 +241,6 @@ public class ProductInStoreByUserDisplayPage extends BasePage {
             return null;
         }
     }
-
     public class StoreInformation extends AsyncTask<Call, Void, Store> {
         @Override
         protected void onPreExecute() {
@@ -257,7 +260,19 @@ public class ProductInStoreByUserDisplayPage extends BasePage {
                             .load(storageReference.child(store.getImage_path()))
                             .into(backdrop);
                 }
+
+                float smile = Integer.parseInt(store.getSmile() + "");
+                float sad = Integer.parseInt(store.getSad() + "");
                 tvStoreName.setText(store.getName());
+                if ((smile + sad) == 0) {
+                    tv_rate.setText("Chưa có đánh giá nào");
+                } else {
+                    if (smile != 0) {
+                        tv_rate.setText(formatter.format((smile / (smile + sad)) * 100) + "% đánh giá tích cực");
+                    } else {
+                        tv_rate.setText(store.getSad()+" người không hài lòng");
+                    }
+                }
             }
         }
 

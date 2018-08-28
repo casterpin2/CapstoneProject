@@ -1,8 +1,6 @@
 package project.view.fragment.home;
 
-import android.Manifest;
 import android.app.Activity;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -55,10 +53,8 @@ import java.util.UUID;
 
 import project.firebase.Firebase;
 import project.objects.User;
-import project.view.gui.EditUserInformationPage;
 import project.view.gui.FeedbackManagement;
 import project.view.gui.LoginPage;
-import project.view.gui.MainActivity;
 import project.view.gui.ProductInStoreDisplayPage;
 import project.view.R;
 import project.view.gui.RegisterStorePage;

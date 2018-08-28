@@ -28,7 +28,6 @@
                         android:id="@+id/profile_image"
                         android:layout_width="112dp"
                         android:layout_height="112dp"
-                        android:src="@drawable/user"
                         app:civ_border_color="@color/colorApplication"
                         app:civ_border_width="2dp" />
                     <ProgressBar

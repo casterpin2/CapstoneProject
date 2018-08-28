@@ -45,8 +45,6 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity android:name=".gui.MainActivity" />
-
         <service android:name="project.firebase.FirebaseIDService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
@@ -154,7 +152,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".gui.Main3Activity" />
         <activity
             android:name=".gui.GetPasswordPage"
             android:windowSoftInputMode="adjustResize"></activity>
