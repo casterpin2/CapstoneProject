@@ -182,7 +182,7 @@ public class NearbyStorePage extends BasePage implements OnMapReadyCallback, Loc
         });
         String sourceString = "Cửa hàng quanh đây có <b>" + productName + "</b> ";
         textContent.setText(Html.fromHtml(sourceString));
-        adapter = new NearByStoreListViewAdapter(NearbyStorePage.this, R.layout.nearby_store_page_custom_list_view, list, p);
+        adapter = new NearByStoreListViewAdapter(NearbyStorePage.this, R.layout.nearby_store_page_custom_list_view, list, p,String.valueOf(latitude)+","+String.valueOf(longtitude));
         storeListView.setAdapter(adapter);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -604,6 +604,7 @@ public class NearbyStorePage extends BasePage implements OnMapReadyCallback, Loc
                 final String userName = data.getStringExtra("userName");
                 final String storePhone = data.getStringExtra("storePhone");
                 final String image_path = data.getStringExtra("image_path");
+                final String userImage = data.getStringExtra("user_image");
                 final String phone = data.getStringExtra("phone");
                 final double longtitude = data.getDoubleExtra("longtitude",0.0);
                 final double latitude = data.getDoubleExtra("latitude",0.0);
@@ -615,6 +616,8 @@ public class NearbyStorePage extends BasePage implements OnMapReadyCallback, Loc
                         String key = reference.push().getKey();
                         DatabaseReference re = reference.child(key);
                         DatabaseReference referenceStore = database.getReference().child("ordersStore").child(String.valueOf(storeId)).child(key);
+                        re.child("image_path").setValue(image_path);
+                        referenceStore.child("image_path").setValue(userImage);
                         re.child("address").setValue(address);
                         referenceStore.child("address").setValue(address);
                         re.child("latitude").setValue(latitude);
@@ -688,7 +691,7 @@ public class NearbyStorePage extends BasePage implements OnMapReadyCallback, Loc
                     }
                 });
             } if (resultCode == Activity.RESULT_CANCELED){
-                Toast.makeText(this, "Chưa định vị được vị trí của bạn", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Hủy đặt hàng", Toast.LENGTH_LONG).show();
             }
         }
     }

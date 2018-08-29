@@ -266,7 +266,7 @@ public class CartPage extends BasePage{
                     }
                 });
             } if (resultCode == Activity.RESULT_CANCELED){
-                Toast.makeText(this, "Chưa định vị được vị trí của bạn", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Hủy đặt hàng", Toast.LENGTH_LONG).show();
             }
         }
     }

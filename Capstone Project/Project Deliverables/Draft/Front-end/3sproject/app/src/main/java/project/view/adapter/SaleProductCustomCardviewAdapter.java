@@ -1,7 +1,9 @@
 package project.view.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Paint;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -18,9 +20,12 @@ import com.google.gson.Gson;
 import java.util.List;
 
 import project.firebase.Firebase;
+import project.objects.User;
+import project.view.gui.OrderPage;
 import project.view.gui.ProductDetailPage;
 import project.view.R;
 import project.view.model.Product;
+import project.view.model.Store;
 import project.view.util.Formater;
 
 public class SaleProductCustomCardviewAdapter extends RecyclerView.Adapter<SaleProductCustomCardviewAdapter.MyViewHolder>  {
@@ -29,7 +34,8 @@ public class SaleProductCustomCardviewAdapter extends RecyclerView.Adapter<SaleP
     private List<Product> saleProductList;
     private StorageReference storageReference = Firebase.getFirebase();
     private Formater formater;
-
+    private User user;
+    private Store myStore;
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView promotionPercent, productName, storeName, originalPrice, promotionPrice;
         public ImageView productImage,imgAddCard;
@@ -52,6 +58,7 @@ public class SaleProductCustomCardviewAdapter extends RecyclerView.Adapter<SaleP
         this.mContext = mContext;
         this.saleProductList = saleProductList;
         formater = new Formater();
+        restoringPreferences();
     }
 
     @Override
@@ -80,18 +87,38 @@ public class SaleProductCustomCardviewAdapter extends RecyclerView.Adapter<SaleP
             @Override
             public void onClick(View view) {
                 boolean isStoreProduct = true;
-                Intent intent = new Intent(mContext, ProductDetailPage.class);
-                intent.putExtra("product",new Gson().toJson(saleProduct));
-                intent.putExtra("isStoreProduct",isStoreProduct);
-                intent.putExtra("isStoreSee",false);
-                intent.putExtra("storeID",saleProduct.getStore_id());
-                intent.putExtra("storeName", saleProduct.getStoreName());
-                mContext.startActivity(intent);
+                Intent intent;
+                if (user == null){
+                    intent = new Intent(mContext, OrderPage.class);
+                    intent.putExtra("product",new Gson().toJson(saleProduct));
+                    intent.putExtra("isCart", false);
+                    intent.putExtra("price",(double)saleProduct.getPrice());
+                    intent.putExtra("promotion",saleProduct.getPromotion());
+                    intent.putExtra("storeID",saleProduct.getStore_id());
+                    intent.putExtra("storeName", saleProduct.getStoreName());
+                    ((Activity)mContext).startActivityForResult(intent , 3);
+                }else {
+                    intent = new Intent(mContext, ProductDetailPage.class);
+                    intent.putExtra("product",new Gson().toJson(saleProduct));
+                    intent.putExtra("isStoreProduct",isStoreProduct);
+                    intent.putExtra("isStoreSee",false);
+                    intent.putExtra("storeID",saleProduct.getStore_id());
+                    intent.putExtra("storeName", saleProduct.getStoreName());
+                    mContext.startActivity(intent);
+                }
             }
         });
     }
     @Override
     public int getItemCount() {
         return saleProductList.size();
+    }
+
+    private void restoringPreferences(){
+        SharedPreferences pre = mContext.getSharedPreferences("authentication", Context.MODE_PRIVATE);
+        String userJSON = pre.getString("user", "");
+        user = new Gson().fromJson(userJSON,User.class);
+        String storeJSON = pre.getString("store", "");
+        myStore = new Gson().fromJson(storeJSON,Store.class);
     }
 }

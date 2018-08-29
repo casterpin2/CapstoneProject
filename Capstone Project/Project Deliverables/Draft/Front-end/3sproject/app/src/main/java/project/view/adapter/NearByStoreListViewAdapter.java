@@ -2,6 +2,7 @@ package project.view.adapter;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,19 +12,27 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.Polyline;
 import com.google.firebase.storage.StorageReference;
 import com.google.gson.Gson;
 
+import java.io.UnsupportedEncodingException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import project.firebase.Firebase;
+import project.googleMapAPI.DirectionFinder;
+import project.googleMapAPI.DirectionFinderListener;
+import project.googleMapAPI.Route;
 import project.objects.User;
 import project.view.R;
+import project.view.gui.NearbyStorePage;
 import project.view.gui.OrderPage;
 import project.view.gui.ProductInStoreByUserDisplayPage;
 import project.view.model.NearByStore;
@@ -42,7 +51,7 @@ public class NearByStoreListViewAdapter extends BaseAdapter {
     private Store store;
     private Store myStore;
     private User user;
-
+    private String origin;
     private NumberFormat formatter = new DecimalFormat("#0.00");
     @Override
     public int getCount() {
@@ -59,12 +68,13 @@ public class NearByStoreListViewAdapter extends BaseAdapter {
         return 0;
     }
 
-    public NearByStoreListViewAdapter(Context context, int layout, List<NearByStore> storeList,Product product) {
+    public NearByStoreListViewAdapter(Context context, int layout, List<NearByStore> storeList,Product product,String origin) {
 
         this.context = context;
         this.layout = layout;
         this.storeList = storeList;
         this.product = product;
+        this.origin = origin;
         restoringPreferences();
     }
     @SuppressLint("ResourceAsColor")
@@ -85,7 +95,7 @@ public class NearByStoreListViewAdapter extends BaseAdapter {
                 holder.promotionPercent = (TextView) view.findViewById(R.id.promotionPercent);
                 holder.saleProduct = (TextView) view.findViewById(R.id.salePrice);
                 holder.orderBtn = (Button) view.findViewById(R.id.orderBtn);
-
+                holder.imgDirection = (ImageView) view.findViewById(R.id.imgDirection);
                 view.setTag(holder);
             } else {
                 holder = (NearbyStorePageViewHolder) view.getTag();
@@ -142,6 +152,17 @@ public class NearByStoreListViewAdapter extends BaseAdapter {
                         getContext().startActivity(toProductInStoreByUser);
                     }
                 });
+                holder.imgDirection.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String destination = store.getLatitude()+","+store.getLongitude();
+                        try {
+                            new DirectionFinder((NearbyStorePage)context, origin, destination).execute();
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
 
         }
         return view;
@@ -159,7 +180,7 @@ public class NearByStoreListViewAdapter extends BaseAdapter {
         TextView promotionPercent;
         TextView saleProduct;
         Button orderBtn;
-
+        ImageView imgDirection;
     }
     private void restoringPreferences(){
         SharedPreferences pre = context.getSharedPreferences("authentication", Context.MODE_PRIVATE);

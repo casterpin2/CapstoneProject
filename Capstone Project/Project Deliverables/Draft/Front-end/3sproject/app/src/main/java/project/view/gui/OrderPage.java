@@ -333,10 +333,8 @@ public class OrderPage extends BasePage implements OnMapReadyCallback {
 
         orderBtn.setOnClickListener(new View.OnClickListener() {
             Intent intent = new Intent();
-
             @Override
             public void onClick(View v) {
-
                 if ((handleLongtitude == 0 && handleLatitude == 0) && (autoLatitude == 0 || autoLongtitude == 0)) {
                     tvLocationError.setText("Chưa xác định được vị trí của bạn");
                     isLocation = false;
@@ -344,8 +342,6 @@ public class OrderPage extends BasePage implements OnMapReadyCallback {
                     tvLocationError.setText("");
                     isLocation = true;
                 }
-
-
                 if (orderDate.getText().toString().isEmpty() || orderTime.getText().toString().isEmpty()) {
                     tvDateTimeError.setText("Bạn chưa chọn thời gian giao hàng");
                     isDateTime = false;
@@ -355,10 +351,7 @@ public class OrderPage extends BasePage implements OnMapReadyCallback {
                 }
                 isPhone = regex.checkPhone(tvPhoneError, etPhone);
                 isName = regex.checkDisplayName(tvBuyerNameError, etBuyerName);
-
                 if (isName && isPhone && isDateTime && isLocation) {
-
-
                     String userName = etBuyerName.getText().toString();
                     int productID = getIntent().getIntExtra("productID", 0);
                     int storeID = getIntent().getIntExtra("storeID", 0);
@@ -368,7 +361,6 @@ public class OrderPage extends BasePage implements OnMapReadyCallback {
                     String orderDateTime = orderDate.getText().toString() + " " + orderTime.getText().toString();
                     double longtitude = autoLongtitude;
                     double latitude = autoLatitude;
-
                     if (switch_button.isChecked()) {
                         longtitude = autoLongtitude;
                         latitude = autoLatitude;
@@ -411,6 +403,9 @@ public class OrderPage extends BasePage implements OnMapReadyCallback {
                         intent.putExtra("image_path", image_path);
                         intent.putExtra("storeID", storeId);
                         intent.putExtra("quantity", Integer.parseInt(productQuantity.getText().toString()));
+                        intent.putExtra("productId",product.getProduct_id());
+                        intent.putExtra("productName",product.getProduct_name());
+                        intent.putExtra("image_path_product",product.getImage_path());
                     }
                     intent.putExtra("deliverTime", orderDateTime);
                     intent.putExtra("phone", phone);
@@ -420,7 +415,6 @@ public class OrderPage extends BasePage implements OnMapReadyCallback {
                         setResult(Activity.RESULT_CANCELED, intent);
                         finish();
                         return;
-
                     }
                     setResult(Activity.RESULT_OK, intent);
                     finish();
@@ -443,12 +437,6 @@ public class OrderPage extends BasePage implements OnMapReadyCallback {
                 }
             }
         });
-
-//        Glide.with(getContext() /* context */)
-//                .using(new FirebaseImageLoader())
-//                .load(storageReference.child(product.getProductImage()))
-//                .into(productImage);
-
     }
 
 

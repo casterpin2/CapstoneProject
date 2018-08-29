@@ -428,7 +428,9 @@ public class OrderDetailPage extends BasePage {
                 order = dataSnapshot.getValue(Order.class);
                 if (order != null) {
                     ref = database.getReference().child("ordersUser").child(String.valueOf(order.getUserId())).child(orderId);
-                    ref.addValueEventListener(changeListener1);
+                    if (order.getUserId() != 0) {
+                        ref.addValueEventListener(changeListener1);
+                    }
 
                     usernameTV.setText(order.getUserName());
                     phoneTV.setText(order.getPhone());
