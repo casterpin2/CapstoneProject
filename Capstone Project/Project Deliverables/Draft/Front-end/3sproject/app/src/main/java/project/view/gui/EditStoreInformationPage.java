@@ -51,13 +51,14 @@ import project.view.R;
 import project.view.fragment.home.StoreFragment;
 import project.view.model.Store;
 import project.view.util.CustomInterface;
+import project.view.util.Regex;
 import retrofit2.Call;
 import retrofit2.Response;
 
 public class EditStoreInformationPage extends BasePage implements OnMapReadyCallback {
     private EditText etStoreName, etPhone;
     private TextView handleAddressText;
-    private RelativeLayout handleAddressLayout,main_layout;
+    private RelativeLayout handleAddressLayout, main_layout;
     private SwitchButton switch_button;
 
     //getIntent data
@@ -87,6 +88,9 @@ public class EditStoreInformationPage extends BasePage implements OnMapReadyCall
     String userJson;
     String dateLog;
     private ProgressBar loadingBarMap, loadingBarSave;
+    private boolean isPhone = false, isStoreName = false, isLocation = false;
+    private TextView tvStoreNameError, tvPhoneError, tvLocationError;
+    private Regex regex;
 
     public void setAutoLatitude(double autoLatitude) {
         this.autoLatitude = autoLatitude;
@@ -95,7 +99,9 @@ public class EditStoreInformationPage extends BasePage implements OnMapReadyCall
     public void setAutoLongtitude(double autoLongtitude) {
         this.autoLongtitude = autoLongtitude;
     }
+
     private final int RESULT_CODE = 2222;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,7 +112,7 @@ public class EditStoreInformationPage extends BasePage implements OnMapReadyCall
         main_layout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                CustomInterface.hideKeyboard(view,getBaseContext());
+                CustomInterface.hideKeyboard(view, getBaseContext());
                 return false;
             }
         });
@@ -115,8 +121,8 @@ public class EditStoreInformationPage extends BasePage implements OnMapReadyCall
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorApplication)));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         pre = getSharedPreferences("authentication", Context.MODE_PRIVATE);
-        String storeTemp = pre.getString("store",null);
-        if(storeTemp!=null && !storeTemp.isEmpty()){
+        String storeTemp = pre.getString("store", null);
+        if (storeTemp != null && !storeTemp.isEmpty()) {
             Store store = new Gson().fromJson(storeTemp, Store.class);
             dateLog = store.getRegisterLog();
 
@@ -134,10 +140,30 @@ public class EditStoreInformationPage extends BasePage implements OnMapReadyCall
         etPhone.setText(phone);
         setLastSelector();
 
+        regex = new Regex();
+
+        etStoreName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    isStoreName = regex.checkDisplayName(tvStoreNameError, etStoreName);
+                }
+            }
+        });
+
+        etPhone.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    isPhone = regex.checkPhone(tvPhoneError, etPhone);
+                }
+            }
+        });
+
         switch_button.setOnCheckedChangeListener(new SwitchButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(SwitchButton view, boolean isChecked) {
-                if(view.isChecked()) {
+                if (view.isChecked()) {
                     turnOnLocation();
                     handleAddressLayout.setEnabled(false);
 //                    handleAddressText.setText("Vị trí hiện tại");
@@ -147,17 +173,17 @@ public class EditStoreInformationPage extends BasePage implements OnMapReadyCall
                     setAutoLongtitude(0.0);
                     handleAddressText.setText(handleLocationPlace);
                     handleAddressLayout.setEnabled(true);
-                    if(handleLongtitude == 0.0 && handleLatitude == 0.0) {
+                    if (handleLongtitude == 0.0 && handleLatitude == 0.0) {
                         LatLng defaultLocation = new LatLng(21.028511, 105.804817);
                         mMap.moveCamera(CameraUpdateFactory.newLatLng(defaultLocation));
                         mMap.setMinZoomPreference(10.0f);
                         mMap.setMaxZoomPreference(10.1f);
                     } else {
-                        markerToMap(handleLongtitude,handleLatitude,mMap,"Vị trí đăng kí",handleLocationPlace);
+                        markerToMap(handleLongtitude, handleLatitude, mMap, "Vị trí đăng kí", handleLocationPlace);
                     }
                 }
                 if (switch_button.isChecked() == false && handleLongtitude == 0.0 && handleLatitude == 0.0) {
-                    markerToMap(storeLongtitude,storeLatitude,mMap,"Vị trí hiện tại của cửa hàng",address);
+                    markerToMap(storeLongtitude, storeLatitude, mMap, "Vị trí hiện tại của cửa hàng", address);
                     handleAddressText.setText(address);
                 }
             }
@@ -183,68 +209,79 @@ public class EditStoreInformationPage extends BasePage implements OnMapReadyCall
         });
 
         if (switch_button.isChecked() == false && handleAddressText.getText().toString().length() == 0) {
-            markerToMap(storeLongtitude,storeLatitude,mMap,"Vị trí hiện tại của cửa hàng", address);
+            markerToMap(storeLongtitude, storeLatitude, mMap, "Vị trí hiện tại của cửa hàng", address);
         }
 
         updateInformationStore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 boolean checkChange = false;
-
+                if ((handleLongtitude == 0 && handleLatitude == 0) && (autoLatitude == 0 || autoLongtitude == 0)) {
+                    tvLocationError.setText("Chưa xác định được vị trí của bạn");
+                    isLocation = false;
+                } else {
+                    isLocation = true;
+                    tvLocationError.setText("");
+                }
+                isPhone = regex.checkPhone(tvPhoneError, etPhone);
+                isStoreName = regex.checkDisplayName(tvStoreNameError, etStoreName);
                 pre = getSharedPreferences("authentication", Context.MODE_PRIVATE);
-                storeJson = pre.getString("store","");
-                Store storePre = new Gson().fromJson(storeJson,Store.class);
-                Log.e("MSG",storeJson+" "+location.getApartment_number()+" "+location.getDistrict()+" "+ location.getCity()+" "+location.getCounty());
-                if(!storePre.getName().equals(etStoreName.getText().toString())){
+                storeJson = pre.getString("store", "");
+                Store storePre = new Gson().fromJson(storeJson, Store.class);
+                Log.e("MSG", storeJson + " " + location.getApartment_number() + " " + location.getDistrict() + " " + location.getCity() + " " + location.getCounty());
+                if (!storePre.getName().equals(etStoreName.getText().toString())) {
                     storePre.setName(etStoreName.getText().toString());
                     checkChange = true;
                 }
-                if(!storePre.getPhone().equals(etPhone.getText().toString())){
+                if (!storePre.getPhone().equals(etPhone.getText().toString())) {
                     storePre.setPhone(etPhone.getText().toString());
                     checkChange = true;
                 }
-                if(!checkChange && location.toString().equals("CANCEL")) {
-                    Intent backToStoreFragment = new Intent(EditStoreInformationPage.this,StoreFragment.class);
-                    backToStoreFragment.putExtra("data","NO");
-                    setResult(RESULT_CODE,backToStoreFragment);
+                if (!checkChange && location.toString().equals("CANCEL")) {
+                    Intent backToStoreFragment = new Intent(EditStoreInformationPage.this, StoreFragment.class);
+                    backToStoreFragment.putExtra("data", "NO");
+                    setResult(RESULT_CODE, backToStoreFragment);
                     finish();
                     Toast.makeText(EditStoreInformationPage.this, "Thông tin cửa hàng không thay đổi", Toast.LENGTH_SHORT).show();
                 }
-                if(location.toString().equals("OK")){
+                if (checkChange && isPhone && isStoreName && isLocation) {
                     String locationJson = new Gson().toJson(location);
                     String storePreJson = new Gson().toJson(storePre);
                     HashMap<String, String> map = new HashMap<>();
-                    map.put("store",storePreJson);
-                    map.put("location",locationJson);
+                    map.put("store", storePreJson);
+                    map.put("location", locationJson);
                     apiService = ApiUtils.getAPIService();
                     final Call<Store> callBrand = apiService.updateStore(map);
                     new StoreData().execute(callBrand);
 
-                }else if( checkChange && location.toString().equals("CANCEL")){
-                    String locationJson = new Gson().toJson(location);
-                    String storePreJson = new Gson().toJson(storePre);
-                    HashMap<String, String> map = new HashMap<>();
-                    map.put("store",storePreJson);
-                    map.put("location",locationJson);
-                    apiService = ApiUtils.getAPIService();
-                    final Call<Store> callBrand = apiService.updateStore(map);
-                    new StoreData().execute(callBrand);
                 }
+//                else if (checkChange && location.toString().equals("CANCEL")) {
+//                    String locationJson = new Gson().toJson(location);
+//                    String storePreJson = new Gson().toJson(storePre);
+//                    HashMap<String, String> map = new HashMap<>();
+//                    map.put("store", storePreJson);
+//                    map.put("location", locationJson);
+//                    apiService = ApiUtils.getAPIService();
+//                    final Call<Store> callBrand = apiService.updateStore(map);
+//                    new StoreData().execute(callBrand);
+//                }
             }
         });
     }
 
-    public void findView(){
+    public void findView() {
         main_layout = findViewById(R.id.main_layout);
-        etStoreName =  findViewById(R.id.etStoreName);
-        etPhone =  findViewById(R.id.etPhone);
-        handleAddressText =  findViewById(R.id.handleAddressText);
-        handleAddressLayout =  findViewById(R.id.handleAddressLayout);
-        switch_button =  findViewById(R.id.switch_button);
+        etStoreName = findViewById(R.id.etStoreName);
+        etPhone = findViewById(R.id.etPhone);
+        handleAddressText = findViewById(R.id.handleAddressText);
+        handleAddressLayout = findViewById(R.id.handleAddressLayout);
+        switch_button = findViewById(R.id.switch_button);
         updateInformationStore = findViewById(R.id.updateBtn);
-        loadingBarMap =  findViewById(R.id.loadingBarMap);
-        loadingBarSave =  findViewById(R.id.loadingBarSave);
-
+        loadingBarMap = findViewById(R.id.loadingBarMap);
+        loadingBarSave = findViewById(R.id.loadingBarSave);
+        tvStoreNameError = (TextView) findViewById(R.id.tvStoreNameError);
+        tvPhoneError = findViewById(R.id.tvPhoneError);
+        tvLocationError = findViewById(R.id.tvLocationError);
     }
 
     public void getIntentFromStoreInformationPage() {
@@ -255,6 +292,7 @@ public class EditStoreInformationPage extends BasePage implements OnMapReadyCall
         storeLongtitude = getIntent().getDoubleExtra("longtitude", 0.0);
         storeLatitude = getIntent().getDoubleExtra("latitude", 0.0);
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -269,9 +307,9 @@ public class EditStoreInformationPage extends BasePage implements OnMapReadyCall
     public void onBackPressed() {
         // super.onBackPressed(); commented this line in order to disable back press
         //Write your code here
-        Intent backToStoreFragment = new Intent(EditStoreInformationPage.this,StoreFragment.class);
-        backToStoreFragment.putExtra("data","NO");
-        setResult(RESULT_CODE,backToStoreFragment);
+        Intent backToStoreFragment = new Intent(EditStoreInformationPage.this, StoreFragment.class);
+        backToStoreFragment.putExtra("data", "NO");
+        setResult(RESULT_CODE, backToStoreFragment);
         finish();
     }
 
@@ -300,6 +338,7 @@ public class EditStoreInformationPage extends BasePage implements OnMapReadyCall
         }
 
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 1) {
@@ -321,9 +360,9 @@ public class EditStoreInformationPage extends BasePage implements OnMapReadyCall
                     StringBuilder stringBuilder = new StringBuilder();
                     stringBuilder.append(handleLatitude).append(",").append(handleLongtitude);
                     mAPI = ApiUtils.getAPIServiceMap();
-                    final Call<GoogleMapJSON> call = mAPI.getLocation(stringBuilder.toString(),getResources().getString(R.string.googleMapAPIKey));
+                    final Call<GoogleMapJSON> call = mAPI.getLocation(stringBuilder.toString(), getResources().getString(R.string.googleMapAPIKey));
                     new CallMapAPI().execute(call);
-                    markerToMap(handleLongtitude, handleLatitude, mMap, "Vị trí đăng kí",handleLocationPlace);
+                    markerToMap(handleLongtitude, handleLatitude, mMap, "Vị trí đăng kí", handleLocationPlace);
                 } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
                     Status status = PlaceAutocomplete.getStatus(this, data);
                     // TODO: Handle the error.
@@ -335,6 +374,7 @@ public class EditStoreInformationPage extends BasePage implements OnMapReadyCall
             }
         }
     }
+
     public void markerToMap(double longtitude, double latitude, GoogleMap mMap, String markerContent, String addressString) {
         LatLng myLocation = new LatLng(latitude, longtitude);
         mMap.clear();
@@ -343,17 +383,21 @@ public class EditStoreInformationPage extends BasePage implements OnMapReadyCall
         mMap.setMinZoomPreference(12);
         mMap.setMaxZoomPreference(22);
     }
-    private void turnOnLocation(){
+
+    private void turnOnLocation() {
         final android.location.LocationListener locationListener = new android.location.LocationListener() {
             public void onLocationChanged(android.location.Location location) {
             }
 
-            public void onProviderDisabled(String provider){
+            public void onProviderDisabled(String provider) {
             }
 
-            public void onProviderEnabled(String provider){ }
+            public void onProviderEnabled(String provider) {
+            }
+
             public void onStatusChanged(String provider, int status,
-                                        Bundle extras){ }
+                                        Bundle extras) {
+            }
         };
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         // getting GPS status
@@ -386,13 +430,13 @@ public class EditStoreInformationPage extends BasePage implements OnMapReadyCall
                         StringBuilder stringBuilder = new StringBuilder();
                         stringBuilder.append(autoLatitude).append(",").append(autoLongtitude);
                         mAPI = ApiUtils.getAPIServiceMap();
-                        final Call<GoogleMapJSON> call = mAPI.getLocation(stringBuilder.toString(),getResources().getString(R.string.googleMapAPIKey));
+                        final Call<GoogleMapJSON> call = mAPI.getLocation(stringBuilder.toString(), getResources().getString(R.string.googleMapAPIKey));
                         new CallMapAPI().execute(call);
-                        markerToMap(autoLongtitude, autoLatitude, mMap, getResources().getString(R.string.yourGPS),"");
+                        markerToMap(autoLongtitude, autoLatitude, mMap, getResources().getString(R.string.yourGPS), "");
                     }
                 }
             } else {
-                markerToMap(storeLongtitude, storeLatitude, mMap,"Vị trí hiện tại của cửa hàng" ,address);
+                markerToMap(storeLongtitude, storeLatitude, mMap, "Vị trí hiện tại của cửa hàng", address);
             }
             if (isGPSEnabled) {
                 locationManager.requestLocationUpdates(
@@ -410,15 +454,16 @@ public class EditStoreInformationPage extends BasePage implements OnMapReadyCall
                         StringBuilder stringBuilder = new StringBuilder();
                         stringBuilder.append(autoLatitude).append(",").append(autoLongtitude);
                         mAPI = ApiUtils.getAPIServiceMap();
-                        final Call<GoogleMapJSON> call = mAPI.getLocation(stringBuilder.toString(),getResources().getString(R.string.googleMapAPIKey));
+                        final Call<GoogleMapJSON> call = mAPI.getLocation(stringBuilder.toString(), getResources().getString(R.string.googleMapAPIKey));
                         new CallMapAPI().execute(call);
-                        markerToMap(autoLongtitude, autoLatitude, mMap, getResources().getString(R.string.yourGPS),"");
+                        markerToMap(autoLongtitude, autoLatitude, mMap, getResources().getString(R.string.yourGPS), "");
                     }
                 }
 
             }
         }
     }
+
     public class CallMapAPI extends AsyncTask<Call, Void, project.view.model.Location> {
 
 
@@ -433,33 +478,33 @@ public class EditStoreInformationPage extends BasePage implements OnMapReadyCall
         @Override
         protected void onPostExecute(project.view.model.Location location1) {
             super.onPostExecute(location1);
-            boolean check =false;
+            boolean check = false;
             location.setStreet(location1.getStreet());
             location.setCity(location1.getCity());
             location.setDistrict(location1.getDistrict());
             location.setCounty(location1.getCounty());
             location.setApartment_number(location1.getApartment_number());
-             if(location.getCity() != null) {
-                 check = true;
-             } else if(location.getStreet() != null) {
-                 check = true;
-             } else if(location.getDistrict() != null) {
-                 check = true;
-             } else if(location.getCounty() != null) {
-                 check = true;
-             } else if(location.getApartment_number() != null) {
-                 check = true;
-             }
+            if (location.getCity() != null) {
+                check = true;
+            } else if (location.getStreet() != null) {
+                check = true;
+            } else if (location.getDistrict() != null) {
+                check = true;
+            } else if (location.getCounty() != null) {
+                check = true;
+            } else if (location.getApartment_number() != null) {
+                check = true;
+            }
 
-           if(check){
-               loadingBarMap.setVisibility(View.INVISIBLE);
-               updateInformationStore.setEnabled(true);
-               if (switch_button.isChecked() == true) {
-                   handleAddressText.setText("Vị trí hiện tại");
-               } else if (handleLongtitude !=  0.0 && handleLatitude != 0.0) {
-                   handleAddressText.setText(handleLocationPlace);
-               }
-           }
+            if (check) {
+                loadingBarMap.setVisibility(View.INVISIBLE);
+                updateInformationStore.setEnabled(true);
+                if (switch_button.isChecked() == true) {
+                    handleAddressText.setText("Vị trí hiện tại");
+                } else if (handleLongtitude != 0.0 && handleLatitude != 0.0) {
+                    handleAddressText.setText(handleLocationPlace);
+                }
+            }
             final boolean finalCheck = check;
             new Handler().postDelayed(new Runnable() {
                 @Override
@@ -470,18 +515,18 @@ public class EditStoreInformationPage extends BasePage implements OnMapReadyCall
                         loadingBarMap.setVisibility(View.INVISIBLE);
                         updateInformationStore.setEnabled(true);
                         switch_button.setChecked(false);
-                        if (switch_button.isChecked() == false ) {
+                        if (switch_button.isChecked() == false) {
                             handleAddressLayout.setEnabled(true);
-                            if (handleLongtitude ==  0.0 && handleLatitude == 0.0) {
-                                markerToMap(storeLongtitude,storeLatitude,mMap,"Vị trí hiện tại của cửa hàng", address);
+                            if (handleLongtitude == 0.0 && handleLatitude == 0.0) {
+                                markerToMap(storeLongtitude, storeLatitude, mMap, "Vị trí hiện tại của cửa hàng", address);
                             } else {
-                                markerToMap(handleLongtitude,handleLatitude,mMap,"Vị trí đăng kí",handleLocationPlace);
+                                markerToMap(handleLongtitude, handleLatitude, mMap, "Vị trí đăng kí", handleLocationPlace);
                             }
 
                         }
                     }
                 }
-            },10000);
+            }, 10000);
 
         }
 
@@ -525,7 +570,8 @@ public class EditStoreInformationPage extends BasePage implements OnMapReadyCall
             return location;
         }
     }
-    public class StoreData extends AsyncTask<Call,Void,Store>{
+
+    public class StoreData extends AsyncTask<Call, Void, Store> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -546,25 +592,25 @@ public class EditStoreInformationPage extends BasePage implements OnMapReadyCall
                         updateInformationStore.setEnabled(true);
                         updateInformationStore.setText("Lưu thay đổi");
                     }
-                },10000);
+                }, 10000);
                 return;
-            }else{
+            } else {
                 store.setRegisterLog(dateLog);
                 loadingBarSave.setVisibility(View.INVISIBLE);
                 updateInformationStore.setEnabled(true);
                 updateInformationStore.setText("Lưu thay đổi");
                 storeJson = new Gson().toJson(store);
-                userJson = pre.getString("user","");
+                userJson = pre.getString("user", "");
                 SharedPreferences.Editor editor = pre.edit();
                 editor.putString("user", userJson);
                 editor.putString("store", storeJson);
                 editor.commit();
                 Toast.makeText(EditStoreInformationPage.this, "Thay đổi thông tin cửa hàng thành công", Toast.LENGTH_SHORT).show();
-                Intent backToStoreFragment = new Intent(EditStoreInformationPage.this,StoreFragment.class);
-                backToStoreFragment.putExtra("data","YES");
-                backToStoreFragment.putExtra("userData",userJson);
-                backToStoreFragment.putExtra("storeData",storeJson);
-                setResult(RESULT_CODE,backToStoreFragment);
+                Intent backToStoreFragment = new Intent(EditStoreInformationPage.this, StoreFragment.class);
+                backToStoreFragment.putExtra("data", "YES");
+                backToStoreFragment.putExtra("userData", userJson);
+                backToStoreFragment.putExtra("storeData", storeJson);
+                setResult(RESULT_CODE, backToStoreFragment);
                 finish();
             }
 
@@ -577,21 +623,22 @@ public class EditStoreInformationPage extends BasePage implements OnMapReadyCall
 
         @Override
         protected Store doInBackground(Call... calls) {
-            try{
+            try {
                 Call<Store> call = calls[0];
                 Response<Store> response = call.execute();
-                if(response.body()!=null){
-                    dataStore=  response.body();
+                if (response.body() != null) {
+                    dataStore = response.body();
 
                 }
                 return dataStore;
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             return null;
         }
     }
-    private void setLastSelector(){
+
+    private void setLastSelector() {
         etStoreName.setSelection(etStoreName.getText().length());
         etPhone.setSelection(etPhone.getText().length());
 

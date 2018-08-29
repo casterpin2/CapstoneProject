@@ -59,6 +59,13 @@
                     android:hint="Số điện thoại"
                     android:textSize="13dp"
                     android:focusedByDefault="false"/>
+                <TextView
+                    android:id="@+id/tvPhoneError"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:textSize="10dp"
+                    android:textColor="@color/colorRed"/>
             </android.support.design.widget.TextInputLayout>
 
             <!--<LinearLayout-->
@@ -165,7 +172,14 @@
 
             </RelativeLayout>
 
-
+            <TextView
+                android:id="@+id/tvLocationError"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:textSize="10dp"
+                android:layout_below="@id/autoAddressLayout"
+                android:textColor="@color/colorRed"/>
 
 
 
@@ -207,7 +221,7 @@
                 android:id="@+id/mapLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/autoAddressLayout"
+                android:layout_below="@+id/tvLocationError"
                 android:layout_marginTop="5dp">
             <fragment
                 android:id="@+id/map"

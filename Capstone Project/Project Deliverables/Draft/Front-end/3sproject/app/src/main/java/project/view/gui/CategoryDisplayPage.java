@@ -125,6 +125,7 @@ public class CategoryDisplayPage extends BasePage {
                 Intent toHomePage = new Intent(CategoryDisplayPage.this,HomePage.class);
                 startActivity(toHomePage);
                 finishAffinity();
+
             }
         });
         apiService = ApiUtils.getAPIService();

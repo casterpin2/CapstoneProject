@@ -74,7 +74,7 @@ public class RegisterStorePage extends BasePage implements OnMapReadyCallback {
     private LocationManager locationManager;
     private RelativeLayout handleAddressLayout;
     private Button registerBtn;
-    private TextView handleAddressText, tvStoreNameError,tvPhoneError,tvLocationError;
+    private TextView handleAddressText, tvStoreNameError, tvPhoneError, tvLocationError;
     private EditText etStoreName, etPhone;
     private String handleLocationPlace = "";
     private SwitchButton iconSwitch;
@@ -87,7 +87,7 @@ public class RegisterStorePage extends BasePage implements OnMapReadyCallback {
     private RelativeLayout main_layout;
     private ProgressBar loadingBarMap, loadingBarRegister;
     private boolean checkLocation = false;
-    private boolean isPhone = false,isStoreName = false,isLocation=false;
+    private boolean isPhone = false, isStoreName = false, isLocation = false;
     private Regex regex;
 
 
@@ -107,7 +107,7 @@ public class RegisterStorePage extends BasePage implements OnMapReadyCallback {
         main_layout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                CustomInterface.hideKeyboard(view,getBaseContext());
+                CustomInterface.hideKeyboard(view, getBaseContext());
                 return false;
             }
         });
@@ -129,8 +129,8 @@ public class RegisterStorePage extends BasePage implements OnMapReadyCallback {
         etStoreName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(!hasFocus){
-                   isStoreName = regex.checkDisplayName(tvStoreNameError,etStoreName);
+                if (!hasFocus) {
+                    isStoreName = regex.checkDisplayName(tvStoreNameError, etStoreName);
                 }
             }
         });
@@ -138,8 +138,8 @@ public class RegisterStorePage extends BasePage implements OnMapReadyCallback {
         etPhone.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(!hasFocus){
-                   isPhone = regex.checkPhone(tvPhoneError,etPhone);
+                if (!hasFocus) {
+                    isPhone = regex.checkPhone(tvPhoneError, etPhone);
                 }
             }
         });
@@ -147,7 +147,7 @@ public class RegisterStorePage extends BasePage implements OnMapReadyCallback {
             @Override
             public void onCheckedChanged(SwitchButton view, boolean isChecked) {
                 tvLocationError.setText("");
-                if(view.isChecked()) {
+                if (view.isChecked()) {
                     turnOnLocation();
                     StringBuilder stringBuilder = new StringBuilder();
                     stringBuilder.append(autoLatitude).append(",").append(autoLongtitude);
@@ -165,13 +165,13 @@ public class RegisterStorePage extends BasePage implements OnMapReadyCallback {
                     setAutoLongtitude(0.0);
                     handleAddressText.setText(handleLocationPlace);
                     handleAddressLayout.setEnabled(true);
-                    if(handleLongtitude == 0.0 && handleLatitude == 0.0) {
+                    if (handleLongtitude == 0.0 && handleLatitude == 0.0) {
                         LatLng defaultLocation = new LatLng(21.028511, 105.804817);
                         mMap.moveCamera(CameraUpdateFactory.newLatLng(defaultLocation));
                         mMap.setMinZoomPreference(10.0f);
                         mMap.setMaxZoomPreference(10.1f);
                     } else {
-                        markerToMap(handleLongtitude,handleLatitude,mMap,"Vị trí đăng kí",handleLocationPlace);
+                        markerToMap(handleLongtitude, handleLatitude, mMap, "Vị trí đăng kí", handleLocationPlace);
                     }
 
                 }
@@ -202,17 +202,16 @@ public class RegisterStorePage extends BasePage implements OnMapReadyCallback {
             public void onClick(View v) {
 
 
-                if((handleLongtitude==0&&handleLatitude==0)&&(autoLatitude==0||autoLongtitude==0)){
+                if ((handleLongtitude == 0 && handleLatitude == 0) && (autoLatitude == 0 || autoLongtitude == 0)) {
                     tvLocationError.setText("Chưa xác định được vị trí của bạn");
                     isLocation = false;
-                }
-                else {
+                } else {
                     isLocation = true;
                     tvLocationError.setText("");
                 }
-                isPhone = regex.checkPhone(tvPhoneError,etPhone);
-                isStoreName = regex.checkDisplayName(tvStoreNameError,etStoreName);
-                if(isPhone&&isStoreName&&isLocation) {
+                isPhone = regex.checkPhone(tvPhoneError, etPhone);
+                isStoreName = regex.checkDisplayName(tvStoreNameError, etStoreName);
+                if (isPhone && isStoreName && isLocation) {
                     String storeName = etStoreName.getText().toString().trim();
                     String phone = etPhone.getText().toString().trim();
                     int user_id = getIntent().getIntExtra("user_id", 0);
@@ -220,9 +219,9 @@ public class RegisterStorePage extends BasePage implements OnMapReadyCallback {
                         Calendar c = Calendar.getInstance();
                         int seconds = c.get(Calendar.SECOND);
                         Date date = c.getTime();
-                        SimpleDateFormat dateFormat= new SimpleDateFormat("yyyy-MM-dd");
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                         String dateString = dateFormat.format(date);
-                        callAPIRegisterStore(new Store(storeName, user_id, phone,dateString), location);
+                        callAPIRegisterStore(new Store(storeName, user_id, phone, dateString), location);
                     }
                 }
             }
@@ -230,7 +229,7 @@ public class RegisterStorePage extends BasePage implements OnMapReadyCallback {
 
     }
 
-    private void findView(){
+    private void findView() {
 
         handleAddressLayout = (RelativeLayout) findViewById(R.id.handleAddressLayout);
         main_layout = findViewById(R.id.main_layout);
@@ -240,13 +239,14 @@ public class RegisterStorePage extends BasePage implements OnMapReadyCallback {
         etStoreName = (EditText) findViewById(R.id.etStoreName);
         main_layout = findViewById(R.id.main_layout);
         iconSwitch = findViewById(R.id.switch_button);
-        loadingBarMap =findViewById(R.id.loadingBarMap);
+        loadingBarMap = findViewById(R.id.loadingBarMap);
         loadingBarRegister = findViewById(R.id.loadingBarRegister);
         tvPhoneError = findViewById(R.id.tvPhoneError);
         registerBtn = (Button) findViewById(R.id.registerBtn);
         tvLocationError = findViewById(R.id.tvLocationError);
 
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
@@ -270,9 +270,9 @@ public class RegisterStorePage extends BasePage implements OnMapReadyCallback {
                     StringBuilder stringBuilder = new StringBuilder();
                     stringBuilder.append(handleLatitude).append(",").append(handleLongtitude);
                     mAPI = ApiUtils.getAPIServiceMap();
-                    final Call<GoogleMapJSON> call = mAPI.getLocation(stringBuilder.toString(),GOOGLE_MAP_KEY);
+                    final Call<GoogleMapJSON> call = mAPI.getLocation(stringBuilder.toString(), GOOGLE_MAP_KEY);
                     new CallMapAPI().execute(call);
-                    markerToMap(handleLongtitude, handleLatitude, mMap, "Vị trí đăng kí","");
+                    markerToMap(handleLongtitude, handleLatitude, mMap, "Vị trí đăng kí", "");
                 } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
                     Status status = PlaceAutocomplete.getStatus(this, data);
                     // TODO: Handle the error.
@@ -285,17 +285,20 @@ public class RegisterStorePage extends BasePage implements OnMapReadyCallback {
 
 
     //Đây là hàm do Đạt sửa bá đạo
-    private void turnOnLocation(){
+    private void turnOnLocation() {
         final LocationListener locationListener = new LocationListener() {
             public void onLocationChanged(Location location) {
             }
 
-            public void onProviderDisabled(String provider){
+            public void onProviderDisabled(String provider) {
             }
 
-            public void onProviderEnabled(String provider){ }
+            public void onProviderEnabled(String provider) {
+            }
+
             public void onStatusChanged(String provider, int status,
-                                        Bundle extras){ }
+                                        Bundle extras) {
+            }
         };
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         // getting GPS status
@@ -330,7 +333,7 @@ public class RegisterStorePage extends BasePage implements OnMapReadyCallback {
                         mAPI = ApiUtils.getAPIServiceMap();
 //                        final Call<GoogleMapJSON> call = mAPI.getLocation(stringBuilder.toString(),GOOGLE_MAP_KEY);
 //                        new CallMapAPI().execute(call);
-                        markerToMap(autoLongtitude, autoLatitude, mMap, "Ví trí của bạn","");
+                        markerToMap(autoLongtitude, autoLatitude, mMap, "Ví trí của bạn", "");
                     }
                 }
             }
@@ -352,13 +355,14 @@ public class RegisterStorePage extends BasePage implements OnMapReadyCallback {
                         mAPI = ApiUtils.getAPIServiceMap();
 //                        final Call<GoogleMapJSON> call = mAPI.getLocation(stringBuilder.toString(),GOOGLE_MAP_KEY);
 //                        new CallMapAPI().execute(call);
-                        markerToMap(autoLongtitude, autoLatitude, mMap, getResources().getString(R.string.yourGPS),"");
+                        markerToMap(autoLongtitude, autoLatitude, mMap, getResources().getString(R.string.yourGPS), "");
                     }
                 }
 
             }
         }
     }
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
@@ -428,6 +432,7 @@ public class RegisterStorePage extends BasePage implements OnMapReadyCallback {
                 return super.onOptionsItemSelected(item);
         }
     }
+
     private class CallMapAPI extends AsyncTask<Call, Void, project.view.model.Location> {
 
 
@@ -448,19 +453,19 @@ public class RegisterStorePage extends BasePage implements OnMapReadyCallback {
             location.setCounty(location1.getCounty());
             location.setApartment_number(location1.getApartment_number());
 
-            if(location.getCity() != null) {
+            if (location.getCity() != null) {
                 checkLocation = true;
-            } else if(location.getStreet() != null) {
+            } else if (location.getStreet() != null) {
                 checkLocation = true;
-            } else if(location.getDistrict() != null) {
+            } else if (location.getDistrict() != null) {
                 checkLocation = true;
-            } else if(location.getCounty() != null) {
+            } else if (location.getCounty() != null) {
                 checkLocation = true;
-            } else if(location.getApartment_number() != null) {
+            } else if (location.getApartment_number() != null) {
                 checkLocation = true;
             }
 
-            if(checkLocation){
+            if (checkLocation) {
                 registerBtn.setEnabled(true);
                 loadingBarMap.setVisibility(View.INVISIBLE);
                 if (iconSwitch.isChecked()) {
@@ -470,7 +475,7 @@ public class RegisterStorePage extends BasePage implements OnMapReadyCallback {
                 }
                 if (iconSwitch.isChecked() == true) {
                     handleAddressText.setText("Vị trí hiện tại");
-                } else if (handleLongtitude !=  0.0 && handleLatitude != 0.0) {
+                } else if (handleLongtitude != 0.0 && handleLatitude != 0.0) {
                     handleAddressText.setText(handleLocationPlace);
                 }
             }
@@ -483,23 +488,23 @@ public class RegisterStorePage extends BasePage implements OnMapReadyCallback {
                         registerBtn.setEnabled(true);
                         loadingBarMap.setVisibility(View.INVISIBLE);
                         iconSwitch.setChecked(false);
-                        if (iconSwitch.isChecked() == false ) {
+                        if (iconSwitch.isChecked() == false) {
                             handleAddressLayout.setEnabled(true);
-                            if (handleLongtitude ==  0.0 && handleLatitude == 0.0) {
+                            if (handleLongtitude == 0.0 && handleLatitude == 0.0) {
                                 LatLng defaultLocation = new LatLng(21.028511, 105.804817);
                                 mMap.moveCamera(CameraUpdateFactory.newLatLng(defaultLocation));
                                 mMap.setMinZoomPreference(10.0f);
                                 mMap.setMaxZoomPreference(10.1f);
                             } else {
-                                markerToMap(handleLongtitude,handleLatitude,mMap,"Vị trí đăng kí",handleLocationPlace);
+                                markerToMap(handleLongtitude, handleLatitude, mMap, "Vị trí đăng kí", handleLocationPlace);
                             }
 
                         } else {
-                            markerToMap(autoLongtitude,autoLatitude,mMap,"Vị trí hiên tại","");
+                            markerToMap(autoLongtitude, autoLatitude, mMap, "Vị trí hiên tại", "");
                         }
                     }
                 }
-            },10000);
+            }, 10000);
         }
 
         @Override
@@ -521,7 +526,7 @@ public class RegisterStorePage extends BasePage implements OnMapReadyCallback {
                     Address a = address.get(i);
                     for (int j = 0; j < a.getTypes().length; j++) {
                         if (a.getTypes()[j].equalsIgnoreCase("street_number")) {
-                                location.setApartment_number(a.getLong_name());
+                            location.setApartment_number(a.getLong_name());
                         }
                         if (a.getTypes()[j].equalsIgnoreCase("route")) {
                             location.setStreet(a.getLong_name());
@@ -542,6 +547,7 @@ public class RegisterStorePage extends BasePage implements OnMapReadyCallback {
             return location;
         }
     }
+
     private class RegisterStore extends AsyncTask<Call, Void, Store> {
 
 
@@ -572,7 +578,7 @@ public class RegisterStorePage extends BasePage implements OnMapReadyCallback {
 //                return;
 //            }
             if (result != null) {
-                if (result.getId() == 0){
+                if (result.getId() == 0) {
                     loadingBarRegister.setVisibility(View.INVISIBLE);
                     registerBtn.setEnabled(true);
                     registerBtn.setText("Đăng kí");
@@ -585,7 +591,7 @@ public class RegisterStorePage extends BasePage implements OnMapReadyCallback {
                 Toast.makeText(RegisterStorePage.this, "Đăng kí cửa hàng thành công", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(RegisterStorePage.this, HomePage.class);
                 SharedPreferences preferences = getSharedPreferences("authentication", Context.MODE_PRIVATE);
-                User user = new Gson().fromJson(preferences.getString("user",""),User.class);
+                User user = new Gson().fromJson(preferences.getString("user", ""), User.class);
                 user.setHasStore(1);
                 SharedPreferences.Editor editor = preferences.edit();
                 editor.putString("store", new Gson().toJson(result));
@@ -605,10 +611,9 @@ public class RegisterStorePage extends BasePage implements OnMapReadyCallback {
                         registerBtn.setText("Đăng kí");
                         return;
                     }
-                },10000);
+                }, 10000);
 
             }
-
 
 
         }
@@ -633,12 +638,13 @@ public class RegisterStorePage extends BasePage implements OnMapReadyCallback {
             return result;
         }
     }
-    private void callAPIRegisterStore (Store store, project.view.model.Location location) {
+
+    private void callAPIRegisterStore(Store store, project.view.model.Location location) {
         String jSon1 = new Gson().toJson(store);
         String jSon2 = new Gson().toJson(location);
         HashMap<String, String> map = new HashMap<>();
-        map.put("store",jSon1);
-        map.put("location",jSon2);
+        map.put("store", jSon1);
+        map.put("location", jSon2);
         mAPI = ApiUtils.getAPIService();
         final Call<Store> call = mAPI.registerStore(map);
         new RegisterStore().execute(call);
