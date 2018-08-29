@@ -15,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="15dp"
-        android:layout_marginTop="15dp">
+        android:paddingTop="15dp">
         <!--product avatar-->
         <ProgressBar
             android:id="@+id/loadingBar"
@@ -134,13 +134,13 @@
 
                 <RelativeLayout
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_weight="2">
 
                     <Button
                         android:id="@+id/addToCartBtn"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="50dp"
                         android:layout_alignParentTop="true"
                         android:layout_centerHorizontal="true"
                         android:background="@drawable/login_button"
@@ -152,7 +152,7 @@
                     <Button
                         android:id="@+id/editProductInStore"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="50dp"
                         android:layout_alignParentTop="true"
                         android:layout_centerHorizontal="true"
                         android:background="@drawable/login_button"
@@ -175,7 +175,6 @@
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
                     android:maxLines="3"
-                    android:text="Samsung Galaxy Note 8 256Gb màu xanh nước biển đó man"
                     android:textColor="@color/colorBlack"
                     android:textSize="20dp"
                     android:textStyle="bold" />
@@ -191,7 +190,6 @@
                     android:id="@+id/storeName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:padding="8dp"
                     android:textColor="@color/lb_more"
                     android:text="Cửa hàng bách hóa số 21"
                     android:textSize="16dp" />
@@ -222,7 +220,6 @@
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
                     android:maxLines="3"
-                    android:text="Samsung Galaxy Note 8 256Gb màu xanh nước biển đó man"
                     android:textColor="@color/colorBlack"
                     android:textSize="20dp"
                     android:textStyle="bold" />

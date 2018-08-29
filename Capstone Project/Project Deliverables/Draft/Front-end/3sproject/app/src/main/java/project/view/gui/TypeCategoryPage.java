@@ -56,7 +56,6 @@ public class TypeCategoryPage extends BasePage {
 
     private RecyclerView recyclerView;
     private TypePageListViewAdapter adapter;
-    private List<Type> typeList = new ArrayList<>();
     ;
     private int categoryId;
     private APIService mAPI;

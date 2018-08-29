@@ -116,11 +116,13 @@ public class UserOrderAdapter extends BaseExpandableListAdapter {
             TextView waittingOrderStore = convertView.findViewById(R.id.waittingOrderStoreName);
             TextView waittingOrderOrderDate = convertView.findViewById(R.id.waittingOrderOrderDate);
             TextView waittingOrderTotalCast = convertView.findViewById(R.id.waittingOrderTotalCast);
+            TextView aittingOrderStatus = convertView.findViewById(R.id.waittingOrderStatus);
             TextView cancelBtn = convertView.findViewById(R.id.cancelBtn);
 
             waittingOrderStore.setText(storeName);
             waittingOrderOrderDate.setText(orderDate);
             waittingOrderTotalCast.setText(Formater.formatDoubleToMoney(String.valueOf(totalOrder)));
+            aittingOrderStatus.setText("Đợi xử lý");
 
             waittingOrderStore.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -174,6 +176,7 @@ public class UserOrderAdapter extends BaseExpandableListAdapter {
             TextView processingOrderStore = convertView.findViewById(R.id.processingOrderStoreName);
             TextView processingOrderOrderDate = convertView.findViewById(R.id.processingOrderOrderDate);
             TextView processingOrderTotalCast = convertView.findViewById(R.id.processingOrderTotalCast);
+            TextView processingOrderStatus = convertView.findViewById(R.id.processingOrderStatus);
             processingOrderStore.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -185,6 +188,7 @@ public class UserOrderAdapter extends BaseExpandableListAdapter {
             processingOrderStore.setText(storeName);
             processingOrderOrderDate.setText(orderDate);
             processingOrderTotalCast.setText(Formater.formatDoubleToMoney(String.valueOf(totalOrder)));
+            processingOrderStatus.setText("Đang xử lý");
 
         } else if (orderStatus.equalsIgnoreCase("done")) {
             waittingOrderLayout.setVisibility(View.INVISIBLE);
@@ -196,6 +200,7 @@ public class UserOrderAdapter extends BaseExpandableListAdapter {
                  TextView doneOrderWithFeedbackStore = convertView.findViewById(R.id.doneOrderWithFeedbackStoreName);
                  TextView doneOrderWithFeedbackOrderDate = convertView.findViewById(R.id.doneOrderWithFeedbackOrderDate);
                  TextView doneOrderWithFeedbackTotalCast = convertView.findViewById(R.id.doneOrderWithFeedbackTotalCast);
+                 TextView doneOrderWithFeedbackStatus = convertView.findViewById(R.id.doneOrderWithFeedbackStatus);
                  doneOrderWithFeedbackStore.setOnClickListener(new View.OnClickListener() {
                      @Override
                      public void onClick(View view) {
@@ -207,6 +212,7 @@ public class UserOrderAdapter extends BaseExpandableListAdapter {
                  doneOrderWithFeedbackStore.setText(storeName);
                  doneOrderWithFeedbackOrderDate.setText(orderDate);
                  doneOrderWithFeedbackTotalCast.setText(Formater.formatDoubleToMoney(String.valueOf(totalOrder)));
+                 doneOrderWithFeedbackStatus.setText("Đã xử lý");
 
              } else {
                  doneOrderWithoutFeedbackLayout.setVisibility(View.VISIBLE);
@@ -215,11 +221,13 @@ public class UserOrderAdapter extends BaseExpandableListAdapter {
                  TextView doneOrderWithoutFeedbackStore = convertView.findViewById(R.id.doneOrderWithoutFeedbackStoreName);
                  TextView doneOrderWithoutFeedbackOrderDate = convertView.findViewById(R.id.doneOrderWithoutFeedbackOrderDate);
                  TextView doneOrderWithoutFeedbackTotalCast = convertView.findViewById(R.id.doneOrderWithoutFeedbackTotalCast);
+                 TextView doneOrderWithoutFeedbackStatus = convertView.findViewById(R.id.doneOrderWithoutFeedbackStatus);
                  TextView feedbackBtn = convertView.findViewById(R.id.feedbackBtn);
 
                  doneOrderWithoutFeedbackStore.setText(storeName);
                  doneOrderWithoutFeedbackOrderDate.setText(orderDate);
                  doneOrderWithoutFeedbackTotalCast.setText(Formater.formatDoubleToMoney(String.valueOf(totalOrder)));
+                 doneOrderWithoutFeedbackStatus.setText("Đã xử lý");
 
                  doneOrderWithoutFeedbackStore.setOnClickListener(new View.OnClickListener() {
                      @Override

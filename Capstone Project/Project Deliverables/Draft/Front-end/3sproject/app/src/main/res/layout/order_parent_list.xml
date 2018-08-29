@@ -8,7 +8,8 @@
         android:id="@+id/waittingOrderLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="invisible">
+        android:visibility="invisible"
+        >
 
     <View
         android:layout_above="@+id/waittingOrderStore"
@@ -30,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="10dp"
-            android:weightSum="4">
+            android:weightSum="5">
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_weight="3"
@@ -65,13 +66,20 @@
                     android:textColor="@color/textColor"/>
             </LinearLayout>
 
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
                 android:layout_gravity="center"
-                android:paddingLeft="3dp">
-
+                android:paddingLeft="3dp"
+                android:layout_marginRight="5dp">
+                <TextView
+                    android:id="@+id/waittingOrderStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:textSize="14dp"/>
                 <TextView
                     android:id="@+id/cancelBtn"
                     android:layout_width="wrap_content"
@@ -79,8 +87,10 @@
                     android:textColor="@color/lb_more"
                     android:text="Hủy đơn hàng"
                     android:textSize="13dp"
-                    android:gravity="center"/>
-            </RelativeLayout>
+                    android:layout_marginTop="10dp"
+                    android:layout_gravity="end"
+                    android:gravity="bottom"/>
+            </LinearLayout>
 
         </LinearLayout>
 
@@ -90,7 +100,8 @@
         android:id="@+id/processingOrder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="invisible">
+        android:visibility="invisible"
+        >
         <View
             android:layout_above="@+id/processingOrderStore"
             android:layout_width="match_parent"
@@ -136,7 +147,12 @@
                         android:layout_marginTop="3dp"
                         android:text="29/08/2018"
                         android:textSize="13dp"/>
-
+                    <TextView
+                        android:id="@+id/processingOrderStatus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="14dp"
+                        android:layout_marginTop="5dp"/>
                 </LinearLayout>
                 <RelativeLayout
                     android:layout_width="0dp"
@@ -159,7 +175,8 @@
         android:id="@+id/doneOrderWithoutFeedback"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="invisible">
+        android:visibility="invisible"
+        >
         <View
             android:layout_above="@+id/doneOrderWithoutFeedbackStore"
             android:layout_width="match_parent"
@@ -180,7 +197,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="10dp"
-                android:weightSum="4">
+                android:weightSum="5">
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_weight="3"
@@ -216,19 +233,29 @@
                         android:textColor="@color/textColor"/>
 
                 </LinearLayout>
-                <RelativeLayout
+                <LinearLayout
                     android:layout_width="0dp"
-                    android:layout_weight="1"
+                    android:layout_weight="2"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center">
+                    android:layout_gravity="center"
+                    android:orientation="vertical"
+                    android:layout_marginRight="5dp">
+                    <TextView
+                        android:id="@+id/doneOrderWithoutFeedbackStatus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:textSize="14dp"/>
                     <TextView
                         android:id="@+id/feedbackBtn"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Đánh giá"
                         android:textColor="@color/lb_more"
-                        android:textSize="13dp"/>
-                </RelativeLayout>
+                        android:textSize="13dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_gravity="end"/>
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
     </RelativeLayout>
@@ -282,6 +309,13 @@
                         android:layout_marginTop="3dp"
                         android:text="29/08/2018"
                         android:textSize="13dp"/>
+                    <TextView
+                        android:id="@+id/doneOrderWithFeedbackStatus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:textSize="14dp"/>
+
 
                 </LinearLayout>
                 <RelativeLayout
