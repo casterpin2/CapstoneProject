@@ -24,7 +24,6 @@ public class BrandCustomCardviewAdapter extends RecyclerView.Adapter<BrandCustom
     private Context mContext;
     private List<Brand> brandList;
     private StorageReference storageReference = Firebase.getFirebase();
-    private Brand brand;
     public Context getmContext() {
         return mContext;
     }
@@ -58,7 +57,7 @@ public class BrandCustomCardviewAdapter extends RecyclerView.Adapter<BrandCustom
 
     @Override
     public void onBindViewHolder(final BrandCustomCardviewAdapter.MyViewHolder holder, int position) {
-        brand = brandList.get(position);
+        final Brand brand = brandList.get(position);
         holder.brandName.setText(brand.getBrandName());
         holder.numberOfRecord.setText(String.valueOf(brand.getNumberOfRecord())+" sản phẩm");
         Glide.with(mContext /* context */)
