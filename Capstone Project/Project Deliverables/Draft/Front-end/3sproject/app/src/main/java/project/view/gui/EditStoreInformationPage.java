@@ -147,8 +147,13 @@ public class EditStoreInformationPage extends BasePage implements OnMapReadyCall
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
                     isStoreName = regex.checkDisplayName(tvStoreNameError, etStoreName);
-                    final Call<Integer> call = apiService.vadilatorStore(etStoreName.getText().toString(),"None", "phone");
-                    new ValidatorStore().execute(call);
+
+                    if(!etStoreName.getText().toString().toLowerCase().equals(storeName.toLowerCase())){
+                        apiService = ApiUtils.getAPIService();
+                        final Call<Integer> call = apiService.vadilatorStore(etStoreName.getText().toString(),"None", "name");
+                        new ValidatorStore().execute(call);
+                    }
+
                 }
             }
         });
@@ -158,8 +163,12 @@ public class EditStoreInformationPage extends BasePage implements OnMapReadyCall
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
                     isPhone = regex.checkPhone(tvPhoneError, etPhone);
-                    final Call<Integer> call = apiService.vadilatorStore("None", etPhone.getText().toString(), "phone");
-                    new ValidatorStore().execute(call);
+                    if(!etPhone.getText().toString().equals(phone)){
+                        apiService = ApiUtils.getAPIService();
+                        final Call<Integer> call = apiService.vadilatorStore("None", etPhone.getText().toString(), "phone");
+                        new ValidatorStore().execute(call);
+                    }
+
                 }
             }
         });
@@ -171,7 +180,7 @@ public class EditStoreInformationPage extends BasePage implements OnMapReadyCall
                     turnOnLocation();
                     handleAddressLayout.setEnabled(false);
 //                    handleAddressText.setText("Vị trí hiện tại");
-
+                    isLocation = true;
                 } else {
                     setAutoLatitude(0.0);
                     setAutoLongtitude(0.0);
@@ -185,10 +194,12 @@ public class EditStoreInformationPage extends BasePage implements OnMapReadyCall
                     } else {
                         markerToMap(handleLongtitude, handleLatitude, mMap, "Vị trí đăng kí", handleLocationPlace);
                     }
+                    isLocation =false;
                 }
                 if (switch_button.isChecked() == false && handleLongtitude == 0.0 && handleLatitude == 0.0) {
                     markerToMap(storeLongtitude, storeLatitude, mMap, "Vị trí hiện tại của cửa hàng", address);
                     handleAddressText.setText(address);
+                    isLocation = false;
                 }
             }
 
@@ -220,13 +231,7 @@ public class EditStoreInformationPage extends BasePage implements OnMapReadyCall
             @Override
             public void onClick(View view) {
                 boolean checkChange = false;
-                if ((handleLongtitude == 0 && handleLatitude == 0) && (autoLatitude == 0 || autoLongtitude == 0)) {
-                    tvLocationError.setText("Chưa xác định được vị trí của bạn");
-                    isLocation = false;
-                } else {
-                    isLocation = true;
-                    tvLocationError.setText("");
-                }
+
                 pre = getSharedPreferences("authentication", Context.MODE_PRIVATE);
                 storeJson = pre.getString("store", "");
                 Store storePre = new Gson().fromJson(storeJson, Store.class);
@@ -239,7 +244,7 @@ public class EditStoreInformationPage extends BasePage implements OnMapReadyCall
                     storePre.setPhone(etPhone.getText().toString());
                     checkChange = true;
                 }
-                if (!checkChange && location.toString().equals("CANCEL")) {
+                if (!checkChange && !isLocation) {
                     Intent backToStoreFragment = new Intent(EditStoreInformationPage.this, StoreFragment.class);
                     backToStoreFragment.putExtra("data", "NO");
                     setResult(RESULT_CODE, backToStoreFragment);
@@ -256,6 +261,27 @@ public class EditStoreInformationPage extends BasePage implements OnMapReadyCall
                     final Call<Store> callBrand = apiService.updateStore(map);
                     new StoreData().execute(callBrand);
 
+                }
+                if (checkChange && isPhone && isStoreName && !isLocation) {
+                    String locationJson = new Gson().toJson(location);
+                    String storePreJson = new Gson().toJson(storePre);
+                    HashMap<String, String> map = new HashMap<>();
+                    map.put("store", storePreJson);
+                    map.put("location", locationJson);
+                    apiService = ApiUtils.getAPIService();
+                    final Call<Store> call = apiService.updateStore(map);
+                    new StoreData().execute(call);
+
+                }
+                if(!checkChange && isLocation){
+                    String locationJson = new Gson().toJson(location);
+                    String storePreJson = new Gson().toJson(storePre);
+                    HashMap<String, String> map = new HashMap<>();
+                    map.put("store", storePreJson);
+                    map.put("location", locationJson);
+                    apiService = ApiUtils.getAPIService();
+                    final Call<Store> call = apiService.updateStore(map);
+                    new StoreData().execute(call);
                 }
 //                else if (checkChange && location.toString().equals("CANCEL")) {
 //                    String locationJson = new Gson().toJson(location);

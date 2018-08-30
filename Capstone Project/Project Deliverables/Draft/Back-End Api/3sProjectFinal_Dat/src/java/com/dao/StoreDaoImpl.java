@@ -309,7 +309,8 @@ public class StoreDaoImpl extends BaseDao implements StoreDao {
             }
             int idExist = checkLocationExist(location, conn);
             if (idExist > 0) {
-                checkUpdateLocation = updateLocationByStore(conn, location, idExist);
+                updateLocationByStore(conn, location, idExist);
+                updateUserLocation(conn, idExist, store);
             } else {
                 boolean checkNewInsert = insertNewLocation(location, conn);
                 int idNew = checkLocationExist(location, conn);
