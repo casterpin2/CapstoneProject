@@ -180,7 +180,7 @@ public class UserFragment extends Fragment implements NetworkStateReceiver.Netwo
                 public void onClick(View v) {
                     Intent toUserInfoScreen = new Intent(getActivity(), UserInformationPage.class);
                     toUserInfoScreen.putExtra("userID", userID);
-                    getActivity().startActivityForResult(toUserInfoScreen, 111);
+                    startActivityForResult(toUserInfoScreen, 111);
 
                 }
             });
@@ -301,7 +301,6 @@ public class UserFragment extends Fragment implements NetworkStateReceiver.Netwo
                                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                                 .skipMemoryCache(true)
                                 .into(profile_image);
-
                     }
                 }
             }

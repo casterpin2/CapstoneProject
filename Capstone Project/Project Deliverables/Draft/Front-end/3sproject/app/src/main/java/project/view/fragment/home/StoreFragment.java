@@ -263,18 +263,14 @@ public class StoreFragment extends Fragment implements NetworkStateReceiver.Netw
                     int currentapiVersion = android.os.Build.VERSION.SDK_INT;
                     if (currentapiVersion >= android.os.Build.VERSION_CODES.M) {
                         if (checkPermission()) {
-                            Intent intent = new Intent(Intent.ACTION_PICK);
-                            intent.setType("image/*");
-                            intent.setAction(Intent.ACTION_GET_CONTENT);
-                            getActivity().startActivityForResult(intent, IMAGE_CODE);
+                            Intent toGallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+                            startActivityForResult(toGallery, IMAGE_CODE);
                         } else {
                             requestPermission();
                         }
                     } else {
-                        Intent intent = new Intent(Intent.ACTION_PICK);
-                        intent.setType("image/*");
-                        intent.setAction(Intent.ACTION_GET_CONTENT);
-                        getActivity().startActivityForResult(intent, IMAGE_CODE);
+                        Intent toGallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+                        startActivityForResult(toGallery, IMAGE_CODE);
                     }
                 }
             });

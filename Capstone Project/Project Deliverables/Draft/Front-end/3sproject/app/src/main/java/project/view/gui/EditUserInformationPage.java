@@ -149,11 +149,6 @@ public class EditUserInformationPage extends BasePage {
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
                     isPhone = regex.checkPhone(phoneError,phoneText);
-                    mApi = ApiUtils.getAPIService();
-                    if(!phoneText.getText().toString().equals(extras.getString("phone"))) {
-                        final Call<Integer> call = mApi.vadilator("None", "None", phoneText.getText().toString(), "phone");
-                        new ValidatorUser().execute(call);
-                    }
                 }
             }
         });
@@ -163,11 +158,7 @@ public class EditUserInformationPage extends BasePage {
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
                     isEmail = regex.checkEmail(emailError,emailText);
-                    mApi = ApiUtils.getAPIService();
-                    if(!emailText.getText().toString().toLowerCase().equals(extras.getString("email").toLowerCase())){
-                        final Call<Integer> call = mApi.vadilator("None", emailText.getText().toString(), "None", "email");
-                        new ValidatorUser().execute(call);
-                    }
+
 
                 }
             }
@@ -200,10 +191,22 @@ public class EditUserInformationPage extends BasePage {
                     gender = "Nữ";
                 }
                 boolean checkAllValidate = isEmail && isPhone &&isUserName;
+
+                if(!emailText.getText().toString().toLowerCase().equals(extras.getString("email").toLowerCase())){
+                    mApi = ApiUtils.getAPIService();
+                    final Call<Integer> call = mApi.vadilator("None", emailText.getText().toString(), "None", "email");
+                    new ValidatorUser().execute(call);
+                }
+                if(!phoneText.getText().toString().equals(extras.getString("phone"))) {
+                    mApi = ApiUtils.getAPIService();
+                    final Call<Integer> call = mApi.vadilator("None", "None", phoneText.getText().toString(), "phone");
+                    new ValidatorUser().execute(call);
+                }
                 boolean checkChange = extras.getString("name").equals(name) && extras.getString("phone").equals(phone)
                         && extras.getString("email").equals(email) && extras.getString("dob").equals(dob)
                         && extras.getString("gender").equals(gender);
                 //thong tin ko thay doi anh khong thay doi
+
                 if (checkChange && !checkAva ) {
                     Intent toUserInformationPage = new Intent(EditUserInformationPage.this, UserInformationPage.class);
                     setResult(201, toUserInformationPage);
@@ -380,18 +383,14 @@ public class EditUserInformationPage extends BasePage {
                 int currentapiVersion = android.os.Build.VERSION.SDK_INT;
                 if (currentapiVersion >= android.os.Build.VERSION_CODES.M) {
                     if (checkPermission()) {
-                        Intent intent = new Intent(Intent.ACTION_PICK);
-                        intent.setType("image/*");
-                        intent.setAction(Intent.ACTION_GET_CONTENT);
-                        startActivityForResult(intent, IMAGE_CODE);
+                        Intent toGallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+                        startActivityForResult(toGallery, IMAGE_CODE);
                     } else {
                         requestPermission();
                     }
                 } else {
-                    Intent intent = new Intent(Intent.ACTION_PICK);
-                    intent.setType("image/*");
-                    intent.setAction(Intent.ACTION_GET_CONTENT);
-                    startActivityForResult(intent, IMAGE_CODE);
+                    Intent toGallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+                    startActivityForResult(toGallery, IMAGE_CODE);
                 }
             }
         });
@@ -480,7 +479,6 @@ public class EditUserInformationPage extends BasePage {
         if (imageURI != null) {
             final String nameImg = extras.getInt("idUser", 0) + "--" + UUID.randomUUID().toString();
             StorageReference ref = storageReference.child("User/image/" + nameImg);
-
             ref.putFile(imageURI).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -507,17 +505,17 @@ public class EditUserInformationPage extends BasePage {
                 @Override
                 public void onFailure(@NonNull Exception exception) {
                    // Toast.makeText(EditUserInformationPage.this, "Xin lỗi kích thước ảnh lớn hơn 2MB", Toast.LENGTH_SHORT).show();
-                    if (!extras.getString("currentPath").isEmpty() && extras.getString("currentPath") != null) {
-                        if (extras.getString("currentPath").contains("graph") || extras.getString("currentPath").contains("google")) {
+                    if (!extras.getString("path").isEmpty() && extras.getString("path") != null) {
+                        if (extras.getString("path").contains("graph") || extras.getString("path").contains("google")) {
                             Glide.with(EditUserInformationPage.this /* context */)
-                                    .load(extras.getString("currentPath"))
+                                    .load(extras.getString("path"))
                                     .diskCacheStrategy(DiskCacheStrategy.NONE)
                                     .skipMemoryCache(true)
                                     .into(profile_image);
                         } else {
                             Glide.with(EditUserInformationPage.this /* context */)
                                     .using(new FirebaseImageLoader())
-                                    .load(storageReference.child(extras.getString("currentPath")))
+                                    .load(storageReference.child(extras.getString("path")))
                                     .diskCacheStrategy(DiskCacheStrategy.NONE)
                                     .skipMemoryCache(true)
                                     .into(profile_image);
