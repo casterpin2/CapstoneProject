@@ -209,7 +209,6 @@ public class SearchProductAddToStore extends BasePage {
         final TextView productDesc_infoDialog = (TextView) informationDialog.findViewById(R.id.productDesc_infoDialog);
         final TextView productTypeText_infoDialog = (TextView) informationDialog.findViewById(R.id.productTypeText_infoDialog);
         final TextView productType_infoDialog = (TextView) informationDialog.findViewById(R.id.productType_infoDialog);
-        final TextView addBtn_infoDialog = (TextView) informationDialog.findViewById(R.id.addBtn_infoDialog);
         final ImageView productImage = (ImageView) informationDialog.findViewById(R.id.productImage);
 
 //        productImage.setMaxHeight(productImage.getWidth());
@@ -226,13 +225,6 @@ public class SearchProductAddToStore extends BasePage {
                 .skipMemoryCache(true)
                 .into(productImage);
         final View optionView = view;
-        addBtn_infoDialog.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-        showOptionDialog(productList, position, optionView);
-            }
-        });
 
 
 
@@ -316,8 +308,8 @@ public class SearchProductAddToStore extends BasePage {
                         if (priceValue_optionDialog.getText().toString().length() > 0  ) {
                             long priceLong = 0;
                             double promotionPercent = 0.0;
+                            priceLong = Long.parseLong(priceValue_optionDialog.getText().toString().replaceAll(",", ""));
                             if (promotionPercent_optionDialog.getText().toString().length() > 0) {
-                                priceLong = Long.parseLong(priceValue_optionDialog.getText().toString().replaceAll(",", ""));
                                 if (Double.parseDouble(promotionPercent_optionDialog.getText().toString()) > 100.00 || Double.parseDouble(promotionPercent_optionDialog.getText().toString()) < 0.00) {
                                     promotionPercentErrorMessage_optionDialog.setText(R.string.promotionOption);
                                 } else {
@@ -345,9 +337,6 @@ public class SearchProductAddToStore extends BasePage {
                             optionDialog.dismiss();
                             informationDialog.dismiss();
 
-                        } else {
-//                            priceErrorMessage_optionDialog.setText(R.string.error_empty);
-//                            promotionPercentErrorMessage_optionDialog.setText(R.string.error_empty);
                         }
 
 

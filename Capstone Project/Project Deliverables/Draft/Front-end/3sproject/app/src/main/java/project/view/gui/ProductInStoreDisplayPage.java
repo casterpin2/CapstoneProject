@@ -4,6 +4,8 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -112,6 +114,13 @@ public class ProductInStoreDisplayPage extends BasePage {
         nullMessage = findViewById(R.id.nullMessage);
     }
 
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
     private class ProductInStoreList extends AsyncTask<Call, Void, Void> {
         @Override
         protected void onPreExecute() {
@@ -122,8 +131,13 @@ public class ProductInStoreDisplayPage extends BasePage {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            if (!productInStores.isEmpty()) {
-                loadingBar.setVisibility(View.INVISIBLE);
+            if (isNetworkAvailable()) {
+                if (!productInStores.isEmpty()) {
+                    loadingBar.setVisibility(View.INVISIBLE);
+                } else {
+                    loadingBar.setVisibility(View.INVISIBLE);
+                    nullMessage.setText("Cửa hàng không có sản phẩm nào");
+                }
             } else {
                 new Handler().postDelayed(new Runnable() {
                     @Override
@@ -131,8 +145,9 @@ public class ProductInStoreDisplayPage extends BasePage {
                         nullMessage.setText("Có lỗi xảy ra, vui lòng tải lại trang!");
                         loadingBar.setVisibility(View.INVISIBLE);
                     }
-                }, 10000);
+                }, 5000);
             }
+
         }
 
         @Override
@@ -148,13 +163,18 @@ public class ProductInStoreDisplayPage extends BasePage {
 
                 Call<List<Product>> call = calls[0];
                 final Response<List<Product>> response = call.execute();
-                for (int i = 0; i < response.body().size(); i++) {
-                    productInStores.add(response.body().get(i));
+                if (response.body() != null) {
+                    for (int i = 0; i < response.body().size(); i++) {
+                        productInStores.add(response.body().get(i));
+                    }
                 }
                 if (productInStores != null) {
                     for (Product product : productInStores) {
                         tempList.add(product);
                     }
+                } else {
+                    nullMessage.setText("Có lỗi xảy ra. Vui lòng tải lại trang!");
+                    theListView.setVisibility(View.INVISIBLE);
                 }
 
                 runOnUiThread(new Runnable() {
@@ -165,7 +185,7 @@ public class ProductInStoreDisplayPage extends BasePage {
                         theListView = (ListView) findViewById(R.id.mainListView);
                         theListView.setAdapter(adapter);
 
-                        if (response.body().size() == 0) {
+                        if (productInStores.size() == 0) {
                             nullMessage.setText("Cửa hàng không có sản phẩm nào!");
                             theListView.setVisibility(View.INVISIBLE);
                         } else {

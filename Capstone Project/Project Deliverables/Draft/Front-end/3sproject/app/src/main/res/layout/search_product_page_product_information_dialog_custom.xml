@@ -107,22 +107,6 @@
                 android:textSize="13dp"
                 />
         </LinearLayout>
-
-        <LinearLayout
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent">
-
-            <TextView
-                android:id="@+id/addBtn_infoDialog"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/search_product_to_add_store_add_product_btn"
-                android:gravity="center"
-                android:padding="10dp"
-                android:text="Thêm sản phẩm"
-                android:textColor="@color/colorWhite"
-                android:textSize="12dp" />
-        </LinearLayout>
     </LinearLayout>
 
     </LinearLayout>

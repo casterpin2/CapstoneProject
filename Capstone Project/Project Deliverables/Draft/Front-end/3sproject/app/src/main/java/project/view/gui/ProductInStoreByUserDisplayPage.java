@@ -3,6 +3,8 @@ package project.view.gui;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -143,11 +145,23 @@ public class ProductInStoreByUserDisplayPage extends BasePage {
             loadingBar.setVisibility(View.VISIBLE);
         }
 
+        private boolean isNetworkAvailable() {
+            ConnectivityManager connectivityManager
+                    = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+            return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+        }
+
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            if (products != null) {
-                loadingBar.setVisibility(View.INVISIBLE);
+            if (isNetworkAvailable()) {
+                if (!products.isEmpty()) {
+                    loadingBar.setVisibility(View.INVISIBLE);
+                } else {
+                    loadingBar.setVisibility(View.INVISIBLE);
+                    nullMessage.setText("Cửa hàng không có sản phẩm nào");
+                }
             } else {
                 new Handler().postDelayed(new Runnable() {
                     @Override
@@ -155,7 +169,7 @@ public class ProductInStoreByUserDisplayPage extends BasePage {
                         nullMessage.setText("Có lỗi xảy ra, vui lòng tải lại trang!");
                         loadingBar.setVisibility(View.INVISIBLE);
                     }
-                }, 10000);
+                }, 5000);
             }
         }
 
@@ -166,15 +180,20 @@ public class ProductInStoreByUserDisplayPage extends BasePage {
             products = values[0];
 
             tempProductInStore = new ArrayList<>();
+            if (products != null){
+                if (!products.isEmpty()) {
+                    productFilter.setCategoryFilter(products, ProductInStoreByUserDisplayPage.this, spinnerCategory);
+                    productFilter.setSortItem(ProductInStoreByUserDisplayPage.this, spinnerSort);
+                    for (Product product : products) {
+                        tempProductInStore.add(product);
+                    }
 
-            if (!products.isEmpty()) {
-                productFilter.setCategoryFilter(products, ProductInStoreByUserDisplayPage.this, spinnerCategory);
-                productFilter.setSortItem(ProductInStoreByUserDisplayPage.this, spinnerSort);
-                for (Product product : products) {
-                    tempProductInStore.add(product);
                 }
-
+            } else {
+                nullMessage.setText("Có lỗi xảy ra, vui lòng tải lại trang!");
+                loadingBar.setVisibility(View.INVISIBLE);
             }
+
             productInStoreByUserCustomListViewAdapter = new ProductInStoreByUserCustomCardViewAdapter(ProductInStoreByUserDisplayPage.this, tempProductInStore, store);
             RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(ProductInStoreByUserDisplayPage.this, 2);
             recycler_view.setLayoutManager(mLayoutManager);
