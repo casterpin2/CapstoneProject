@@ -64,6 +64,7 @@ import java.util.UUID;
 import de.hdodenhof.circleimageview.CircleImageView;
 import project.objects.User;
 import project.retrofit.APIService;
+import project.retrofit.ApiUtils;
 import project.view.R;
 import project.view.util.CustomInterface;
 import project.view.util.Regex;
@@ -126,7 +127,6 @@ public class EditUserInformationPage extends BasePage {
 
         Intent intent = getIntent();
         extras = intent.getExtras();
-        currentPath = extras.getString("currentPath");
         String gender = extras.getString("gender");
         if(gender.equals("")){
             genderSpinner.setSelection(0);
@@ -149,8 +149,11 @@ public class EditUserInformationPage extends BasePage {
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
                     isPhone = regex.checkPhone(phoneError,phoneText);
-                    final Call<Integer> call = mApi.vadilator("None", "None", phoneText.getText().toString(), "phone");
-                    new ValidatorUser().execute(call);
+                    mApi = ApiUtils.getAPIService();
+                    if(!phoneText.getText().toString().equals(extras.getString("phone"))) {
+                        final Call<Integer> call = mApi.vadilator("None", "None", phoneText.getText().toString(), "phone");
+                        new ValidatorUser().execute(call);
+                    }
                 }
             }
         });
@@ -160,8 +163,12 @@ public class EditUserInformationPage extends BasePage {
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
                     isEmail = regex.checkEmail(emailError,emailText);
-                    final Call<Integer> call = mApi.vadilator("None", emailText.getText().toString(), "None", "email");
-                    new ValidatorUser().execute(call);
+                    mApi = ApiUtils.getAPIService();
+                    if(!emailText.getText().toString().toLowerCase().equals(extras.getString("email").toLowerCase())){
+                        final Call<Integer> call = mApi.vadilator("None", emailText.getText().toString(), "None", "email");
+                        new ValidatorUser().execute(call);
+                    }
+
                 }
             }
         });
@@ -235,7 +242,7 @@ public class EditUserInformationPage extends BasePage {
                     final Call<Boolean> call = mApi.updateImgUser(us);
                     new UserUpdateImg().execute(call);
                     Intent toUserInformationPage = new Intent(EditUserInformationPage.this, UserInformationPage.class);
-                    toUserInformationPage.putExtra("path", currentPath);
+                    toUserInformationPage.putExtra("path", namePath);
                     setResult(202, toUserInformationPage);
                     finish();
                 }
@@ -373,14 +380,18 @@ public class EditUserInformationPage extends BasePage {
                 int currentapiVersion = android.os.Build.VERSION.SDK_INT;
                 if (currentapiVersion >= android.os.Build.VERSION_CODES.M) {
                     if (checkPermission()) {
-                        Intent toGallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
-                        startActivityForResult(toGallery, IMAGE_CODE);
+                        Intent intent = new Intent(Intent.ACTION_PICK);
+                        intent.setType("image/*");
+                        intent.setAction(Intent.ACTION_GET_CONTENT);
+                        startActivityForResult(intent, IMAGE_CODE);
                     } else {
                         requestPermission();
                     }
                 } else {
-                    Intent toGallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
-                    startActivityForResult(toGallery, IMAGE_CODE);
+                    Intent intent = new Intent(Intent.ACTION_PICK);
+                    intent.setType("image/*");
+                    intent.setAction(Intent.ACTION_GET_CONTENT);
+                    startActivityForResult(intent, IMAGE_CODE);
                 }
             }
         });
@@ -661,7 +672,6 @@ public class EditUserInformationPage extends BasePage {
                 currentPath = namePath;
                 Intent intent = new Intent(EditUserInformationPage.this, UserInformationPage.class);
                 intent.putExtra("userID", us.getId());
-                intent.putExtra("currentPath",currentPath);
                 setResult(200, intent);
                 finish();
 

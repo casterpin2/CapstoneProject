@@ -69,7 +69,6 @@ public class UserFragment extends Fragment implements NetworkStateReceiver.Netwo
     private NetworkStateReceiver networkStateReceiver;
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference myRef;
-    private String currentPathImg;
     public UserFragment() {
     }
 
@@ -93,9 +92,6 @@ public class UserFragment extends Fragment implements NetworkStateReceiver.Netwo
             store = new Gson().fromJson(storeJSON, Store.class);
         }
         userID = user.getId();
-        if(store!=null){
-            currentPathImg = store.getImage_path();
-        }
         // Inflate the layout for this fragment
         if (userID == 0) {
             view = inflater.inflate(R.layout.no_loginned_user_fragment_home_page_layout, container, false);
@@ -182,11 +178,9 @@ public class UserFragment extends Fragment implements NetworkStateReceiver.Netwo
             userInfoLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent toUserInfoScreen = new Intent(getContext(), UserInformationPage.class);
+                    Intent toUserInfoScreen = new Intent(getActivity(), UserInformationPage.class);
                     toUserInfoScreen.putExtra("userID", userID);
-                    toUserInfoScreen.putExtra("currentPath",currentPathImg);
-                    ;
-                    startActivityForResult(toUserInfoScreen, 111);
+                    getActivity().startActivityForResult(toUserInfoScreen, 111);
 
                 }
             });
@@ -289,7 +283,6 @@ public class UserFragment extends Fragment implements NetworkStateReceiver.Netwo
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         if (requestCode == 111 && resultCode == 222) {
             if (data.getStringExtra("nameDisplay") != null && !data.getStringExtra("nameDisplay").isEmpty()) {
                 tvUserName.setText(data.getStringExtra("nameDisplay"));

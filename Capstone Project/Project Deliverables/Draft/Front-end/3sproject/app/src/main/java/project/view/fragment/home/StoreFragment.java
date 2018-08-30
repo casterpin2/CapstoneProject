@@ -144,7 +144,7 @@ public class StoreFragment extends Fragment implements NetworkStateReceiver.Netw
                 public void onClick(View v) {
                     Intent toStoreProduct = new Intent(getContext(), ProductInStoreDisplayPage.class);
                     toStoreProduct.putExtra("storeID", storeID);
-                    startActivity(toStoreProduct);
+                    getActivity().startActivity(toStoreProduct);
                 }
             });
 
@@ -260,18 +260,21 @@ public class StoreFragment extends Fragment implements NetworkStateReceiver.Netw
             changeStoreImageLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(getContext(),"sadasd",Toast.LENGTH_LONG);
                     int currentapiVersion = android.os.Build.VERSION.SDK_INT;
                     if (currentapiVersion >= android.os.Build.VERSION_CODES.M) {
                         if (checkPermission()) {
-                            Intent toGallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
-                            startActivityForResult(toGallery, IMAGE_CODE);
+                            Intent intent = new Intent(Intent.ACTION_PICK);
+                            intent.setType("image/*");
+                            intent.setAction(Intent.ACTION_GET_CONTENT);
+                            getActivity().startActivityForResult(intent, IMAGE_CODE);
                         } else {
                             requestPermission();
                         }
                     } else {
-                        Intent toGallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
-                        startActivityForResult(toGallery, IMAGE_CODE);
+                        Intent intent = new Intent(Intent.ACTION_PICK);
+                        intent.setType("image/*");
+                        intent.setAction(Intent.ACTION_GET_CONTENT);
+                        getActivity().startActivityForResult(intent, IMAGE_CODE);
                     }
                 }
             });
@@ -417,6 +420,7 @@ public class StoreFragment extends Fragment implements NetworkStateReceiver.Netw
                 longtitude = getActivity().getIntent().getDoubleExtra("longtitude", 0.0);
             }
         }
+
         if (resultCode == RESULT_OK && requestCode == IMAGE_CODE) {
             storeName.setVisibility(View.INVISIBLE);
             imageURI = data.getData();
@@ -520,11 +524,7 @@ public class StoreFragment extends Fragment implements NetworkStateReceiver.Netw
         }
         return Bitmap.createScaledBitmap(image, width, height, true);
     }
-    public static Context contextOfApplication;
-    public static Context getContextOfApplication()
-    {
-        return contextOfApplication;
-    }
+
 
     public class CountFeedback extends AsyncTask<Call,Void,List<Integer>> {
         @Override
