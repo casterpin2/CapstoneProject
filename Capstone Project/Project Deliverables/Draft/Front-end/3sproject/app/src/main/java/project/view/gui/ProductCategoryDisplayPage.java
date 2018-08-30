@@ -1,4 +1,7 @@
 package project.view.gui;
+import android.app.SearchManager;
+import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -6,8 +9,12 @@ import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,6 +29,7 @@ import project.view.R;
 import project.view.adapter.EndlessRecyclerViewScrollListener;
 import project.view.adapter.ProductInCategoryRecyclerViewAdapter;
 
+import project.view.adapter.ProductInStoreByUserCustomCardViewAdapter;
 import project.view.model.Product;
 import project.view.util.CustomInterface;
 import retrofit2.Call;
@@ -31,34 +39,52 @@ public class ProductCategoryDisplayPage extends BasePage implements ProductInCat
     private RecyclerView recyclerView;
     private boolean emulatorLoadMoreFaild = true;
     private APIService mAPI;
-    public Handler mHandle;
-    public View footerView;
-    public boolean isLoading;
-    boolean limitData = false;
     private ProductInCategoryRecyclerViewAdapter adapter;
     private int currentPage = 0;
-    int page = 0;
     int categoryId;
     private List<Product> product;
     private List<Product> productsLoadMore;
     private RecyclerView.LayoutManager mLayoutManager;
-    private TextView nullMessage;
+    private TextView tv_type_title;
+    private ImageButton backBtn;
+    private ImageView imgHome;
+    private SearchView searchView;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.content_with_filter);
+        setContentView(R.layout.category_product_layout);
         CustomInterface.setStatusBarColor(this);
         mAPI = ApiUtils.getAPIService();
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        nullMessage = findViewById(R.id.nullMessage);
+        tv_type_title = findViewById(R.id.tv_type_title);
+        backBtn = findViewById(R.id.backBtn);
+        imgHome = findViewById(R.id.imgHome);
+        searchView = findViewById(R.id.searchViewQuery);
         categoryId = getIntent().getIntExtra("categoryId", -1);
         String categoryName = getIntent().getStringExtra("categoryName");
         if (categoryId != -1) {
-            getSupportActionBar().setTitle(categoryName);
+            tv_type_title.setText(categoryName);
         } else {
             //Toast.makeText(ProductCategoryDisplayPage.this, "Có lỗi xảy ra !!!",Toast.LENGTH_LONG).show();
             return;
         }
+
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
+        imgHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent toHomPage = new Intent(ProductCategoryDisplayPage.this, HomePage.class);
+                startActivity(toHomPage);
+                finishAffinity();
+            }
+        });
+
         mLayoutManager = new GridLayoutManager(this, 2);
         recyclerView.setLayoutManager(mLayoutManager);
         adapter = new ProductInCategoryRecyclerViewAdapter(this, this, this);
@@ -68,7 +94,44 @@ public class ProductCategoryDisplayPage extends BasePage implements ProductInCat
         Call<List<Product>> call = mAPI.getProductInCategory(currentPage,categoryId);
         new GetProductCategory(0).execute(call);
 
+//        final List<Product> searchedProduct = new ArrayList<>();
+//        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+//        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+////        productList
+//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+//            @Override
+//            public boolean onQueryTextSubmit(String query) {
+//
+//
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean onQueryTextChange(String newText) {
+//                searchedProduct.clear();
+//                if (newText.equals("") || newText == null) {
+//                    adapter = new ProductInCategoryRecyclerViewAdapter(ProductCategoryDisplayPage.this, ProductCategoryDisplayPage.this, ProductCategoryDisplayPage.this);
+//                    adapter.set(product);
+//                    recyclerView.setAdapter(adapter);
+//
+//                } else {
+//                    for (int i = 0; i < product.size(); i++) {
+//                        if (product.get(i).getProduct_name().toLowerCase().contains(newText.toLowerCase())) {
+//                            searchedProduct.add(product.get(i));
+//                        }
+//                    }
+//                    adapter = new ProductInCategoryRecyclerViewAdapter(ProductCategoryDisplayPage.this, ProductCategoryDisplayPage.this, ProductCategoryDisplayPage.this);
+//                    adapter.set(searchedProduct);
+//                    recyclerView.setAdapter(adapter);
+//                }
+//                mLayoutManager = new GridLayoutManager(ProductCategoryDisplayPage.this, 2);
+//                recyclerView.setLayoutManager(mLayoutManager);
+//                recyclerView.setAdapter(adapter);
+//                return true;
+//            }
+//        });
     }
+
 
     @Override
     public void onRetryLoadMore() {

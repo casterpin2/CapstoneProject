@@ -1,5 +1,7 @@
 package project.view.gui;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -34,6 +36,7 @@ import project.firebase.Firebase;
 import project.retrofit.APIService;
 import project.retrofit.ApiUtils;
 import project.view.R;
+import project.view.adapter.ProductBrandDisplayListViewAdapter;
 import project.view.adapter.ProductInStoreByUserCustomCardViewAdapter;
 import project.view.model.Product;
 import project.view.model.Store;
@@ -178,6 +181,38 @@ public class ProductInStoreByUserDisplayPage extends BasePage {
             recycler_view.addItemDecoration(new GridSpacingItemDecoration(2, Formater.dpToPx(2, getResources()), true));
             recycler_view.setItemAnimator(new DefaultItemAnimator());
             recycler_view.setAdapter(productInStoreByUserCustomListViewAdapter);
+            final List<Product> searchedProduct = new ArrayList<>();
+            SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+            searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+//        productList
+            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextSubmit(String query) {
+
+
+                    return false;
+                }
+
+                @Override
+                public boolean onQueryTextChange(String newText) {
+                    searchedProduct.clear();
+                    if (newText.equals("") || newText == null) {
+                        productInStoreByUserCustomListViewAdapter = new ProductInStoreByUserCustomCardViewAdapter(ProductInStoreByUserDisplayPage.this, products, store);
+
+                    } else {
+                        for (int i = 0; i < products.size(); i++) {
+                            if (products.get(i).getProduct_name().toLowerCase().contains(newText.toLowerCase())) {
+                                searchedProduct.add(products.get(i));
+                            }
+                        }
+                        productInStoreByUserCustomListViewAdapter = new ProductInStoreByUserCustomCardViewAdapter(ProductInStoreByUserDisplayPage.this, searchedProduct, store);
+                    }
+                    RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(ProductInStoreByUserDisplayPage.this, 2);
+                    recycler_view.setLayoutManager(mLayoutManager);
+                    recycler_view.setAdapter(productInStoreByUserCustomListViewAdapter);
+                    return true;
+                }
+            });
 
             spinnerSort.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override

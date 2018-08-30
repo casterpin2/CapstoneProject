@@ -12,6 +12,7 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -74,8 +75,6 @@ public class ProductDetailPage extends BasePage {
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference myRef;
     private Store store;
-    private LocationManager locationManager;
-    final static int REQUEST_LOCATION = 1;
 
 
     private StorageReference storageReference = Firebase.getFirebase();
@@ -117,6 +116,9 @@ public class ProductDetailPage extends BasePage {
 
         if (isStoreProduct == true){
             if (isStoreSee){
+                if (product.getPromotion() == 0.0){
+                    isProductSaleLayout.setVisibility(View.GONE);
+                }
                 addToCartBtn.setVisibility(View.INVISIBLE);
                 addToCartBtn.setClickable(false);
                 editProductInStore.setVisibility(View.VISIBLE);
@@ -137,7 +139,7 @@ public class ProductDetailPage extends BasePage {
                 });
             } else {
                 if (product.getPromotion() == 0.0){
-                    isProductSaleLayout.setVisibility(View.VISIBLE);
+                    isProductSaleLayout.setVisibility(View.GONE);
                 }
                 storeName = getIntent().getStringExtra("storeName");
                 storeNameLayout.setVisibility(View.VISIBLE);
@@ -288,6 +290,11 @@ public class ProductDetailPage extends BasePage {
             case android.R.id.home:
                 // app icon in action bar clicked; go home
                 finish();
+            case R.id.action_home: {
+                Intent toHomPage = new Intent(ProductDetailPage.this, HomePage.class);
+                startActivity(toHomPage);
+                finishAffinity();
+            }
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -296,6 +303,7 @@ public class ProductDetailPage extends BasePage {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.home_toolbar, menu);
+
         return true;
     }
 

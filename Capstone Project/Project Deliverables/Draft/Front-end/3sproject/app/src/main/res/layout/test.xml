@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:background="@color/viewBg"
+app:layout_behavior="@string/appbar_scrolling_view_behavior">
+    <LinearLayout
+        android:id="@+id/functionalLayout"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:weightSum="2"
+        android:orientation="horizontal">
+        <LinearLayout
+            android:id="@+id/categoryFilterLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <Spinner
+                    android:layout_marginLeft="16dp"
+                    android:id="@+id/spinnerCategory"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"/>
+                <TextView
+                    android:id="@+id/filterLabble"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="14dp"
+                    android:text="Thương hiệu"
+                    android:visibility="invisible"/>
+            </RelativeLayout>
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/sortLayout"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:gravity="center">
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/sort"
+                android:layout_gravity="center"/>
+            <Spinner
+                android:id="@+id/spinnerSort"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </LinearLayout>
+    </LinearLayout>
+<android.support.v7.widget.RecyclerView
+    android:id="@+id/recycler_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_below="@+id/functionalLayout"
+    android:clipToPadding="false"
+    android:scrollbars="vertical" >
+</android.support.v7.widget.RecyclerView>
+<ProgressBar
+    android:id="@+id/loadingBar"
+    style="?android:attr/progressBarStyleInverse"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_centerInParent="true"
+    android:visibility="invisible"/>
+<TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_centerHorizontal="true"
+    android:layout_centerVertical="true"
+    android:textColor="@color/common_google_signin_btn_text_light_disabled"
+    android:textSize="20dp"
+    android:id="@+id/nullMessage"
+
+    />
+
+</RelativeLayout>
