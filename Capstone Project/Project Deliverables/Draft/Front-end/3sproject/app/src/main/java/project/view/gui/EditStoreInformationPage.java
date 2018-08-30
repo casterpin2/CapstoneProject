@@ -378,6 +378,7 @@ public class EditStoreInformationPage extends BasePage implements OnMapReadyCall
 
             if (requestCode == PLACE_AUTOCOMPLETE_REQUEST_CODE) {
                 if (resultCode == RESULT_OK) {
+                    isLocation = true;
                     Place place = PlaceAutocomplete.getPlace(this, data);
                     handleLocationPlace = place.getAddress().toString();
                     handleAddressText.setText(handleLocationPlace);
