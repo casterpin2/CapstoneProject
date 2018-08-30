@@ -1,13 +1,18 @@
 package project.view.fragment.home;
 
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -15,6 +20,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -39,6 +45,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageReference;
 
 import java.io.IOException;
@@ -47,6 +58,7 @@ import java.util.List;
 
 import project.firebase.Firebase;
 import project.retrofit.APIService;
+import project.retrofit.ApiUtils;
 import project.view.gui.BarcodeActivity;
 import project.view.gui.HomePage;
 import project.view.gui.SaleProductDisplayPage;
@@ -55,12 +67,16 @@ import project.view.gui.BrandDisplayPage;
 import project.view.model.Category;
 import project.view.gui.CategoryDisplayPage;
 import project.view.R;
+import project.view.model.Notification;
+import project.view.model.NotificationDetail;
 import project.view.model.Product;
 import project.view.adapter.SaleProductCustomCardviewAdapter;
 import project.view.gui.UserSearchProductPage;
 import project.view.adapter.BrandRecycleViewAdapter;
 import project.view.adapter.CategoryRecycleViewAdapter;
 import project.view.adapter.SliderImageViewPagerAdapter;
+import project.view.model.ResultNotification;
+import project.view.model.StoreNotification;
 import project.view.util.Formater;
 import project.view.util.GridSpacingItemDecoration;
 import project.view.util.NetworkStateReceiver;
@@ -94,8 +110,8 @@ public class HomeFragment extends Fragment implements NetworkStateReceiver.Netwo
     private Call<List<Brand>> callBrand;
     private Call<List<Product>> callSale;
     private NetworkStateReceiver networkStateReceiver;
-    boolean isNetworkAvailable;
 
+    private FirebaseDatabase database = FirebaseDatabase.getInstance();
     public HomeFragment() {
 
     }
@@ -308,12 +324,13 @@ public class HomeFragment extends Fragment implements NetworkStateReceiver.Netwo
 
             List<Category> categoryList = values[0];
             if (categoryList != null) {
-                categoryAdapter = new CategoryRecycleViewAdapter(categoryList, getContext());
-                recyclerViewCategories.setNestedScrollingEnabled(false);
-                recyclerViewCategories.setAdapter(categoryAdapter);
-                linearLayoutManagerCategory = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
-                recyclerViewCategories.setLayoutManager(linearLayoutManagerCategory);
-
+                if (getActivity() != null) {
+                    categoryAdapter = new CategoryRecycleViewAdapter(categoryList, getContext());
+                    recyclerViewCategories.setNestedScrollingEnabled(false);
+                    recyclerViewCategories.setAdapter(categoryAdapter);
+                    linearLayoutManagerCategory = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+                    recyclerViewCategories.setLayoutManager(linearLayoutManagerCategory);
+                }
             }
         }
 
@@ -348,10 +365,12 @@ public class HomeFragment extends Fragment implements NetworkStateReceiver.Netwo
             super.onProgressUpdate(values);
             List<Brand> brandList = values[0];
             if (brandList != null) {
-                brandAdapter = new BrandRecycleViewAdapter(brandList, getContext());
-                recyclerViewBrands.setAdapter(brandAdapter);
-                linearLayoutManagerBrand = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
-                recyclerViewBrands.setLayoutManager(linearLayoutManagerBrand);
+                if (getActivity() != null) {
+                    brandAdapter = new BrandRecycleViewAdapter(brandList, getContext());
+                    recyclerViewBrands.setAdapter(brandAdapter);
+                    linearLayoutManagerBrand = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+                    recyclerViewBrands.setLayoutManager(linearLayoutManagerBrand);
+                }
             }
         }
 
@@ -395,13 +414,15 @@ public class HomeFragment extends Fragment implements NetworkStateReceiver.Netwo
             super.onProgressUpdate(values);
             List<Product> listSale = values[0];
             if (listSale != null){
-                saleProductCustomCardviewAdapter = new SaleProductCustomCardviewAdapter(getContext(), listSale);
-                RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getContext(), 2);
-                recyclerViewSaleProduct.setLayoutManager(mLayoutManager);
-                recyclerViewSaleProduct.setNestedScrollingEnabled(false);
-                recyclerViewSaleProduct.addItemDecoration(new GridSpacingItemDecoration(2, Formater.dpToPx(2, getResources()), true));
-                recyclerViewSaleProduct.setItemAnimator(new DefaultItemAnimator());
-                recyclerViewSaleProduct.setAdapter(saleProductCustomCardviewAdapter);
+                if (getActivity() != null) {
+                    saleProductCustomCardviewAdapter = new SaleProductCustomCardviewAdapter(getContext(), listSale);
+                    RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getContext(), 2);
+                    recyclerViewSaleProduct.setLayoutManager(mLayoutManager);
+                    recyclerViewSaleProduct.setNestedScrollingEnabled(false);
+                    recyclerViewSaleProduct.addItemDecoration(new GridSpacingItemDecoration(2, Formater.dpToPx(2, getResources()), true));
+                    recyclerViewSaleProduct.setItemAnimator(new DefaultItemAnimator());
+                    recyclerViewSaleProduct.setAdapter(saleProductCustomCardviewAdapter);
+                }
             }
         }
 

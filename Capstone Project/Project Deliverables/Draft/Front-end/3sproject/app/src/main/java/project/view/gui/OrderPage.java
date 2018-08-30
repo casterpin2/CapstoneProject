@@ -14,8 +14,12 @@ import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Handler;
+import android.os.Looper;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.os.Bundle;
@@ -45,6 +49,11 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.gson.Gson;
 import com.suke.widget.SwitchButton;
@@ -60,9 +69,14 @@ import project.googleMapAPI.Address_Component;
 import project.googleMapAPI.GoogleMapJSON;
 import project.objects.User;
 import project.retrofit.ApiUtils;
+import project.view.fragment.home.HomeFragment;
+import project.view.model.Notification;
+import project.view.model.NotificationDetail;
 import project.view.model.OrderDetail;
 import project.view.R;
 import project.view.model.Product;
+import project.view.model.ResultNotification;
+import project.view.model.StoreNotification;
 import project.view.util.CustomInterface;
 import project.view.util.Formater;
 import project.view.util.Regex;
@@ -84,10 +98,10 @@ public class OrderPage extends BasePage implements OnMapReadyCallback {
     private RelativeLayout handleAddressLayout, main_layout;
 
     private OrderDetail order;
-
+    private boolean isAuto;
 
     private int userID;
-
+    private FirebaseDatabase database = FirebaseDatabase.getInstance();
     //googleMap
     private final project.view.model.Location location = new project.view.model.Location();
     int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
@@ -107,6 +121,7 @@ public class OrderPage extends BasePage implements OnMapReadyCallback {
     private double promotion;
     private Product product;
     private ProgressBar loadingBarMap;
+    private boolean isGuest;
     private boolean checkLocation = false;
     //Calendar
     private int mYear, mMonth, mDay, mHour, mMinute;
@@ -140,6 +155,7 @@ public class OrderPage extends BasePage implements OnMapReadyCallback {
 
         regex = new Regex();
         isCart = getIntent().getBooleanExtra("isCart", true);
+        isGuest = getIntent().getBooleanExtra("isGuest", false);
         price = (long) getIntent().getDoubleExtra("price", 0);
         promotion = getIntent().getDoubleExtra("promotion", 0.0);
         mapping();
@@ -176,6 +192,7 @@ public class OrderPage extends BasePage implements OnMapReadyCallback {
             etBuyerName.setText(buyerName);
             etPhone.setText(buyerPhone);
             etBuyerName.setEnabled(false);
+            if(!user.getPhone().isEmpty())
             etPhone.setEnabled(false);
         } else {
             etBuyerName.setText("");
@@ -308,10 +325,6 @@ public class OrderPage extends BasePage implements OnMapReadyCallback {
                     handleAddressLayout.setEnabled(false);
                     handleAddressText.setText("Vị trí hiện tại của bạn");
                 } else {
-                    StringBuilder stringBuilder = new StringBuilder();
-                    stringBuilder.append(handleLatitude).append(",").append(handleLongtitude);
-                    final Call<GoogleMapJSON> call = ApiUtils.getAPIServiceMap().getLocation(stringBuilder.toString(), GOOGLE_MAP_KEY);
-                    new CallMapAPI().execute(call);
                     loadingBarMap.setVisibility(View.INVISIBLE);
                     setAutoLatitude(0.0);
                     setAutoLongtitude(0.0);
@@ -352,18 +365,15 @@ public class OrderPage extends BasePage implements OnMapReadyCallback {
                 isPhone = regex.checkPhone(tvPhoneError, etPhone);
                 isName = regex.checkDisplayName(tvBuyerNameError, etBuyerName);
                 if (isName && isPhone && isDateTime && isLocation) {
-                    String userName = etBuyerName.getText().toString();
+                    final String userName = etBuyerName.getText().toString();
                     int productID = getIntent().getIntExtra("productID", 0);
                     int storeID = getIntent().getIntExtra("storeID", 0);
                     //long finalPrice = getSalesPrice(productDetail.getProductPrice(), productDetail.getPromotionPercent())* Integer.parseInt(productQuantity.getText().toString()) ;
-                    int quantity = Integer.parseInt(productQuantity.getText().toString());
-                    String phone = etPhone.getText().toString();
-                    String orderDateTime = orderDate.getText().toString() + " " + orderTime.getText().toString();
-                    double longtitude = autoLongtitude;
-                    double latitude = autoLatitude;
+                    final int quantity = Integer.parseInt(productQuantity.getText().toString());
+                    final String phone = etPhone.getText().toString();
+                    final String orderDateTime = orderDate.getText().toString() + " " + orderTime.getText().toString();
                     if (switch_button.isChecked()) {
-                        longtitude = autoLongtitude;
-                        latitude = autoLatitude;
+                        isAuto = true;
                         order = new OrderDetail();
                         StringBuilder stringBuilder = new StringBuilder();
                         stringBuilder.append(location.getApartment_number() + " ");
@@ -375,6 +385,7 @@ public class OrderPage extends BasePage implements OnMapReadyCallback {
                         intent.putExtra("latitude", autoLatitude);
                         intent.putExtra("address", stringBuilder.toString().replaceAll("null", "").replaceAll("0", "").replaceAll("Unnamed Road", "").replaceAll("\\s+", " ").trim());
                     } else {
+                        isAuto = false;
                         if (handleAddressText.getText().toString().isEmpty()) {
                             Toast.makeText(OrderPage.this, "Chọn vị trí", Toast.LENGTH_SHORT).show();
                             return;
@@ -411,6 +422,83 @@ public class OrderPage extends BasePage implements OnMapReadyCallback {
                     intent.putExtra("phone", phone);
                     intent.putExtra("userName", userName);
                     intent.putExtra("user_image", user.getImage_path());
+                    if (isGuest){
+                        final double latitude;
+                        final double longtitude;
+                        if (isAuto == true) {
+                            latitude = autoLatitude;
+                            longtitude = autoLongtitude;
+                        } else {
+                            latitude = handleLatitude;
+                            longtitude = handleLongtitude;
+                        }
+                        final StringBuilder stringBuilder = new StringBuilder();
+                        stringBuilder.append(location.getApartment_number() + " ");
+                        stringBuilder.append(location.getStreet() + " ");
+                        stringBuilder.append(location.getDistrict() + " ");
+                        stringBuilder.append(location.getCounty() + " ");
+                        stringBuilder.append(location.getCity() + " ");
+                        final int storeId = getIntent().getIntExtra("storeID", 0);
+                        final DatabaseReference reference = database.getReference().child("ordersStore").child(String.valueOf(storeId));
+                        final String storeName = getIntent().getStringExtra("storeName");
+                        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                String key = reference.push().getKey();
+                                DatabaseReference re = reference.child(key);
+                                re.child("address").setValue(stringBuilder.toString().replaceAll("null", "").replaceAll("0", "").replaceAll("Unnamed Road", "").replaceAll("\\s+", " ").trim());
+                                re.child("latitude").setValue(latitude);
+                                re.child("longtitude").setValue(longtitude);
+                                re.child("image_path").setValue("User/image/1.jpg");
+                                re.child("deliverTime").setValue(orderDateTime);
+                                re.child("status").setValue("waitting");
+                                re.child("userId").setValue(0);
+                                re.child("phone").setValue(phone);
+                                re.child("userName").setValue(userName);
+                                re.child("totalPrice").setValue(salesPrice * quantity);
+                                re.child("orderDetail").child(String.valueOf(product.getProduct_id())).child("quantity").setValue(quantity);
+                                re.child("orderDetail").child(String.valueOf(product.getProduct_id())).child("unitPrice").setValue(price);
+                                re.child("orderDetail").child(String.valueOf(product.getProduct_id())).child("productId").setValue(product.getProduct_id());
+                                re.child("orderDetail").child(String.valueOf(product.getProduct_id())).child("productName").setValue(product.getProduct_name());
+                                re.child("orderDetail").child(String.valueOf(product.getProduct_id())).child("image_path").setValue(product.getImage_path());
+
+                                re = database.getReference().child("notification").child(String.valueOf(storeId));
+                                re.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                        if (dataSnapshot.exists()) {
+                                            StoreNotification store = dataSnapshot.getValue(StoreNotification.class);
+                                            if (store != null && store.getHaveNotification() != null && store.getToken() != null) {
+                                                if (store.getHaveNotification().equals("false")) {
+                                                    String token = store.getToken();
+                                                    Notification notification = new Notification();
+                                                    notification.setTo(token);
+                                                    notification.setNotification(new NotificationDetail(storeName, "Bạn có đơn hàng mới"));
+                                                    Call<ResultNotification> call = ApiUtils.getAPIServiceFirebaseMessage().sendNotification(notification, getResources().getString(R.string.notificationKey), "application/json");
+                                                    new PushNotification(storeId).execute(call);
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                    }
+                                });
+                                intent = new Intent(OrderPage.this,HomePage.class);
+                                intent.putExtra("isOrder",true);
+                                startActivity(intent);
+                                finish();
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+                        return;
+                    }
                     if (checkLocation == false) {
                         setResult(Activity.RESULT_CANCELED, intent);
                         finish();
@@ -814,5 +902,59 @@ public class OrderPage extends BasePage implements OnMapReadyCallback {
 
             }
         }
+    }
+
+    public class PushNotification extends AsyncTask<Call,Void,ResultNotification> {
+        private int storeId;
+
+        public int getStoreId() {
+            return storeId;
+        }
+
+        public void setStoreId(int storeId) {
+            this.storeId = storeId;
+        }
+
+        public PushNotification(int storeId) {
+            this.storeId = storeId;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected void onPostExecute(ResultNotification result) {
+            super.onPostExecute(result);
+            if (result != null) {
+                //Toast.makeText(CartPage.this, result.toString(), Toast.LENGTH_SHORT).show();
+                DatabaseReference databaseReference = database.getReference().child("notification").child(String.valueOf(storeId)).child("haveNotification");
+                databaseReference.setValue("true");
+            }
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            super.onProgressUpdate(values);
+        }
+
+        @Override
+        protected ResultNotification doInBackground(Call... calls) {
+            try {
+                Call<ResultNotification> call = calls[0];
+                Response<ResultNotification> response = call.execute();
+                return response.body();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }

@@ -63,10 +63,26 @@ public class HomePage extends BasePage{
     private LocationManager locationManager;
     private ProgressBar loadingBar;
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
+    private boolean isOrder;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        isOrder = getIntent().getBooleanExtra("isOrder",false);
+        if (isOrder){
+            //loadingBar.setVisibility(View.INVISIBLE);
+            AlertDialog.Builder builder = new AlertDialog.Builder(HomePage.this);
+            builder.setTitle("Đặt hàng");
+            builder.setMessage("Bạn đã đặt hàng thành công");
+
+            builder.setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    return;
+                }
+            });
+            builder.show();
+        }
         loadingBar = findViewById(R.id.loadingBar);
         loadingBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorApplication), android.graphics.PorterDuff.Mode.MULTIPLY);
         boolean isIntent = getIntent().getBooleanExtra("isLogin", false);
@@ -183,107 +199,109 @@ public class HomePage extends BasePage{
         }
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == 3) {
-            if (resultCode == Activity.RESULT_OK) {
-                loadingBar.setVisibility(View.VISIBLE);
-                if (!isNetworkAvailable()) {
-                    new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(HomePage.this, "Có lỗi xảy ra. Vui lòng thử lại!", Toast.LENGTH_SHORT).show();
-                            loadingBar.setVisibility(View.INVISIBLE);
-                        }
-                    }, 10000);
-                    return;
-                }
-
-                final String storeName = data.getStringExtra("storeName");
-                final int productId = data.getIntExtra("productId", 0);
-                final String address = data.getStringExtra("address");
-                final String deliverTime = data.getStringExtra("deliverTime");
-                final int storeId = data.getIntExtra("storeID", 0);
-                final long totalPrice = data.getLongExtra("totalPrice", 0);
-                final long price = data.getLongExtra("price", 0);
-                final String userName = data.getStringExtra("userName");
-                final String phone = data.getStringExtra("phone");
-                final double longtitude = data.getDoubleExtra("longtitude", 0.0);
-                final double latitude = data.getDoubleExtra("latitude", 0.0);
-                final int quantity = data.getIntExtra("quantity", 0);
-                final String productName = data.getStringExtra("productName");
-                final String image_path_product = data.getStringExtra("image_path_product");
-                final DatabaseReference reference = database.getReference().child("ordersStore").child(String.valueOf(storeId));
-                reference.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        String key = reference.push().getKey();
-                        DatabaseReference re = reference.child(key);
-                        re.child("address").setValue(address);
-                        re.child("latitude").setValue(latitude);
-                        re.child("longtitude").setValue(longtitude);
-                        re.child("image_path").setValue("User/image/1.jpg");
-                        re.child("deliverTime").setValue(deliverTime);
-                        re.child("status").setValue("waitting");
-                        re.child("userId").setValue(0);
-                        re.child("phone").setValue(phone);
-                        re.child("userName").setValue(userName);
-                        re.child("totalPrice").setValue(totalPrice);
-                        re.child("orderDetail").child(String.valueOf(productId)).child("quantity").setValue(quantity);
-                        re.child("orderDetail").child(String.valueOf(productId)).child("unitPrice").setValue(price);
-                        re.child("orderDetail").child(String.valueOf(productId)).child("productId").setValue(productId);
-                        re.child("orderDetail").child(String.valueOf(productId)).child("productName").setValue(productName);
-                        re.child("orderDetail").child(String.valueOf(productId)).child("image_path").setValue(image_path_product);
-
-                        re = database.getReference().child("notification").child(String.valueOf(storeId));
-                        re.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                if (dataSnapshot.exists()) {
-                                    StoreNotification store = dataSnapshot.getValue(StoreNotification.class);
-                                    if (store != null && store.getHaveNotification() != null && store.getToken() != null) {
-                                        if (store.getHaveNotification().equals("false")) {
-                                            String token = store.getToken();
-                                            Notification notification = new Notification();
-                                            notification.setTo(token);
-                                            notification.setNotification(new NotificationDetail(storeName, "Bạn có đơn hàng mới"));
-                                            Call<ResultNotification> call = ApiUtils.getAPIServiceFirebaseMessage().sendNotification(notification, getResources().getString(R.string.notificationKey), "application/json");
-                                            new PushNotification(storeId).execute(call);
-                                        }
-                                    }
-                                }
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                            }
-                        });
-                        loadingBar.setVisibility(View.INVISIBLE);
-                        AlertDialog.Builder builder = new AlertDialog.Builder(HomePage.this);
-                        builder.setTitle("Đặt hàng");
-                        builder.setMessage("Bạn đã đặt hàng thành công");
-
-                        builder.setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                return;
-                            }
-                        });
-                        builder.show();
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
-            }
-            if (resultCode == Activity.RESULT_CANCELED){
-                Toast.makeText(this, "Hủy đặt hàng", Toast.LENGTH_LONG).show();
-            }
-        }
-    }
+//    @Override
+//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        if (requestCode == 100 && resultCode == Activity.RESULT_OK)
+//            Log.e("MSG","CAC");
+//        if (requestCode == 3) {
+//            if (resultCode == Activity.RESULT_OK) {
+//                loadingBar.setVisibility(View.VISIBLE);
+//                if (!isNetworkAvailable()) {
+//                    new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            Toast.makeText(HomePage.this, "Có lỗi xảy ra. Vui lòng thử lại!", Toast.LENGTH_SHORT).show();
+//                            loadingBar.setVisibility(View.INVISIBLE);
+//                        }
+//                    }, 10000);
+//                    return;
+//                }
+//
+//                final String storeName = data.getStringExtra("storeName");
+//                final int productId = data.getIntExtra("productId", 0);
+//                final String address = data.getStringExtra("address");
+//                final String deliverTime = data.getStringExtra("deliverTime");
+//                final int storeId = data.getIntExtra("storeID", 0);
+//                final long totalPrice = data.getLongExtra("totalPrice", 0);
+//                final long price = data.getLongExtra("price", 0);
+//                final String userName = data.getStringExtra("userName");
+//                final String phone = data.getStringExtra("phone");
+//                final double longtitude = data.getDoubleExtra("longtitude", 0.0);
+//                final double latitude = data.getDoubleExtra("latitude", 0.0);
+//                final int quantity = data.getIntExtra("quantity", 0);
+//                final String productName = data.getStringExtra("productName");
+//                final String image_path_product = data.getStringExtra("image_path_product");
+//                final DatabaseReference reference = database.getReference().child("ordersStore").child(String.valueOf(storeId));
+//                reference.addListenerForSingleValueEvent(new ValueEventListener() {
+//                    @Override
+//                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                        String key = reference.push().getKey();
+//                        DatabaseReference re = reference.child(key);
+//                        re.child("address").setValue(address);
+//                        re.child("latitude").setValue(latitude);
+//                        re.child("longtitude").setValue(longtitude);
+//                        re.child("image_path").setValue("User/image/1.jpg");
+//                        re.child("deliverTime").setValue(deliverTime);
+//                        re.child("status").setValue("waitting");
+//                        re.child("userId").setValue(0);
+//                        re.child("phone").setValue(phone);
+//                        re.child("userName").setValue(userName);
+//                        re.child("totalPrice").setValue(totalPrice);
+//                        re.child("orderDetail").child(String.valueOf(productId)).child("quantity").setValue(quantity);
+//                        re.child("orderDetail").child(String.valueOf(productId)).child("unitPrice").setValue(price);
+//                        re.child("orderDetail").child(String.valueOf(productId)).child("productId").setValue(productId);
+//                        re.child("orderDetail").child(String.valueOf(productId)).child("productName").setValue(productName);
+//                        re.child("orderDetail").child(String.valueOf(productId)).child("image_path").setValue(image_path_product);
+//
+//                        re = database.getReference().child("notification").child(String.valueOf(storeId));
+//                        re.addListenerForSingleValueEvent(new ValueEventListener() {
+//                            @Override
+//                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                                if (dataSnapshot.exists()) {
+//                                    StoreNotification store = dataSnapshot.getValue(StoreNotification.class);
+//                                    if (store != null && store.getHaveNotification() != null && store.getToken() != null) {
+//                                        if (store.getHaveNotification().equals("false")) {
+//                                            String token = store.getToken();
+//                                            Notification notification = new Notification();
+//                                            notification.setTo(token);
+//                                            notification.setNotification(new NotificationDetail(storeName, "Bạn có đơn hàng mới"));
+//                                            Call<ResultNotification> call = ApiUtils.getAPIServiceFirebaseMessage().sendNotification(notification, getResources().getString(R.string.notificationKey), "application/json");
+//                                            new PushNotification(storeId).execute(call);
+//                                        }
+//                                    }
+//                                }
+//                            }
+//
+//                            @Override
+//                            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                            }
+//                        });
+//                        loadingBar.setVisibility(View.INVISIBLE);
+//                        AlertDialog.Builder builder = new AlertDialog.Builder(HomePage.this);
+//                        builder.setTitle("Đặt hàng");
+//                        builder.setMessage("Bạn đã đặt hàng thành công");
+//
+//                        builder.setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialog, int which) {
+//                                return;
+//                            }
+//                        });
+//                        builder.show();
+//                    }
+//
+//                    @Override
+//                    public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                    }
+//                });
+//            }
+//            if (resultCode == Activity.RESULT_CANCELED){
+//                Toast.makeText(this, "Hủy đặt hàng", Toast.LENGTH_LONG).show();
+//            }
+//        }
+//    }
     public class PushNotification extends AsyncTask<Call,Void,ResultNotification> {
         private int storeId;
 

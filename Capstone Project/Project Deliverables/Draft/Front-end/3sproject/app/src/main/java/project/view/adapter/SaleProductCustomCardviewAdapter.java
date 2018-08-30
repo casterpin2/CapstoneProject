@@ -96,6 +96,7 @@ public class SaleProductCustomCardviewAdapter extends RecyclerView.Adapter<SaleP
                     intent.putExtra("promotion",saleProduct.getPromotion());
                     intent.putExtra("storeID",saleProduct.getStore_id());
                     intent.putExtra("storeName", saleProduct.getStoreName());
+                    intent.putExtra("isGuest", true);
                     ((Activity)mContext).startActivityForResult(intent , 3);
                 }else {
                     intent = new Intent(mContext, ProductDetailPage.class);
