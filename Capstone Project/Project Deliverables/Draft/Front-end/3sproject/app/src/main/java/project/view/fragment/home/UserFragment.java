@@ -66,6 +66,7 @@ public class UserFragment extends Fragment implements NetworkStateReceiver.Netwo
     String userAvatarPath;
     private User user;
     private Store store;
+    private boolean isNot3sAccount = false;
     private NetworkStateReceiver networkStateReceiver;
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference myRef;
@@ -107,6 +108,13 @@ public class UserFragment extends Fragment implements NetworkStateReceiver.Netwo
         } else if (userID != 0) {
             view = inflater.inflate(R.layout.fragment_me, container, false);
             findViewInUserFragment();
+            if (user.getImage_path().contains("graph") || user.getImage_path().contains("google")) {
+                isNot3sAccount = true;
+            }
+            if (isNot3sAccount) {
+                userInfoLayout.setVisibility(View.GONE);
+                changePasswordLayout.setVisibility(View.GONE);
+            }
             toolbar = view.findViewById(R.id.toolbar);
             toolbar.setTitle("");
             ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);

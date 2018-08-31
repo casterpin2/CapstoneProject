@@ -163,6 +163,8 @@ public class ProductInStoreCustomListViewAdapter extends ArrayAdapter<Product> {
                             @Override
                             public void onCancelled(@NonNull DatabaseError databaseError) {
                                 Toast.makeText(context,"Có lỗi xảy ra !!!",Toast.LENGTH_LONG).show();
+                                viewHolder.loadingBar.setVisibility(View.INVISIBLE);
+                                viewHolder.deleteBtn.setVisibility(View.VISIBLE);
                             }
                         });
                     }

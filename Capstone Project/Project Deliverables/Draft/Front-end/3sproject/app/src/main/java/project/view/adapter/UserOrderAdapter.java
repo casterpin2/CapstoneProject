@@ -249,6 +249,7 @@ public class UserOrderAdapter extends BaseExpandableListAdapter {
                          toUserFeedBackPage.putExtra("orderId",orderId);
                          toUserFeedBackPage.putExtra("userId",userId);
                          toUserFeedBackPage.putExtra("storeId",((Order) getGroup(groupPosition)).getStoreId());
+                         toUserFeedBackPage.putExtra("storeName",((Order) getGroup(groupPosition)).getStoreName());
                          ((Activity)context).startActivityForResult(toUserFeedBackPage ,1);
                      }
                  });
