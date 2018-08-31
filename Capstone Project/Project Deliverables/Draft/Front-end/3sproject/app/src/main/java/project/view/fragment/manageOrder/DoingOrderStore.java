@@ -108,7 +108,7 @@ public class DoingOrderStore extends Fragment {
             if (dataSnapshot.exists()) {
                 for (final DataSnapshot dttSnapshot2 : dataSnapshot.getChildren()) {
                     order = dttSnapshot2.getValue(Order.class);
-                    if (order != null) {
+                    if (order != null && order.getStatus() != null && order.getDeliverTime() != null) {
                         order.setOrderId(dttSnapshot2.getKey());
                         list.add(order);
                         adapter.notifyDataSetChanged();

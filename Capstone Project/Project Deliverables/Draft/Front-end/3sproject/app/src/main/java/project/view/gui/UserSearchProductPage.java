@@ -105,7 +105,9 @@ public class UserSearchProductPage extends BasePage {
     @Override
     protected void onPause() {
         super.onPause();
-        myRef1.removeEventListener(listener);
+        if (myRef1 != null) {
+            myRef1.removeEventListener(listener);
+        }
     }
 
     @Override
@@ -206,7 +208,6 @@ public class UserSearchProductPage extends BasePage {
                 };
                 final MatrixCursor cursor = new MatrixCursor(columns);
                 searchedList.removeAll(searchedList);
-                Log.d("ad",String.valueOf(suggestions.size()));
                 for (int i = 0; i < suggestions.size(); i++) {
                     Log.d("searchedList",String.valueOf(searchedList.size()));
                     if (suggestions.get(i).toLowerCase().contains(newText)) {

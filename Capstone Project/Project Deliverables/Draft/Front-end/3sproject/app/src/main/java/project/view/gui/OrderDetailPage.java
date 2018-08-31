@@ -471,11 +471,8 @@ public class OrderDetailPage extends BasePage {
                     builder.setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            Intent intent = new Intent(OrderDetailPage.this, StoreManagementOrderPage.class);
-                            intent.putExtra("storeId", store.getId());
                             myRef.removeEventListener(changeListener);
                             ref.removeEventListener(changeListener1);
-                            startActivity(intent);
                             finish();
                         }
                     });

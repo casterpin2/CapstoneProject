@@ -1,9 +1,11 @@
 package project.view.gui;
 
 import android.app.Dialog;
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.MatrixCursor;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
@@ -12,9 +14,11 @@ import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.CursorAdapter;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -123,7 +127,9 @@ public class SearchProductAddToStore extends BasePage {
     @Override
     protected void onPause() {
         super.onPause();
-        myRef1.removeEventListener(listener);
+        if (myRef1 != null) {
+            myRef1.removeEventListener(listener);
+        }
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -524,7 +530,13 @@ public class SearchProductAddToStore extends BasePage {
         MenuItem itemSearch = menu.findItem(R.id.search_view);
         MenuItem itemSearchWithBarcode = menu.findItem(R.id.search_with_barcode);
         searchView = (SearchView) itemSearch.getActionView();
-
+        suggestionAdapter = new SimpleCursorAdapter(this,
+                R.layout.custom_suggested_listview_nearby_store_page,
+                null,
+                new String[]{SearchManager.SUGGEST_COLUMN_TEXT_1},
+                new int[]{android.R.id.text1},
+                0);
+        searchView.setSuggestionsAdapter(suggestionAdapter);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -547,11 +559,41 @@ public class SearchProductAddToStore extends BasePage {
 
             @Override
             public boolean onQueryTextChange(String newText) {
+                String[] columns = { BaseColumns._ID,
+                        SearchManager.SUGGEST_COLUMN_TEXT_1,
+                };
+                final MatrixCursor cursor = new MatrixCursor(columns);
+                searchedList.removeAll(searchedList);
+                for (int i = 0; i < suggestions.size(); i++) {
+                    Log.d("searchedList",String.valueOf(searchedList.size()));
+                    if (suggestions.get(i).toLowerCase().contains(newText)) {
+                        String[] tmp = {Integer.toString(i), suggestions.get(i)};
+                        cursor.addRow(tmp);
+
+                        searchedList.add(suggestions.get(i).toString());
+
+                    }
+                }
+                suggestionAdapter.swapCursor(cursor);
                 return true;
             }
         });
 
+        searchView.setOnSuggestionListener(new SearchView.OnSuggestionListener() {
+            @Override
+            public boolean onSuggestionSelect(int position) {
+                searchView.setQuery(searchedList.get(position).toString(), true);
+                searchView.clearFocus();
+                return false;
+            }
 
+            @Override
+            public boolean onSuggestionClick(int position) {
+                searchView.setQuery(searchedList.get(position).toString(), true);
+                searchView.clearFocus();
+                return true;
+            }
+        });
 
         itemSearchWithBarcode.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override

@@ -133,7 +133,7 @@ public class UserManagementOrderPage extends BasePage {
                 noOrder.setVisibility(View.INVISIBLE);
                 for (DataSnapshot dttSnapshot2 : dataSnapshot.getChildren()) {
                     Order order = dttSnapshot2.getValue(Order.class);
-                    if (order != null && order.getStatus()!= null) {
+                    if (order != null && order.getStatus()!= null && order.getDeliverTime()!= null) {
                         status = order.getStatus();
                         if (status.equals("cancel") == false) {
                             order.setOrderId(dttSnapshot2.getKey());

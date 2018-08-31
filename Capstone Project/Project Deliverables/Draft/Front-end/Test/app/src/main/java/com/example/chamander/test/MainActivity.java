@@ -97,10 +97,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void getList() {
-
-    }
-
     ValueEventListener changeListener = new ValueEventListener() {
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
