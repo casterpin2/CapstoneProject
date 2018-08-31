@@ -1,5 +1,7 @@
 package project.view.gui;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -43,9 +45,11 @@ import java.util.List;
 import project.firebase.Firebase;
 import project.retrofit.APIService;
 import project.view.R;
+import project.view.adapter.BrandCustomCardviewAdapter;
 import project.view.adapter.ProductInStoreByUserCustomCardViewAdapter;
 import project.view.adapter.SaleProductCustomCardviewAdapter;
 import project.view.fragment.home.HomeFragment;
+import project.view.model.Brand;
 import project.view.model.Item;
 import project.view.model.Product;
 import project.view.model.Store;
@@ -66,13 +70,14 @@ public class SaleProductDisplayPage extends BasePage {
     private TextView nullMessage;
     private Spinner spinnerCategory, spinnerSort;
     private List<Product> products;
+    private List<Product> searchedProduct = new ArrayList<>();
     private CoordinatorLayout main_layout;
     private SearchView searchView;
     private List<Product> tempProductInStore;
     private ProductFilter productFilter;
     private SaleProductCustomCardviewAdapter saleProductCustomCardviewAdapter;
     private ProgressBar loadingBar;
-
+    private Call<List<Product>> callSale;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,7 +85,7 @@ public class SaleProductDisplayPage extends BasePage {
         setContentView(R.layout.activity_sale_product_display_page);
         findView();
         customView();
-        loadingBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorApplication), android.graphics.PorterDuff.Mode.MULTIPLY);
+
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -94,8 +99,10 @@ public class SaleProductDisplayPage extends BasePage {
                 startActivity(toHomePage);
             }
         });
+
+        search();
         apiService = APIService.retrofit.create(APIService.class);
-        final Call<List<Product>> callSale = apiService.getSaleProduct();
+        callSale = apiService.getSaleProduct();
         new SaleProductDisplayPage.SaleProductDisplayData().execute(callSale);
     }
 
@@ -111,6 +118,40 @@ public class SaleProductDisplayPage extends BasePage {
         nullMessage = findViewById(R.id.nullMessage);
     }
 
+    private void search(){
+        searchView.setQueryHint("Tìm trong thương hiệu ...");
+
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+//        productList
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+
+
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                searchedProduct.clear();
+
+                    for (int i = 0; i < tempProductInStore.size(); i++) {
+                        if (tempProductInStore.get(i).getProduct_name().toLowerCase().contains(newText.toLowerCase())) {
+                            searchedProduct.add(tempProductInStore.get(i));
+                        }
+                    }
+                saleProductCustomCardviewAdapter = new SaleProductCustomCardviewAdapter(SaleProductDisplayPage.this, searchedProduct);
+                RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(SaleProductDisplayPage.this, 2);
+                recycler_view.setLayoutManager(mLayoutManager);
+                recycler_view.addItemDecoration(new GridSpacingItemDecoration(2, Formater.dpToPx(2, getResources()), true));
+                recycler_view.setItemAnimator(new DefaultItemAnimator());
+                recycler_view.setAdapter(saleProductCustomCardviewAdapter);
+                return true;
+            }
+        });
+    }
+
     private void customView() {
         main_layout.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -119,6 +160,7 @@ public class SaleProductDisplayPage extends BasePage {
                 return false;
             }
         });
+        loadingBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorApplication), android.graphics.PorterDuff.Mode.MULTIPLY);
         searchView.setQueryHint("Tìm sản phẩm giảm giá");
     }
 
