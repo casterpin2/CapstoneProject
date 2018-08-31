@@ -70,7 +70,6 @@ public class SaleProductDisplayPage extends BasePage {
     private TextView nullMessage;
     private Spinner spinnerCategory, spinnerSort;
     private List<Product> products;
-    private List<Product> searchedProduct = new ArrayList<>();
     private CoordinatorLayout main_layout;
     private SearchView searchView;
     private List<Product> tempProductInStore;
@@ -118,35 +117,25 @@ public class SaleProductDisplayPage extends BasePage {
         nullMessage = findViewById(R.id.nullMessage);
     }
 
-    private void search(){
+    private void search() {
         searchView.setQueryHint("Tìm trong thương hiệu ...");
-
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-//        productList
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-
-
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                searchedProduct.clear();
-
-                    for (int i = 0; i < tempProductInStore.size(); i++) {
-                        if (tempProductInStore.get(i).getProduct_name().toLowerCase().contains(newText.toLowerCase())) {
-                            searchedProduct.add(tempProductInStore.get(i));
-                        }
+                tempProductInStore.clear();
+                for (int i = 0; i < products.size(); i++) {
+                    if (products.get(i).getProduct_name().toLowerCase().contains(newText.toLowerCase())) {
+                        tempProductInStore.add(products.get(i));
                     }
-                saleProductCustomCardviewAdapter = new SaleProductCustomCardviewAdapter(SaleProductDisplayPage.this, searchedProduct);
-                RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(SaleProductDisplayPage.this, 2);
-                recycler_view.setLayoutManager(mLayoutManager);
-                recycler_view.addItemDecoration(new GridSpacingItemDecoration(2, Formater.dpToPx(2, getResources()), true));
-                recycler_view.setItemAnimator(new DefaultItemAnimator());
-                recycler_view.setAdapter(saleProductCustomCardviewAdapter);
+                }
+                saleProductCustomCardviewAdapter.notifyDataSetChanged();
                 return true;
             }
         });
