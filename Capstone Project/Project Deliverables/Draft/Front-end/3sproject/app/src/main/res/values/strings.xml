@@ -22,7 +22,7 @@
     <string name="user_name">Tên đăng nhập</string>
     <string name="name">Tên hiển thị</string>
     <string name="password">Mật Khẩu</string>
-    <string name="confirm_password">Mật khẩu nhập lại không khớp</string>
+    <string name="confirm_password">Nhập lại mật khẩu </string>
     <string name="email">Email</string>
     <string name="phone_number">Số điện thoại</string>
     <string name="btn_register">Đăng kí</string>

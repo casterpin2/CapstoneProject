@@ -163,9 +163,9 @@ public class RegisterPage extends AppCompatActivity {
                         us.setFirst_name(st.nextToken());
                     StringBuilder last_name = new StringBuilder();
                     while (st.hasMoreTokens()) {
-                        last_name.append(st.nextToken());
+                        last_name.append(st.nextToken()+" ");
                     }
-                    us.setLast_name(last_name.toString());
+                    us.setLast_name(last_name.toString().trim());
                     us.setEmail(etEmail.getText().toString().trim().replaceAll("\\s+", ""));
                     us.setPassword(MD5Library.md5(etPassword.getText().toString().trim()));
                     gson = new Gson();
@@ -335,6 +335,7 @@ public class RegisterPage extends AppCompatActivity {
                 Intent intent = new Intent(RegisterPage.this, LoginPage.class);
                 intent.putExtra("username", aVoid);
                 startActivity(intent);
+                finish();
             }
 
         }

@@ -279,6 +279,8 @@ public class LoginPage extends AppCompatActivity {
                 user.setLast_name(account.getDisplayName());
                 user.setImage_path("https://lh5.googleusercontent.com"+account.getPhotoUrl().getPath());
                 user.setEmail(account.getEmail());
+                Log.e("user",new Gson().toJson(user));
+                Log.e("id",account.getId()+"");
                 Call<Login> call = mAPI.loginGoogle(user, account.getId());
                 new LoginTo3S().execute(call);
             } catch (ApiException e) {
