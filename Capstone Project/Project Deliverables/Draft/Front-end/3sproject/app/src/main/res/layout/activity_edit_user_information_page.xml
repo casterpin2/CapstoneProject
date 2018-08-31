@@ -2,79 +2,77 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_below="@id/rellay1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_below="@id/rellay1"
     tools:context=".gui.EditUserInformationPage">
+
     <RelativeLayout
         android:id="@+id/main_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <RelativeLayout
-                android:id="@+id/rellay1"
-                android:layout_width="match_parent"
-                android:layout_height="256dp"
-                android:background="@drawable/background"
-                android:paddingTop="20dp">
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true">
 
-                <RelativeLayout
-                    android:id="@+id/imgUser"
+        <RelativeLayout
+            android:id="@+id/rellay1"
+            android:layout_width="match_parent"
+            android:layout_height="256dp"
+            android:background="@drawable/background"
+            android:paddingTop="20dp">
+
+            <RelativeLayout
+                android:id="@+id/imgUser"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="56dp"
+                android:layout_marginTop="20dp">
+
+                <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/profile_image"
+                    android:layout_width="112dp"
+                    android:layout_height="112dp" />
+
+                <ProgressBar
+                    android:id="@+id/loadingBarImage"
+                    style="?android:attr/progressBarStyleInverse"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:layout_marginTop="20dp">
+                    android:visibility="invisible" />
 
-                    <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
-                        android:id="@+id/profile_image"
-                        android:layout_width="112dp"
-                        android:layout_height="112dp"
-                        app:civ_border_color="@color/colorApplication"
-                        app:civ_border_width="2dp" />
-                    <ProgressBar
-                        android:id="@+id/loadingBarImage"
-                        style="?android:attr/progressBarStyleInverse"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:visibility="invisible"/>
-                    <LinearLayout
-                        android:id="@+id/changeImage"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignBottom="@+id/profile_image"
-                        android:layout_alignRight="@+id/profile_image"
-                        android:background="#70000000">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@drawable/add"
-                            android:text="Thay đổi ảnh đại diện"
-                            android:textColor="@color/white"
-                            android:textSize="11dp"
-                            android:padding="3dp"/>
-                    </LinearLayout>
-
-
-                </RelativeLayout>
-
-                <TextView
-                    android:id="@+id/txt_name"
-                    android:layout_width="match_parent"
+                <LinearLayout
+                    android:id="@+id/changeImage"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:background="#70000000"
-                    android:ellipsize="end"
-                    android:gravity="center"
-                    android:padding="8dp"
-                    android:text="Thay đổi thông tin"
-                    android:textColor="@color/colorWhite"
-                    android:textSize="21dp" />
+                    android:layout_alignBottom="@+id/profile_image"
+                    android:layout_alignRight="@+id/profile_image"
+                    android:background="#70000000">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="3dp"
+                        android:src="@drawable/add"
+                        android:text="Thay đổi ảnh đại diện"
+                        android:textColor="@color/white"
+                        android:textSize="11dp" />
+                </LinearLayout>
+
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp">
 
                 <ImageButton
                     android:id="@+id/backBtn"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
-                    android:layout_alignParentLeft="true"
                     android:layout_alignParentTop="true"
                     android:layout_marginLeft="5dp"
                     android:adjustViewBounds="true"
@@ -82,185 +80,204 @@
                     android:scaleType="centerInside"
                     android:src="@drawable/btn_back" />
 
+                <TextView
+                    android:id="@+id/txt_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:ellipsize="end"
+                    android:text="Thay đổi thông tin"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="20dp" />
             </RelativeLayout>
+
+        </RelativeLayout>
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="16dp"
-            android:layout_marginLeft="16dp"
             android:layout_below="@+id/rellay1"
-            android:layout_marginRight="16dp">
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="16dp">
 
-                <android.support.design.widget.TextInputLayout
-                    android:id="@+id/usernameLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp">
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/usernameLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp">
 
-                    <android.support.design.widget.TextInputEditText
-                        android:id="@+id/userNameText"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:focusedByDefault="false"
-                        android:hint="Tên"
-                        android:inputType="textCapWords"
-                        android:singleLine="true"
-                        android:textSize="13dp" />
-                    <TextView
-                        android:id="@+id/usernameError"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:textSize="10dp"
-                        android:textColor="@color/errorMess"/>
-
-                </android.support.design.widget.TextInputLayout>
-
-                <android.support.design.widget.TextInputLayout
-                    android:id="@+id/phoneLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/usernameLayout"
-                    android:layout_marginTop="8dp">
-
-                    <android.support.design.widget.TextInputEditText
-                        android:id="@+id/phoneText"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:focusedByDefault="false"
-                        android:hint="Số điện thoại"
-                        android:inputType="number"
-                        android:singleLine="true"
-                        android:textSize="13dp" />
-                    <TextView
-                        android:id="@+id/phoneError"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:textSize="10dp"
-                        android:textColor="@color/errorMess"/>
-
-                </android.support.design.widget.TextInputLayout>
-
-                <android.support.design.widget.TextInputLayout
-                    android:id="@+id/emailLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/phoneLayout"
-                    android:layout_marginTop="8dp">
-
-                    <android.support.design.widget.TextInputEditText
-                        android:id="@+id/emailText"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:focusedByDefault="false"
-                        android:hint="Email"
-                        android:inputType="textEmailAddress"
-                        android:singleLine="true"
-                        android:textSize="13dp" />
-                    <TextView
-                        android:id="@+id/emailError"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:textSize="10dp"
-                        android:textColor="@color/errorMess"/>
-
-                </android.support.design.widget.TextInputLayout>
-
-                <android.support.design.widget.TextInputLayout
-                    android:id="@+id/dobLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/emailLayout"
-                    android:layout_marginTop="8dp">
-
-                    <android.support.design.widget.TextInputEditText
-                        android:id="@+id/dobText"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:focusedByDefault="false"
-                        android:hint="Ngày sinh"
-                        android:inputType="textEmailAddress"
-                        android:singleLine="true"
-                        android:textSize="13dp"
-                        android:focusableInTouchMode="false"
-                        android:focusable="false"/>
-                    <TextView
-                        android:id="@+id/dobError"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:textSize="10dp"
-                        android:textColor="@color/errorMess"/>
-
-                </android.support.design.widget.TextInputLayout>
-
-                <LinearLayout
-                    android:id="@+id/genderLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/dobLayout"
-                    android:layout_marginTop="10dp">
-
-                    <TextView
-                        android:id="@+id/textView6"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
-                        android:text="Giới tính"
-                        android:textSize="13dp" />
-
-                    <RelativeLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1">
-
-                        <Spinner
-                            android:id="@+id/genderSpinner"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerHorizontal="true" />
-
-                    </RelativeLayout>
-
-                </LinearLayout>
-                <RelativeLayout
-                    android:id="@+id/saveBtnLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/genderLayout"
-                    android:layout_marginTop="16dp"
-                    >
-                    <Button
-                        android:id="@+id/saveBtn"
-                        android:layout_width="match_parent"
-                        android:layout_height="50dp"
-                        android:background="@drawable/border_button"
-                        android:text="Lưu thay đổi"
-                        android:textColor="@color/colorApplication" />
-                    <ProgressBar
-                        android:id="@+id/loadingBarSave"
-                        style="?android:attr/progressBarStyleInverse"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_centerInParent="true"
-                        android:visibility="invisible"/>
-                </RelativeLayout>
-
-
-                <Button
-                    android:id="@+id/cancelBtn"
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/userNameText"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_below="@+id/saveBtnLayout"
-                    android:layout_marginBottom="16dp"
-                    android:layout_marginTop="16dp"
-                    android:background="@drawable/login_button"
-                    android:text="Hủy thay đổi"
-                    android:textColor="@color/colorWhite" />
+                    android:focusedByDefault="false"
+                    android:hint="Tên"
+                    android:inputType="textCapWords"
+                    android:singleLine="true"
+                    android:textSize="13dp" />
+
+                <TextView
+                    android:id="@+id/usernameError"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:textColor="@color/errorMess"
+                    android:textSize="10dp" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/phoneLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/usernameLayout"
+                android:layout_marginTop="8dp">
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/phoneText"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:focusedByDefault="false"
+                    android:hint="Số điện thoại"
+                    android:inputType="number"
+                    android:singleLine="true"
+                    android:textSize="13dp" />
+
+                <TextView
+                    android:id="@+id/phoneError"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:textColor="@color/errorMess"
+                    android:textSize="10dp" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/emailLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/phoneLayout"
+                android:layout_marginTop="8dp">
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/emailText"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:focusedByDefault="false"
+                    android:hint="Email"
+                    android:inputType="textEmailAddress"
+                    android:singleLine="true"
+                    android:textSize="13dp" />
+
+                <TextView
+                    android:id="@+id/emailError"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:textColor="@color/errorMess"
+                    android:textSize="10dp" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/dobLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/emailLayout"
+                android:layout_marginTop="8dp">
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/dobText"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:focusedByDefault="false"
+                    android:hint="Ngày sinh"
+                    android:inputType="textEmailAddress"
+                    android:singleLine="true"
+                    android:textSize="13dp" />
+
+                <TextView
+                    android:id="@+id/dobError"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:textColor="@color/errorMess"
+                    android:textSize="10dp" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <LinearLayout
+                android:id="@+id/genderLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/dobLayout"
+                android:layout_marginTop="10dp">
+
+                <TextView
+                    android:id="@+id/textView6"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_weight="1"
+                    android:text="Giới tính"
+                    android:textSize="13dp" />
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <Spinner
+                        android:id="@+id/genderSpinner"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true" />
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/saveBtnLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/genderLayout"
+                android:layout_marginTop="16dp">
+
+                <Button
+                    android:id="@+id/saveBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="@drawable/border_button"
+                    android:text="Lưu thay đổi"
+                    android:textColor="@color/colorApplication" />
+
+                <ProgressBar
+                    android:id="@+id/loadingBarSave"
+                    style="?android:attr/progressBarStyleInverse"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_centerInParent="true"
+                    android:visibility="invisible" />
             </RelativeLayout>
+
+
+            <Button
+                android:id="@+id/cancelBtn"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/saveBtnLayout"
+                android:layout_marginBottom="16dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/login_button"
+                android:text="Hủy thay đổi"
+                android:textColor="@color/colorWhite" />
+        </RelativeLayout>
     </RelativeLayout>
 </ScrollView>
 

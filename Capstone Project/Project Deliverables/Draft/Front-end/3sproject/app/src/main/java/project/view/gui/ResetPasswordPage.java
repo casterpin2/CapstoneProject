@@ -63,12 +63,8 @@ public class ResetPasswordPage extends BasePage{
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if(!hasFocus) {
-                    isNewPass = regex.isPassWord(newPass.getText().toString());
-                    if(!isNewPass){
-                        tvNewPass.setText(R.string.error_validate_password);
-                    }else {
-                        tvNewPass.setText("");
-                    }
+                    isNewPass = regex.checkPass(tvNewPass,newPass);
+
                 }
             }
         });
@@ -77,12 +73,7 @@ public class ResetPasswordPage extends BasePage{
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if(!hasFocus){
-                    isConfirm = regex.isPassWord(confirmPass.getText().toString());
-                    if(!isConfirm){
-                        tvConfirmPass.setText(R.string.error_validate_password);
-                    }else {
-                        tvConfirmPass.setText("");
-                    }
+                    isConfirm = regex.checkPass(tvConfirmPass,confirmPass);
                 }
             }
         });
@@ -90,13 +81,8 @@ public class ResetPasswordPage extends BasePage{
         btnChangePass.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                if(!isNewPass){
-                    tvNewPass.setText(R.string.error_validate_password);
-                }
-                if(!isConfirm){
-                    tvConfirmPass.setText(R.string.error_validate_password);
-                }
+                isNewPass = regex.checkPass(tvNewPass,newPass);
+                isConfirm = regex.checkPass(tvConfirmPass,confirmPass);
                 if (isConfirm && isNewPass) {
                     if(!newPass.getText().toString().equals(confirmPass.getText().toString())){
                         tvConfirmPass.setText(R.string.error_confirm_password);

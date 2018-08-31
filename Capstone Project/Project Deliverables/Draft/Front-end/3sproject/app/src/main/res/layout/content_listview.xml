@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <TextView
         android:id="@+id/noFeedback"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Chưa có đánh giá nào về cửa hàng"
-        android:textSize="20dp"
-        android:textColor="@color/grey"
         android:layout_centerInParent="true"
-        android:visibility="invisible"/>
+        android:text="Chưa có đánh giá nào về cửa hàng"
+        android:textColor="@color/grey"
+        android:textSize="20dp"
+        android:visibility="invisible" />
 
     <LinearLayout
         android:id="@+id/filter"
@@ -56,16 +57,18 @@
                 android:layout_height="match_parent" />
         </LinearLayout>
     </LinearLayout>
+
     <ListView
-        android:layout_below="@id/filter"
         android:id="@+id/content"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_below="@id/filter" />
+
     <ProgressBar
         android:id="@+id/loadingBar"
         style="?android:attr/progressBarStyleInverse"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:visibility="invisible"/>
+        android:visibility="invisible" />
 </RelativeLayout>

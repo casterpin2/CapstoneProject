@@ -103,6 +103,7 @@ public class StoreFragment extends Fragment implements NetworkStateReceiver.Netw
     private String oldPathImg;
     private LinearLayout saveImageStoreLayout;
     private String testCommit;
+    private String pathBeforeUpdate;
     public StoreFragment() {
     }
 
@@ -195,10 +196,11 @@ public class StoreFragment extends Fragment implements NetworkStateReceiver.Netw
                             mApi.updateImgStore(store,namePath).enqueue(new Callback<Boolean>() {
                                 @Override
                                 public void onResponse(Call<Boolean> call, Response<Boolean> response) {
-                                    if(response.isSuccessful()){
+                                    if(response.body().booleanValue() == true){
                                         Toast.makeText((Activity) getContext(), "Thay đổi ảnh thành công", Toast.LENGTH_SHORT).show();
                                         SharedPreferences pre = StoreFragment.this.getActivity().getSharedPreferences("authentication", Context.MODE_PRIVATE);
                                         if(store!=null){
+
                                             store.setImage_path(namePath);
                                             String storeJson = new Gson().toJson(store);
                                             String userJson = pre.getString("user", null);
@@ -207,8 +209,9 @@ public class StoreFragment extends Fragment implements NetworkStateReceiver.Netw
                                             editor.putString("user", userJson);
                                             editor.putString("store", storeJson);
                                             editor.commit();
-                                        }
 
+                                        }
+                                        pathBeforeUpdate = namePath;
                                         loadingBarImage.setVisibility(View.INVISIBLE);
                                         saveImageStoreLayout.setVisibility(View.INVISIBLE);
                                         storeName.setVisibility(View.VISIBLE);
@@ -231,7 +234,9 @@ public class StoreFragment extends Fragment implements NetworkStateReceiver.Netw
                 public void onClick(View view) {
 
                     loadingBarImage.setVisibility(View.VISIBLE);
-
+                    if(!pathBeforeUpdate.isEmpty() && pathBeforeUpdate!=null){
+                        oldPathImg = pathBeforeUpdate;
+                    }
 
                     if (!oldPathImg.isEmpty() && oldPathImg != null) {
                         if (oldPathImg.contains("graph") || oldPathImg.contains("google")) {
@@ -474,6 +479,9 @@ public class StoreFragment extends Fragment implements NetworkStateReceiver.Netw
                 @Override
                 public void onFailure(@NonNull Exception exception) {
                     // Toast.makeText(EditUserInformationPage.this, "Xin lỗi kích thước ảnh lớn hơn 2MB", Toast.LENGTH_SHORT).show();
+                    if(!pathBeforeUpdate.isEmpty() && pathBeforeUpdate!=null){
+                        oldPathImg = pathBeforeUpdate;
+                    }
                     if (!oldPathImg.isEmpty() && oldPathImg != null) {
                         if (oldPathImg.contains("graph") || oldPathImg.contains("google")) {
                             Glide.with((Activity)getContext() /* context */)

@@ -1,23 +1,18 @@
 package project.view.gui;
-import android.app.SearchManager;
-import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -29,9 +24,10 @@ import project.view.R;
 import project.view.adapter.EndlessRecyclerViewScrollListener;
 import project.view.adapter.ProductInCategoryRecyclerViewAdapter;
 
-import project.view.adapter.ProductInStoreByUserCustomCardViewAdapter;
+import project.view.model.Category;
 import project.view.model.Product;
 import project.view.util.CustomInterface;
+import project.view.util.ProductFilter;
 import retrofit2.Call;
 import retrofit2.Response;
 
@@ -42,96 +38,70 @@ public class ProductCategoryDisplayPage extends BasePage implements ProductInCat
     private ProductInCategoryRecyclerViewAdapter adapter;
     private int currentPage = 0;
     int categoryId;
-    private List<Product> product;
+    private List<Product> tempProduct;
     private List<Product> productsLoadMore;
+    private List<Category> categoryList;
     private RecyclerView.LayoutManager mLayoutManager;
-    private TextView tv_type_title;
-    private ImageButton backBtn;
-    private ImageView imgHome;
-    private SearchView searchView;
+    private Spinner spinner,spinnerSort;
+    private TextView filterLabble;
+    private ProductFilter productFilter;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.category_product_layout);
-        CustomInterface.setStatusBarColor(this);
+        setContentView(R.layout.content_with_filter);
+
+
         mAPI = ApiUtils.getAPIService();
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        tv_type_title = findViewById(R.id.tv_type_title);
-        backBtn = findViewById(R.id.backBtn);
-        imgHome = findViewById(R.id.imgHome);
-        searchView = findViewById(R.id.searchViewQuery);
+        spinnerSort = findViewById(R.id.spinnerSort);
+
+        spinner = findViewById(R.id.spinnerCategory);
+        spinner.setVisibility(View.INVISIBLE);
+        filterLabble = findViewById(R.id.filterLabble);
+        filterLabble.setText("Danh Mục");
+        filterLabble.setVisibility(View.VISIBLE);
         categoryId = getIntent().getIntExtra("categoryId", -1);
         String categoryName = getIntent().getStringExtra("categoryName");
-        if (categoryId != -1) {
-            tv_type_title.setText(categoryName);
-        } else {
-            //Toast.makeText(ProductCategoryDisplayPage.this, "Có lỗi xảy ra !!!",Toast.LENGTH_LONG).show();
-            return;
-        }
 
-        backBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
-
-        imgHome.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent toHomPage = new Intent(ProductCategoryDisplayPage.this, HomePage.class);
-                startActivity(toHomPage);
-                finishAffinity();
-            }
-        });
+        getSupportActionBar().setTitle(categoryName);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        CustomInterface.setStatusBarColor(this);
 
         mLayoutManager = new GridLayoutManager(this, 2);
         recyclerView.setLayoutManager(mLayoutManager);
         adapter = new ProductInCategoryRecyclerViewAdapter(this, this, this);
-        product = new ArrayList<>();
-        adapter.set(product);
+        tempProduct = new ArrayList<>();
+        adapter.set(tempProduct);
         recyclerView.setAdapter(adapter);
         Call<List<Product>> call = mAPI.getProductInCategory(currentPage,categoryId);
         new GetProductCategory(0).execute(call);
-
-//        final List<Product> searchedProduct = new ArrayList<>();
-//        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-//        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-////        productList
-//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-//            @Override
-//            public boolean onQueryTextSubmit(String query) {
-//
-//
-//                return false;
-//            }
-//
-//            @Override
-//            public boolean onQueryTextChange(String newText) {
-//                searchedProduct.clear();
-//                if (newText.equals("") || newText == null) {
-//                    adapter = new ProductInCategoryRecyclerViewAdapter(ProductCategoryDisplayPage.this, ProductCategoryDisplayPage.this, ProductCategoryDisplayPage.this);
-//                    adapter.set(product);
-//                    recyclerView.setAdapter(adapter);
-//
-//                } else {
-//                    for (int i = 0; i < product.size(); i++) {
-//                        if (product.get(i).getProduct_name().toLowerCase().contains(newText.toLowerCase())) {
-//                            searchedProduct.add(product.get(i));
-//                        }
-//                    }
-//                    adapter = new ProductInCategoryRecyclerViewAdapter(ProductCategoryDisplayPage.this, ProductCategoryDisplayPage.this, ProductCategoryDisplayPage.this);
-//                    adapter.set(searchedProduct);
-//                    recyclerView.setAdapter(adapter);
-//                }
-//                mLayoutManager = new GridLayoutManager(ProductCategoryDisplayPage.this, 2);
-//                recyclerView.setLayoutManager(mLayoutManager);
-//                recyclerView.setAdapter(adapter);
-//                return true;
-//            }
-//        });
+        Call<List<Category>> callCategory = mAPI.getCategory();
+        new ProductCategoryDisplayPage.CategoryDisplayData().execute(callCategory);
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.home_search_toolbar, menu);
+        return true;
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home: {
+                finish();
+                return true;
+            }
+            case R.id.action_home:{
+                Intent toHomPage = new Intent(ProductCategoryDisplayPage.this, HomePage.class);
+                startActivity(toHomPage);
+                finishAffinity();
+            }
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
     @Override
     public void onRetryLoadMore() {
@@ -147,7 +117,7 @@ public class ProductCategoryDisplayPage extends BasePage implements ProductInCat
                     emulatorLoadMoreFaild = false;
                     return;
                 }
-                if (product.size() %2 != 0) {
+                if (tempProduct.size() %2 != 0) {
                     adapter.onReachEnd();
                     return;
                 }
@@ -183,6 +153,7 @@ public class ProductCategoryDisplayPage extends BasePage implements ProductInCat
         @Override
         protected void onPostExecute(List<Product> aVoid) {
             productsLoadMore = aVoid;
+
             if (productsLoadMore == null){
                 adapter.onReachEnd();
                 return;
@@ -221,5 +192,40 @@ public class ProductCategoryDisplayPage extends BasePage implements ProductInCat
         }
     }
 
+
+    private class CategoryDisplayData extends AsyncTask<Call, List<Category>, Void> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+        }
+
+        @Override
+        protected void onProgressUpdate(List<Category>... values) {
+            super.onProgressUpdate(values);
+            productFilter = new ProductFilter();
+            categoryList = values[0];
+            productFilter.setCategoryFilterListCategory(categoryList,ProductCategoryDisplayPage.this, spinnerSort);
+        }
+
+        @Override
+        protected Void doInBackground(Call... calls) {
+
+            try {
+                Call<List<Category>> call = calls[0];
+                Response<List<Category>> response = call.execute();
+                publishProgress(response.body());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+    }
 
 }

@@ -13,6 +13,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -25,6 +26,8 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -85,7 +88,7 @@ public class EditUserInformationPage extends BasePage {
     private ImageButton backBtn;
     private Spinner genderSpinner;
     private CircleImageView profile_image;
-    Calendar myCalendar ;
+    Calendar myCalendar;
     private Bundle extras;
     int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
     private RelativeLayout main_layout;
@@ -100,8 +103,8 @@ public class EditUserInformationPage extends BasePage {
     User us;
     boolean checkCall = false;
     private Regex regex;
-    private boolean  isUserName= false, isPhone = false ,isEmail = false;
-    private  DatePickerDialog.OnDateSetListener date;
+    private boolean isUserName = false, isPhone = false, isEmail = false;
+    private DatePickerDialog.OnDateSetListener date;
     private boolean checkAva = false;
     private String namePath;
     private boolean isCheckSave = false;
@@ -109,12 +112,18 @@ public class EditUserInformationPage extends BasePage {
     private String currentImg;
     private ProgressBar loadingBarImage, loadingBarSave;
     private String currentPath;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_user_information_page);
         storageReference = FirebaseStorage.getInstance().getReference();
         mApi = APIService.retrofit.create(APIService.class);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            Window w = getWindow(); // in Activity's onCreate() for instance
+            w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        }
         mapping();
         customView();
         regex = new Regex();
@@ -128,18 +137,18 @@ public class EditUserInformationPage extends BasePage {
         Intent intent = getIntent();
         extras = intent.getExtras();
         String gender = extras.getString("gender");
-        if(gender.equals("")){
+        if (gender.equals("")) {
             genderSpinner.setSelection(0);
-        } else if (gender.equals("Nam")){
+        } else if (gender.equals("Nam")) {
             genderSpinner.setSelection(1);
-        } else if(gender.equals("Nữ")) {
+        } else if (gender.equals("Nữ")) {
             genderSpinner.setSelection(2);
         }
         userNameText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
-                    isUserName = regex.checkDisplayName(usernameError,userNameText);
+                    isUserName = regex.checkDisplayName(usernameError, userNameText);
                 }
             }
         });
@@ -148,7 +157,7 @@ public class EditUserInformationPage extends BasePage {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
-                    isPhone = regex.checkPhone(phoneError,phoneText);
+                    isPhone = regex.checkPhone(phoneError, phoneText);
                 }
             }
         });
@@ -157,17 +166,10 @@ public class EditUserInformationPage extends BasePage {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
-                    isEmail = regex.checkEmail(emailError,emailText);
+                    isEmail = regex.checkEmail(emailError, emailText);
 
 
                 }
-            }
-        });
-
-        profile_image.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(EditUserInformationPage.this, "Hello?", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -180,24 +182,26 @@ public class EditUserInformationPage extends BasePage {
                 String phone = phoneText.getText().toString();
                 String email = emailText.getText().toString();
                 String dob = dobText.getText().toString();
-
-
                 String gender = "";
+
                 if (genderSpinner.getSelectedItemPosition() == 0) {
                     gender = "";
                 } else if (genderSpinner.getSelectedItemPosition() == 1) {
                     gender = "Nam";
-                } else if (genderSpinner.getSelectedItemPosition() == 2){
+                } else if (genderSpinner.getSelectedItemPosition() == 2) {
                     gender = "Nữ";
                 }
-                boolean checkAllValidate = isEmail && isPhone &&isUserName;
+                isEmail = regex.checkEmail(emailError, emailText);
+                isUserName = regex.checkDisplayName(usernameError, userNameText);
+                isPhone = regex.checkPhone(phoneError, phoneText);
+                boolean checkAllValidate = isEmail && isPhone && isUserName;
 
-                if(!emailText.getText().toString().toLowerCase().equals(extras.getString("email").toLowerCase())){
+                if (!emailText.getText().toString().toLowerCase().equals(extras.getString("email").toLowerCase())) {
                     mApi = ApiUtils.getAPIService();
                     final Call<Integer> call = mApi.vadilator("None", emailText.getText().toString(), "None", "email");
                     new ValidatorUser().execute(call);
                 }
-                if(!phoneText.getText().toString().equals(extras.getString("phone"))) {
+                if (!phoneText.getText().toString().equals(extras.getString("phone"))) {
                     mApi = ApiUtils.getAPIService();
                     final Call<Integer> call = mApi.vadilator("None", "None", phoneText.getText().toString(), "phone");
                     new ValidatorUser().execute(call);
@@ -207,13 +211,13 @@ public class EditUserInformationPage extends BasePage {
                         && extras.getString("gender").equals(gender);
                 //thong tin ko thay doi anh khong thay doi
 
-                if (checkChange && !checkAva ) {
+                if (checkChange && !checkAva) {
                     Intent toUserInformationPage = new Intent(EditUserInformationPage.this, UserInformationPage.class);
                     setResult(201, toUserInformationPage);
                     finish();
                 }
 
-                if (!checkAva && !checkChange && checkAllValidate ) {
+                if (!checkAva && !checkChange && checkAllValidate) {
                     // code service here
                     us = new User();
                     pre = getSharedPreferences("authentication", Context.MODE_PRIVATE);
@@ -265,7 +269,7 @@ public class EditUserInformationPage extends BasePage {
                     us.setPhone(phone);
                     us.setGender(gender);
                     us.setId(extras.getInt("idUser", 0));
-                   // uploadImg(us.getId());
+                    // uploadImg(us.getId());
                     us.setImage_path(namePath);
                     final Call<User> call = mApi.updateInfotmation(us);
                     new UserUpdate().execute(call);
@@ -278,13 +282,13 @@ public class EditUserInformationPage extends BasePage {
         cancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(extras.getString("name").equals(userNameText.getText().toString())
+                if (extras.getString("name").equals(userNameText.getText().toString())
                         && extras.getString("phone").equals(phoneText.getText().toString())
                         && extras.getString("email").equals(emailText.getText().toString())
                         && extras.getString("dob").equals(dobText.getText().toString())) {
                     Intent intent = new Intent(EditUserInformationPage.this, UserInformationPage.class);
                     intent.putExtra("userID", extras.getInt("idUser", 0));
-                    setResult(201,intent);
+                    setResult(201, intent);
                     finish();
                 } else {
 
@@ -297,7 +301,7 @@ public class EditUserInformationPage extends BasePage {
                         public void onClick(DialogInterface dialog, int which) {
                             Intent intent = new Intent(EditUserInformationPage.this, UserInformationPage.class);
                             intent.putExtra("userID", extras.getInt("idUser", 0));
-                            setResult(201,intent);
+                            setResult(201, intent);
                             finish();
                         }
                     });
@@ -321,7 +325,7 @@ public class EditUserInformationPage extends BasePage {
             public void onDateSet(DatePicker view, int year, int monthOfYear,
                                   int dayOfMonth) {
                 // TODO Auto-generated method stub
-                myCalendar.set(year,monthOfYear,dayOfMonth);
+                myCalendar.set(year, monthOfYear, dayOfMonth);
                 updateLabel();
             }
 
@@ -332,7 +336,7 @@ public class EditUserInformationPage extends BasePage {
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                DatePickerDialog dpDialog  = new DatePickerDialog(EditUserInformationPage.this, date, myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH));
+                DatePickerDialog dpDialog = new DatePickerDialog(EditUserInformationPage.this, date, myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH));
                 dpDialog.getDatePicker().setMaxDate(myCalendar.getTimeInMillis());
                 dpDialog.show();
             }
@@ -341,13 +345,13 @@ public class EditUserInformationPage extends BasePage {
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(extras.getString("name").equals(userNameText.getText().toString())
+                if (extras.getString("name").equals(userNameText.getText().toString())
                         && extras.getString("phone").equals(phoneText.getText().toString())
                         && extras.getString("email").equals(emailText.getText().toString())
                         && extras.getString("dob").equals(dobText.getText().toString())) {
                     Intent intent = new Intent(EditUserInformationPage.this, UserInformationPage.class);
                     intent.putExtra("userID", extras.getInt("idUser", 0));
-                    setResult(201,intent);
+                    setResult(201, intent);
                     finish();
                 } else {
 
@@ -360,7 +364,7 @@ public class EditUserInformationPage extends BasePage {
                         public void onClick(DialogInterface dialog, int which) {
                             Intent intent = new Intent(EditUserInformationPage.this, UserInformationPage.class);
                             intent.putExtra("userID", extras.getInt("idUser", 0));
-                            setResult(201,intent);
+                            setResult(201, intent);
                             finish();
                         }
                     });
@@ -395,13 +399,16 @@ public class EditUserInformationPage extends BasePage {
             }
         });
     }
+
     private boolean checkPermission() {
         boolean checkPermissionRead = ContextCompat.checkSelfPermission(getApplicationContext(), READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
         return checkPermissionRead;
     }
+
     private void requestPermission() {
         ActivityCompat.requestPermissions(this, new String[]{READ_EXTERNAL_STORAGE}, 1001);
     }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -414,11 +421,12 @@ public class EditUserInformationPage extends BasePage {
         } else {
         }
     }
-    private void customView(){
+
+    private void customView() {
         main_layout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                CustomInterface.hideKeyboard(view,getBaseContext());
+                CustomInterface.hideKeyboard(view, getBaseContext());
                 return false;
             }
         });
@@ -426,9 +434,9 @@ public class EditUserInformationPage extends BasePage {
         CustomInterface.setSoftInputMode(this);
     }
 
-    private void openGalery(){
+    private void openGalery() {
         Intent toGallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
-        startActivityForResult(toGallery,IMAGE_CODE);
+        startActivityForResult(toGallery, IMAGE_CODE);
     }
 
     @Override
@@ -446,6 +454,7 @@ public class EditUserInformationPage extends BasePage {
 
         }
     }
+
     public Bitmap getResizedBitmap(Bitmap image, int maxSize) {
         int width = image.getWidth();
         int height = image.getHeight();
@@ -460,6 +469,7 @@ public class EditUserInformationPage extends BasePage {
         }
         return Bitmap.createScaledBitmap(image, width, height, true);
     }
+
     private void uploadImg() {
         loadingBarImage.setVisibility(View.VISIBLE);
         changeImageLayout.setEnabled(false);
@@ -504,7 +514,7 @@ public class EditUserInformationPage extends BasePage {
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception exception) {
-                   // Toast.makeText(EditUserInformationPage.this, "Xin lỗi kích thước ảnh lớn hơn 2MB", Toast.LENGTH_SHORT).show();
+                    // Toast.makeText(EditUserInformationPage.this, "Xin lỗi kích thước ảnh lớn hơn 2MB", Toast.LENGTH_SHORT).show();
                     if (!extras.getString("path").isEmpty() && extras.getString("path") != null) {
                         if (extras.getString("path").contains("graph") || extras.getString("path").contains("google")) {
                             Glide.with(EditUserInformationPage.this /* context */)
@@ -538,13 +548,14 @@ public class EditUserInformationPage extends BasePage {
             });
         }
     }
+
     private void mapping() {
         main_layout = findViewById(R.id.main_layout);
         userNameText = findViewById(R.id.userNameText);
         phoneText = findViewById(R.id.phoneText);
         emailText = findViewById(R.id.emailText);
-        dobText =  findViewById(R.id.dobText);
-        profile_image= findViewById(R.id.profile_image);
+        dobText = findViewById(R.id.dobText);
+        profile_image = findViewById(R.id.profile_image);
 
         usernameError = findViewById(R.id.usernameError);
         phoneError = findViewById(R.id.phoneError);
@@ -596,7 +607,7 @@ public class EditUserInformationPage extends BasePage {
         dobText.setText(sdf.format(myCalendar.getTime()));
     }
 
-    private void setLastSelector(){
+    private void setLastSelector() {
         userNameText.setSelection(userNameText.getText().length());
         dobText.setSelection(dobText.getText().length());
         emailText.setSelection(emailText.getText().length());
@@ -608,8 +619,8 @@ public class EditUserInformationPage extends BasePage {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                if(userNameText.getText().toString().equals(extras.getString("name"))
-                        && phoneText.getText().toString().equals(extras.getString("phone")) && emailText.getText().toString().equals(extras.getString("email"))){
+                if (userNameText.getText().toString().equals(extras.getString("name"))
+                        && phoneText.getText().toString().equals(extras.getString("phone")) && emailText.getText().toString().equals(extras.getString("email"))) {
                     finish();
                     return true;
                 } else {
@@ -639,7 +650,7 @@ public class EditUserInformationPage extends BasePage {
     }
 
 
-    private class UserUpdate extends AsyncTask<Call,User,Void>{
+    private class UserUpdate extends AsyncTask<Call, User, Void> {
 
         @Override
         protected void onPreExecute() {
@@ -678,13 +689,13 @@ public class EditUserInformationPage extends BasePage {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                            Toast.makeText(EditUserInformationPage.this, "Có lỗi xảy ra. Vui lòng thử lại", Toast.LENGTH_SHORT).show();
-                            loadingBarSave.setVisibility(View.INVISIBLE);
-                            saveBtn.setText("Lưu thay đổi");
-                            saveBtn.setEnabled(true);
-                            changeImageLayout.setEnabled(true);
+                        Toast.makeText(EditUserInformationPage.this, "Có lỗi xảy ra. Vui lòng thử lại", Toast.LENGTH_SHORT).show();
+                        loadingBarSave.setVisibility(View.INVISIBLE);
+                        saveBtn.setText("Lưu thay đổi");
+                        saveBtn.setEnabled(true);
+                        changeImageLayout.setEnabled(true);
                     }
-                },10000);
+                }, 10000);
                 return;
             }
 
@@ -698,10 +709,10 @@ public class EditUserInformationPage extends BasePage {
 
         @Override
         protected Void doInBackground(Call... calls) {
-            try{
+            try {
                 Call<User> call = calls[0];
                 Response<User> reponse = call.execute();
-                if(reponse.body()!=null){
+                if (reponse.body() != null) {
                     checkCall = true;
                 }
             } catch (IOException e) {
@@ -710,6 +721,7 @@ public class EditUserInformationPage extends BasePage {
             return null;
         }
     }
+
     private class UserUpdateImg extends AsyncTask<Call, User, Void> {
 
         @Override
@@ -763,6 +775,7 @@ public class EditUserInformationPage extends BasePage {
             return null;
         }
     }
+
     private class ValidatorUser extends AsyncTask<Call, String, Void> {
         @Override
         protected void onPreExecute() {

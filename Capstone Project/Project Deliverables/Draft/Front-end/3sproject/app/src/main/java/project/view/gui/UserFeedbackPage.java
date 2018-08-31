@@ -51,6 +51,7 @@ public class UserFeedbackPage extends BasePage {
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference myRef;
     private String orderId;
+    private String storeName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +61,7 @@ public class UserFeedbackPage extends BasePage {
         CustomInterface.setStatusBarColor(this);
         CustomInterface.setSoftInputMode(this);
         findView();
+        storeName = getIntent().getStringExtra("storeName");
 
         main_layout.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -68,7 +70,7 @@ public class UserFeedbackPage extends BasePage {
                 return false;
             }
         });
-        tvStoreName.setText("Truyền cái tên vào đây cho tao");
+        tvStoreName.setText(storeName);
 
         back_btn.setOnClickListener(new View.OnClickListener() {
             @Override

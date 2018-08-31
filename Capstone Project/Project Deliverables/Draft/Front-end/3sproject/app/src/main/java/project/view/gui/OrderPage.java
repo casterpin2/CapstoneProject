@@ -192,7 +192,7 @@ public class OrderPage extends BasePage implements OnMapReadyCallback {
             etBuyerName.setText(buyerName);
             etPhone.setText(buyerPhone);
             etBuyerName.setEnabled(false);
-            if(!user.getPhone().isEmpty())
+            if(user.getPhone() != null)
             etPhone.setEnabled(false);
         } else {
             etBuyerName.setText("");
