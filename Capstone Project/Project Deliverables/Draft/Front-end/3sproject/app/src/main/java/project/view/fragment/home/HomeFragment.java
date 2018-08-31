@@ -102,7 +102,7 @@ public class HomeFragment extends Fragment implements NetworkStateReceiver.Netwo
     private int dotscount;
     private ImageView[] dots;
     private LinearLayoutManager linearLayoutManagerBrand;
-    private ImageButton imgBarCode;
+    private ImageView imgBarCode;
     private CardView searchLayout;
     private Toolbar toolbar;
     private NestedScrollView scroll;

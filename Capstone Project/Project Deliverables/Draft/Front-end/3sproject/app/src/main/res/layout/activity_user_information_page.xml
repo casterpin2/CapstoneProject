@@ -10,24 +10,21 @@
         android:id="@+id/rellay1"
         android:layout_width="match_parent"
         android:layout_height="256dp"
-        android:background="@drawable/background"
-        android:paddingTop="20dp">
+        android:background="@drawable/background">
 
         <RelativeLayout
             android:id="@+id/imgUser"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="64dp"
             android:gravity="center">
 
             <de.hdodenhof.circleimageview.CircleImageView
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/profile_image"
                 android:layout_width="112dp"
-                android:layout_height="112dp"
-                app:civ_border_width="2dp"
-                app:civ_border_color="#ffffff"/>
+                android:layout_height="112dp"/>
 
         </RelativeLayout>
 
@@ -47,12 +44,13 @@
             android:id="@+id/backBtn"
             android:layout_width="32dp"
             android:layout_height="32dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="32dp"
             android:layout_alignParentLeft="true"
-            android:layout_marginLeft="5dp"
             android:layout_alignParentTop="true"
             android:adjustViewBounds="true"
             android:background="@null"
-            android:scaleType="centerInside"
+            android:scaleType="fitXY"
             android:src="@drawable/btn_back" />
     </RelativeLayout>
     <ScrollView
