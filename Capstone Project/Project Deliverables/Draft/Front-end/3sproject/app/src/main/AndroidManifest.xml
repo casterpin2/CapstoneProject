@@ -85,9 +85,7 @@
         <activity
             android:name=".gui.ChangePasswordPage"
             android:windowSoftInputMode="adjustResize" />
-        <activity android:name=".gui.ProductCategoryDisplayPage"
-            android:theme="@style/AppTheme.NoActionBar.TransparentTheme">
-
+        <activity android:name=".gui.ProductCategoryDisplayPage">
         </activity>
 
         <activity android:name=".gui.ProductInStoreDisplayPage" />

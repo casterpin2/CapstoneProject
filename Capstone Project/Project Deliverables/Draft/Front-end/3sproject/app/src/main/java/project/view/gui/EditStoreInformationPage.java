@@ -148,9 +148,9 @@ public class EditStoreInformationPage extends BasePage implements OnMapReadyCall
                 if (!hasFocus) {
                     isStoreName = regex.checkDisplayName(tvStoreNameError, etStoreName);
 
-                    if(!etStoreName.getText().toString().toLowerCase().equals(storeName.toLowerCase())){
+                    if (!etStoreName.getText().toString().toLowerCase().equals(storeName.toLowerCase())) {
                         apiService = ApiUtils.getAPIService();
-                        final Call<Integer> call = apiService.vadilatorStore(etStoreName.getText().toString(),"None", "name");
+                        final Call<Integer> call = apiService.vadilatorStore(etStoreName.getText().toString(), "None", "name");
                         new ValidatorStore().execute(call);
                     }
 
@@ -163,7 +163,7 @@ public class EditStoreInformationPage extends BasePage implements OnMapReadyCall
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
                     isPhone = regex.checkPhone(tvPhoneError, etPhone);
-                    if(!etPhone.getText().toString().equals(phone)){
+                    if (!etPhone.getText().toString().equals(phone)) {
                         apiService = ApiUtils.getAPIService();
                         final Call<Integer> call = apiService.vadilatorStore("None", etPhone.getText().toString(), "phone");
                         new ValidatorStore().execute(call);
@@ -194,7 +194,7 @@ public class EditStoreInformationPage extends BasePage implements OnMapReadyCall
                     } else {
                         markerToMap(handleLongtitude, handleLatitude, mMap, "Vị trí đăng kí", handleLocationPlace);
                     }
-                    isLocation =false;
+                    isLocation = false;
                 }
                 if (switch_button.isChecked() == false && handleLongtitude == 0.0 && handleLatitude == 0.0) {
                     markerToMap(storeLongtitude, storeLatitude, mMap, "Vị trí hiện tại của cửa hàng", address);
@@ -250,49 +250,39 @@ public class EditStoreInformationPage extends BasePage implements OnMapReadyCall
                     setResult(RESULT_CODE, backToStoreFragment);
                     finish();
                     Toast.makeText(EditStoreInformationPage.this, "Thông tin cửa hàng không thay đổi", Toast.LENGTH_SHORT).show();
-                }
-                if (checkChange && isPhone && isStoreName && isLocation) {
-                    String locationJson = new Gson().toJson(location);
-                    String storePreJson = new Gson().toJson(storePre);
-                    HashMap<String, String> map = new HashMap<>();
-                    map.put("store", storePreJson);
-                    map.put("location", locationJson);
-                    apiService = ApiUtils.getAPIService();
-                    final Call<Store> callBrand = apiService.updateStore(map);
-                    new StoreData().execute(callBrand);
+                } else {
+                    isStoreName = regex.checkDisplayName(tvStoreNameError, etStoreName);
+                    isPhone = regex.checkPhone(tvPhoneError, etPhone);
+                    if (checkChange && isPhone && isStoreName && isLocation) {
+                        String locationJson = new Gson().toJson(location);
+                        String storePreJson = new Gson().toJson(storePre);
+                        HashMap<String, String> map = new HashMap<>();
+                        map.put("store", storePreJson);
+                        map.put("location", locationJson);
+                        apiService = ApiUtils.getAPIService();
+                        final Call<Store> callBrand = apiService.updateStore(map);
+                        new StoreData().execute(callBrand);
+                    } else if (checkChange && isPhone && isStoreName && !isLocation) {
+                        String locationJson = new Gson().toJson(location);
+                        String storePreJson = new Gson().toJson(storePre);
+                        HashMap<String, String> map = new HashMap<>();
+                        map.put("store", storePreJson);
+                        map.put("location", locationJson);
+                        apiService = ApiUtils.getAPIService();
+                        final Call<Store> call = apiService.updateStore(map);
+                        new StoreData().execute(call);
 
+                    } else if (!checkChange && isLocation) {
+                        String locationJson = new Gson().toJson(location);
+                        String storePreJson = new Gson().toJson(storePre);
+                        HashMap<String, String> map = new HashMap<>();
+                        map.put("store", storePreJson);
+                        map.put("location", locationJson);
+                        apiService = ApiUtils.getAPIService();
+                        final Call<Store> call = apiService.updateStore(map);
+                        new StoreData().execute(call);
+                    }
                 }
-                if (checkChange && isPhone && isStoreName && !isLocation) {
-                    String locationJson = new Gson().toJson(location);
-                    String storePreJson = new Gson().toJson(storePre);
-                    HashMap<String, String> map = new HashMap<>();
-                    map.put("store", storePreJson);
-                    map.put("location", locationJson);
-                    apiService = ApiUtils.getAPIService();
-                    final Call<Store> call = apiService.updateStore(map);
-                    new StoreData().execute(call);
-
-                }
-                if(!checkChange && isLocation){
-                    String locationJson = new Gson().toJson(location);
-                    String storePreJson = new Gson().toJson(storePre);
-                    HashMap<String, String> map = new HashMap<>();
-                    map.put("store", storePreJson);
-                    map.put("location", locationJson);
-                    apiService = ApiUtils.getAPIService();
-                    final Call<Store> call = apiService.updateStore(map);
-                    new StoreData().execute(call);
-                }
-//                else if (checkChange && location.toString().equals("CANCEL")) {
-//                    String locationJson = new Gson().toJson(location);
-//                    String storePreJson = new Gson().toJson(storePre);
-//                    HashMap<String, String> map = new HashMap<>();
-//                    map.put("store", storePreJson);
-//                    map.put("location", locationJson);
-//                    apiService = ApiUtils.getAPIService();
-//                    final Call<Store> callBrand = apiService.updateStore(map);
-//                    new StoreData().execute(callBrand);
-//                }
             }
         });
     }
@@ -672,6 +662,7 @@ public class EditStoreInformationPage extends BasePage implements OnMapReadyCall
         etPhone.setSelection(etPhone.getText().length());
 
     }
+
     private class ValidatorStore extends AsyncTask<Call, String, Void> {
         @Override
         protected void onPreExecute() {

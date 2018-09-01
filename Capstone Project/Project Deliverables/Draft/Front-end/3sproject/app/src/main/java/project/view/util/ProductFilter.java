@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import project.view.model.Category;
 import project.view.model.Product;
 
 public class ProductFilter {
@@ -28,20 +29,22 @@ public class ProductFilter {
     public static final String ALL_RATE = "Tất cả đánh giá";
     public static final String SATISFIED_RATE = "Hài lòng";
     public static final String UNSATISFIED_RATE = "Không hài lòng";
-    public ProductFilter(){
+
+    public ProductFilter() {
     }
-    public void setCategoryFilter(List<Product> products, Context context, Spinner categorySpinner){
-        HashMap<String,Integer> categoryFilter = new HashMap<>();
-        int saleCount=0;
-        for(Product product : products) {
+
+    public void setCategoryFilter(List<Product> products, Context context, Spinner categorySpinner) {
+        HashMap<String, Integer> categoryFilter = new HashMap<>();
+        int saleCount = 0;
+        for (Product product : products) {
 
             if (categoryFilter.containsKey(product.getCategory_name())) {
-                categoryFilter.put(product.getCategory_name(), categoryFilter.get(product.getCategory_name())+1);
-            }else {
+                categoryFilter.put(product.getCategory_name(), categoryFilter.get(product.getCategory_name()) + 1);
+            } else {
                 categoryFilter.put(product.getCategory_name(), 1);
             }
 
-            if (product.getPromotion()!=0){
+            if (product.getPromotion() != 0) {
                 saleCount++;
             }
         }
@@ -49,11 +52,11 @@ public class ProductFilter {
         Set set = categoryFilter.entrySet();
         Iterator i = set.iterator();
         List<String> list = new ArrayList<String>();
-        list.add(ALL_PRODUCT+" ("+products.size()+")");
-        list.add(SALE_PRODUCT+" ("+saleCount+")");
-        while(i.hasNext()) {
-            Map.Entry me = (Map.Entry)i.next();
-            list.add(me.getKey()+" ("+me.getValue()+")");
+        list.add(ALL_PRODUCT + " (" + products.size() + ")");
+        list.add(SALE_PRODUCT + " (" + saleCount + ")");
+        while (i.hasNext()) {
+            Map.Entry me = (Map.Entry) i.next();
+            list.add(me.getKey() + " (" + me.getValue() + ")");
         }
         arrayAdapter = new ArrayAdapter<String>(context,
                 android.R.layout.simple_spinner_item, list);
@@ -61,38 +64,46 @@ public class ProductFilter {
         categorySpinner.setAdapter(arrayAdapter);
     }
 
-    public void setSortItem(Context context,Spinner spinnerSort){
+    public void setCategoryFilterListCategory(List<Category> categories, Context context, Spinner categorySpinner) {
+
+        List<String> list = new ArrayList<String>();
+        list.add(ALL_PRODUCT);
+        for (Category category : categories) {
+            list.add(category.getCategoryName()+"("+category.getNumberOfRecord()+")");
+        }
+        arrayAdapter = new ArrayAdapter<String>(context,
+                android.R.layout.simple_spinner_item, list);
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        categorySpinner.setAdapter(arrayAdapter);
+    }
+
+    public void setSortItem(Context context, Spinner spinnerSort) {
         final List<String> list = new ArrayList<String>();
         list.add("Sắp xếp theo giá bán");
         list.add(FROM_LOW_COST);
         list.add(FROM_HIGH_COST);
         arrayAdapter = new ArrayAdapter<String>(context,
-                android.R.layout.simple_spinner_item, list){
+                android.R.layout.simple_spinner_item, list) {
             @Override
-            public boolean isEnabled(int position){
-                if(list.get(position).equals("Sắp xếp theo giá bán"))
-                {
+            public boolean isEnabled(int position) {
+                if (list.get(position).equals("Sắp xếp theo giá bán")) {
                     return false;
-                }
-                else
-                {
+                } else {
                     return true;
                 }
             }
 
             @Override
-            public View getDropDownView(int position, View convertView, ViewGroup parent)
-            {
+            public View getDropDownView(int position, View convertView, ViewGroup parent) {
                 View spinnerview = super.getDropDownView(position, convertView, parent);
 
                 TextView spinnertextview = (TextView) spinnerview;
 
-                if(list.get(position).equals("Sắp xếp theo giá bán")) {
+                if (list.get(position).equals("Sắp xếp theo giá bán")) {
 
                     //Set the disable spinner item color fade .
                     spinnertextview.setTextColor(Color.parseColor("#bcbcbb"));
-                }
-                else {
+                } else {
 
                     spinnertextview.setTextColor(Color.BLACK);
 
@@ -104,23 +115,23 @@ public class ProductFilter {
         spinnerSort.setAdapter(arrayAdapter);
     }
 
-    public void setBrandFilter(List<Product> products, Context context, Spinner brandSpinner){
-        HashMap<String,Integer> brandFilter = new HashMap<>();
-        for(Product product : products) {
+    public void setBrandFilter(List<Product> products, Context context, Spinner brandSpinner) {
+        HashMap<String, Integer> brandFilter = new HashMap<>();
+        for (Product product : products) {
 
             if (brandFilter.containsKey(product.getBrand_name())) {
-                brandFilter.put(product.getBrand_name(), brandFilter.get(product.getBrand_name())+1);
-            }else {
+                brandFilter.put(product.getBrand_name(), brandFilter.get(product.getBrand_name()) + 1);
+            } else {
                 brandFilter.put(product.getBrand_name(), 1);
             }
         }
         Set set = brandFilter.entrySet();
         Iterator i = set.iterator();
         List<String> list = new ArrayList<String>();
-        list.add(ALL_PRODUCT+" ("+ products.size()+")");
-        while(i.hasNext()) {
-            Map.Entry me = (Map.Entry)i.next();
-            list.add(me.getKey()+" ("+me.getValue()+")");
+        list.add(ALL_PRODUCT + " (" + products.size() + ")");
+        while (i.hasNext()) {
+            Map.Entry me = (Map.Entry) i.next();
+            list.add(me.getKey() + " (" + me.getValue() + ")");
         }
         arrayAdapter = new ArrayAdapter<String>(context,
                 android.R.layout.simple_spinner_item, list);
@@ -128,7 +139,7 @@ public class ProductFilter {
         brandSpinner.setAdapter(arrayAdapter);
     }
 
-    public void setRateFilter(Context context, Spinner spinner){
+    public void setRateFilter(Context context, Spinner spinner) {
         final List<String> list = new ArrayList<String>();
         list.add(ALL_RATE);
         list.add(SATISFIED_RATE);
