@@ -290,11 +290,6 @@ public class ProductDetailPage extends BasePage {
             case android.R.id.home:
                 // app icon in action bar clicked; go home
                 finish();
-            case R.id.action_home: {
-                Intent toHomPage = new Intent(ProductDetailPage.this, HomePage.class);
-                startActivity(toHomPage);
-                finishAffinity();
-            }
             default:
                 return super.onOptionsItemSelected(item);
         }

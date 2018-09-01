@@ -26,8 +26,8 @@ public class CategoryDaoImpl extends BaseDao implements CategoryDao {
             + "            left join ( Type t left join ( Type_Brand tb left join Product p on tb.id = p.id) on t.id = tb.type_id\n"
             + "            ) on c.id = t.category_id\n"
             + "            left join (Image_Category ic left join Image i on i.id = ic.Image_id) on ic.Category_id = c.id\n"
-            + "            group by c.id,c.name,i.path ";
-
+            + "            group by c.id,c.name,i.path order by c.name desc";
+    private final static String COUNT_PRODUCT = "SELECT COUNT(b.id) from (SELECT a.id as type_id , b.id from (SELECT * FROM Type WHERE category_id = ?) a , Type_Brand b WHERE a.id = b.type_id) a , Product b WHERE a.id = b.type_brand_id";
     @Override
     public List<CategoryEntities> listCategory() throws SQLException {
         Connection conn = null;
@@ -44,7 +44,12 @@ public class CategoryDaoImpl extends BaseDao implements CategoryDao {
                 category.setCategoryId(rs.getInt("id"));
                 category.setCategoryName(rs.getNString("name"));
                 category.setCategoryPath(rs.getNString("categoryImage"));
-                category.setCount(rs.getInt("countProduct"));
+                pre = conn.prepareStatement(COUNT_PRODUCT);
+                pre.setInt(1, category.getCategoryId());
+                ResultSet rs1 = pre.executeQuery();
+                if (rs1.next()){
+                    category.setCount(rs1.getInt("COUNT(b.id)"));
+                }
                 list.add(category);
             }
         } finally {

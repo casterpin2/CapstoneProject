@@ -184,7 +184,6 @@ public class CategoryDisplayPage extends BasePage {
         @Override
         protected void onProgressUpdate(List<Category>... values) {
             super.onProgressUpdate(values);
-            StorageReference storageReference = Firebase.getFirebase();
             categoryList = values[0];
         }
 
