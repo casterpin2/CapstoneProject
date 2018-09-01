@@ -130,7 +130,7 @@ public class BrandDisplayPage extends BasePage {
         final Call<List<Brand>> callBrand = apiService.getBrands();
         new BrandDisplayData().execute(callBrand);
         try {
-            Glide.with(this).load(R.drawable.cover).into((ImageView) findViewById(R.id.cover));
+            Glide.with(this).load(R.drawable.brand_cover).into((ImageView) findViewById(R.id.cover));
         } catch (Exception e) {
             e.printStackTrace();
         }

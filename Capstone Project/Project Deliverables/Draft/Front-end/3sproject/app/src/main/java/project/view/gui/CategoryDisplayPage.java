@@ -135,7 +135,7 @@ public class CategoryDisplayPage extends BasePage {
         final Call<List<Category>> callCategory = apiService.getCategory();
         new CategoryDisplayData().execute(callCategory);
        try {
-            Glide.with(this).load(R.drawable.cover).into((ImageView) findViewById(R.id.cover));
+            Glide.with(this).load(R.drawable.category_cover).into((ImageView) findViewById(R.id.cover));
         } catch (Exception e) {
             e.printStackTrace();
         }
