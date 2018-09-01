@@ -107,7 +107,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".gui.EditUserInformationPage"
-            android:theme="@style/AppTheme.NoActionBar"
+            android:theme="@style/AppTheme.NoActionBar.TransparentTheme"
             android:windowSoftInputMode="adjustResize"/>
         <activity
             android:name=".gui.StoreManagementOrderPage"

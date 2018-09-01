@@ -17,15 +17,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="64dp"
+            android:layout_above="@id/txt_name"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="56dp"
             android:gravity="center">
-
             <de.hdodenhof.circleimageview.CircleImageView
-                xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/profile_image"
                 android:layout_width="112dp"
                 android:layout_height="112dp"/>
-
         </RelativeLayout>
 
         <TextView
@@ -35,23 +34,36 @@
             android:layout_alignParentBottom="true"
             android:gravity="center"
             android:textColor="@color/colorWhite"
-            android:textSize="21dp"
-            android:background="#70000000"
+            android:textSize="20dp"
             android:ellipsize="end"
             android:padding="8dp"/>
 
-        <ImageButton
-            android:id="@+id/backBtn"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="32dp"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:adjustViewBounds="true"
-            android:background="@null"
-            android:scaleType="fitXY"
-            android:src="@drawable/btn_back" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp">
+
+            <ImageButton
+                android:id="@+id/backBtn"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="5dp"
+                android:adjustViewBounds="true"
+                android:background="@null"
+                android:scaleType="centerInside"
+                android:src="@drawable/btn_back" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_gravity="center"
+                android:ellipsize="end"
+                android:text="Thông tin tài khoản"
+                android:textColor="@color/colorWhite"
+                android:textSize="20dp" />
+        </RelativeLayout>
     </RelativeLayout>
     <ScrollView
         android:layout_below="@+id/rellay1"
