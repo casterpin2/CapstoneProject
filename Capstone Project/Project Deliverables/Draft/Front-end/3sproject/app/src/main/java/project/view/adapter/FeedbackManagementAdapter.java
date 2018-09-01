@@ -16,9 +16,11 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.List;
 
+import project.firebase.Firebase;
 import project.view.R;
 import project.view.model.UserFeedback;
 import project.view.util.Formater;
@@ -27,7 +29,7 @@ public class FeedbackManagementAdapter extends ArrayAdapter<UserFeedback> {
 
     private Context context;
     private List<UserFeedback> feedbacks;
-
+    private StorageReference storageReference = Firebase.getFirebase();
     public FeedbackManagementAdapter(@NonNull Context context, int resource, @NonNull List<UserFeedback> feedbacks) {
         super(context, resource, feedbacks);
         this.context = context;
@@ -55,6 +57,11 @@ public class FeedbackManagementAdapter extends ArrayAdapter<UserFeedback> {
         }else {
             viewHolder.imgSatisfied.setImageResource(R.drawable.sad_unchecked);
         }
+
+        Glide.with(context /* context */)
+                .using(new FirebaseImageLoader())
+                .load(storageReference.child(userFeedback.getUser().getImage_path()))
+                .into(viewHolder.imgUser);
         viewHolder.contentFeedback.setText(userFeedback.getFeedback().getContent());
         viewHolder.feedbackDate.setText(userFeedback.getFeedback().getRegisterLog());
         return convertView;
@@ -62,10 +69,11 @@ public class FeedbackManagementAdapter extends ArrayAdapter<UserFeedback> {
 
     public static class MyViewHolder {
         public TextView name, contentFeedback,feedbackDate;
-        public ImageView imgSatisfied;
+        public ImageView imgSatisfied,imgUser;
 
         public MyViewHolder(View view) {
             name =  view.findViewById(R.id.tvName);
+            imgUser = view.findViewById(R.id.profile_image);
             contentFeedback = view.findViewById(R.id.tvContent);
             imgSatisfied = view.findViewById(R.id.imgSatisfied);
             feedbackDate = view.findViewById(R.id.tvFeedbackDate);
