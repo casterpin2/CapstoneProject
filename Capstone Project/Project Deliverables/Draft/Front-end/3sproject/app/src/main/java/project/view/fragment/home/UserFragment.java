@@ -57,7 +57,7 @@ public class UserFragment extends Fragment implements NetworkStateReceiver.Netwo
     private View view;
     private Toolbar toolbar;
     private Button btnLogout, loginBtn;
-    private TextView tvUserName;
+    private TextView tvUserName, inforText, changePassText;
     private CircleImageView profile_image;
     private LinearLayout changePasswordLayout, userInfoLayout, cartLayout, orderLayout;
     private int userID = 0;
@@ -112,8 +112,10 @@ public class UserFragment extends Fragment implements NetworkStateReceiver.Netwo
                 isNot3sAccount = true;
             }
             if (isNot3sAccount) {
-                userInfoLayout.setVisibility(View.GONE);
-                changePasswordLayout.setVisibility(View.GONE);
+                userInfoLayout.setEnabled(false);
+                inforText.setTextColor(getResources().getColor(R.color.colorLightGrey));
+                changePasswordLayout.setEnabled(false);
+                changePassText.setTextColor(getResources().getColor(R.color.colorLightGrey));
             }
             toolbar = view.findViewById(R.id.toolbar);
             toolbar.setTitle("");
@@ -255,7 +257,8 @@ public class UserFragment extends Fragment implements NetworkStateReceiver.Netwo
         orderLayout = view.findViewById(R.id.orderLayout);
         tvUserName = view.findViewById(R.id.tvUserName);
         profile_image = view.findViewById(R.id.profile_image);
-
+        inforText = view.findViewById(R.id.inforText);
+        changePassText = view.findViewById(R.id.changePassText);
     }
 
     public void findViewInNotLoginnedLayout() {
