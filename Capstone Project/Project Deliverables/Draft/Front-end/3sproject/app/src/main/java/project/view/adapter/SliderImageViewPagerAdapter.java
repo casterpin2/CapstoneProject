@@ -9,6 +9,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
+import com.google.firebase.storage.StorageReference;
+
+import project.firebase.Firebase;
 import project.view.R;
 
 /**
@@ -19,7 +24,9 @@ public class SliderImageViewPagerAdapter extends PagerAdapter {
 
     private Context context;
     private LayoutInflater layoutInflater;
-    private Integer [] images = {R.drawable.cover, R.drawable.cover, R.drawable.cover};
+
+    private StorageReference storageReference = Firebase.getFirebase();
+    private Integer [] images = {R.drawable.slider1, R.drawable.cover, R.drawable.cover};
 
     public SliderImageViewPagerAdapter(Context context) {
         this.context = context;
@@ -42,21 +49,23 @@ public class SliderImageViewPagerAdapter extends PagerAdapter {
         View view = layoutInflater.inflate(R.layout.image_slider_home, null);
         ImageView imageView = (ImageView) view.findViewById(R.id.imageView);
         imageView.setImageResource(images[position]);
-
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if(position == 0){
-                    Toast.makeText(context, "Slide 1 Clicked", Toast.LENGTH_SHORT).show();
-                } else if(position == 1){
-                    Toast.makeText(context, "Slide 2 Clicked", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(context, "Slide 3 Clicked", Toast.LENGTH_SHORT).show();
-                }
-
-            }
-        });
+        Glide.with(context /* context */)
+                .load(images[position])
+                .into(imageView);
+//        view.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                if(position == 0){
+//                    Toast.makeText(context, "Slide 1 Clicked", Toast.LENGTH_SHORT).show();
+//                } else if(position == 1){
+//                    Toast.makeText(context, "Slide 2 Clicked", Toast.LENGTH_SHORT).show();
+//                } else {
+//                    Toast.makeText(context, "Slide 3 Clicked", Toast.LENGTH_SHORT).show();
+//                }
+//
+//            }
+//        });
 
         ViewPager vp = (ViewPager) container;
         vp.addView(view, 0);
