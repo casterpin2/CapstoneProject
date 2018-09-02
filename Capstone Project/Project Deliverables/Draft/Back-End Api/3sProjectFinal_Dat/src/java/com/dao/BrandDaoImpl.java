@@ -24,10 +24,12 @@ public class BrandDaoImpl extends BaseDao implements BrandDao {
 
     private final static String SQL = " select b.id,b.name,i.path,count(p.id) as countProduct from Brand b  join (Image_Brand ib  join Image i on ib.image_id = i.id) on b.id = ib.brand_id \n"
             + "            join (Type_Brand tb  join Product p on tb.id = p.type_brand_id) on b.id = tb.brand_id \n"
-            + "            group by b.id,b.name,i.path";
-
+            + "            group by b.id,b.name,i.path limit ?,10";
+    private final static String SQL1 = " select b.id,b.name,i.path,count(p.id) as countProduct from Brand b  join (Image_Brand ib  join Image i on ib.image_id = i.id) on b.id = ib.brand_id and ib.brand_id IN (1,9,60,62,68)\n" +
+"                        join (Type_Brand tb  join Product p on tb.id = p.type_brand_id) on b.id = tb.brand_id\n" +
+"                        group by b.id,b.name,i.path";
     @Override
-    public List<BrandEntities> listBrand() throws SQLException {
+    public List<BrandEntities> listBrand(int page) throws SQLException {
         Connection conn = null;
         PreparedStatement pre = null;
         ResultSet rs = null;
@@ -37,6 +39,7 @@ public class BrandDaoImpl extends BaseDao implements BrandDao {
             conn = getConnection();
             ;
             pre = conn.prepareStatement(SQL);
+            pre.setInt(1, page*10);
             rs = pre.executeQuery();
             while (rs.next()) {
                 BrandEntities brand = new BrandEntities();
@@ -53,7 +56,7 @@ public class BrandDaoImpl extends BaseDao implements BrandDao {
     }
 
     @Override
-    public List<BrandEntities> listBrandTop10() throws SQLException {
+    public List<BrandEntities> listBrandTop5() throws SQLException {
         Connection conn = null;
         PreparedStatement pre = null;
         ResultSet rs = null;
@@ -62,7 +65,7 @@ public class BrandDaoImpl extends BaseDao implements BrandDao {
             list = new ArrayList<>();
             conn = getConnection();
 
-            pre = conn.prepareStatement(SQL + " limit 1,5");
+            pre = conn.prepareStatement(SQL1);
             rs = pre.executeQuery();
             while (rs.next()) {
                 BrandEntities brand = new BrandEntities();
@@ -79,7 +82,7 @@ public class BrandDaoImpl extends BaseDao implements BrandDao {
     }
 
     @Override
-    public List<ProductAddEntites> listProductWithBrand(int brandId) throws SQLException {
+    public List<ProductAddEntites> listProductWithBrand(int brandId, int page) throws SQLException {
         Connection conn = null;
         PreparedStatement pre = null;
         ResultSet rs = null;
@@ -87,9 +90,10 @@ public class BrandDaoImpl extends BaseDao implements BrandDao {
         try {
             list = new ArrayList<>();
             conn = getConnection();
-            String sql = "select p.id,p.name,p.description,i.path,b.name as brand_name,t.name as type_name from Product p join (Type_Brand tb join Brand b on tb.brand_id = b.id) on p.type_brand_id = tb.id join (Type_Brand tl join Type t on tl.type_id = t.id) on p.type_brand_id = tl.id join (Image_Product ip join Image i on ip.image_id = i.id) on p.id = ip.product_id where b.id = ?";
+            String sql = "select p.id,p.name,p.description,i.path,b.name as brand_name,t.name as type_name from Product p join (Type_Brand tb join Brand b on tb.brand_id = b.id) on p.type_brand_id = tb.id join (Type_Brand tl join Type t on tl.type_id = t.id) on p.type_brand_id = tl.id join (Image_Product ip join Image i on ip.image_id = i.id) on p.id = ip.product_id where b.id = ? limit ?,5";
             pre = conn.prepareStatement(sql);
             pre.setInt(1, brandId);
+            pre.setInt(2, page*5);
             rs = pre.executeQuery();
             while (rs.next()) {
                 ProductAddEntites product = new ProductAddEntites();

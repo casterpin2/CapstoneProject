@@ -9,10 +9,10 @@ import java.util.ArrayList;
 import java.util.List;
 import project.view.model.Product;
 
-public abstract class BaseRecyclerViewAdapter
+public abstract class BaseRecyclerViewAdapter<T>
     extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         protected LayoutInflater mInflater;
-        protected List<Product> mDataList;
+        protected List<T> mDataList;
         protected ItemClickListener mItemClickListener;
 
     protected BaseRecyclerViewAdapter(@NonNull Context context,
@@ -22,13 +22,13 @@ public abstract class BaseRecyclerViewAdapter
             mDataList = new ArrayList<>();
         }
 
-        public void add(List<Product> itemList) {
+        public void add(List<T> itemList) {
             mDataList.addAll(itemList);
             notifyDataSetChanged();
         }
 
-        public void set(List<Product> dataList) {
-            List<Product> clone = new ArrayList<>(dataList);
+        public void set(List<T> dataList) {
+            List<T> clone = new ArrayList<>(dataList);
             mDataList.clear();
             mDataList.addAll(clone);
             notifyDataSetChanged();

@@ -20,63 +20,70 @@ import project.view.R;
 import project.view.gui.ProductBrandDisplayPage;
 import project.view.model.Brand;
 
-public class BrandCustomCardviewAdapter extends RecyclerView.Adapter<BrandCustomCardviewAdapter.MyViewHolder> {
-    private Context mContext;
-    private List<Brand> brandList;
+public class BrandCustomCardviewAdapter extends LoadMoreRecyclerViewAdapter<Brand> {
+    private static final int TYPE_ITEM = 1;
     private StorageReference storageReference = Firebase.getFirebase();
-    public Context getmContext() {
-        return mContext;
-    }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
+    public class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         public TextView brandName, numberOfRecord;
         public ImageView brandImage;
 
-        public MyViewHolder(View view) {
+        public ItemViewHolder(View view) {
             super(view);
             brandName = (TextView) view.findViewById(R.id.brandName);
             numberOfRecord = (TextView) view.findViewById(R.id.numberOfRecord);
             brandImage = (ImageView) view.findViewById(R.id.brandImage);
         }
-    }
-
-
-    public BrandCustomCardviewAdapter(Context mContext, List<Brand> brandList) {
-        this.mContext = mContext;
-        this.brandList = brandList;
-    }
-
-    @Override
-    public BrandCustomCardviewAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.brand_display_page_custom_cardview, parent, false);
-        return new BrandCustomCardviewAdapter.MyViewHolder(itemView);
-    }
-
-
-
-    @Override
-    public void onBindViewHolder(final BrandCustomCardviewAdapter.MyViewHolder holder, int position) {
-        final Brand brand = brandList.get(position);
-        holder.brandName.setText(brand.getBrandName());
-        holder.numberOfRecord.setText(String.valueOf(brand.getNumberOfRecord())+" sản phẩm");
-        Glide.with(mContext /* context */)
-                .using(new FirebaseImageLoader())
-                .load(storageReference.child(brandList.get(position).getBrandImageLink()))
-                .into(holder.brandImage);
-        holder.brandImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getmContext(), ProductBrandDisplayPage.class);
-                intent.putExtra("brandID", brand.getBrandID());
-                intent.putExtra("brandName", brand.getBrandName());
-                getmContext().startActivity(intent);
+        @Override
+        public void onClick(View v) {
+            if (mItemClickListener != null) {
+                mItemClickListener.onItemClick(v, getAdapterPosition());
             }
-        });
+        }
+    }
+
+
+    public BrandCustomCardviewAdapter(Context context, ItemClickListener itemClickListener,
+                                                RetryLoadMoreListener retryLoadMoreListener) {
+        super(context, itemClickListener, retryLoadMoreListener);
     }
 
     @Override
-    public int getItemCount() {
-        return brandList.size();
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        if (viewType == TYPE_ITEM) {
+            View view = mInflater.inflate(R.layout.brand_display_page_custom_cardview, parent, false);
+            return new ItemViewHolder(view);
+        }
+        return super.onCreateViewHolder(parent, viewType);
+    }
+
+
+
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        if (holder instanceof ItemViewHolder) {
+            final Brand brand = mDataList.get(position);
+            ((ItemViewHolder) holder).brandName.setText(brand.getBrandName());
+            ((ItemViewHolder) holder).numberOfRecord.setText(String.valueOf(brand.getNumberOfRecord()) + " sản phẩm");
+            Glide.with(mInflater.getContext() /* context */)
+                    .using(new FirebaseImageLoader())
+                    .load(storageReference.child(brand.getBrandImageLink()))
+                    .into(((ItemViewHolder) holder).brandImage);
+            ((ItemViewHolder) holder).brandImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(mInflater.getContext(), ProductBrandDisplayPage.class);
+                    intent.putExtra("brandID", brand.getBrandID());
+                    intent.putExtra("brandName", brand.getBrandName());
+                    mInflater.getContext().startActivity(intent);
+                }
+            });
+        }
+        super.onBindViewHolder(holder, position);
+    }
+
+    @Override
+    protected int getCustomItemViewType(int position) {
+        return TYPE_ITEM;
     }
 }

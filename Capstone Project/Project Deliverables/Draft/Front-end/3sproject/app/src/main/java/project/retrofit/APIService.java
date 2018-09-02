@@ -45,13 +45,13 @@ public interface APIService {
     ////////////////////////////////////////////////
 
     @GET("brands")
-    Call<List<Brand>> getBrands();
+    Call<List<Brand>> getBrands(@Query("page") int page);
 
-    @GET("brands/top10")
+    @GET("brands/top5")
     Call<List<Brand>> getBrandsTop5();
 
     @GET("brands/productWithBrand")
-    Call<List<Product>> getProductBrand(@Query("brandId") int brandId);
+    Call<List<Product>> getProductBrand(@Query("brandId") int brandId, @Query("page") int page);
 
     @GET("category")
     Call<List<Category>> getCategory();
@@ -168,4 +168,7 @@ public interface APIService {
     Call<Boolean> updateImgStore(@Body Store storeJson,@Query("imgPath") String imgPath);
     @GET("vadilateUpdateStore")
     Call<Integer> vadilatorStore(@Query("name") String name,@Query("phone") String phone,@Query("typeSearch") String typeSearch);
+    
+    @GET("updateSuggestion")
+    Call<List<Product>> updateSuggestion(@Query("productId") int productId);
 }

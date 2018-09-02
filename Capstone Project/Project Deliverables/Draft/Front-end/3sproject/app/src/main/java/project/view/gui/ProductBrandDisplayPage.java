@@ -12,14 +12,17 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.Message;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -34,6 +37,7 @@ import project.retrofit.APIService;
 import project.retrofit.ApiUtils;
 import project.view.adapter.ProductBrandDisplayListViewAdapter;
 import project.view.R;
+import project.view.model.Item;
 import project.view.model.Product;
 import project.view.util.CustomInterface;
 import retrofit2.Call;
@@ -57,7 +61,12 @@ public class ProductBrandDisplayPage extends BasePage {
     private double currentLongtitude = 0.0;
     private TextView nullMessage;
     private Call<List<Product>> call;
-
+    //lazy loading
+    public Handler mHandle;
+    public View footerView;
+    public boolean isLoading;
+    boolean limitData = false;
+    int page;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,9 +79,12 @@ public class ProductBrandDisplayPage extends BasePage {
         apiService = ApiUtils.getAPIService();
         brandID = getIntent().getIntExtra("brandID", -1);
         brandName = getIntent().getStringExtra("brandName");
-
+        list = new ArrayList<>();
+        adapter = new ProductBrandDisplayListViewAdapter(ProductBrandDisplayPage.this, R.layout.product_brand_display_custom_listview, list);
+        theListView.setAdapter(adapter);
+        page = 1;
         apiService = APIService.retrofit.create(APIService.class);
-        call = apiService.getProductBrand(brandID);
+        call = apiService.getProductBrand(brandID , 0);
         new ProductBrandDisplayData().execute(call);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorApplication)));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -86,9 +98,31 @@ public class ProductBrandDisplayPage extends BasePage {
         });
         CustomInterface.setStatusBarColor(this);
         loadingBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorApplication), android.graphics.PorterDuff.Mode.MULTIPLY);
+        //lazy loading
+
+        mHandle = new MyHandle();
+        LayoutInflater li = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        footerView = li.inflate(R.layout.footer_loading_listview_lazy_loading, null);
+
+        theListView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                int count = list.size();
+                if (view.getLastVisiblePosition() == totalItemCount - 1 && count == (page * 5) && isLoading == false  && (page > 0)) {
+                    isLoading = true;
+                    Thread thread = new ThreadgetMoreData();
+                    thread.start();
+                }
+            }
+        });
     }
 
-    private class ProductBrandDisplayData extends AsyncTask<Call, Void, Void> {
+    private class ProductBrandDisplayData extends AsyncTask<Call, Void, List<Product>> {
         @Override
         protected void onPreExecute() {
             loadingBar.setVisibility(View.VISIBLE);
@@ -96,16 +130,13 @@ public class ProductBrandDisplayPage extends BasePage {
         }
 
         @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            if (!list.isEmpty()) {
-                adapter = new ProductBrandDisplayListViewAdapter(ProductBrandDisplayPage.this, R.layout.product_brand_display_custom_listview, list);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        theListView.setAdapter(adapter);
-                    }
-                });
+        protected void onPostExecute(List<Product> listAdd) {
+            super.onPostExecute(listAdd);
+            if (listAdd != null) {
+                for (Product p : listAdd){
+                    list.add(p);
+                }
+                adapter.notifyDataSetChanged();
                 loadingBar.setVisibility(View.INVISIBLE);
             } else {
                 new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
@@ -125,14 +156,11 @@ public class ProductBrandDisplayPage extends BasePage {
         }
 
         @Override
-        protected Void doInBackground(Call... calls) {
+        protected List<Product> doInBackground(Call... calls) {
             try {
                 Call<List<Product>> call = calls[0];
                 Response<List<Product>> response = call.execute();
-
-                for (int i = 0; i < response.body().size(); i++) {
-                    list.add(response.body().get(i));
-                }
+                return  response.body();
             } catch (IOException e) {
             }
 
@@ -273,5 +301,59 @@ public class ProductBrandDisplayPage extends BasePage {
 
             }
         }
+    }
+
+    //lazy loading
+
+    public class MyHandle extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what){
+                case 0 :
+                    theListView.addFooterView(footerView);
+                    break;
+                case 1:
+                    theListView.removeFooterView(footerView);
+                    getMoreData();
+                    isLoading = false;
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    public void getMoreData(){
+        callAPI(page);
+        page ++;
+    }
+
+
+    public class ThreadgetMoreData extends Thread {
+        @Override
+        public void run() {
+            mHandle.sendEmptyMessage(0);
+            //List<Item> addMoreList = getMoreData();
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            if (isLoading == true){
+                Message msg = mHandle.obtainMessage(1);
+                mHandle.sendMessage(msg);
+            }
+        }
+    }
+
+    private void callAPI (int page){
+        //Call API
+        if (list == null) {
+            list = new ArrayList<>();
+            return;
+        }
+        apiService = APIService.retrofit.create(APIService.class);
+        call = apiService.getProductBrand(brandID,page);
+        new ProductBrandDisplayData().execute(call);
     }
 }

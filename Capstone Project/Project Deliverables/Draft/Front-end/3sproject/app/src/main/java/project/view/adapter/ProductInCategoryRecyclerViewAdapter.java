@@ -17,7 +17,7 @@ import project.view.R;
 import project.view.gui.NearbyStorePage;
 import project.view.model.Product;
 
-public class ProductInCategoryRecyclerViewAdapter extends LoadMoreRecyclerViewAdapter {
+public class ProductInCategoryRecyclerViewAdapter extends LoadMoreRecyclerViewAdapter<Product> {
     private static final int TYPE_ITEM = 1;
     private StorageReference storageReference = Firebase.getFirebase();
     public ProductInCategoryRecyclerViewAdapter(Context context, ItemClickListener itemClickListener,

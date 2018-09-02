@@ -15,8 +15,8 @@ import java.util.List;
  * @author TUYEN
  */
 public interface BrandDao {
-    public List<BrandEntities> listBrand() throws SQLException;
-    public List<BrandEntities> listBrandTop10() throws SQLException;
-    public List<ProductAddEntites> listProductWithBrand(int brandId) throws SQLException;
+    public List<BrandEntities> listBrand(int page) throws SQLException;
+    public List<BrandEntities> listBrandTop5() throws SQLException;
+    public List<ProductAddEntites> listProductWithBrand(int brandId, int page) throws SQLException;
     
 }

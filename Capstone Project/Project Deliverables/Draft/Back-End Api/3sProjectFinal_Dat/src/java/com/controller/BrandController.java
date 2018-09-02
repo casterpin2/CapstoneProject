@@ -30,17 +30,17 @@ public class BrandController {
     BrandService brand;
     
     @RequestMapping(value = "/brands", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
-    public List<BrandEntities> brandList() throws SQLException {
-        return brand.listBrand();
+    public List<BrandEntities> brandList(@RequestParam("page") int page) throws SQLException {
+        return brand.listBrand(page);
     }
     
-    @RequestMapping(value = "/brands/top10", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
-    public List<BrandEntities> brandListTop10() throws SQLException {
-        return brand.listBrandTop10();
+    @RequestMapping(value = "/brands/top5", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
+    public List<BrandEntities> brandListTop5() throws SQLException {
+        return brand.listBrandTop5();
     }
 
     @RequestMapping(value = "/brands/productWithBrand", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
-    public List<ProductAddEntites> productWithBrand(@RequestParam("brandId") int brandId) throws SQLException {
-        return brand.listProductWithBrand(brandId);
+    public List<ProductAddEntites> productWithBrand(@RequestParam("brandId") int brandId, @RequestParam("page") int page) throws SQLException {
+        return brand.listProductWithBrand(brandId,page);
     }
 }

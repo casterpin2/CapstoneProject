@@ -41,7 +41,7 @@ public class ProductCategoryDisplayPage extends BasePage implements ProductInCat
     private List<Product> tempProduct;
     private List<Product> productsLoadMore;
     private List<Category> categoryList;
-    private RecyclerView.LayoutManager mLayoutManager;
+    private GridLayoutManager mLayoutManager;
     private Spinner spinner,spinnerSort;
     private TextView filterLabble;
     private ProductFilter productFilter;
@@ -70,6 +70,15 @@ public class ProductCategoryDisplayPage extends BasePage implements ProductInCat
 
         mLayoutManager = new GridLayoutManager(this, 2);
         recyclerView.setLayoutManager(mLayoutManager);
+        mLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                if (adapter.TYPE_PROGRESS == adapter.getItemViewType(position)){
+                    return 2;
+                }
+                return 1;
+            }
+        });
         adapter = new ProductInCategoryRecyclerViewAdapter(this, this, this);
         tempProduct = new ArrayList<>();
         adapter.set(tempProduct);
@@ -117,15 +126,17 @@ public class ProductCategoryDisplayPage extends BasePage implements ProductInCat
                     emulatorLoadMoreFaild = false;
                     return;
                 }
-                if (tempProduct.size() %2 != 0) {
+                if (tempProduct != null && tempProduct.size() %2 != 0) {
                     adapter.onReachEnd();
                     return;
                 }
-                if(productsLoadMore.size() == 0){
+                if(productsLoadMore != null && productsLoadMore.size() == 0){
                     adapter.onReachEnd();
                     return;
                 }
-                adapter.add(productsLoadMore);
+                if(productsLoadMore != null) {
+                    adapter.add(productsLoadMore);
+                }
             }
         }, 2000);
     }
@@ -144,9 +155,6 @@ public class ProductCategoryDisplayPage extends BasePage implements ProductInCat
 
         @Override
         protected void onPreExecute() {
-            if (page != 0) {
-                adapter.startLoadMore();
-            }
             super.onPreExecute();
         }
 
@@ -155,7 +163,8 @@ public class ProductCategoryDisplayPage extends BasePage implements ProductInCat
             productsLoadMore = aVoid;
 
             if (productsLoadMore == null){
-                adapter.onReachEnd();
+                adapter.onLoadMoreFailed();
+                emulatorLoadMoreFaild = false;
                 return;
             }
             loadMore(page);

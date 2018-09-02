@@ -24,17 +24,17 @@ public class BrandServiceImpl implements BrandService {
     BrandDao dao;
 
     @Override
-    public List<BrandEntities> listBrand() throws SQLException {
-        return dao.listBrand();
+    public List<BrandEntities> listBrand(int page) throws SQLException {
+        return dao.listBrand(page);
     }
 
     @Override
-    public List<BrandEntities> listBrandTop10() throws SQLException {
-       return dao.listBrandTop10();
+    public List<BrandEntities> listBrandTop5() throws SQLException {
+       return dao.listBrandTop5();
     }
 
     @Override
-    public List<ProductAddEntites> listProductWithBrand(int brandId) throws SQLException {
-       return  dao.listProductWithBrand(brandId);
+    public List<ProductAddEntites> listProductWithBrand(int brandId, int page) throws SQLException {
+       return  dao.listProductWithBrand(brandId,page);
     }
 }
