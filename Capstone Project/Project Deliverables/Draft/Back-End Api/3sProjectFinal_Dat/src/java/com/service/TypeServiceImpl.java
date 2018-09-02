@@ -27,8 +27,8 @@ public class TypeServiceImpl implements TypeService{
     }
 
     @Override
-    public List<ProductAddEntites> getProductbyType(int typeId) throws SQLException {
-        return dao.getProductbyType(typeId);
+    public List<ProductAddEntites> getProductbyType(int typeId, int page) throws SQLException {
+        return dao.getProductbyType(typeId,page);
     }
     
 }

@@ -308,4 +308,9 @@ public class UserController {
         UserEntites us = mapper.readValue(jsonString, UserEntites.class);
         return user.updateImgUser(us);
     }
+    
+    @RequestMapping(value = "/updateSuggestion", method = RequestMethod.GET, produces = "application/json")
+    public List<ProductAddEntites> updateSuggestion(@RequestParam("productId") int productId) throws SQLException, IOException {
+        return user.updateSuggestion(productId);
+    }
 }

@@ -16,5 +16,5 @@ import java.util.List;
  */
 public interface TypeDao {
     public List<TypeEntites>  getTypebyCategory(int categoryId) throws SQLException;
-    public List<ProductAddEntites>  getProductbyType(int typeId) throws SQLException;
+    public List<ProductAddEntites>  getProductbyType(int typeId, int page) throws SQLException;
 }

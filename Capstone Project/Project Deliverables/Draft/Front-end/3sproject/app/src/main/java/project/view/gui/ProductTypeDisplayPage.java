@@ -25,10 +25,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import project.retrofit.APIService;
 import project.retrofit.ApiUtils;
+import project.view.adapter.BrandCustomCardviewAdapter;
+import project.view.adapter.EndlessRecyclerViewScrollListener;
 import project.view.adapter.ProductInStoreCustomListViewAdapter;
 import project.view.adapter.ProductTypeCustomCardViewAdapter;
 import project.view.R;
+import project.view.model.Brand;
 import project.view.model.Product;
 import project.view.util.CustomInterface;
 import project.view.util.Formater;
@@ -37,10 +41,10 @@ import project.view.util.ProductFilter;
 import retrofit2.Call;
 import retrofit2.Response;
 
-public class ProductTypeDisplayPage extends BasePage {
+public class ProductTypeDisplayPage extends BasePage implements BrandCustomCardviewAdapter.ItemClickListener ,BrandCustomCardviewAdapter.RetryLoadMoreListener{
 
     public List<Product> productList;
-    public List<Product> tempProduct;
+
     private RecyclerView recyclerView;
     private ProductTypeCustomCardViewAdapter adapter;
     private TextView filterLable, nullMessage;
@@ -50,20 +54,42 @@ public class ProductTypeDisplayPage extends BasePage {
     private SearchView searchView;
     private String typeName;
     private ProgressBar loadingBar;
-
+    private int currentPage = 0;
+    public List<Product> tempProduct;
+    private boolean isLoading;
+    public List<Brand> listBrands;
+    private List<Product> productsLoadMore;
+    private GridLayoutManager mLayoutManager;
+    private boolean emulatorLoadMoreFaild = true;
+    private int filterSelected;
+    private EndlessRecyclerViewScrollListener listener;
+    private int typeId;
+    private APIService mApi;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.content_with_filter);
         findView();
+        mApi = ApiUtils.getAPIService();
+        isLoading = false;
+        filterSelected = 0;
         loadingBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorApplication), android.graphics.PorterDuff.Mode.MULTIPLY);
-
-        int typeID = getIntent().getIntExtra("typeID", -1);
+        productFilter = new ProductFilter();
+        typeId = getIntent().getIntExtra("typeID", -1);
         typeName = getIntent().getStringExtra("typeName");
         productList = new ArrayList<>();
         tempProduct = new ArrayList<>();
-        adapter = new ProductTypeCustomCardViewAdapter(this, tempProduct);
-        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(ProductTypeDisplayPage.this, 2);
+        adapter = new ProductTypeCustomCardViewAdapter(this, this,this);
+        mLayoutManager = new GridLayoutManager(ProductTypeDisplayPage.this, 2);
+        mLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                if (adapter.TYPE_PROGRESS == adapter.getItemViewType(position)){
+                    return 2;
+                }
+                return 1;
+            }
+        });
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, Formater.dpToPx(2,getResources()), true));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -73,10 +99,12 @@ public class ProductTypeDisplayPage extends BasePage {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         CustomInterface.setStatusBarColor(this);
         recyclerView.setAdapter(adapter);
-        if (typeID != -1) {
+        if (typeId != -1) {
             getSupportActionBar().setTitle(typeName);
-            Call<List<Product>> call = ApiUtils.getAPIService().getProductbyType(typeID);
-            new GetProductType().execute(call);
+            Call<List<Product>> callProduct = ApiUtils.getAPIService().getProductbyType(typeId,currentPage);
+            new GetProductType(0).execute(callProduct);
+            Call<List<Brand>> callBrand = ApiUtils.getAPIService().listBrandByType(typeId);
+            new GetBrandType().execute(callBrand);
         } else {
             Toast.makeText(ProductTypeDisplayPage.this, "Có lỗi xảy ra !!!",Toast.LENGTH_LONG).show();
         }
@@ -107,30 +135,30 @@ public class ProductTypeDisplayPage extends BasePage {
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 //        productList
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                searchedProduct.clear();
-                if(newText.equals("") || newText == null){
-                    adapter = new ProductTypeCustomCardViewAdapter(ProductTypeDisplayPage.this,tempProduct);
-                } else {
-                    for (int i = 0; i < tempProduct.size(); i++) {
-                        if(tempProduct.get(i).getProduct_name().toLowerCase().contains(newText.toLowerCase())) {
-                            searchedProduct.add(tempProduct.get(i));
-                        }
-                    }
-                    adapter = new ProductTypeCustomCardViewAdapter(ProductTypeDisplayPage.this, searchedProduct);
-                }
-                adapter.notifyDataSetChanged();
-                recyclerView.setAdapter(adapter);
-                return true;
-            }
-        });
+//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+//            @Override
+//            public boolean onQueryTextSubmit(String query) {
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean onQueryTextChange(String newText) {
+//                searchedProduct.clear();
+//                if(newText.equals("") || newText == null){
+//                    adapter = new ProductTypeCustomCardViewAdapter(ProductTypeDisplayPage.this,tempProduct);
+//                } else {
+//                    for (int i = 0; i < tempProduct.size(); i++) {
+//                        if(tempProduct.get(i).getProduct_name().toLowerCase().contains(newText.toLowerCase())) {
+//                            searchedProduct.add(tempProduct.get(i));
+//                        }
+//                    }
+//                    adapter = new ProductTypeCustomCardViewAdapter(ProductTypeDisplayPage.this, searchedProduct);
+//                }
+//                adapter.notifyDataSetChanged();
+//                recyclerView.setAdapter(adapter);
+//                return true;
+//            }
+//        });
         return true;
     }
 
@@ -152,60 +180,37 @@ public class ProductTypeDisplayPage extends BasePage {
     }
 
     private class GetProductType extends AsyncTask<Call, Void, List<Product>> {
+        private int page;
+
+        public GetProductType(int page) {
+            this.page = page;
+        }
         @Override
         protected void onPreExecute() {
+            isLoading = true;
             super.onPreExecute();
-            loadingBar.setVisibility(View.VISIBLE);
         }
         @Override
         protected void onPostExecute(List<Product> aVoid) {
-
-            productFilter = new ProductFilter();
-            if (aVoid != null) {
-                for (Product pro : aVoid){
-                    productList.add(pro);
-                }
-                for (Product product : productList){
-                    tempProduct.add(product);
-                }
-                productFilter.setBrandFilter(productList,ProductTypeDisplayPage.this,spinnerBrand);
-                spinnerBrand.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                        tempProduct.clear();
-                        if(adapterView.getItemAtPosition(i).toString().contains(productFilter.ALL_PRODUCT)){
-                            for (Product product : productList){
-                                tempProduct.add(product);
-                            }
-                        }else{
-                            for (Product product : productList) {
-                                if (adapterView.getItemAtPosition(i).toString().contains(product.getBrand_name())) {
-                                    tempProduct.add(product);
-                                }
-                            }
-                        }
-                        adapter.notifyDataSetChanged();
-                    }
-
-                    @Override
-                    public void onNothingSelected(AdapterView<?> adapterView) {
-
-                    }
-                });
-                loadingBar.setVisibility(View.INVISIBLE);
-                adapter.notifyDataSetChanged();
-            } else {
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-
-                            Toast.makeText(ProductTypeDisplayPage.this, "Có lỗi xảy ra. Vui lòng thử lại!", Toast.LENGTH_SHORT).show();
-                            nullMessage.setText("Có lỗi xảy ra, vui lòng tải lại trang!");
-                            loadingBar.setVisibility(View.INVISIBLE);
-                        }
-
-                },10000);
+            productsLoadMore = aVoid;
+            if (productsLoadMore == null){
+                adapter.onLoadMoreFailed();
+                emulatorLoadMoreFaild = false;
+                return;
             }
+            loadMore(page);
+            if (page == 0 && productsLoadMore != null){
+                listener = new EndlessRecyclerViewScrollListener(mLayoutManager) {
+                    @Override
+                    public void onLoadMore(int page) {
+                        currentPage = page;
+                        Call<List<Product>> call = mApi.getProductbyType(typeId,currentPage);
+                        new GetProductType(page).execute(call);
+                    }
+                };
+                recyclerView.addOnScrollListener(listener);
+            }
+            isLoading = false;
             super.onPostExecute(aVoid);
 
         }
@@ -223,5 +228,153 @@ public class ProductTypeDisplayPage extends BasePage {
             }
             return null;
         }
+    }
+
+    private class GetProductBrandType extends AsyncTask<Call, Void, List<Product>> {
+        private int page;
+        private int brandId;
+
+        public GetProductBrandType(int brandId, int page) {
+            this.page = page;
+            this.brandId = brandId;
+        }
+        @Override
+        protected void onPreExecute() {
+            isLoading = true;
+            super.onPreExecute();
+        }
+        @Override
+        protected void onPostExecute(List<Product> aVoid) {
+            productsLoadMore = aVoid;
+            if (productsLoadMore == null){
+                adapter.onLoadMoreFailed();
+                emulatorLoadMoreFaild = false;
+                return;
+            }
+            loadMore(page);
+            if (page == 0 && productsLoadMore != null){
+                listener = new EndlessRecyclerViewScrollListener(mLayoutManager) {
+                    @Override
+                    public void onLoadMore(int page) {
+                        currentPage = page;
+                        Call<List<Product>> call = mApi.productWithBrandType(brandId,typeId,currentPage);
+                        new GetProductBrandType(brandId,page).execute(call);
+                    }
+                };
+                recyclerView.addOnScrollListener(listener);
+            }
+            isLoading = false;
+            super.onPostExecute(aVoid);
+
+        }
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            super.onProgressUpdate(values);
+        }
+        @Override
+        protected List<Product> doInBackground(Call... calls) {
+            try {
+                Call<List<Product>> call = calls[0];
+                Response<List<Product>> response = call.execute();
+                return response.body();
+            } catch (IOException e) {
+            }
+            return null;
+        }
+    }
+
+    private class GetBrandType extends AsyncTask<Call, Void, List<Brand>> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+        @Override
+        protected void onPostExecute(List<Brand> aVoid) {
+            if (aVoid != null){
+                listBrands = aVoid;
+                spinnerBrand.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                        if (filterSelected == i){
+                            return;
+                        }
+                        while (isLoading == true){
+
+                        }
+                        adapter.onReachStart();
+                        recyclerView.removeOnScrollListener(listener);
+                        currentPage = 0;
+                        adapter.clear();
+                        if (i == 0){
+                            Call<List<Product>> callProduct = mApi.getProductbyType(typeId,currentPage);
+                            new GetProductType(0).execute(callProduct);
+                        }
+                        else {
+                            Call<List<Product>> call = mApi.productWithBrandType(listBrands.get(i - 1).getBrandID(), typeId, currentPage);
+                            new GetProductBrandType(listBrands.get(i - 1).getBrandID(),0).execute(call);
+                        }
+                        filterSelected = i;
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> adapterView) {
+
+                    }
+                });
+                productFilter.setBrandsFilter(listBrands,ProductTypeDisplayPage.this,spinnerBrand);
+
+            }
+            super.onPostExecute(aVoid);
+
+        }
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            super.onProgressUpdate(values);
+        }
+        @Override
+        protected List<Brand> doInBackground(Call... calls) {
+            try {
+                Call<List<Brand>> call = calls[0];
+                Response<List<Brand>> response = call.execute();
+                return response.body();
+            } catch (IOException e) {
+            }
+            return null;
+        }
+    }
+
+    @Override
+    public void onRetryLoadMore() {
+        loadMore(currentPage);
+    }
+
+    private void loadMore(final int page){
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if(productsLoadMore == null && emulatorLoadMoreFaild && page !=0){
+                    adapter.onLoadMoreFailed();
+                    emulatorLoadMoreFaild = false;
+                    return;
+                }
+                if (    tempProduct != null && tempProduct.size() %2 != 0) {
+                    adapter.onReachEnd();
+                    return;
+                }
+                if(productsLoadMore != null && productsLoadMore.size() == 0){
+                    adapter.onReachEnd();
+                    return;
+                }
+                if (productsLoadMore != null){
+                    adapter.add(productsLoadMore);
+                }
+            }
+        }, 2000);
+    }
+
+    @Override
+    public void onItemClick(View view, int position) {
+
     }
 }

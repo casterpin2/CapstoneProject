@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import project.view.model.Brand;
 import project.view.model.Category;
 import project.view.model.Product;
 
@@ -132,6 +133,18 @@ public class ProductFilter {
         while (i.hasNext()) {
             Map.Entry me = (Map.Entry) i.next();
             list.add(me.getKey() + " (" + me.getValue() + ")");
+        }
+        arrayAdapter = new ArrayAdapter<String>(context,
+                android.R.layout.simple_spinner_item, list);
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        brandSpinner.setAdapter(arrayAdapter);
+    }
+
+    public void setBrandsFilter(List<Brand> brands, Context context, Spinner brandSpinner) {
+        List<String> list = new ArrayList<String>();
+        list.add(ALL_PRODUCT);
+        for (Brand brand : brands){
+            list.add(brand.getBrandName() + " (" + brand.getNumberOfRecord() + ")");
         }
         arrayAdapter = new ArrayAdapter<String>(context,
                 android.R.layout.simple_spinner_item, list);

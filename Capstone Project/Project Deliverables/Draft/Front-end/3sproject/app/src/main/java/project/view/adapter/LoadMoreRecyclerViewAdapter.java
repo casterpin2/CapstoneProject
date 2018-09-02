@@ -115,6 +115,11 @@ public abstract class LoadMoreRecyclerViewAdapter<T> extends BaseRecyclerViewAda
         notifyItemChanged(bottomItemPosition());
     }
 
+    public void onReachStart() {
+        mIsReachEnd = false;
+        notifyItemChanged(bottomItemPosition());
+    }
+
     public interface RetryLoadMoreListener {
         void onRetryLoadMore();
     }

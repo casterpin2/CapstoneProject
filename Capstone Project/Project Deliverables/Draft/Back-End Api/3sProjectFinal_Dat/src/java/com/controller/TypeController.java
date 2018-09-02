@@ -35,7 +35,7 @@ public class TypeController {
     }
     
     @RequestMapping(value = "/getProductbyType", method = RequestMethod.GET, produces = "application/json")
-    public List<ProductAddEntites> getProductbyType(@RequestParam("typeId") int typeId) throws SQLException, IOException {
-        return service.getProductbyType(typeId);
+    public List<ProductAddEntites> getProductbyType(@RequestParam("typeId") int typeId,@RequestParam("page") int page) throws SQLException, IOException {
+        return service.getProductbyType(typeId,page);
     }
 }

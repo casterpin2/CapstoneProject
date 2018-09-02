@@ -10,78 +10,86 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.storage.StorageReference;
-import java.util.List;
 import project.firebase.Firebase;
 import project.view.R;
 import project.view.gui.NearbyStorePage;
-import project.view.gui.ProductDetailPage;
 import project.view.model.Product;
 
-public class ProductTypeCustomCardViewAdapter extends RecyclerView.Adapter<ProductTypeCustomCardViewAdapter.MyViewHolder> {
-    private Context context;
-    private List<Product> products;
-    private Product product;
+public class ProductTypeCustomCardViewAdapter extends LoadMoreRecyclerViewAdapter<Product> {
+    private static final int TYPE_ITEM = 1;
     private StorageReference storageReference = Firebase.getFirebase();
 
-    public ProductTypeCustomCardViewAdapter (@NonNull Context context, @NonNull List<Product> products){
-        this.context = context;
-        this.products = products;
+    public ProductTypeCustomCardViewAdapter(Context context, ItemClickListener itemClickListener,
+                                      RetryLoadMoreListener retryLoadMoreListener) {
+        super(context, itemClickListener, retryLoadMoreListener);
     }
     @NonNull
     @Override
-    public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.product_type_display_custom_cardview, parent, false);
-
-        return new ProductTypeCustomCardViewAdapter.MyViewHolder(itemView);
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        if (viewType == TYPE_ITEM) {
+            View view = mInflater.inflate(R.layout.product_type_display_custom_cardview, parent, false);
+            return new ItemViewHolder(view);
+        }
+        return super.onCreateViewHolder(parent, viewType);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        product = products.get(position);
-        holder.productName.setText(product.getProduct_name());
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
+        if (holder instanceof ItemViewHolder) {
 
-        Glide.with(context /* context */)
-                .using(new FirebaseImageLoader())
-                .load(storageReference.child(product.getImage_path()))
-                .into(holder.productImage);
+            final Product product = mDataList.get(position);
+            ((ItemViewHolder) holder).productName.setText(product.getProduct_name());
 
-        holder.productImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+            Glide.with(mInflater.getContext() /* context */)
+                    .using(new FirebaseImageLoader())
+                    .load(storageReference.child(product.getImage_path()))
+                    .into(((ItemViewHolder) holder).productImage);
 
-            }
-        });
-        holder.findNearByBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent toNearByStorePage = new Intent(context, NearbyStorePage.class);
-                toNearByStorePage.putExtra("productId",product.getProduct_id());
-                toNearByStorePage.putExtra("productName",product.getProduct_name());
-                toNearByStorePage.putExtra("image_path",product.getImage_path());
-                context.startActivity(toNearByStorePage);
-            }
-        });
+            ((ItemViewHolder) holder).productImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                }
+            });
+            ((ItemViewHolder) holder).findNearByBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent toNearByStorePage = new Intent(mInflater.getContext(), NearbyStorePage.class);
+                    toNearByStorePage.putExtra("productId", product.getProduct_id());
+                    toNearByStorePage.putExtra("productName", product.getProduct_name());
+                    toNearByStorePage.putExtra("image_path", product.getImage_path());
+                    mInflater.getContext().startActivity(toNearByStorePage);
+                }
+            });
+        }
+        super.onBindViewHolder(holder, position);
     }
 
     @Override
-    public int getItemCount() {
-        return products.size();
+    protected int getCustomItemViewType(int position) {
+        return TYPE_ITEM;
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
+    public class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         public TextView productName;
         public ImageView productImage;
         public TextView findNearByBtn;
-        public MyViewHolder(View view) {
+        public ItemViewHolder(View view) {
             super(view);
             productName = (TextView) view.findViewById(R.id.productName);
             productImage = (ImageView) view.findViewById(R.id.productImage);
             findNearByBtn = view.findViewById(R.id.findNearByBtn);
+        }
+        @Override
+        public void onClick(View v) {
+            if (mItemClickListener != null) {
+                mItemClickListener.onItemClick(v, getAdapterPosition());
+            }
         }
     }
 }

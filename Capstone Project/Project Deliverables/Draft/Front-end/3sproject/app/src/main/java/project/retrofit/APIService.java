@@ -53,6 +53,12 @@ public interface APIService {
     @GET("brands/productWithBrand")
     Call<List<Product>> getProductBrand(@Query("brandId") int brandId, @Query("page") int page);
 
+    @GET("brands/brandByType")
+    Call<List<Brand>> listBrandByType(@Query("typeId") int typeId);
+
+    @GET("brands/productWithBrandType")
+    Call<List<Product>> productWithBrandType(@Query("brandId") int brandId, @Query("typeId") int typeId, @Query("page") int page);
+
     @GET("category")
     Call<List<Category>> getCategory();
 
@@ -124,7 +130,7 @@ public interface APIService {
     Call<List<Item>> getProductWithBarcode(@Query("barcode") String barcode,@Query("store") int storeId);
 
     @GET("getProductbyType")
-    Call<List<Product>> getProductbyType(@Query("typeId") int typeId);
+    Call<List<Product>> getProductbyType(@Query("typeId") int typeId, @Query("page") int page);
 
     @GET("informationUser")
     Call<User> getInformation(@Query("userId") int userId);

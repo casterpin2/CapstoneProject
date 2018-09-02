@@ -43,4 +43,14 @@ public class BrandController {
     public List<ProductAddEntites> productWithBrand(@RequestParam("brandId") int brandId, @RequestParam("page") int page) throws SQLException {
         return brand.listProductWithBrand(brandId,page);
     }
+    
+    @RequestMapping(value = "/brands/brandByType", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
+    public List<BrandEntities> listBrandByType(@RequestParam("typeId") int typeId) throws SQLException {
+        return brand.listBrandByType(typeId);
+    }
+    
+    @RequestMapping(value = "/brands/productWithBrandType", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
+    public List<ProductAddEntites> listProductWithBrandType(@RequestParam("brandId") int brandId, @RequestParam("typeId") int typeId, @RequestParam("page") int page) throws SQLException {
+        return brand.listProductWithBrandType(brandId,typeId,page);
+    }
 }

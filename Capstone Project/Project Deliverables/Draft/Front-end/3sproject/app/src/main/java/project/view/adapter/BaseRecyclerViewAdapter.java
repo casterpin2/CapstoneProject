@@ -15,8 +15,16 @@ public abstract class BaseRecyclerViewAdapter<T>
         protected List<T> mDataList;
         protected ItemClickListener mItemClickListener;
 
+    public List<T> getmDataList() {
+        return mDataList;
+    }
+
+    public void setmDataList(List<T> mDataList) {
+        this.mDataList = mDataList;
+    }
+
     protected BaseRecyclerViewAdapter(@NonNull Context context,
-                ItemClickListener itemClickListener) {
+                                      ItemClickListener itemClickListener) {
             mInflater = LayoutInflater.from(context);
             mItemClickListener = itemClickListener;
             mDataList = new ArrayList<>();
