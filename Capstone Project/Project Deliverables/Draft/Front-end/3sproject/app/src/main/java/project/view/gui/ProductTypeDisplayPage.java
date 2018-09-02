@@ -135,30 +135,27 @@ public class ProductTypeDisplayPage extends BasePage implements BrandCustomCardv
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 //        productList
-//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-//            @Override
-//            public boolean onQueryTextSubmit(String query) {
-//                return false;
-//            }
-//
-//            @Override
-//            public boolean onQueryTextChange(String newText) {
-//                searchedProduct.clear();
-//                if(newText.equals("") || newText == null){
-//                    adapter = new ProductTypeCustomCardViewAdapter(ProductTypeDisplayPage.this,tempProduct);
-//                } else {
-//                    for (int i = 0; i < tempProduct.size(); i++) {
-//                        if(tempProduct.get(i).getProduct_name().toLowerCase().contains(newText.toLowerCase())) {
-//                            searchedProduct.add(tempProduct.get(i));
-//                        }
-//                    }
-//                    adapter = new ProductTypeCustomCardViewAdapter(ProductTypeDisplayPage.this, searchedProduct);
-//                }
-//                adapter.notifyDataSetChanged();
-//                recyclerView.setAdapter(adapter);
-//                return true;
-//            }
-//        });
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                while (isLoading == true){
+
+                }
+                adapter.onReachStart();
+                recyclerView.removeOnScrollListener(listener);
+                currentPage = 0;
+                adapter.clear();
+                Call<List<Product>> callProduct = ApiUtils.getAPIService().getProductTypebyName(query,typeId,currentPage);
+                new GetProductBrandTypebyName(0,query).execute(callProduct);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+
+                return true;
+            }
+        });
         return true;
     }
 
@@ -337,6 +334,59 @@ public class ProductTypeDisplayPage extends BasePage implements BrandCustomCardv
             try {
                 Call<List<Brand>> call = calls[0];
                 Response<List<Brand>> response = call.execute();
+                return response.body();
+            } catch (IOException e) {
+            }
+            return null;
+        }
+    }
+
+    private class GetProductBrandTypebyName extends AsyncTask<Call, Void, List<Product>> {
+        private int page;
+        private String query;
+
+        public GetProductBrandTypebyName(int page, String query) {
+            this.page = page;
+            this.query = query;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+        @Override
+        protected void onPostExecute(List<Product> aVoid) {
+            productsLoadMore = aVoid;
+            if (productsLoadMore == null){
+                adapter.onLoadMoreFailed();
+                emulatorLoadMoreFaild = false;
+                return;
+            }
+            loadMore(page);
+            if (page == 0 && productsLoadMore != null){
+                listener = new EndlessRecyclerViewScrollListener(mLayoutManager) {
+                    @Override
+                    public void onLoadMore(int page) {
+                        currentPage = page;
+                        Call<List<Product>> call = mApi.getProductTypebyName(query,typeId,currentPage);
+                        new GetProductBrandTypebyName(page,query).execute(call);
+                    }
+                };
+                recyclerView.addOnScrollListener(listener);
+            }
+            isLoading = false;
+            super.onPostExecute(aVoid);
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            super.onProgressUpdate(values);
+        }
+        @Override
+        protected List<Product> doInBackground(Call... calls) {
+            try {
+                Call<List<Product>> call = calls[0];
+                Response<List<Product>> response = call.execute();
                 return response.body();
             } catch (IOException e) {
             }

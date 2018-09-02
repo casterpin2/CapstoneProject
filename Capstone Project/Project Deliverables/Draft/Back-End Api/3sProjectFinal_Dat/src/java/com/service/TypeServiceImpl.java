@@ -30,5 +30,10 @@ public class TypeServiceImpl implements TypeService{
     public List<ProductAddEntites> getProductbyType(int typeId, int page) throws SQLException {
         return dao.getProductbyType(typeId,page);
     }
+
+    @Override
+    public List<ProductAddEntites> getProductTypebyName(String query, int typeId, int page) throws SQLException {
+        return dao.getProductTypebyName(query, typeId, page);
+    }
     
 }

@@ -17,4 +17,5 @@ import java.util.List;
 public interface TypeService {
     public List<TypeEntites>  getTypebyCategory(int categoryId) throws SQLException;
     public List<ProductAddEntites>  getProductbyType(int typeId, int page) throws SQLException;
+    public List<ProductAddEntites>  getProductTypebyName(String query, int typeId, int page) throws SQLException;
 }

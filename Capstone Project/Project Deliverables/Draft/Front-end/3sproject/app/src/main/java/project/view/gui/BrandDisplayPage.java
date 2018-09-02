@@ -5,14 +5,19 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.database.MatrixCursor;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
+import android.provider.BaseColumns;
+import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.v4.widget.CursorAdapter;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -33,6 +38,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageReference;
 
 import java.io.IOException;
@@ -70,8 +80,44 @@ public class BrandDisplayPage extends BasePage implements BrandCustomCardviewAda
     private TextView nullMessage;
     private int currentPage = 0;
     private List<Brand> tempBrand;
+    private final List<String> suggestions = new ArrayList<>();
     private List<Brand> brandtsLoadMore;
     private GridLayoutManager mLayoutManager;
+    private EndlessRecyclerViewScrollListener listener;
+    private boolean isLoading;
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    DatabaseReference myRef = database.getReference();
+    final DatabaseReference myRef1 = myRef.child("suggestion").child("brands");
+    private ValueEventListener listener1;
+    private CursorAdapter suggestionAdapter;
+    private final List<String> searchedList = new ArrayList<>();
+    @Override
+    protected void onResume() {
+        super.onResume();
+        listener1 = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                suggestions.clear();
+                for (DataSnapshot dttSnapshot2 : dataSnapshot.getChildren()) {
+                    suggestions.add(dttSnapshot2.getValue(String.class));
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+        myRef1.addValueEventListener(listener1);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (myRef1 != null) {
+            myRef1.removeEventListener(listener1);
+        }
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,6 +130,7 @@ public class BrandDisplayPage extends BasePage implements BrandCustomCardviewAda
                 return false;
             }
         });
+        isLoading = false;
         apiService = ApiUtils.getAPIService();
         loadingBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorApplication), android.graphics.PorterDuff.Mode.MULTIPLY);
         searchView.setQueryHint("Tìm trong thương hiệu ...");
@@ -102,35 +149,70 @@ public class BrandDisplayPage extends BasePage implements BrandCustomCardviewAda
         tempBrand = new ArrayList<>();
         adapter.set(tempBrand);
         recyclerView.setAdapter(adapter);
-
+        suggestionAdapter = new SimpleCursorAdapter(this,
+                R.layout.custom_suggested_listview_nearby_store_page,
+                null,
+                new String[]{SearchManager.SUGGEST_COLUMN_TEXT_1},
+                new int[]{android.R.id.text1},
+                0);
+        searchView.setSuggestionsAdapter(suggestionAdapter);
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 //        productList
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+                while (isLoading == true){
 
+                }
+                adapter.onReachStart();
+                recyclerView.removeOnScrollListener(listener);
+                currentPage = 0;
+                adapter.clear();
+                if (query.isEmpty()){
+                    final Call<List<Brand>> callBrand = apiService.getBrands(currentPage);
+                    new BrandDisplayData(0).execute(callBrand);
+                } else {
 
+                    final Call<List<Brand>> callBrand = apiService.getBrandsByName(query,currentPage);
+                    new BrandDisplayDataByName(0,query).execute(callBrand);
+                }
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                searchedProduct.clear();
-                if (newText.equals("") || newText == null) {
-                    adapter = new BrandCustomCardviewAdapter(BrandDisplayPage.this, BrandDisplayPage.this,BrandDisplayPage.this);
+                String[] columns = { BaseColumns._ID,
+                        SearchManager.SUGGEST_COLUMN_TEXT_1,
+                };
+                final MatrixCursor cursor = new MatrixCursor(columns);
+                searchedList.removeAll(searchedList);
+                for (int i = 0; i < suggestions.size(); i++) {
+                    Log.d("searchedList",String.valueOf(searchedList.size()));
+                    if (suggestions.get(i).toLowerCase().contains(newText)) {
+                        String[] tmp = {Integer.toString(i), suggestions.get(i)};
+                        cursor.addRow(tmp);
 
-                } else {
-                    for (int i = 0; i < brandList.size(); i++) {
-                        if (brandList.get(i).getBrandName().toLowerCase().contains(newText.toLowerCase())) {
-                            searchedProduct.add(brandList.get(i));
-                        }
+                        searchedList.add(suggestions.get(i).toString());
+
                     }
-                    adapter = new BrandCustomCardviewAdapter(BrandDisplayPage.this, BrandDisplayPage.this, BrandDisplayPage.this);
                 }
-                RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(BrandDisplayPage.this, 2);
-                recyclerView.setLayoutManager(mLayoutManager);
-                recyclerView.setAdapter(adapter);
+                suggestionAdapter.swapCursor(cursor);
+                return true;
+            }
+        });
+        searchView.setOnSuggestionListener(new SearchView.OnSuggestionListener() {
+            @Override
+            public boolean onSuggestionSelect(int position) {
+                searchView.setQuery(searchedList.get(position).toString(), true);
+                searchView.clearFocus();
+                return false;
+            }
+
+            @Override
+            public boolean onSuggestionClick(int position) {
+                searchView.setQuery(searchedList.get(position).toString(), true);
+                searchView.clearFocus();
                 return true;
             }
         });
@@ -179,6 +261,7 @@ public class BrandDisplayPage extends BasePage implements BrandCustomCardviewAda
         }
         @Override
         protected void onPreExecute() {
+            isLoading = true;
             super.onPreExecute();
         }
 
@@ -193,16 +276,76 @@ public class BrandDisplayPage extends BasePage implements BrandCustomCardviewAda
             }
             loadMore(page);
             if (page == 0 && brandtsLoadMore != null){
-                recyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener(mLayoutManager){
+                listener = new EndlessRecyclerViewScrollListener(mLayoutManager) {
                     @Override
-                    public void onLoadMore(final int page) {
+                    public void onLoadMore(int page) {
                         currentPage = page;
                         apiService = APIService.retrofit.create(APIService.class);
                         final Call<List<Brand>> callBrand = apiService.getBrands(currentPage);
                         new BrandDisplayData(page).execute(callBrand);
                     }
-                });
+                };
+                recyclerView.addOnScrollListener(listener);
             }
+            isLoading = false;
+            super.onPostExecute(aVoid);
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            super.onProgressUpdate(values);
+        }
+
+        @Override
+        protected List<Brand> doInBackground(Call... calls) {
+            try {
+                Call<List<Brand>> call = calls[0];
+                Response<List<Brand>> response = call.execute();
+                return response.body();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
+
+
+    private class BrandDisplayDataByName extends AsyncTask<Call, Void, List<Brand>> {
+        private int page;
+        private String query;
+        public BrandDisplayDataByName(int page,String query) {
+            this.query = query;
+            this.page = page;
+        }
+        @Override
+        protected void onPreExecute() {
+            isLoading = true;
+            super.onPreExecute();
+        }
+
+        @Override
+        protected void onPostExecute(List<Brand> aVoid) {
+            brandtsLoadMore = aVoid;
+
+            if (brandtsLoadMore == null){
+                adapter.onLoadMoreFailed();
+                emulatorLoadMoreFaild = false;
+                return;
+            }
+            loadMore(page);
+            if (page == 0 && brandtsLoadMore != null){
+                listener = new EndlessRecyclerViewScrollListener(mLayoutManager) {
+                    @Override
+                    public void onLoadMore(int page) {
+                        currentPage = page;
+                        apiService = APIService.retrofit.create(APIService.class);
+                        final Call<List<Brand>> callBrand = apiService.getBrandsByName(query,currentPage);
+                        new BrandDisplayDataByName(page,query).execute(callBrand);
+                    }
+                };
+                recyclerView.addOnScrollListener(listener);
+            }
+            isLoading = false;
             super.onPostExecute(aVoid);
         }
 

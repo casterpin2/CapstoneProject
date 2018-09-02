@@ -53,4 +53,9 @@ public class BrandController {
     public List<ProductAddEntites> listProductWithBrandType(@RequestParam("brandId") int brandId, @RequestParam("typeId") int typeId, @RequestParam("page") int page) throws SQLException {
         return brand.listProductWithBrandType(brandId,typeId,page);
     }
+    
+    @RequestMapping(value = "/brands/getBrandsByName", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
+    public List<BrandEntities> getBrandsByName(@RequestParam("query") String query, @RequestParam("page") int page) throws SQLException {
+        return brand.getBrandsByName(query,page);
+    }
 }
