@@ -142,7 +142,7 @@ public class FeedbackManagement extends BasePage {
                         noFeedback.setText("Có lỗi xảy ra. Vui lòng tải lại trang");
                         return;
                     }
-                },10000);
+                },3000);
                 return;
             }
             if (result.size() == 0) {

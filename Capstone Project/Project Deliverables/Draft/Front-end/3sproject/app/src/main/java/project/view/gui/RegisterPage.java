@@ -325,7 +325,7 @@ public class RegisterPage extends AppCompatActivity {
                         toLoginPageBtn.setEnabled(true);
                         return;
                     }
-                }, 10000);
+                }, 3000);
             } else {
                 loadingBar.setVisibility(View.INVISIBLE);
                 btnRegister.setText("Đăng kí");

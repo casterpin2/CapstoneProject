@@ -611,7 +611,7 @@ public class EditStoreInformationPage extends BasePage implements OnMapReadyCall
                         updateInformationStore.setEnabled(true);
                         updateInformationStore.setText("Lưu thay đổi");
                     }
-                }, 10000);
+                }, 3000);
                 return;
             } else {
                 store.setRegisterLog(dateLog);

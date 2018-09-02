@@ -636,7 +636,7 @@ public class SearchProductAddToStore extends BasePage {
                         nullMessage.setText("Có lỗi xảy ra. Vui lòng thử lại");
 
                     }
-                },5000);
+                },3000);
                 return;
             }
             for (Item item : listProduct) {

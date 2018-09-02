@@ -169,7 +169,7 @@ public class ProductInStoreByUserDisplayPage extends BasePage {
                         nullMessage.setText("Có lỗi xảy ra, vui lòng tải lại trang!");
                         loadingBar.setVisibility(View.INVISIBLE);
                     }
-                }, 5000);
+                }, 3000);
             }
         }
 
@@ -187,6 +187,8 @@ public class ProductInStoreByUserDisplayPage extends BasePage {
                     for (Product product : products) {
                         tempProductInStore.add(product);
                     }
+
+                } else {
 
                 }
             } else {

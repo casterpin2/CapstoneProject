@@ -738,7 +738,7 @@ public class OrderPage extends BasePage implements OnMapReadyCallback {
                         }
                         return;
                     }
-                }, 5000);
+                }, 3000);
 
 
         }

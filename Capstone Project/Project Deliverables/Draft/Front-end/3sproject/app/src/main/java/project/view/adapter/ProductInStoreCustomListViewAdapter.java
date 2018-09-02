@@ -126,7 +126,7 @@ public class ProductInStoreCustomListViewAdapter extends ArrayAdapter<Product> {
                                     viewHolder.loadingBar.setVisibility(View.INVISIBLE);
                                     viewHolder.deleteBtn.setVisibility(View.VISIBLE);
                                 }
-                            },5000);
+                            },3000);
                             return;
                         }
                         viewHolder.loadingBar.setVisibility(View.INVISIBLE);

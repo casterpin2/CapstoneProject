@@ -118,7 +118,7 @@ public class ResetPasswordPage extends BasePage{
                                         btnChangePass.setText("Lưu thay đổi");
 
                                     }
-                                },10000);
+                                },3000);
                             }
                         });
                     }

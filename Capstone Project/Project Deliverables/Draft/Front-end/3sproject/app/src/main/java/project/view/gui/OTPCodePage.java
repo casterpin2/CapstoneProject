@@ -107,7 +107,7 @@ public class OTPCodePage extends AppCompatActivity implements NetworkStateReceiv
                                         btn.setText("Xác nhận");
                                         tvConfirmCodeMess.setText("Có lỗi xảy ra. Vui lòng thử lại");
                                     }
-                                }, 5000);
+                                }, 3000);
                             }
                         });
                     }else{

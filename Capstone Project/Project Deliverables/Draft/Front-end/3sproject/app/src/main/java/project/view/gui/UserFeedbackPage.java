@@ -245,7 +245,7 @@ public class UserFeedbackPage extends BasePage {
                             btn_send_feedback.setText("Gửi phản hồi");
                         }
 
-                },10000);
+                },3000);
                 return;
             }
         }

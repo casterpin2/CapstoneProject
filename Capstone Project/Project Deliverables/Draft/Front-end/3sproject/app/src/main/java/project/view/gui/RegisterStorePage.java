@@ -500,7 +500,7 @@ public class RegisterStorePage extends BasePage implements OnMapReadyCallback {
                         }
                     }
                 }
-            }, 10000);
+            }, 3000);
         }
 
         @Override
@@ -607,7 +607,7 @@ public class RegisterStorePage extends BasePage implements OnMapReadyCallback {
                         registerBtn.setText("Đăng kí");
                         return;
                     }
-                }, 10000);
+                }, 3000);
 
             }
 

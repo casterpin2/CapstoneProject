@@ -88,6 +88,7 @@ public class CategoryRecycleViewAdapter extends RecyclerView.Adapter<CategoryRec
                     Intent intent = new Intent(context, TypeCategoryPage.class);
                     intent.putExtra("categoryId",category.getCategoryID());
                     intent.putExtra("categoryName",category.getCategoryName());
+                    intent.putExtra("categoryImage",category.getCategoryImageLink());
                     context.startActivity(intent);
                 }
             });

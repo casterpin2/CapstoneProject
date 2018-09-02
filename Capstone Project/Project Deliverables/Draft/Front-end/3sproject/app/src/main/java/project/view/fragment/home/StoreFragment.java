@@ -190,7 +190,6 @@ public class StoreFragment extends Fragment implements NetworkStateReceiver.Netw
                 @Override
                 public void onClick(View view) {
                     if(checkNetWork){
-                        loadingBarImage.setVisibility(View.VISIBLE);
                         mApi = ApiUtils.getAPIService();
                         if(!namePath.isEmpty() && namePath!=null){
                             mApi.updateImgStore(store,namePath).enqueue(new Callback<Boolean>() {
@@ -219,8 +218,7 @@ public class StoreFragment extends Fragment implements NetworkStateReceiver.Netw
                                 }
                                 @Override
                                 public void onFailure(Call<Boolean> call, Throwable t) {
-                                    Toast.makeText((Activity) getContext(), "Đã có lỗi xảy ra, xin vui lòng xử lí lại", Toast.LENGTH_SHORT).show();
-                                    loadingBarImage.setVisibility(View.INVISIBLE);
+                                    Toast.makeText((Activity) getContext(), "Có lỗi xảy ra. Vui lòng thử lại!", Toast.LENGTH_SHORT).show();
                                 }
                             });
                         }
@@ -234,9 +232,14 @@ public class StoreFragment extends Fragment implements NetworkStateReceiver.Netw
                 public void onClick(View view) {
 
                     loadingBarImage.setVisibility(View.VISIBLE);
-                    if(!pathBeforeUpdate.isEmpty() && pathBeforeUpdate!=null){
-                        oldPathImg = pathBeforeUpdate;
+                    if (pathBeforeUpdate!=null) {
+                        if(!pathBeforeUpdate.isEmpty()){
+                            oldPathImg = pathBeforeUpdate;
+                        } else {
+                            oldPathImg = pathBeforeUpdate;
+                        }
                     }
+
 
                     if (!oldPathImg.isEmpty() && oldPathImg != null) {
                         if (oldPathImg.contains("graph") || oldPathImg.contains("google")) {

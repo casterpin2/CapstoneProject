@@ -234,7 +234,7 @@ public class UserInformationPage extends BasePage {
                         userInformation.setVisibility(View.INVISIBLE);
                     }
                 }
-            },10000);
+            },3000);
         }
 
         @Override

@@ -28,6 +28,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
+import com.google.firebase.storage.StorageReference;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -35,6 +37,7 @@ import java.util.List;
 
 import android.support.v7.widget.SearchView;
 
+import project.firebase.Firebase;
 import project.retrofit.APIService;
 import project.retrofit.ApiUtils;
 import project.view.R;
@@ -108,10 +111,18 @@ public class TypeCategoryPage extends BasePage {
             }
         });
     }
-
+    private StorageReference storageReference = Firebase.getFirebase();
     private void setCoverImg() {
         try {
-            Glide.with(this).load(R.drawable.cover1).into((ImageView) findViewById(R.id.cover));
+//            Glide.with(this).load(R.drawable.thoitrang).into((ImageView) findViewById(R.id.cover));
+
+            String imgLink = getIntent().getStringExtra("categoryImage");
+            Glide.with(TypeCategoryPage.this /* context */)
+                    .using(new FirebaseImageLoader())
+                    .load(storageReference.child(imgLink))
+                            //.diskCacheStrategy(DiskCacheStrategy.NONE)
+                            .skipMemoryCache(true)
+                            .into((ImageView) findViewById(R.id.cover));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -185,7 +196,7 @@ public class TypeCategoryPage extends BasePage {
                         nullMessage.setText("Có lỗi xảy ra, vui lòng tải lại trang!");
                         loadingBar.setVisibility(View.INVISIBLE);
                     }
-                }, 10000);
+                }, 3000);
                 return;
             } else {
                 loadingBar.setVisibility(View.INVISIBLE);

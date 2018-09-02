@@ -182,7 +182,7 @@ public class OrderDetailPage extends BasePage {
                                     finish();
                                     return;
                                 }
-                            },5000);
+                            },3000);
 
                         } else {
                             if (order == null ){
@@ -296,7 +296,7 @@ public class OrderDetailPage extends BasePage {
                                     finish();
                                     return;
                                 }
-                            },5000);
+                            },3000);
                         } else {
                             if (order == null || String.valueOf(order.getUserId()) == null){
                                 Toast.makeText(OrderDetailPage.this, "Người dùng đã hủy đơn hàng này", Toast.LENGTH_SHORT).show();

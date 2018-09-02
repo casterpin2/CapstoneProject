@@ -67,6 +67,7 @@ public class CategoryCustomCardviewAdapter extends RecyclerView.Adapter<Category
                 Intent intent = new Intent(mContext,TypeCategoryPage.class);
                 intent.putExtra("categoryId",category.getCategoryID());
                 intent.putExtra("categoryName",category.getCategoryName());
+                intent.putExtra("categoryImage",category.getCategoryImageLink());
                 mContext.startActivity(intent);
             }
         });

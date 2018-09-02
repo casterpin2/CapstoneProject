@@ -26,7 +26,7 @@ public class WelcomePage extends AppCompatActivity {
                 startActivity(toHomeActivity);
                 finish();
             }
-        },1500);
+        },2000);
     }
 
 }

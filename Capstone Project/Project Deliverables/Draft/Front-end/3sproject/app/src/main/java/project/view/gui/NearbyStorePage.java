@@ -503,7 +503,7 @@ public class NearbyStorePage extends BasePage implements OnMapReadyCallback, Loc
                         noHaveStore.setText("Có lỗi xảy ra, vui lòng tải lại trang!");
 
                     }
-                },10000);
+                },3000);
             }
 
         }
