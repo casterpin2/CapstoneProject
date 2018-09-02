@@ -385,7 +385,7 @@ public class UserSearchProductPage extends BasePage {
                         noHaveProduct.setText("Có lỗi xảy ra. Vui lòng thử lại");
 
                     }
-                },10000);
+                },3000);
             }
 
         }

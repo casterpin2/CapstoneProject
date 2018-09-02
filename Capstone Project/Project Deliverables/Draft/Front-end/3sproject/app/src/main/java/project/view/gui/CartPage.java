@@ -170,7 +170,7 @@ public class CartPage extends BasePage{
                             checkoutAllBtn.setEnabled(true);
                             checkoutAllBtn.setText("Mua hàng");
                         }
-                    },10000);
+                    },3000);
                     return;
                 }
                 final String address = data.getStringExtra("address");

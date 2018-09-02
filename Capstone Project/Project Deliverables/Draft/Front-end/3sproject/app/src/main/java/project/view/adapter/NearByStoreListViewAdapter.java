@@ -52,6 +52,15 @@ public class NearByStoreListViewAdapter extends BaseAdapter {
     private Store myStore;
     private User user;
     private String origin;
+
+    public String getOrigin() {
+        return origin;
+    }
+
+    public void setOrigin(String origin) {
+        this.origin = origin;
+    }
+
     private NumberFormat formatter = new DecimalFormat("#0.00");
     @Override
     public int getCount() {
@@ -157,6 +166,7 @@ public class NearByStoreListViewAdapter extends BaseAdapter {
                     public void onClick(View v) {
                         String destination = store.getLatitude()+","+store.getLongitude();
                         try {
+                            Toast.makeText(context, origin, Toast.LENGTH_SHORT).show();
                             new DirectionFinder((NearbyStorePage)context, origin, destination).execute();
                         } catch (UnsupportedEncodingException e) {
                             e.printStackTrace();

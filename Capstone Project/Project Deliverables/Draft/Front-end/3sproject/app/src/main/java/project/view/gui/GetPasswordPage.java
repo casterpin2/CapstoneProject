@@ -110,7 +110,7 @@ public class GetPasswordPage extends AppCompatActivity {
                                             Toast.makeText(GetPasswordPage.this, "Có lỗi xảy ra. Vui lòng thử lại", Toast.LENGTH_LONG).show();
                                             return;
                                         }
-                                    },10000);
+                                    },3000);
                                     return;
                                 }
                             });

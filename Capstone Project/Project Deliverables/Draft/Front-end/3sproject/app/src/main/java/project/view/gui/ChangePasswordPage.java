@@ -163,7 +163,7 @@ public class ChangePasswordPage extends BasePage {
                                             btnChangePass.setEnabled(true);
                                             btnChangePass.setText("Lưu thay đổi");
                                         }
-                                    },10000);
+                                    },3000);
                                 }
                             });
                         }

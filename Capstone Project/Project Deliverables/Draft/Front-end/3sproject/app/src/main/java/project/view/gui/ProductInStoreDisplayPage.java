@@ -145,7 +145,7 @@ public class ProductInStoreDisplayPage extends BasePage {
                         nullMessage.setText("Có lỗi xảy ra, vui lòng tải lại trang!");
                         loadingBar.setVisibility(View.INVISIBLE);
                     }
-                }, 5000);
+                }, 3000);
             }
 
         }

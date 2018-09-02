@@ -278,7 +278,7 @@ public class HomeFragment extends Fragment implements NetworkStateReceiver.Netwo
                                 public void run() {
                                     swipeRefreshLayout.setRefreshing(false);
                                 }
-                            }, 4000);
+                            }, 3000);
                         }
                     });
 

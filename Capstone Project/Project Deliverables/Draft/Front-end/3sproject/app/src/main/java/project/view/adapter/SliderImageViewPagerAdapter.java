@@ -26,7 +26,7 @@ public class SliderImageViewPagerAdapter extends PagerAdapter {
     private LayoutInflater layoutInflater;
 
     private StorageReference storageReference = Firebase.getFirebase();
-    private Integer [] images = {R.drawable.slider1, R.drawable.cover, R.drawable.cover};
+    private Integer [] images = {R.drawable.cover, R.drawable.slider1, R.drawable.cover1};
 
     public SliderImageViewPagerAdapter(Context context) {
         this.context = context;

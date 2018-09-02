@@ -177,7 +177,7 @@ public class EditProductInStorePage extends BasePage {
                                         saveBtn.setEnabled(true);
                                         saveBtn.setText("Lưu thay đổi");
                                     }
-                                },10000);
+                                },3000);
                                 return;
                             }
                             myRef = database.getReference().child("cart");

@@ -173,7 +173,7 @@ public class StoreInformationPage extends AppCompatActivity {
                         loadingBar.setVisibility(View.INVISIBLE);
                     }
                 }
-            },10000);
+            },3000);
         }
 
         @Override

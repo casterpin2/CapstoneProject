@@ -695,7 +695,7 @@ public class EditUserInformationPage extends BasePage {
                         saveBtn.setEnabled(true);
                         changeImageLayout.setEnabled(true);
                     }
-                }, 10000);
+                }, 3000);
                 return;
             }
 

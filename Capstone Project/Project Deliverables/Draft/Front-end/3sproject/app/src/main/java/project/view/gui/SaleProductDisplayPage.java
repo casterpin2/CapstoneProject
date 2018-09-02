@@ -192,7 +192,7 @@ public class SaleProductDisplayPage extends BasePage {
                         loadingBar.setVisibility(View.INVISIBLE);
 
                     }
-                }, 10000);
+                }, 3000);
                 return;
             }
 

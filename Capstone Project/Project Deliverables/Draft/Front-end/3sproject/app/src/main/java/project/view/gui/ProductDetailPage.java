@@ -361,7 +361,7 @@ public class ProductDetailPage extends BasePage {
                         loadingBar.setVisibility(View.INVISIBLE);
                         nullMessage.setText("Có lỗi xảy ra. Vui lòng tải lại trang");
                     }
-                }, 5000);
+                }, 3000);
                 return;
             }
             loadingBar.setVisibility(View.INVISIBLE);
