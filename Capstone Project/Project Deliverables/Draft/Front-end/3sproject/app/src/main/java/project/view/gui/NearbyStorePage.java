@@ -234,8 +234,10 @@ public class NearbyStorePage extends BasePage implements OnMapReadyCallback, Loc
                         if (location != null) {
                             if (mapRadar.isAnimationRunning())
                                 mapRadar.withLatLng(new LatLng(location.getLatitude(), location.getLongitude()));
+
                             latitude = location.getLatitude();
                             longtitude = location.getLongitude();
+                            Toast.makeText(context, latitude+" "+longtitude, Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -484,6 +486,7 @@ public class NearbyStorePage extends BasePage implements OnMapReadyCallback, Loc
                     list.add(near);
                 }
                 loadingBar.setVisibility(View.INVISIBLE);
+                adapter.setOrigin(String.valueOf(latitude)+","+String.valueOf(longtitude));
                 adapter.notifyDataSetChanged();
                 changeLocation(mMap);
                 if (list.size() == 0) {
