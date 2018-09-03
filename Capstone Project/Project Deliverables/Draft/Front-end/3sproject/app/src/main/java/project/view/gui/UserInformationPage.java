@@ -215,7 +215,8 @@ public class UserInformationPage extends BasePage {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             boolean check = false;
-            if (us.getLast_name() != null) {
+
+            if (us != null && us.getLast_name() != null) {
                 check = true;
             }
             if(check == true){

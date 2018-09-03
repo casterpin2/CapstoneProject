@@ -70,7 +70,7 @@ public class WaitingOrderStore extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        if (storeId != -1) {
+        if (myRef != null) {
             myRef.removeEventListener(changeListener);
         }
     }

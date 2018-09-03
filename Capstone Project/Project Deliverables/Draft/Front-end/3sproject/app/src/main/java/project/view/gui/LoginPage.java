@@ -185,7 +185,7 @@ public class LoginPage extends AppCompatActivity {
                         return;
                     }
                 }
-                errorMessage.setText("Không có mạng ");
+                errorMessage.setText("Không có kết nối. Vui lòng thử lại");
             }
         });
         //Facebook Login///////////////////////////////////////////////////////////////////
