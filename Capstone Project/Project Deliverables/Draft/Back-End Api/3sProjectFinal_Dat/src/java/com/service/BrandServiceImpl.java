@@ -51,4 +51,14 @@ public class BrandServiceImpl implements BrandService {
     public List<BrandEntities> getBrandsByName(String query, int page) throws SQLException {
         return dao.getBrandsByName(query, page);
     }
+
+    @Override
+    public List<BrandEntities> listBrandByCategory(int categoryId) throws SQLException {
+        return dao.listBrandByCategory(categoryId);
+    }
+
+    @Override
+    public List<ProductAddEntites> listProductWithBrandCategory(int brandId, int categoryId, int page) throws SQLException {
+        return dao.listProductWithBrandCategory(brandId, categoryId, page);
+    }
 }

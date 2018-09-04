@@ -37,6 +37,12 @@ public class BrandDaoImpl extends BaseDao implements BrandDao {
     private final static String SQL4 = " select b.id,b.name,i.path,count(p.id) as countProduct from Brand b  join (Image_Brand ib  join Image i on ib.image_id = i.id) on b.id = ib.brand_id and b.name like ?\n"
             + "            join (Type_Brand tb  join Product p on tb.id = p.type_brand_id) on b.id = tb.brand_id \n"
             + "            group by b.id,b.name,i.path limit ?,10";
+    
+    private final static String SQL5 = " select b.id,b.name,i.path,count(p.id) as countProduct from Brand b  join (Image_Brand ib  join Image i on ib.image_id = i.id) on b.id = ib.brand_id\n" +
+"                      join (Type_Brand tb  join Product p on tb.id = p.type_brand_id) on b.id = tb.brand_id join Type t  on t.id = tb.type_id and t.category_id = ?\n" +
+"                      group by b.id,b.name,i.path";
+    
+    private final static String SQL6 = " select p.id,p.name,p.description,i.path,b.name as brand_name,t.name as type_name from Product p join (Type_Brand tb join Brand b on tb.brand_id = b.id) on p.type_brand_id = tb.id join (Type_Brand tl join Type t on tl.type_id = t.id and t.category_id = ?) on p.type_brand_id = tl.id join (Image_Product ip join Image i on ip.image_id = i.id) on p.id = ip.product_id where tb.brand_id = ? order by p.id limit ?,10";
     @Override
     public List<BrandEntities> listBrand(int page) throws SQLException {
         Connection conn = null;
@@ -146,6 +152,32 @@ public class BrandDaoImpl extends BaseDao implements BrandDao {
     }
     
     @Override
+    public List<BrandEntities> listBrandByCategory(int categoryId) throws SQLException {
+        Connection conn = null;
+        PreparedStatement pre = null;
+        ResultSet rs = null;
+        List<BrandEntities> list = null;
+        try {
+            list = new ArrayList<>();
+            conn = getConnection();
+            pre = conn.prepareStatement(SQL5);
+            pre.setInt(1, categoryId);
+            rs = pre.executeQuery();
+            while (rs.next()) {
+                BrandEntities brand = new BrandEntities();
+                brand.setBrandId(rs.getInt("id"));
+                brand.setBrandName(rs.getNString("name"));
+                brand.setBrandImg(rs.getNString("path"));
+                brand.setNumberProduct(rs.getInt("countProduct"));
+                list.add(brand);
+            }
+        } finally {
+            closeConnect(conn, pre, rs);
+        }
+        return list;
+    }
+    
+    @Override
     public List<ProductAddEntites> listProductWithBrandType(int brandId, int typeId, int page) throws SQLException {
         Connection conn = null;
         PreparedStatement pre = null;
@@ -174,7 +206,35 @@ public class BrandDaoImpl extends BaseDao implements BrandDao {
         }
         return list;
     }
-
+    @Override
+    public List<ProductAddEntites> listProductWithBrandCategory(int brandId, int categoryId, int page) throws SQLException {
+        Connection conn = null;
+        PreparedStatement pre = null;
+        ResultSet rs = null;
+        List<ProductAddEntites> list = null;
+        try {
+            list = new ArrayList<>();
+            conn = getConnection();
+            pre = conn.prepareStatement(SQL3);
+            pre.setInt(2, brandId);
+            pre.setInt(1, categoryId);
+            pre.setInt(3, page*10);
+            rs = pre.executeQuery();
+            while (rs.next()) {
+                ProductAddEntites product = new ProductAddEntites();
+                product.setProduct_id(rs.getInt("id"));
+                product.setProduct_name(rs.getNString("name"));
+                product.setImage_path(rs.getNString("path"));
+                product.setDescription(rs.getNString("description"));
+                product.setBrand_name(rs.getNString("brand_name"));
+                product.setType_name(rs.getNString("type_name"));
+                list.add(product);
+            }
+        } finally {
+            closeConnect(conn, pre, rs);
+        }
+        return list;
+    }
     @Override
     public List<BrandEntities> getBrandsByName(String query,int page) throws SQLException {
         Connection conn = null;

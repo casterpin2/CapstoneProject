@@ -35,5 +35,10 @@ public class CategoryServiceImpl implements CategoryService{
     public List<ProductAddEntites> getProductInCategory(int page, int categoryId) throws SQLException {
         return dao.getProductInCategory(page, categoryId);
     }
+
+    @Override
+    public List<ProductAddEntites> getProductInCategoryByName(int page, int categoryId, String query) throws SQLException {
+        return dao.getProductInCategoryByName(page, categoryId, query);
+    }
     
 }

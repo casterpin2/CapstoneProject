@@ -21,4 +21,6 @@ public interface BrandDao {
     public List<ProductAddEntites> listProductWithBrand(int brandId, int page) throws SQLException;
     public List<ProductAddEntites> listProductWithBrandType(int brandId, int typeId, int page) throws SQLException;
     public List<BrandEntities> getBrandsByName(String query, int page) throws SQLException;
+    public List<BrandEntities> listBrandByCategory(int categoryId) throws SQLException;
+    public List<ProductAddEntites> listProductWithBrandCategory(int brandId, int categoryId, int page) throws SQLException;
 }

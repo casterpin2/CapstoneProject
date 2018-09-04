@@ -49,9 +49,19 @@ public class BrandController {
         return brand.listBrandByType(typeId);
     }
     
+    @RequestMapping(value = "/brands/brandByCategory", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
+    public List<BrandEntities> listBrandByCategory(@RequestParam("categoryId") int categoryId) throws SQLException {
+        return brand.listBrandByCategory(categoryId);
+    }
+    
     @RequestMapping(value = "/brands/productWithBrandType", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
     public List<ProductAddEntites> listProductWithBrandType(@RequestParam("brandId") int brandId, @RequestParam("typeId") int typeId, @RequestParam("page") int page) throws SQLException {
         return brand.listProductWithBrandType(brandId,typeId,page);
+    }
+    
+    @RequestMapping(value = "/brands/productWithBrandCategory", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
+    public List<ProductAddEntites> listProductWithBrandCategory(@RequestParam("brandId") int brandId, @RequestParam("categoryId") int categoryId, @RequestParam("page") int page) throws SQLException {
+        return brand.listProductWithBrandType(brandId,categoryId,page);
     }
     
     @RequestMapping(value = "/brands/getBrandsByName", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")

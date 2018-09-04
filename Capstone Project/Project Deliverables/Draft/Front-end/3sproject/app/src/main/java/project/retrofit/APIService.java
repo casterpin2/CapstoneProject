@@ -54,13 +54,19 @@ public interface APIService {
     Call<List<Product>> getProductBrand(@Query("brandId") int brandId, @Query("page") int page);
 
     @GET("brands/brandByType")
-    Call<List<Brand>> listBrandByType(@Query("typeId") int typeId);
+    Call<List<Brand>>listBrandByType(@Query("typeId") int typeId);
+
+    @GET("brands/brandByCategory")
+    Call<List<Brand>>listBrandByCategory(@Query("categoryId") int categoryId);
 
     @GET("brands/getBrandsByName")
     Call<List<Brand>> getBrandsByName(@Query("query") String query, @Query("page") int page);
 
     @GET("brands/productWithBrandType")
     Call<List<Product>> productWithBrandType(@Query("brandId") int brandId, @Query("typeId") int typeId, @Query("page") int page);
+
+    @GET("brands/productWithBrandCategory")
+    Call<List<Product>> productWithBrandCategory(@Query("brandId") int brandId, @Query("categoryId") int categoryId, @Query("page") int page);
 
     @GET("getProductTypebyName")
     Call<List<Product>> getProductTypebyName(@Query("query") String query, @Query("typeId") int typeId, @Query("page") int page);
@@ -71,6 +77,9 @@ public interface APIService {
 
     @GET("category/products")
     Call<List<Product>> getProductInCategory(@Query("page") int page, @Query("categoryId") int categoryId);
+
+    @GET("category/productsByName")
+    Call<List<Product>> getProductInCategoryByName(@Query("page") int page, @Query("categoryId") int categoryId, @Query("query") String query);
     //Store//
 
     @DELETE("deleteProductInStore")

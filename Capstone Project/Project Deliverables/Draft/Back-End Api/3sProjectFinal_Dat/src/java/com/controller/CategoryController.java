@@ -43,4 +43,9 @@ public class CategoryController {
     public List<ProductAddEntites> getProductInCategory(@RequestParam("page")int page,@RequestParam("categoryId") int categoryId) throws SQLException {
         return category.getProductInCategory(page, categoryId);
     }
+    
+    @RequestMapping(value = "/category/productsByName", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
+    public List<ProductAddEntites> getProductInCategoryByName(@RequestParam("page")int page,@RequestParam("categoryId") int categoryId, @RequestParam("query")String query) throws SQLException {
+        return category.getProductInCategoryByName(page, categoryId,query);
+    }
 }

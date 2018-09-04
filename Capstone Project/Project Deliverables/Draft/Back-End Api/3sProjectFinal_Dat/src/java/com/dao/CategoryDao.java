@@ -19,4 +19,5 @@ public interface CategoryDao {
     public List<CategoryEntities> listCategory() throws SQLException;
     public List<CategoryEntities> listCategoryTop10() throws SQLException;
     public List<ProductAddEntites> getProductInCategory(@RequestParam("page")int page,@RequestParam("categoryId") int categoryId) throws SQLException;
+    public List<ProductAddEntites> getProductInCategoryByName(int page, int categoryId, String query) throws SQLException;
 }

@@ -193,6 +193,7 @@ public class ProductTypeDisplayPage extends BasePage implements BrandCustomCardv
             if (productsLoadMore == null){
                 adapter.onLoadMoreFailed();
                 emulatorLoadMoreFaild = false;
+                isLoading = false;
                 return;
             }
             loadMore(page);
@@ -246,6 +247,7 @@ public class ProductTypeDisplayPage extends BasePage implements BrandCustomCardv
             if (productsLoadMore == null){
                 adapter.onLoadMoreFailed();
                 emulatorLoadMoreFaild = false;
+                isLoading = false;
                 return;
             }
             loadMore(page);
@@ -360,6 +362,7 @@ public class ProductTypeDisplayPage extends BasePage implements BrandCustomCardv
             if (productsLoadMore == null){
                 adapter.onLoadMoreFailed();
                 emulatorLoadMoreFaild = false;
+                isLoading = false;
                 return;
             }
             loadMore(page);
